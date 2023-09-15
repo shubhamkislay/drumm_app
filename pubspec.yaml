@@ -96,6 +96,7 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 
 flutter_icons:
+  android: true
   ios: true
   image_path: "images/drumm_logo_main.png"
   remove_alpha_ios: true
@@ -121,90 +122,28 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-#  assets:
-#    - images/logo_background_white.png
-#    - images/profile_icon.png
-#    - images/house.png
-#    - images/swipe_cards.png
-#    - images/globe.png
-#    - images/question_mark.png
-#    - images/logo_menu_tab.png
-#    - images/bot.png
-#    - images/advanced.png
-#    - images/heart.png
-#    - images/chat.png
-#    - images/drumm_logo.png
-#    - images/open_book.png
-#    - images/pic_back.png
-#    - images/bk_pic.png
-#    - images/settings_sliders.png
-#    - images/teamwork.png
-#    - images/people.png
-#    - images/more.png
-#    - images/add.png
-#    - images/post.png
-#    - images/like.png
-#    - images/liked.png
-#    - images/call.png
-#    - images/ask.png
-#    - images/add_post.png
-#    - images/create_post.png
-#    - images/paper.png
-#    - images/document.png
-#    - images/link.png
-#    - images/list.png
-#    - images/team.png
-#    - images/home.png
-#    - images/home_icon.png
-#    - images/group.png
-#    - images/plus_icon.png
-#    - images/networking.png
-#    - images/telephone.png
-#    - images/signal.png
-#    - images/broadcast.png
-#    - images/feedback.png
-#    - images/connection.png
-#    - images/switch.png
-#    - images/shape.png
-#    - images/intersect.png
-#    - images/search.png
-#    - images/focus.png
-#    - images/tabs.png
-#    - images/team_inactive.png
-#    - images/team_active.png
-#    - images/mic_on.png
-#    - images/mic_off.png
-#    - images/exit.png
-#    - images/logout.png
-#    - images/sound_waves.png
-#    - images/audio_wave.gif
-#    - images/wave.png
-#    - images/hello.png
-#    - images/home_btn.png
-#    - images/home_btn_active.png
-#    - images/home_btn_inactive.png
-#    - images/add-image.png
-#    - images/back.png
-#    - images/feed.png
-#    - images/group_active.png
-#    - images/group_inactive.png
-#    - images/hut_active.png
-#    - images/hut_inactive.png
-#    - images/search_btn.png
-#    - images/user_profile_inactive.png
-#    - images/user_profile_active.png
-#    - images/hut_btn.png
-#    - images/hut_btn_active.png
-#    - images/sparkles.png
-#    - images/global-news.png
-#    - images/network.png
-#    - images/worldwide.png
-#    - images/microphone.png
-#    - images/animated_mic.gif
-#    - images/animation_news.json
-#    - images/animation_loading.json
-#    - images/animation_band.json
-#    - images/animation_drumm.json
+  assets:
+    - images/logo_background_white.png
+    - images/heart.png
+    - images/drumm_logo.png
+    - images/liked.png
+    - images/search_btn.png
+    - images/team_inactive.png
+    - images/team_active.png
+    - images/mic_on.png
+    - images/mic_off.png
+    - images/hut_btn_active.png
+    - images/hut_btn.png
+    - images/user_profile_inactive.png
+    - images/user_profile_active.png
+    - images/sparkles.png
+    - images/animated_mic.gif
+    - images/animation_news.json
+    - images/animation_loading.json
+    - images/animation_band.json
+    - images/animation_bands.json
+    - images/logout.png
+    - images/drumm_logo_main.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

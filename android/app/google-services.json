@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1041818095145-2pkrj39c1oo1f9s383hhnr7q2dkuklj9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.drumm.drumm_app",
+            "certificate_hash": "ea23918d082d28d71cda9f47264643a9cb3e6949"
+          }
+        },
+        {
           "client_id": "1041818095145-1rh450cod4kttha9h01pr0kohkga5k1v.apps.googleusercontent.com",
           "client_type": 3
         }
