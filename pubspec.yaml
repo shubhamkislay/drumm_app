@@ -1,5 +1,5 @@
 name: drumm_app
-description: News and conversation application
+description: Connecting minds, sparking conversations, and sharing the pulse of the world. Join us to talk, share news, and connect in a global community.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -35,6 +35,54 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  scroll_app_bar: ^2.0.0
+  fluent_appbar: ^2.0.0
+  blur: ^3.1.0
+  http: ^0.13.6
+  salomon_bottom_bar: ^3.3.2
+  floating_frosted_bottom_bar: ^0.0.1
+  flutter_card_swiper: ^4.1.2
+  cached_network_image: ^3.2.3
+  firebase_analytics: ^10.2.1
+  firebase_core: ^2.10.0
+  firebase_auth: ^4.4.2
+  firebase_messaging: ^14.6.6
+  firebase_database: ^10.2.0
+  cloud_firestore: ^4.8.5
+  image: ^4.0.17
+  flutter_neumorphic: ^3.2.0
+  shared_preferences: ^2.1.1
+  webview_flutter: ^4.2.1
+  agora_rtc_engine: ^6.1.1+1
+  permission_handler: ^10.2.0
+  flutter_inappwebview: ^5.7.2+3
+  debounce_throttle: ^2.0.0
+  animated_text_kit: ^4.2.2
+  flutter_link_previewer: ^3.2.0
+  auto_size_text: ^3.0.0
+  flutter_vibrate: ^1.3.0
+  firebase_storage: ^11.2.2
+  image_picker: ^0.8.8
+  animated_snack_bar: ^0.3.1
+  image_cropper: ^4.0.1
+  photo_view: ^0.14.0
+  rive: ^0.11.3
+  flutter_shake_animated: ^0.0.5
+  magnifying_glass: ^1.0.4
+  google_sign_in: ^6.0.2
+  algolia: ^1.1.2
+  flutter_staggered_grid_view: ^0.6.2
+  expandable_text: ^2.3.0
+  flutter_callkit_incoming: ^2.0.0+1
+  uuid: ^3.0.7
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.2.19
+  flutter_onboarding_slider: ^1.0.9
+  highlight_text: ^1.7.0
+  music_visualizer: ^1.0.4
+  flutter_spinkit: ^5.2.0
+  firebase_crashlytics: ^3.3.5
+  lottie: ^2.3.2
 
 dev_dependencies:
   flutter_test:
@@ -47,8 +95,22 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
 
+flutter_icons:
+  ios: true
+  image_path: "images/drumm_logo_main.png"
+  remove_alpha_ios: true
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+flutter_native_splash:
+  color: "#202020"
+  #background_image: "assets/background.png"
+  image: "images/drumm_logo_main.png"
+    #color_dark: "#042a49"
+    #background_image_dark: "assets/dark-background.png"
+    #android_12:
+    #image: "images/drumm_logo_main.png"
+  #color: "#202020"
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -59,8 +121,90 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+#  assets:
+#    - images/logo_background_white.png
+#    - images/profile_icon.png
+#    - images/house.png
+#    - images/swipe_cards.png
+#    - images/globe.png
+#    - images/question_mark.png
+#    - images/logo_menu_tab.png
+#    - images/bot.png
+#    - images/advanced.png
+#    - images/heart.png
+#    - images/chat.png
+#    - images/drumm_logo.png
+#    - images/open_book.png
+#    - images/pic_back.png
+#    - images/bk_pic.png
+#    - images/settings_sliders.png
+#    - images/teamwork.png
+#    - images/people.png
+#    - images/more.png
+#    - images/add.png
+#    - images/post.png
+#    - images/like.png
+#    - images/liked.png
+#    - images/call.png
+#    - images/ask.png
+#    - images/add_post.png
+#    - images/create_post.png
+#    - images/paper.png
+#    - images/document.png
+#    - images/link.png
+#    - images/list.png
+#    - images/team.png
+#    - images/home.png
+#    - images/home_icon.png
+#    - images/group.png
+#    - images/plus_icon.png
+#    - images/networking.png
+#    - images/telephone.png
+#    - images/signal.png
+#    - images/broadcast.png
+#    - images/feedback.png
+#    - images/connection.png
+#    - images/switch.png
+#    - images/shape.png
+#    - images/intersect.png
+#    - images/search.png
+#    - images/focus.png
+#    - images/tabs.png
+#    - images/team_inactive.png
+#    - images/team_active.png
+#    - images/mic_on.png
+#    - images/mic_off.png
+#    - images/exit.png
+#    - images/logout.png
+#    - images/sound_waves.png
+#    - images/audio_wave.gif
+#    - images/wave.png
+#    - images/hello.png
+#    - images/home_btn.png
+#    - images/home_btn_active.png
+#    - images/home_btn_inactive.png
+#    - images/add-image.png
+#    - images/back.png
+#    - images/feed.png
+#    - images/group_active.png
+#    - images/group_inactive.png
+#    - images/hut_active.png
+#    - images/hut_inactive.png
+#    - images/search_btn.png
+#    - images/user_profile_inactive.png
+#    - images/user_profile_active.png
+#    - images/hut_btn.png
+#    - images/hut_btn_active.png
+#    - images/sparkles.png
+#    - images/global-news.png
+#    - images/network.png
+#    - images/worldwide.png
+#    - images/microphone.png
+#    - images/animated_mic.gif
+#    - images/animation_news.json
+#    - images/animation_loading.json
+#    - images/animation_band.json
+#    - images/animation_drumm.json
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

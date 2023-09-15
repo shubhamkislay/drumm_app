@@ -1,0 +1,127 @@
+{
+  "project_info": {
+    "project_number": "1041818095145",
+    "firebase_url": "https://drummapp-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "drummapp",
+    "storage_bucket": "drummapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041818095145:android:b805f5d599657a89711638",
+        "android_client_info": {
+          "package_name": "app.drumm.drumm_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1041818095145-1rh450cod4kttha9h01pr0kohkga5k1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDO_iy90QgwoTWGMvJxIPb-5pi5wiemY0g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1041818095145-1rh450cod4kttha9h01pr0kohkga5k1v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1041818095145-4tatbm4m5g8f0has19jkv1aboa1g3ils.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.drumm"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041818095145:android:db8a647a135cc3dc711638",
+        "android_client_info": {
+          "package_name": "com.example.news_feed"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1041818095145-1rh450cod4kttha9h01pr0kohkga5k1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDO_iy90QgwoTWGMvJxIPb-5pi5wiemY0g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1041818095145-1rh450cod4kttha9h01pr0kohkga5k1v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1041818095145-4tatbm4m5g8f0has19jkv1aboa1g3ils.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.drumm"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041818095145:android:97fb93ff9aaf25ed711638",
+        "android_client_info": {
+          "package_name": "com.getdrumm.drumm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1041818095145-hr93hj81hcio5jc2scou9vrtqh71oad6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.getdrumm.drumm",
+            "certificate_hash": "ea23918d082d28d71cda9f47264643a9cb3e6949"
+          }
+        },
+        {
+          "client_id": "1041818095145-1rh450cod4kttha9h01pr0kohkga5k1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDO_iy90QgwoTWGMvJxIPb-5pi5wiemY0g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1041818095145-1rh450cod4kttha9h01pr0kohkga5k1v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1041818095145-4tatbm4m5g8f0has19jkv1aboa1g3ils.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.drumm"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
