@@ -104,7 +104,7 @@ flutter_icons:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 flutter_native_splash:
-  color: "#202020"
+  color: "#000000"
   #background_image: "assets/background.png"
   image: "images/drumm_logo_main.png"
     #color_dark: "#042a49"

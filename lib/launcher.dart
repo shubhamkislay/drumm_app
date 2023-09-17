@@ -29,6 +29,7 @@ import 'custom/listener/connection_listener.dart';
 import 'custom/rounded_button.dart';
 import 'jam_room_page.dart';
 import 'my_home_page.dart';
+import 'news_feed.dart';
 import 'theme/theme_constants.dart';
 import 'theme/theme_manager.dart';
 
@@ -78,7 +79,7 @@ class _LauncherPageState extends State<LauncherPage>
         hideOnScroll: false,
         //currentPage == 0 ? true:false,
         width: MediaQuery.of(context).size.width,
-        bottomBarColor: Color(0xff101010),
+        bottomBarColor: Colors.black,//Color(0xff101010),
 
         body: (context, controller) => Column(
           children: [
@@ -90,15 +91,16 @@ class _LauncherPageState extends State<LauncherPage>
                   physics:
                       NeverScrollableScrollPhysics(), //const BouncingScrollPhysics(),
                   children: [
-                    HomeFeedPage(
-                      key: homeFeedKey,
-                      userConnected: userConnected,
-                      title: "Drumm",
-                      themeManager: widget.themeManager,
-                      scrollController: controller,
-                      analytics: widget.analytics,
-                      observer: widget.observer, tag: 'Drumm',
-                    ),
+                    // HomeFeedPage(
+                    //   key: homeFeedKey,
+                    //   userConnected: userConnected,
+                    //   title: "Drumm",
+                    //   themeManager: widget.themeManager,
+                    //   scrollController: controller,
+                    //   analytics: widget.analytics,
+                    //   observer: widget.observer, tag: 'Drumm',
+                    // ),
+                    NewsFeed(),
                     ExplorePage(),
                     /**
                      * Wave Mode
@@ -223,7 +225,7 @@ class _LauncherPageState extends State<LauncherPage>
         child: SafeArea(
           top: false,
           child: Container(
-            color: COLOR_PRIMARY_DARK,
+            color: Colors.black,//COLOR_PRIMARY_DARK,
             child: TabBar(
               enableFeedback: true,
               padding: EdgeInsets.only(bottom: 0, top: 8),

@@ -803,6 +803,33 @@ class FirebaseDBOperations {
     return List.from(data.docs.map((e) => Band.fromSnapshot(e)));
   }
 
+  static Future<List<Article>> getArticlesByBands() async {
+    List<Band> fetchedBands = await FirebaseDBOperations.getBandByUser();
+    List<String> bandCategoryList = [];
+    for (Band band in fetchedBands) {
+      bandCategoryList.add(band.bandId ?? "");
+    }
+    if (fetchedBands.length < 1) bandCategoryList.add("general");
+
+    //print("Fetched interesets: ${userInterests.toString()}");
+    print("Fetched categories: ${bandCategoryList.toString()}");
+
+    Query<Map<String, dynamic>> query = FirebaseFirestore.instance
+        .collection('articles')
+        .where('category', whereIn: bandCategoryList)
+        .where('country', isEqualTo: 'in')
+        .where('source', isNotEqualTo: null)
+        .orderBy("publishedAt", descending: true)
+        .limit(10);
+
+    final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+
+    List<Article> newArticles =
+    snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+
+    return newArticles;
+  }
+
   static Future<List<Band>> getOnboardingBands() async {
     CollectionReference bandsCollectionRef =
     FirebaseFirestore.instance.collection("bands");

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class RoundedButton extends StatelessWidget {
   final String assetPath;
   final VoidCallback onPressed;
-  final Color color;
+  Color? color;
   final Color bgColor;
   Color? hoverColor = Colors.blueGrey;
   double? height = 60;
@@ -11,7 +11,7 @@ class RoundedButton extends StatelessWidget {
    RoundedButton({
     Key? key,
     required this.assetPath,
-    required this.color,
+     this.color,
     required this.bgColor,
     required this.onPressed,
      this.hoverColor,
@@ -34,7 +34,8 @@ class RoundedButton extends StatelessWidget {
               shape: const CircleBorder(),
               backgroundColor: bgColor,//Colors.grey.shade900
             ),
-            child: Image.asset(assetPath,color: color,fit: BoxFit.fill ),
+            child:(color!=null)? Image.asset(assetPath,color: color,fit: BoxFit.fill )
+            : Image.asset(assetPath,fit: BoxFit.fill ),
           ),
         ),
       ),
