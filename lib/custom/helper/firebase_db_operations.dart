@@ -820,7 +820,25 @@ class FirebaseDBOperations {
         .where('country', isEqualTo: 'in')
         .where('source', isNotEqualTo: null)
         .orderBy("publishedAt", descending: true)
-        .limit(10);
+        .limit(25);
+
+    final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+
+    List<Article> newArticles =
+    snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+
+    return newArticles;
+  }
+
+  static Future<List<Article>> getArticlesByBandID(String bandID) async {
+
+    Query<Map<String, dynamic>> query = FirebaseFirestore.instance
+        .collection('articles')
+        .where('category', isEqualTo: bandID)
+        .where('country', isEqualTo: 'in')
+        .where('source', isNotEqualTo: null)
+        .orderBy("publishedAt", descending: true)
+        .limit(25);
 
     final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
 

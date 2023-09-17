@@ -83,6 +83,7 @@ dependencies:
   flutter_spinkit: ^5.2.0
   firebase_crashlytics: ^3.3.5
   lottie: ^2.3.2
+  flutter_multi_select_items: ^0.4.2
 
 dev_dependencies:
   flutter_test:
@@ -104,7 +105,7 @@ flutter_icons:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 flutter_native_splash:
-  color: "#000000"
+  color: "#202020"
   #background_image: "assets/background.png"
   image: "images/drumm_logo_main.png"
     #color_dark: "#042a49"
