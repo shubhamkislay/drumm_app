@@ -827,10 +827,10 @@ class FirebaseDBOperations {
       query = query.startAfterDocument(lastDocument!);
     }
     final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
-
+    lastDocument = snapshot.docs.last;
     List<Article> newArticles =
     snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
-    lastDocument = snapshot.docs.last;
+
 
     return newArticles;
   }
@@ -844,8 +844,12 @@ class FirebaseDBOperations {
         .where('source', isNotEqualTo: null)
         .orderBy("publishedAt", descending: true)
         .limit(25);
+    if (lastDocument != null) {
+      query = query.startAfterDocument(lastDocument!);
+    }
 
     final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+    lastDocument = snapshot.docs.last;
 
     List<Article> newArticles =
     snapshot.docs.map((doc) => Article.fromJson(doc)).toList();

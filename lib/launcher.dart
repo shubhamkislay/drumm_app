@@ -151,7 +151,7 @@ class _LauncherPageState extends State<LauncherPage>
                 child: Container(
                   height: 60,
                   padding: EdgeInsets.symmetric(horizontal: 0,),
-                  margin: EdgeInsets.symmetric(horizontal: 14,),
+                  margin: EdgeInsets.symmetric(horizontal: 4,vertical: 4),
                   decoration: BoxDecoration(
                       color: COLOR_PRIMARY_DARK,
                       borderRadius: BorderRadius.circular(20),

@@ -573,18 +573,17 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    super.initState();
     _checkOnboardingStatus();
+    super.initState();
   }
 
   void _checkOnboardingStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("username", "sky");
     //prefs.remove('isOnboarded');
-    bool isOnboarded = prefs.getBool('isOnboarded') ?? false;
     setState(() {
-      _isOnboarded = isOnboarded;
+      _isOnboarded = prefs.getBool('isOnboarded') ?? false;
     });
+
   }
 
   @override

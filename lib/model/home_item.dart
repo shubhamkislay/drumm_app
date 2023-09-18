@@ -14,11 +14,13 @@ import 'article.dart';
 class HomeItem extends StatefulWidget {
   Article article;
   bool isContainerVisible = false;
+  VoidCallback undo;
   Function(Article) updateList;
   Function(Article) openArticle;
   HomeItem(
       {Key? key,
       required this.article,
+        required this.undo,
       required this.isContainerVisible,
       required this.updateList,
       required this.openArticle})
@@ -30,7 +32,7 @@ class HomeItem extends StatefulWidget {
 
 class _HomeItemState extends State<HomeItem> {
   double fontSize = 10;
-  Color iconBGColor = Colors.grey.shade900;
+  Color iconBGColor = Colors.grey.shade900;//COLOR_PRIMARY_DARK;
   double iconHeight = 64;
   double sizedBoxedHeight = 12;
   double curve = 20;
@@ -43,32 +45,50 @@ class _HomeItemState extends State<HomeItem> {
       ),
       child: Container(
         decoration: BoxDecoration(
-            color: COLOR_PRIMARY_DARK,
+            color: Colors.black,//COLOR_PRIMARY_DARK,
             borderRadius: BorderRadius.circular(curve),
             border: Border.all(color: Colors.grey.shade800, width: 1)),
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(curve),
-                  topRight: Radius.circular(curve),
-                ),
-                child: CachedNetworkImage(
-                  imageUrl: widget.article.imageUrl ?? "",
-                  filterQuality: FilterQuality.low,
-                  placeholder: (context, imageUrl) {
-                    return SizedBox(
-                      height: 150,
-                    );
-                  },
-                  errorWidget: (context, url, error) {
-                    return Image.asset("images/drumm_logo_main.png",height: 250,width: double.infinity,fit: BoxFit.cover,);
-                  },
-                  fit: BoxFit.fitWidth,
-                ),
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(curve),
+                      topRight: Radius.circular(curve),
+                    ),
+                    child: CachedNetworkImage(
+                      imageUrl: widget.article.imageUrl ?? "",
+                      filterQuality: FilterQuality.low,
+                      placeholder: (context, imageUrl) {
+                        String imageUrl = widget.article.imageUrl ??"";
+                        return Container(
+                          height: (imageUrl.length < 1) ? 0:150 ,
+                          color: Colors.transparent,
+                          width: double.infinity,
+                        );
+                      },
+                      errorWidget: (context, url, error) {
+                        return Container();
+                      },
+                      fit: BoxFit.fitWidth,
+                    ),
 
+                  ),
+                  GestureDetector(
+                    onTap: widget.undo,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade700.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(48),
+                      ),
+                      margin: EdgeInsets.all(8),
+                      padding: EdgeInsets.all(6),
+                        child: Icon(Icons.undo_rounded,size: 28,)),
+                  )
+                ],
               ),
               GestureDetector(
                 onTap: () {

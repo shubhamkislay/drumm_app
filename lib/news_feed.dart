@@ -13,7 +13,9 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'custom/rounded_button.dart';
 import 'jam_room_page.dart';
@@ -34,14 +36,14 @@ class NewsFeed extends StatefulWidget {
 
 class _NewsFeedState extends State<NewsFeed> {
   List<Article> articles = [];
-  final CardSwiperController controller = CardSwiperController();
+  late CardSwiperController? controller;
   List<MultiSelectCard<dynamic>> mulList = [];
   String selectedCategory = "All";
   List<dynamic> mAllSelectedItems = [];
   late MultiSelectContainer multiSelectContainer;
-  DocumentSnapshot<Map<String, dynamic>>? _lastDocument = null;
   List<MultiSelectCard<dynamic>> bandsCards = [];
   Drummer drummer = Drummer();
+  double horizontalPadding = 8;
 
   bool loadAnimation = false;
 
@@ -51,13 +53,14 @@ class _NewsFeedState extends State<NewsFeed> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
+        bottom: false,
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.only(bottom: 4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 16),
+                padding:  EdgeInsets.symmetric(vertical: 2,horizontal: horizontalPadding),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -73,7 +76,7 @@ class _NewsFeedState extends State<NewsFeed> {
                           ));
                     },
                     child: SizedBox(
-                      height: 48,
+                      height: 42,
                       child: Column(
                         children: [
                           GestureDetector(
@@ -91,8 +94,8 @@ class _NewsFeedState extends State<NewsFeed> {
                                     borderRadius: BorderRadius.circular(24),
                                   gradient: LinearGradient(
                                     colors: [
-                                      Colors.blue,
-                                      Colors.cyan
+                                      Colors.grey.shade800,
+                                      Colors.grey.shade800
                                     ]
                                   )
                                 ),
@@ -101,7 +104,7 @@ class _NewsFeedState extends State<NewsFeed> {
                                         borderRadius: BorderRadius.circular(24),
                                         color: Colors.grey.shade900,
                                     ),
-                                    child: Icon(Icons.language,size: 42))),
+                                    child: Icon(Icons.language,size: 36))),
                           ),
                         if(false)  SizedBox(height: 2,),
                           if(false)  Flexible(child: AutoSizeText("Live",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.red),)),
@@ -133,7 +136,7 @@ class _NewsFeedState extends State<NewsFeed> {
                             ));
                       },
                       child: Container(
-                        width: 48,
+                        width: 42,
                           padding: EdgeInsets.all(1),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
@@ -148,30 +151,30 @@ class _NewsFeedState extends State<NewsFeed> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(17),
                               child: CachedNetworkImage(
-                                  width: 42,
-                                  height: 42,
+                                  width: 36,
+                                  height: 36,
                                   imageUrl: drummer.imageUrl ?? "",
                                   fit: BoxFit.cover),
                             ),
-                          ):RoundedButton(height: 36,padding: 6,assetPath: "images/user_profile_active.png",color: Colors.white, bgColor: Colors.grey.shade900, onPressed: (){})),
+                          ):RoundedButton(height: 30,padding: 6,assetPath: "images/user_profile_active.png",color: Colors.white, bgColor: Colors.grey.shade900, onPressed: (){})),
                     ),
                   ],
                 ),
               ),
               if (bandsCards.length > 0)
                 SizedBox(
-                  height: 16,
+                  height: 4,
                 ),
               if (bandsCards.length > 0)
                 Container(
                     padding: EdgeInsets.only(
-                      left: 18,
-                      right: 18,
+                      left: horizontalPadding,
+                      right: horizontalPadding,
                     ),
                     height: 50,
                     child: multiSelectContainer),
               SizedBox(
-                height: 16,
+                height: 4,
               ),
               if (articles.length < 1 || loadAnimation)
                 Expanded(
@@ -180,15 +183,19 @@ class _NewsFeedState extends State<NewsFeed> {
               if (articles.length > 0)
                 Expanded(
                   child: CardSwiper(
-                    // controller: controller,
+                    controller: controller,
                     cardsCount: articles.length,
-                    numberOfCardsDisplayed: 1, //(articles.length>1)?2:1,
+                    duration: Duration(milliseconds: 300),
+                    maxAngle: 60,
+                    scale: 0.85,
+                    numberOfCardsDisplayed: (articles.length>1)?2:1,
                     isVerticalSwipingEnabled: false,
                     onEnd: () {
                       print("Ended swipes");
                       setState(() {
                         //loadAnimation = true;
                         articles.clear();
+                        controller = CardSwiperController();
                       });
 
                       if (selectedBandID == "All")
@@ -200,7 +207,7 @@ class _NewsFeedState extends State<NewsFeed> {
                     onSwipe: _onSwipe,
                     isLoop: false,
                     onUndo: _onUndo,
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                     cardBuilder: (context, index) {
                       print("Index of element $index");
                       if (index >= 0)
@@ -210,7 +217,7 @@ class _NewsFeedState extends State<NewsFeed> {
                           openArticle: (article) {
                             openArticlePage(article, index);
                           },
-                          updateList: (article) {},
+                          updateList: (article) {}, undo: () { controller?.undo(); },
                         );
                     },
                   ),
@@ -221,25 +228,34 @@ class _NewsFeedState extends State<NewsFeed> {
       ),
     );
   }
+  @override
+  void dispose() {
+    if(controller!=null)
+      controller?.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    setOnboarded();
+    FirebaseDBOperations.lastDocument = null;
+    controller = CardSwiperController();
     getArticles();
     getBandsCards();
     getCurrentDrummer();
   }
 
+
   void getBandsCards() async {
     List<Band> bandList = await FirebaseDBOperations.getBandByUser();
-    FirebaseDBOperations.lastDocument = null;
     Band allBands = Band();
     allBands.name = "All";
     allBands.bandId = "All";
     bandList.insert(0, allBands);
     bandList.forEach((element) {
-      if (element.bandId == "All")
+      if (element.bandId == "All") {
         mulList.add(
           MultiSelectCard(
             value: element,
@@ -247,10 +263,10 @@ class _NewsFeedState extends State<NewsFeed> {
             child: Row(
               children: [
                 SizedBox(
-                  height: 36,
-                  width: 36,
+                  height: 28,
+                  width: 28,
                   child: Padding(
-                    padding: const EdgeInsets.all(3.0),
+                    padding: const EdgeInsets.all(1.0),
                     child: Image.asset(
                       "images/drumm_logo.png",
                       color: Colors.white,
@@ -268,15 +284,15 @@ class _NewsFeedState extends State<NewsFeed> {
             ),
           ),
         );
-      else
+      } else
         mulList.add(
           MultiSelectCard(
             value: element,
             child: Row(
               children: [
                 SizedBox(
-                  height: 36,
-                  width: 36,
+                  height: 28,
+                  width: 28,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: CachedNetworkImage(
@@ -318,14 +334,14 @@ class _NewsFeedState extends State<NewsFeed> {
             child: Icon(
               Icons.check,
               color: Colors.white,
-              size: 20,
+              size: 14,
             ),
           ),
           disabledSuffix: const Padding(
             padding: EdgeInsets.only(left: 1),
             child: Icon(
               Icons.do_disturb_alt_sharp,
-              size: 20,
+              size: 14,
             ),
           )),
       controller: MultiSelectController(
@@ -360,9 +376,10 @@ class _NewsFeedState extends State<NewsFeed> {
         ),
       ),
       onChange: (allSelectedItems, selectedItem) {
+        FirebaseDBOperations.lastDocument = null;
+        controller = CardSwiperController();
         setState(() {
           //selectedCategory = selectedItem;
-          FirebaseDBOperations.lastDocument = null;
           Band selectedBand = selectedItem;
           print("Selected Band ID: ${selectedBand.bandId}");
 
@@ -374,7 +391,7 @@ class _NewsFeedState extends State<NewsFeed> {
         });
       },
       singleSelectedItem: true,
-      itemsPadding: EdgeInsets.all(2),
+      itemsPadding: EdgeInsets.all(0),
     );
   }
 
@@ -410,11 +427,13 @@ class _NewsFeedState extends State<NewsFeed> {
   ) {
     cleanCache();
     if (direction == CardSwiperDirection.left) {
+      Vibrate.feedback(FeedbackType.selection);
       return true;
     }
 
     if (ConnectToChannel.channelID == null ||
         ConnectToChannel.channelID == "") {
+      Vibrate.feedback(FeedbackType.heavy);
       joinOpenDrumm(articles.elementAt(previousIndex));
       return true;
     } else {
@@ -558,5 +577,10 @@ class _NewsFeedState extends State<NewsFeed> {
 
   void cleanCache() async {
     await DefaultCacheManager().emptyCache();
+  }
+
+  void setOnboarded() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isOnboarded', true);
   }
 }

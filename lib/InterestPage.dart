@@ -298,8 +298,8 @@ class _InterestsPageState extends State<InterestsPage> {
   }
 
   void _onboardingComplete() async {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // await prefs.setBool('isOnboarded', true);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isOnboarded', true);
     // await prefs.setStringList('interestList', interestList);
     joinBand();
     Navigator.pushReplacement(
