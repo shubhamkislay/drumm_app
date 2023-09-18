@@ -29,7 +29,7 @@ with AutomaticKeepAliveClientMixin<BandSearchPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: COLOR_PRIMARY_DARK,
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
           if(!loaded)

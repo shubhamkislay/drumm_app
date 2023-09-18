@@ -1,6 +1,8 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/custom/helper/connect_channel.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
+import 'package:drumm_app/live_drumms.dart';
 import 'package:drumm_app/model/band.dart';
 import 'package:drumm_app/model/drummer_image_card.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
@@ -56,12 +58,52 @@ class _NewsFeedState extends State<NewsFeed> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                  SizedBox(
-                    width: 36,
-                    child: SpinKitPulsingGrid(
-                    color: Colors.blue,
-                    size: 32.0,
-                ),
+                  GestureDetector(
+                    onTap: (){
+                      print("Tapped on live drumm");
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                LiveDrumms(),
+                          ));
+                    },
+                    child: SizedBox(
+                      height: 48,
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        LiveDrumms(),
+                                  ));
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(24),
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.blue,
+                                      Colors.cyan
+                                    ]
+                                  )
+                                ),
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(24),
+                                        color: Colors.grey.shade900,
+                                    ),
+                                    child: Icon(Icons.language,size: 42))),
+                          ),
+                        if(false)  SizedBox(height: 2,),
+                          if(false)  Flexible(child: AutoSizeText("Live",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.red),)),
+                        ],
+                      ),
+                    ),
                   ),
                     Expanded(
                       child: Text(
@@ -87,23 +129,23 @@ class _NewsFeedState extends State<NewsFeed> {
                             ));
                       },
                       child: Container(
-                        width: 36,
+                        width: 48,
                           padding: EdgeInsets.all(1),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(20),
                             color: Colors.grey.shade800
                           ),
                           child: (drummer.imageUrl!=null)?Container(
                             padding: EdgeInsets.all(2),
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(14),
+                                borderRadius: BorderRadius.circular(19),
                                 color: Colors.black
                             ),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(17),
                               child: CachedNetworkImage(
-                                  width: 32,
-                                  height: 32,
+                                  width: 42,
+                                  height: 42,
                                   imageUrl: drummer.imageUrl ?? "",
                                   fit: BoxFit.cover),
                             ),
@@ -286,7 +328,9 @@ class _NewsFeedState extends State<NewsFeed> {
             border: Border.all(color: Color(0xff2f2f2f)),
             borderRadius: BorderRadius.circular(20)),
         selectedDecoration: BoxDecoration(
-            gradient: LinearGradient(colors: [Colors.blue, Colors.blue]),
+            gradient: LinearGradient(colors: [
+              Colors.blue,
+              Colors.cyan]),
             border: Border.all(color: Colors.blue[700]!),
             borderRadius: BorderRadius.circular(20)),
         disabledDecoration: BoxDecoration(
