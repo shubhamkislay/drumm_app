@@ -58,7 +58,7 @@ class _LauncherPageState extends State<LauncherPage>
 
   Color disableColor = Color(0xff4d4d4d); //Colors.grey.shade800;
 
-  double tabsWidthDivision = 6; //Value will be 10 for Wave mode
+  double tabsWidthDivision = 4; //Value will be 10 for Wave mode
   late AnimationController rotationAnimcontroller;
 
   bool userConnected = false;
@@ -114,7 +114,7 @@ class _LauncherPageState extends State<LauncherPage>
                         analytics: widget.analytics,
                         themeManager: widget.themeManager,
                       ),
-                    UserProfilePage()
+                   if(false) UserProfilePage()
                     // SwipePage(),
                   ],
                   controller: tabController,
@@ -150,15 +150,12 @@ class _LauncherPageState extends State<LauncherPage>
                 },
                 child: Container(
                   height: 60,
-                  padding: EdgeInsets.symmetric(vertical: 0,),
+                  padding: EdgeInsets.symmetric(horizontal: 0,),
+                  margin: EdgeInsets.symmetric(horizontal: 14,),
                   decoration: BoxDecoration(
                       color: COLOR_PRIMARY_DARK,
-                      border: const Border(
-                        bottom: BorderSide(
-                          color: Colors.white12,
-                          width: 5,
-                        ),
-                      )),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.grey.shade800, width: 1)),
                   child: Row(
                     children: [
                       Padding(
@@ -204,22 +201,26 @@ class _LauncherPageState extends State<LauncherPage>
                           });
                         },
                       ),
-                      RoundedButton(
-                        height: 46,
-                        padding: 12,
-                        assetPath: "images/logout.png",
-                        color: Colors.white,
-                        bgColor: Colors.red,
-                        onPressed: () {
+                      GestureDetector(
+                        onTap: (){
                           ConnectToChannel.leaveChannel();
                           FlutterCallkitIncoming.endAllCalls();
                         },
-                      ),
+                        child: Container(
+                          margin: EdgeInsets.all(5),
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(18),),
+                          child: Transform.rotate(angle: 180 * 3.1415927 / 180,
+                          child: Image.asset("images/logout.png",fit: BoxFit.contain,color: Colors.white,)),
+                        ),
+                      )
                     ],
                   ),
                 ),
               ),
-            SizedBox(height: 80), //Wave Mode it was 88
+            SizedBox(height: 50), //Wave Mode it was 88
           ],
         ),
         child: SafeArea(
@@ -343,7 +344,7 @@ class _LauncherPageState extends State<LauncherPage>
                           : "images/team_inactive.png",
                       height: 40),
                 ),
-                Container(
+               if(false) Container(
                   height: 26,
                   width: MediaQuery.of(context).size.width / tabsWidthDivision,
                   child: Transform(
@@ -417,7 +418,7 @@ class _LauncherPageState extends State<LauncherPage>
     super.initState();
     currentPage = 0;
     tabController = TabController(
-        length: 4, vsync: this, animationDuration: Duration(milliseconds: 0));
+        length: 3, vsync: this, animationDuration: Duration(milliseconds: 0));
 
     FirebaseDBOperations.searchArticles("");
 

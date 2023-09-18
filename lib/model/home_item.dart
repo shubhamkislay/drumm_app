@@ -16,7 +16,13 @@ class HomeItem extends StatefulWidget {
   bool isContainerVisible = false;
   Function(Article) updateList;
   Function(Article) openArticle;
-  HomeItem({Key? key, required this.article,required this.isContainerVisible, required this.updateList, required this.openArticle}) : super(key: key);
+  HomeItem(
+      {Key? key,
+      required this.article,
+      required this.isContainerVisible,
+      required this.updateList,
+      required this.openArticle})
+      : super(key: key);
 
   @override
   State<HomeItem> createState() => _HomeItemState();
@@ -33,17 +39,13 @@ class _HomeItemState extends State<HomeItem> {
     return ClipRRect(
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(curve),
-        topRight:  Radius.circular(curve),
+        topRight: Radius.circular(curve),
       ),
       child: Container(
         decoration: BoxDecoration(
             color: COLOR_PRIMARY_DARK,
             borderRadius: BorderRadius.circular(curve),
-            border: Border.all(
-                color: Colors.grey.shade800,
-                width: 1
-            )
-        ),
+            border: Border.all(color: Colors.grey.shade800, width: 1)),
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
@@ -51,18 +53,21 @@ class _HomeItemState extends State<HomeItem> {
               ClipRRect(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(curve),
-                  topRight:  Radius.circular(curve),
+                  topRight: Radius.circular(curve),
                 ),
                 child: CachedNetworkImage(
-                  imageUrl: widget.article.imageUrl??"",
+                  imageUrl: widget.article.imageUrl ?? "",
                   filterQuality: FilterQuality.low,
-                  placeholder:(context, imageUrl){
-                    return Container(height: 200,color: Colors.grey.shade900,);
+                  placeholder: (context, imageUrl) {
+                    return SizedBox(
+                      height: 150,
+                    );
                   },
-                  errorWidget: (context, url, error){
-                    return Container(height: 200,color: Colors.grey.shade900,);
+                  errorWidget: (context, url, error) {
+                    return Image.asset("images/drumm_logo_main.png",height: 250,width: double.infinity,fit: BoxFit.cover,);
                   },
-                  fit: BoxFit.fitWidth,),
+                  fit: BoxFit.fitWidth,
+                ),
               ),
               GestureDetector(
                 onTap: () {
@@ -73,8 +78,7 @@ class _HomeItemState extends State<HomeItem> {
                 child: Container(
                   padding: EdgeInsets.all(16),
                   child: Column(
-                    crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                           "${widget.article.source} | ${widget.article.category}",
@@ -89,9 +93,8 @@ class _HomeItemState extends State<HomeItem> {
                         children: [
                           Container(
                             child: AutoSizeText(
-                              RemoveDuplicate
-                                  .removeTitleSource(widget.article.title ??
-                                  ""),
+                              RemoveDuplicate.removeTitleSource(
+                                  widget.article.title ?? ""),
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                 color: Colors.white,
@@ -105,16 +108,17 @@ class _HomeItemState extends State<HomeItem> {
                         height: 6,
                       ),
                       InstagramDateTimeWidget(
-                          publishedAt: widget.article.publishedAt
-                              .toString() ??
-                              ""),
+                          publishedAt:
+                              widget.article.publishedAt.toString() ?? ""),
                       SizedBox(
                         height: 12,
                       ),
                       Text(
-                        (widget.article.description != null)?
-                        "${widget.article.description}":(widget.article.content != null)?
-                        "${widget.article.content}":"",
+                        (widget.article.description != null)
+                            ? "${widget.article.description}"
+                            : (widget.article.content != null)
+                                ? "${widget.article.content}"
+                                : "",
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 16,
@@ -143,19 +147,17 @@ class _HomeItemState extends State<HomeItem> {
                     color: Colors.white,
                     bgColor: iconBGColor,
                     onPressed: () {
-                      AISummary.showBottomSheet(
-                          context,
-                          widget.article ?? Article(),
-                          Colors.transparent);
+                      AISummary.showBottomSheet(context,
+                          widget.article ?? Article(), Colors.transparent);
                     },
                     assetPath: 'images/sparkles.png',
                   ),
-                  SizedBox(height: 4,),
+                  SizedBox(
+                    height: 4,
+                  ),
                   Text(
                     "Summary",
-                    style: TextStyle(
-                        fontSize: fontSize,
-                        color: Colors.white),
+                    style: TextStyle(fontSize: fontSize, color: Colors.white),
                   ),
                 ],
               ),
@@ -172,56 +174,48 @@ class _HomeItemState extends State<HomeItem> {
                         RoundedButton(
                           padding: 16,
                           height: iconHeight,
-                          color:
-                          widget.article.liked ?? false
+                          color: widget.article.liked ?? false
                               ? Colors.red
                               : Colors.white,
                           bgColor: iconBGColor,
                           hoverColor: Colors.redAccent,
                           onPressed: () {
                             setState(() {
-                              if (widget.article.liked ??
-                                  false) {
+                              if (widget.article.liked ?? false) {
                                 FirebaseDBOperations.removeLike(
                                     widget.article.articleId);
-                                widget.article.liked =
-                                false;
-                                int currentLikes = widget.article.likes ??
-                                    1;
+                                widget.article.liked = false;
+                                int currentLikes = widget.article.likes ?? 1;
                                 currentLikes -= 1;
-                                widget.article.likes =
-                                    currentLikes;
+                                widget.article.likes = currentLikes;
                                 widget.updateList(widget.article);
                                 //  _articlesController.add(articles);
                               } else {
                                 FirebaseDBOperations.updateLike(
                                     widget.article.articleId);
 
-                                widget.article.liked =
-                                true;
-                                int currentLikes = widget.article.likes ??
-                                    0;
+                                widget.article.liked = true;
+                                int currentLikes = widget.article.likes ?? 0;
                                 currentLikes += 1;
-                                widget.article.likes =
-                                    currentLikes;
+                                widget.article.likes = currentLikes;
                                 widget.updateList(widget.article);
                                 //_articlesController.add(articles);
-
 
                                 Vibrate.feedback(FeedbackType.impact);
                               }
                             });
                           },
-                          assetPath:
-                          widget.article.liked ?? false
+                          assetPath: widget.article.liked ?? false
                               ? 'images/liked.png'
                               : 'images/heart.png',
                         ),
-                        SizedBox(height: 4,),
+                        SizedBox(
+                          height: 4,
+                        ),
                         Text(
-                          ((widget.article.likes ??
-                              0) >
-                              0) ?"${widget.article.likes}":"Likes",
+                          ((widget.article.likes ?? 0) > 0)
+                              ? "${widget.article.likes}"
+                              : "Likes",
                           style: TextStyle(fontSize: fontSize),
                         ),
                       ],
@@ -253,8 +247,7 @@ class _HomeItemState extends State<HomeItem> {
                                     borderRadius: BorderRadius.vertical(
                                         top: Radius.circular(0.0)),
                                     child: ArticleJamPage(
-                                      article:
-                                      widget.article,
+                                      article: widget.article,
                                     ),
                                   ),
                                 );
@@ -268,14 +261,13 @@ class _HomeItemState extends State<HomeItem> {
                         ),
                         Text(
                           "Drumms",
-                          style: TextStyle(fontSize: fontSize),
+                          style: TextStyle(fontSize: fontSize,),
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-
               SizedBox(
                 height: 50,
               )
@@ -285,4 +277,5 @@ class _HomeItemState extends State<HomeItem> {
       ),
     );
   }
+
 }

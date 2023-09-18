@@ -147,6 +147,11 @@ flutter:
     - images/drumm_logo_main.png
   #   - images/a_dot_ham.jpeg
 
+  fonts:
+    - family: alata
+      fonts:
+        - asset: fonts/Poppins-Medium.ttf
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
