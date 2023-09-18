@@ -84,6 +84,7 @@ dependencies:
   firebase_crashlytics: ^3.3.5
   lottie: ^2.3.2
   flutter_multi_select_items: ^0.4.2
+  flutter_cache_manager: ^3.3.1
 
 dev_dependencies:
   flutter_test:

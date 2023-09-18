@@ -8,6 +8,7 @@ import 'package:drumm_app/model/drummer_image_card.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -396,6 +397,7 @@ class _NewsFeedState extends State<NewsFeed> {
     int? currentIndex,
     CardSwiperDirection direction,
   ) {
+    cleanCache();
     if (direction == CardSwiperDirection.left) {
       return true;
     }
@@ -541,5 +543,9 @@ class _NewsFeedState extends State<NewsFeed> {
     setState(() {
       drummer = curDrummer;
     });
+  }
+
+  void cleanCache() async {
+    await DefaultCacheManager().emptyCache();
   }
 }

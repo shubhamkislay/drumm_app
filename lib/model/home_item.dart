@@ -68,6 +68,7 @@ class _HomeItemState extends State<HomeItem> {
                   },
                   fit: BoxFit.fitWidth,
                 ),
+
               ),
               GestureDetector(
                 onTap: () {
