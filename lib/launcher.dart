@@ -220,7 +220,7 @@ class _LauncherPageState extends State<LauncherPage>
                   ),
                 ),
               ),
-            SizedBox(height: 50), //Wave Mode it was 88
+            SizedBox(height: 80), //Wave Mode it was 88
           ],
         ),
         child: SafeArea(

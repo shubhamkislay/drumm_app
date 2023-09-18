@@ -18,7 +18,7 @@ class _SkeletonBandState extends State<SkeletonBand> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+           if(false) Container(
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Stack(
@@ -34,7 +34,7 @@ class _SkeletonBandState extends State<SkeletonBand> {
                 ],
               ),
             ),
-            Container(
+           if(false) Container(
               height: 175,
               padding: EdgeInsets.only(left: 12),
               child: SingleChildScrollView(

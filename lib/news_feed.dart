@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/custom/helper/connect_channel.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/live_drumms.dart';
@@ -38,11 +39,13 @@ class _NewsFeedState extends State<NewsFeed> {
   String selectedCategory = "All";
   List<dynamic> mAllSelectedItems = [];
   late MultiSelectContainer multiSelectContainer;
-
+  DocumentSnapshot<Map<String, dynamic>>? _lastDocument = null;
   List<MultiSelectCard<dynamic>> bandsCards = [];
   Drummer drummer = Drummer();
 
   bool loadAnimation = false;
+
+  String selectedBandID = "All";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -187,6 +190,11 @@ class _NewsFeedState extends State<NewsFeed> {
                         //loadAnimation = true;
                         articles.clear();
                       });
+
+                      if (selectedBandID == "All")
+                        getArticles();
+                      else
+                        getArticlesForBand(selectedBandID);
                     },
                     threshold: 50,
                     onSwipe: _onSwipe,
@@ -225,7 +233,7 @@ class _NewsFeedState extends State<NewsFeed> {
 
   void getBandsCards() async {
     List<Band> bandList = await FirebaseDBOperations.getBandByUser();
-
+    FirebaseDBOperations.lastDocument = null;
     Band allBands = Band();
     allBands.name = "All";
     allBands.bandId = "All";
@@ -327,18 +335,18 @@ class _NewsFeedState extends State<NewsFeed> {
         decoration: BoxDecoration(
             color: Colors.grey.shade900,
             border: Border.all(color: Color(0xff2f2f2f)),
-            borderRadius: BorderRadius.circular(20)),
+            borderRadius: BorderRadius.circular(18)),
         selectedDecoration: BoxDecoration(
             gradient: LinearGradient(colors: [
               Colors.blue,
               Colors.cyan]),
             border: Border.all(color: Colors.blue[700]!),
-            borderRadius: BorderRadius.circular(20)),
+            borderRadius: BorderRadius.circular(18)),
         disabledDecoration: BoxDecoration(
             gradient: LinearGradient(colors: [Colors.blue, Colors.blue]),
             color: Color(0xff2f2f2f),
             border: Border.all(color: Color(0xff2f2f2f)),
-            borderRadius: BorderRadius.circular(20)),
+            borderRadius: BorderRadius.circular(18)),
       ),
       items: bandsCards,
       textStyles: MultiSelectTextStyles(
@@ -354,9 +362,11 @@ class _NewsFeedState extends State<NewsFeed> {
       onChange: (allSelectedItems, selectedItem) {
         setState(() {
           //selectedCategory = selectedItem;
+          FirebaseDBOperations.lastDocument = null;
           Band selectedBand = selectedItem;
           print("Selected Band ID: ${selectedBand.bandId}");
-          String selectedBandID = selectedBand.bandId ?? "All";
+
+          selectedBandID = selectedBand.bandId ?? "All";
           if (selectedBandID == "All")
             getArticles();
           else
@@ -364,7 +374,7 @@ class _NewsFeedState extends State<NewsFeed> {
         });
       },
       singleSelectedItem: true,
-      itemsPadding: EdgeInsets.fromLTRB(4, 4, 4, 4),
+      itemsPadding: EdgeInsets.all(2),
     );
   }
 
@@ -384,6 +394,7 @@ class _NewsFeedState extends State<NewsFeed> {
   }
 
   void getArticles() async {
+
     List<Article> articleFetched =
         await FirebaseDBOperations.getArticlesByBands();
     setState(() {

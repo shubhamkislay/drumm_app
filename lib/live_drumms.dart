@@ -24,12 +24,12 @@ class LiveDrumms extends StatefulWidget {
 
 class LiveDrummsState extends State<LiveDrumms>
     with AutomaticKeepAliveClientMixin<LiveDrumms>{
-  List<LiveDrummCard> drummCards = [];
-  List<LiveDrummCard> userDrummCards = [];
+  List<DrummCard> drummCards = [];
+  List<DrummCard> userDrummCards = [];
   List<Band> bands = [];
   List<Jam> drumms = [];
   List<Jam> openDrumms = [];
-  List<LiveDrummCard> openDrummCards = [];
+  List<DrummCard> openDrummCards = [];
   bool loaded = false;
 
   @override
@@ -74,8 +74,8 @@ class LiveDrummsState extends State<LiveDrumms>
                                     borderRadius: BorderRadius.circular(24),
                                     gradient: LinearGradient(
                                         colors: [
-                                          Colors.blue,
-                                          Colors.cyan
+                                          Colors.grey.shade900,
+                                          Colors.grey.shade900
                                         ]
                                     )
                                 ),
@@ -208,7 +208,7 @@ class LiveDrummsState extends State<LiveDrumms>
     List<Jam> broadcastJams = await FirebaseDBOperations.getBroadcastJams();
     drumms = broadcastJams + fetchedDrumms;
     userDrummCards = drumms.map((jam) {
-      return LiveDrummCard(
+      return DrummCard(
         jam,
       );
     }).toList();
@@ -224,7 +224,7 @@ class LiveDrummsState extends State<LiveDrumms>
     await FirebaseDBOperations.getOpenDrummsFromBands(); //getUserBands();
     openDrumms =  fetchedDrumms;
     openDrummCards = openDrumms.map((jam) {
-      return LiveDrummCard(
+      return DrummCard(
         jam,
         open: true,
       );

@@ -31,6 +31,8 @@ class FirebaseDBOperations {
 
   static List<Article> exploreArticles = [];
 
+  static DocumentSnapshot<Map<String, dynamic>>? lastDocument;
+
   static Future<List<Article>> searchArticles(String query) async {
     AlgoliaQuerySnapshot getArticles =
         await algolia.instance.index('articles').query(query).getObjects();
@@ -812,7 +814,7 @@ class FirebaseDBOperations {
     if (fetchedBands.length < 1) bandCategoryList.add("general");
 
     //print("Fetched interesets: ${userInterests.toString()}");
-    print("Fetched categories: ${bandCategoryList.toString()}");
+    //print("Fetched categories: ${bandCategoryList.toString()}");
 
     Query<Map<String, dynamic>> query = FirebaseFirestore.instance
         .collection('articles')
@@ -821,11 +823,14 @@ class FirebaseDBOperations {
         .where('source', isNotEqualTo: null)
         .orderBy("publishedAt", descending: true)
         .limit(25);
-
+    if (lastDocument != null) {
+      query = query.startAfterDocument(lastDocument!);
+    }
     final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
 
     List<Article> newArticles =
     snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+    lastDocument = snapshot.docs.last;
 
     return newArticles;
   }

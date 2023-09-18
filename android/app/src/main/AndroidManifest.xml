@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="app.drumm.drumm_app">
    <application
-        android:label="drumm_app"
+        android:label="drumm"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

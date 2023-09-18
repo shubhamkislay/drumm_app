@@ -34,23 +34,19 @@ class _DrummCardState extends State<DrummCard> {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(8),
       child: Container(
         width: 100,
         height: 200,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            end: Alignment.bottomLeft,
-              begin: Alignment.topRight,
             colors: [
-              Colors.indigoAccent,
-              Colors.pinkAccent,
-              Colors.redAccent,
-              Colors.red.shade300
+              Colors.grey.shade900,
+              Colors.grey.shade900
             ]
           )
         ),
-        padding: EdgeInsets.all(3),
+        padding: EdgeInsets.all(2),
         child: GestureDetector(
           onTap: () {
             //Navigator.pop(context);
@@ -84,9 +80,9 @@ class _DrummCardState extends State<DrummCard> {
             );
           },
           child: Container(
-            padding: EdgeInsets.all(3),
+            padding: EdgeInsets.all(4),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(7),
               color: Colors.black,
             ),
             child: ClipRRect(
