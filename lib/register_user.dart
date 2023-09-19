@@ -347,6 +347,7 @@ class _RegisterUserState extends State<RegisterUser> {
     drummer.name = widget.name;
     drummer.email = widget.email;
     drummer.uid = uid;
+    drummer.rid = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     drummer.badges = 0;
     drummer.speaking = false;
 

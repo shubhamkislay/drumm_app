@@ -1,3 +1,4 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -15,7 +16,7 @@ import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/user_profile_page.dart';
 
 class DrummerJoinCard extends StatefulWidget {
-  String drummerId;
+  int drummerId;
 
   DrummerJoinCard(
       this.drummerId, {
@@ -87,7 +88,7 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
             ),
             Expanded(
               child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('users').doc(widget.drummerId).snapshots(),
+                stream: FirebaseFirestore.instance.collection('users').where('rid', isEqualTo: widget.drummerId).snapshots(),//.doc(widget.drummerId).snapshots(),
                   builder: (context,snapshot){
 
                 if (!snapshot.hasData) {
@@ -95,10 +96,10 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
                 }
 
                 //setState(() {
-                  drummer = Drummer.fromSnapshot(snapshot.data);
+                List<Drummer> drumm =
+                snapshot.data?.docs.map((doc) => Drummer.fromSnapshot(doc)).toList()??[];
+                  drummer = drumm.elementAt(0);
               //  });
-
-
                 return GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -164,13 +165,22 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
    // listenToJamState();
   }
 
-  void getDrummer(String? foundedBy) {
-    FirebaseDBOperations.getDrummer(foundedBy!).then((value) {
+  void getDrummer(int rid)  async{
+    // FirebaseDBOperations.getDrummer(foundedBy!).then((value) {
+    //   setState(() {
+    //     drummer = value;
+    //     print("is ${drummer.uid}  speaking ${drummer.speaking}");
+    //   });
+    // });
+
+    FirebaseFirestore.instance.collection('users').where('rid', isEqualTo: rid).get().then((value) {
       setState(() {
-        drummer = value;
+        drummer = Drummer.fromSnapshot(value);
         print("is ${drummer.uid}  speaking ${drummer.speaking}");
       });
     });
+
+
   }
 
   // void listenToJamState() {

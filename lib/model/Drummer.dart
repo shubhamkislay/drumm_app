@@ -10,6 +10,7 @@ class Drummer {
   String? jobTitle;
   String? organisation;
   int? followerCount = 0;
+  int? rid;
   int? followingCount = 0;
   bool speaking = false;
 
@@ -18,12 +19,13 @@ class Drummer {
   Map<String, dynamic> toJson() => {
         'token': token,
         'name': name,
+        'rid': rid,
         'email': email,
         'username': username,
         'bio': bio,
         'badges': badges,
         'uid': uid,
-    'speaking': speaking,
+        'speaking': speaking,
         'imageUrl': imageUrl,
         'jobTitle': jobTitle,
         'organisation': organisation,
@@ -35,6 +37,7 @@ class Drummer {
       : badges = snapshot.data()['badges'],
         token = snapshot.data()['token'],
         uid = snapshot.data()['uid'],
+        rid = snapshot.data()['rid'],
         name = snapshot.data()['name'],
         email = snapshot.data()['email'],
         speaking = snapshot.data()['speaking'],
@@ -51,6 +54,7 @@ class Drummer {
         uid = snapshot['uid'],
         name = snapshot['name'],
         email = snapshot['email'],
+        rid = snapshot['rid'],
         username = snapshot['username'],
         speaking = snapshot['speaking'],
         //badges = int.parse(snapshot['badges']),

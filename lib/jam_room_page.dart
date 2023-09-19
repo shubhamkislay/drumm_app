@@ -1,5 +1,7 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:expandable_text/expandable_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
@@ -15,6 +17,7 @@ import 'package:drumm_app/open_article_page.dart';
 import 'package:drumm_app/profile_page.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/user_profile_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'custom/rounded_button.dart';
 import 'model/Drummer.dart';
@@ -218,13 +221,17 @@ class _JamRoomPageState extends State<JamRoomPage> {
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       if (!userJoined)
-                      Lottie.asset('images/animation_loading.json',height: 400,fit:BoxFit.contain ,width: double.maxFinite),
+                        Lottie.asset('images/animation_loading.json',
+                            height: 400,
+                            fit: BoxFit.contain,
+                            width: double.maxFinite),
                       if (drummerCards.length > 0)
                         Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: GridView.count(
                             childAspectRatio: 0.85,
-                            crossAxisCount: 3,//(drummerCards.length > 4) ? 3 : 2, // Number of columns
+                            crossAxisCount:
+                                3, //(drummerCards.length > 4) ? 3 : 2, // Number of columns
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             padding: EdgeInsets.symmetric(horizontal: 4),
@@ -345,12 +352,32 @@ class _JamRoomPageState extends State<JamRoomPage> {
     super.initState();
 
     if (widget.jam.jamId != ConnectToChannel.jam?.jamId) {
-      ConnectToChannel.joinRoom(widget.jam, false, (joined, userID) {
-        print("$userID joinStatus $joined");
-        getLiveDetails();
-      }, widget.open);
-    } else
-      getLiveDetails();
+      ConnectToChannel.joinRoom(
+          widget.jam,
+          false,
+          (joined, userID) {
+            print("$userID joinStatus $joined");
+            // getLiveDetails();
+            addUserToRoom(0);
+          },
+          widget.open,
+          (val) {
+            print("Calling log from jam_room!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            setState(() {
+              // AnimatedSnackBar.material(val,
+              //         type: AnimatedSnackBarType.success,
+              //         mobileSnackBarPosition: MobileSnackBarPosition.top)
+              //     .show(context);
+            });
+          },
+          (userJoined) {
+            addUserToRoom(userJoined);
+          },
+          (userLeft) {
+            removeUserToRoom(userLeft);
+          });
+    } //else
+    // getLiveDetails();
 
     String startedBy = widget.jam.startedBy ?? "";
     if (startedBy.length > 0) getDrummer(startedBy);
@@ -365,6 +392,48 @@ class _JamRoomPageState extends State<JamRoomPage> {
       print("Article ID is null ${widget.jam.articleId}");
 
     listenToJamState();
+  }
+
+  void addUserToRoom(int rid) async{
+    if(rid==0) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      rid = await FirebaseDBOperations.getDrummer(
+          FirebaseAuth.instance.currentUser?.uid ?? prefs.getString('uid') ?? "")
+          .then((value) => value.rid ?? rid);
+    }
+    // AnimatedSnackBar.material("$rid Added to room",
+    //     type: AnimatedSnackBarType.success,
+    //     mobileSnackBarPosition: MobileSnackBarPosition.top)
+    //     .show(context);
+    List<DrummerJoinCard> dCards = drummerCards;
+    dCards.add(DrummerJoinCard(rid));
+    setState(() {
+     // drummerCards.clear();
+      userJoined = true;
+      drummerCards = dCards;
+    });
+
+  }
+  void removeUserToRoom(int rid) async{
+    drummerCards.where((element) {
+      if (element.drummerId == rid) {
+
+        // AnimatedSnackBar.material("$rid Removed from room",
+        //     type: AnimatedSnackBarType.success,
+        //     mobileSnackBarPosition: MobileSnackBarPosition.top)
+        //     .show(context);
+
+        List<DrummerJoinCard> dCards = drummerCards;
+        dCards.remove(element);
+
+        setState(() {
+         // drummerCards.clear();
+          drummerCards = dCards;
+        });
+        return true;
+      } else
+        return false;
+    });
   }
 
   void getLiveDetails() {

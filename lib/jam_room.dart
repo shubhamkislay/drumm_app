@@ -178,7 +178,9 @@ class _JamRoomState extends State<JamRoom> {
     ConnectToChannel.joinRoom(widget.jam,false, (joined, userID) {
       print("$userID joinStatus $joined");
       getLiveDetails();
-    },false);
+    },false,(val){
+
+    },(userJoined){},(userLeft){});
     else
       getLiveDetails();
   }
