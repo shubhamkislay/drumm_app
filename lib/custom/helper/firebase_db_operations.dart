@@ -128,7 +128,7 @@ class FirebaseDBOperations {
   static String getCurrentUserID() {
     final User? user = FirebaseAuth.instance.currentUser;
     final String userID = user?.uid ?? '';
-    print("CurrentUserID is $userID");
+  //  print("CurrentUserID is $userID");
     return userID;
   }
 

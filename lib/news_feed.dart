@@ -209,7 +209,7 @@ class _NewsFeedState extends State<NewsFeed> {
                     onUndo: _onUndo,
                     padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                     cardBuilder: (context, index) {
-                      print("Index of element $index");
+                     // print("Index of element $index");
                       if (index >= 0)
                         return HomeItem(
                           article: articles.elementAt(index),

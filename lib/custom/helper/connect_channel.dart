@@ -142,7 +142,6 @@ class ConnectToChannel {
       onUserMuteAudio: (RtcConnection connection, int remoteUid, bool muted) {
         //remote user mute status
         print("Remote user muted: ${remoteUid}");
-        remoteCallback("Remote user muted: ${remoteUid}");
       },
       onConnectionInterrupted: (RtcConnection connection) {
         if (!listenOnlyMode)
@@ -165,8 +164,6 @@ class ConnectToChannel {
           print(channelID);
           print("Local user uid:${connection.localUid} joined the channel");
 
-          remoteCallback(
-              "Local user uid:${connection.localUid} joined the channel");
           _isJoined = true;
           FirebaseDBOperations.addMemberToJam(jam?.jamId ?? "",
               FirebaseAuth.instance.currentUser?.uid ?? "", openJam);
@@ -183,7 +180,7 @@ class ConnectToChannel {
         }
 
         print("Remote user joined: ${remoteUid}");
-        remoteCallback("Remote user joined: ${remoteUid}");
+       // remoteCallback("Remote user joined: ${remoteUid}");
       },
       onUserOffline: (RtcConnection connection, int remoteUid,
           UserOfflineReasonType reason) {
@@ -195,12 +192,13 @@ class ConnectToChannel {
           joinCallback(false, remoteUid);
         }
 
-        print("Remote user offline: ${remoteUid}");
-        remoteCallback("Remote user offline: ${remoteUid}");
 
-        if (UserOfflineReasonType.userOfflineQuit == reason.name) {}
-
-        if (UserOfflineReasonType.userOfflineDropped == reason.name) {}
+        if(reason == UserOfflineReasonType.userOfflineDropped){
+          remoteCallback("Remote user dropped: ${remoteUid}");
+        }
+        if(reason == UserOfflineReasonType.userOfflineQuit){
+          remoteCallback("Remote user left: ${remoteUid}");
+        }
       },
       onLeaveChannel: (RtcConnection connection, RtcStats rtcStats) {
         if (!listenOnlyMode) {
@@ -245,9 +243,10 @@ class ConnectToChannel {
             _isJoined, ConnectToChannel.jam, openJam);
 
         for (AudioVolumeInfo audioVolumeInfo in speakers) {
-          print("Speaker info: ${audioVolumeInfo.uid}");
-          if (audioVolumeInfo.volume! > 50)
-            remoteCallback("Speaker ${audioVolumeInfo.uid} is talking");
+        //  print("Speaker info: ${audioVolumeInfo.uid}");
+          if (audioVolumeInfo.volume! > 50) {
+           // remoteCallback("Speaker ${audioVolumeInfo.uid} is talking");
+          }
         }
       },
     );

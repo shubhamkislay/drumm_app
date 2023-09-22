@@ -28,7 +28,7 @@ class DrummerJoinCard extends StatefulWidget {
 }
 
 class _DrummerJoinCardState extends State<DrummerJoinCard> {
-  Drummer drummer = Drummer();
+  Drummer drummUser = Drummer();
   @override
   Widget build(BuildContext context) {
 
@@ -36,71 +36,23 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
       color: COLOR_PRIMARY_DARK,
       child: Scaffold(
         backgroundColor: COLOR_PRIMARY_DARK,
-        body: Column(
-          children: [
-           if(false) Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => UserProfilePage(
-                          fromSearch: true,
-                          drummer: drummer,
-                        ),
-                      ));
-                },
-                child:  Container(
-                  padding: EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(44),
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomLeft,
-                        end: Alignment.topRight,
-                        colors: (drummer.speaking)? [
-                      Colors.redAccent,
-                      Colors.pinkAccent
-                    ] : [
-                          Colors.grey.withOpacity(0.5),
-                          Colors.blueGrey.withOpacity(0.5)
-                        ],
-                    )
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(44),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(40),
-                      child: CachedNetworkImage(
-                        width: double.maxFinite,
-                        height: double.maxFinite,
-                        errorWidget: (context,url,error){
-                          return Container();
-                        },
-                          imageUrl: drummer.imageUrl ?? "", fit: BoxFit.cover,fadeInCurve: Curves.easeIn,placeholder: (context, url) => Container(color: Colors.grey.shade900,),),
-                    ),
-                  ),
-                )
-              ),
-            ),
-            Expanded(
-              child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('users').where('rid', isEqualTo: widget.drummerId).snapshots(),//.doc(widget.drummerId).snapshots(),
-                  builder: (context,snapshot){
+        body: StreamBuilder(
+          stream: FirebaseFirestore.instance.collection('users').where('rid', isEqualTo: widget.drummerId).snapshots(),//.doc(widget.drummerId).snapshots(),
+            builder: (context,snapshot){
 
-                if (!snapshot.hasData) {
-                  return CircularProgressIndicator();
-                }
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator();
+          }
 
-                //setState(() {
-                List<Drummer> drumm =
-                snapshot.data?.docs.map((doc) => Drummer.fromSnapshot(doc)).toList()??[];
-                  drummer = drumm.elementAt(0);
-              //  });
-                return GestureDetector(
+          //setState(() {
+          List<Drummer> drumm =
+          snapshot.data?.docs.map((doc) => Drummer.fromSnapshot(doc)).toList()??[];
+          Drummer  drummer = drumm.elementAt(0);
+        //  });
+          return Column(
+            children: [
+              Expanded(
+                child: GestureDetector(
                     onTap: () {
                       Navigator.push(
                           context,
@@ -145,14 +97,13 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
                         ),
                       ),
                     )
-                );
-              }),
-            ),
-
-            SizedBox(height: 4,),
-            if(drummer.username!=null)Text("${drummer.username}",style: TextStyle(fontSize: 12),),
-          ],
-        ),
+                ),
+              ),
+              SizedBox(height: 4,),
+              if(drummer.username!=null)Text("${drummer.username}",style: TextStyle(fontSize: 12),),
+            ],
+          );
+        }),
       ),
     );
   }
@@ -161,7 +112,7 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getDrummer(widget.drummerId);
+   // getDrummer(widget.drummerId);
    // listenToJamState();
   }
 
@@ -175,8 +126,8 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
 
     FirebaseFirestore.instance.collection('users').where('rid', isEqualTo: rid).get().then((value) {
       setState(() {
-        drummer = Drummer.fromSnapshot(value);
-        print("is ${drummer.uid}  speaking ${drummer.speaking}");
+        drummUser = Drummer.fromSnapshot(value);
+        print("is ${drummUser.uid}  speaking ${drummUser.speaking}");
       });
     });
 

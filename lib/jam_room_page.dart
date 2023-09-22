@@ -351,7 +351,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
     // TODO: implement initState
     super.initState();
 
-    if (widget.jam.jamId != ConnectToChannel.jam?.jamId) {
+  //  if (widget.jam.jamId != ConnectToChannel.jam?.jamId) {
       ConnectToChannel.joinRoom(
           widget.jam,
           false,
@@ -364,10 +364,10 @@ class _JamRoomPageState extends State<JamRoomPage> {
           (val) {
             print("Calling log from jam_room!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             setState(() {
-              // AnimatedSnackBar.material(val,
-              //         type: AnimatedSnackBarType.success,
-              //         mobileSnackBarPosition: MobileSnackBarPosition.top)
-              //     .show(context);
+              AnimatedSnackBar.material(val,
+                      type: AnimatedSnackBarType.success,
+                      mobileSnackBarPosition: MobileSnackBarPosition.top)
+                  .show(context);
             });
           },
           (userJoined) {
@@ -376,7 +376,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
           (userLeft) {
             removeUserToRoom(userLeft);
           });
-    } //else
+   // } //else
     // getLiveDetails();
 
     String startedBy = widget.jam.startedBy ?? "";
@@ -395,18 +395,31 @@ class _JamRoomPageState extends State<JamRoomPage> {
   }
 
   void addUserToRoom(int rid) async{
+    List<DrummerJoinCard> dCards = drummerCards;
+    setState(() {
+      drummerCards = [];
+      drummerCards.clear();
+    });
     if(rid==0) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       rid = await FirebaseDBOperations.getDrummer(
           FirebaseAuth.instance.currentUser?.uid ?? prefs.getString('uid') ?? "")
           .then((value) => value.rid ?? rid);
     }
-    // AnimatedSnackBar.material("$rid Added to room",
-    //     type: AnimatedSnackBarType.success,
-    //     mobileSnackBarPosition: MobileSnackBarPosition.top)
-    //     .show(context);
-    List<DrummerJoinCard> dCards = drummerCards;
-    dCards.add(DrummerJoinCard(rid));
+
+    bool alreadyAdded = false;
+    for(DrummerJoinCard drummerCard in dCards){
+      if(drummerCard.drummerId == rid)
+        alreadyAdded = true;
+    }
+    if(!alreadyAdded) {
+      dCards.add(DrummerJoinCard(rid));
+      // AnimatedSnackBar.material("$rid Added to room",
+      //     type: AnimatedSnackBarType.success,
+      //     mobileSnackBarPosition: MobileSnackBarPosition.top)
+      //     .show(context);
+    }
+
     setState(() {
      // drummerCards.clear();
       userJoined = true;
@@ -415,25 +428,39 @@ class _JamRoomPageState extends State<JamRoomPage> {
 
   }
   void removeUserToRoom(int rid) async{
-    drummerCards.where((element) {
-      if (element.drummerId == rid) {
-
-        // AnimatedSnackBar.material("$rid Removed from room",
-        //     type: AnimatedSnackBarType.success,
-        //     mobileSnackBarPosition: MobileSnackBarPosition.top)
-        //     .show(context);
-
-        List<DrummerJoinCard> dCards = drummerCards;
-        dCards.remove(element);
-
-        setState(() {
-         // drummerCards.clear();
-          drummerCards = dCards;
-        });
-        return true;
-      } else
-        return false;
+    setState(() {
+      for(DrummerJoinCard dj in drummerCards)
+      {
+        if(dj.drummerId == rid)
+          drummerCards.remove(dj);
+      }
     });
+
+    // setState(() {
+    //   drummerCards = [];
+    //   drummerCards.clear();
+    // });
+
+    // List<DrummerJoinCard> dCards = drummerCards;
+    // dCards.where((element) {
+    //   if (element.drummerId == rid) {
+    //
+    //     AnimatedSnackBar.material("$rid Removed from room",
+    //         type: AnimatedSnackBarType.success,
+    //         mobileSnackBarPosition: MobileSnackBarPosition.top)
+    //         .show(context);
+    //
+    //    // List<DrummerJoinCard> dCards = drummerCards;
+    //     dCards.remove(element);
+    //     return true;
+    //   } else
+    //     return false;
+    // });
+    //
+    // setState(() {
+    //   // drummerCards.clear();
+    //   drummerCards = dCards;
+    // });
   }
 
   void getLiveDetails() {
@@ -451,8 +478,8 @@ class _JamRoomPageState extends State<JamRoomPage> {
   void listenToJamState() {
     ConnectionListener.onConnectionChangedinRoom = (connected, jam, open) {
       // Handle the channelID change here
-      print("onConnectionChangedinRoom called in JamRoomPage");
-      getLiveDetails();
+     // print("onConnectionChangedinRoom called in JamRoomPage");
+     // getLiveDetails();
     };
   }
 
