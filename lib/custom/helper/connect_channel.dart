@@ -18,6 +18,7 @@ typedef void RemoteCallback(String message);
 typedef void UserJoined(int remoteUid);
 typedef void UserLeft(int remoteUid);
 typedef void UserMute(int remoteUid, bool mute);
+typedef void UserTalking(int remoteUid, bool talking);
 
 class ConnectToChannel {
   static late RtcEngine _rtcEngine;
@@ -66,11 +67,11 @@ class ConnectToChannel {
 
     ConnectToChannel.joinRoom(jam, listenOnly, (joined, userID) {
       print("$userID joinStatus $joined");
-    }, openJam, (val) {}, (rid) {},(leftUID){});
+    }, openJam, (val) {}, (rid) {},(leftUID){},(rid,mute){},(rid,talking){});
   }
 
   static void joinRoom(Jam _jam, bool listenOnly, JoinCallback joinCallback,
-      bool open, RemoteCallback remoteCallback, UserJoined userJoined, UserLeft userLeft) async {
+      bool open, RemoteCallback remoteCallback, UserJoined userJoined, UserLeft userLeft,UserMute userMute,UserTalking userTalking) async {
     await [Permission.microphone].request();
     // if(jam!=null)
     //   await leaveChannel();
@@ -104,14 +105,19 @@ class ConnectToChannel {
       userJoined(rid);
     },(leftUid){
       userLeft(leftUid);
-    });
+    },(rid,mute){
+      userMute(rid,mute);
+    },(rid,talking){
+      userTalking(rid,talking);
+    }
+    );
   }
 
   static Future<void> initializeEngine(
       String? _channelID,
       JoinCallback joinCallback,
       RemoteCallback remoteCallback,
-      UserJoined userJoined, UserLeft userLeft) async {
+      UserJoined userJoined, UserLeft userLeft,UserMute userMute,UserTalking userTalking) async {
     Random random = new Random();
     int randomNumber = random.nextInt(1000000001) + 1;
     print("User RANDOM ID GENERATED $randomNumber");
@@ -141,6 +147,7 @@ class ConnectToChannel {
       },
       onUserMuteAudio: (RtcConnection connection, int remoteUid, bool muted) {
         //remote user mute status
+        userMute(remoteUid,muted);
         print("Remote user muted: ${remoteUid}");
       },
       onConnectionInterrupted: (RtcConnection connection) {
@@ -246,7 +253,12 @@ class ConnectToChannel {
         //  print("Speaker info: ${audioVolumeInfo.uid}");
           if (audioVolumeInfo.volume! > 50) {
            // remoteCallback("Speaker ${audioVolumeInfo.uid} is talking");
+            userTalking(audioVolumeInfo.uid??0,true);
           }
+          else
+            {
+              userTalking(audioVolumeInfo.uid??0,false);
+            }
         }
       },
     );
@@ -254,12 +266,12 @@ class ConnectToChannel {
     micMute = true;
     _rtcEngine.muteLocalAudioStream(micMute);
     _rtcEngine.enableAudioVolumeIndication(
-        interval: 500, smooth: 3, reportVad: true);
+        interval: 300, smooth: 6, reportVad: true);
     _rtcEngine.registerEventHandler(rtcEngineEventHandler);
 
     // await _rtcEngine.enableAudio();
     await _rtcEngine.setAudioProfile(
-        profile: AudioProfileType.audioProfileMusicHighQualityStereo);
+        profile: AudioProfileType.audioProfileSpeechStandard);
     join();
   }
 

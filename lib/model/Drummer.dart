@@ -13,6 +13,7 @@ class Drummer {
   int? rid;
   int? followingCount = 0;
   bool speaking = false;
+  bool muted = true;
 
   Drummer();
 
@@ -26,6 +27,7 @@ class Drummer {
         'badges': badges,
         'uid': uid,
         'speaking': speaking,
+    'muted': muted,
         'imageUrl': imageUrl,
         'jobTitle': jobTitle,
         'organisation': organisation,
@@ -41,6 +43,7 @@ class Drummer {
         name = snapshot.data()['name'],
         email = snapshot.data()['email'],
         speaking = snapshot.data()['speaking'],
+        muted = snapshot.data()['muted'],
         username = snapshot.data()['username'],
         bio = snapshot.data()['bio'],
         imageUrl = snapshot.data()['imageUrl'],
@@ -57,6 +60,7 @@ class Drummer {
         rid = snapshot['rid'],
         username = snapshot['username'],
         speaking = snapshot['speaking'],
+        muted = snapshot['muted'],
         //badges = int.parse(snapshot['badges']),
         bio = snapshot['bio'],
         jobTitle = snapshot['jobTitle'],

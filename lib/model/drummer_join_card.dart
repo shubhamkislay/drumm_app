@@ -17,14 +17,19 @@ import 'package:drumm_app/user_profile_page.dart';
 
 class DrummerJoinCard extends StatefulWidget {
   int drummerId;
+  bool muted;
+  bool talking;
+  final Stream<Map<int, bool>> muteController;
+  final Stream<Map<int, bool>> speechController;
 
   DrummerJoinCard(
-      this.drummerId, {
+      this.drummerId, this.muted, this.talking, this.muteController, this.speechController,{
         Key? key,
       }) : super(key: key);
 
   @override
   State<DrummerJoinCard> createState() => _DrummerJoinCardState();
+
 }
 
 class _DrummerJoinCardState extends State<DrummerJoinCard> {
@@ -70,31 +75,49 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
                           gradient: LinearGradient(
                             begin: Alignment.bottomLeft,
                             end: Alignment.topRight,
-                            colors: (drummer.speaking)? [
+                            colors: (widget.talking)? [
                               Colors.greenAccent,
                               Colors.green
-                            ] : [
-                              Colors.grey.withOpacity(0.5),
-                              Colors.blueGrey.withOpacity(0.5)
+                            ] : (!widget.muted) ? [
+                              Colors.grey.shade700,
+                              Colors.grey.shade700
+                            ]:[
+                              Colors.grey.shade900,
+                              Colors.grey.shade900
                             ],
                           )
                       ),
-                      child: Container(
-                        padding: EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(44),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(40),
-                          child: CachedNetworkImage(
-                            width: double.maxFinite,
-                            height: double.maxFinite,
-                            errorWidget: (context,url,error){
-                              return Container();
-                            },
-                            imageUrl: drummer.imageUrl ?? "", fit: BoxFit.cover,fadeInCurve: Curves.easeIn,placeholder: (context, url) => Container(color: Colors.grey.shade900,),),
-                        ),
+                      child: Stack(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(44),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(40),
+                              child: CachedNetworkImage(
+                                width: double.maxFinite,
+                                height: double.maxFinite,
+                                errorWidget: (context,url,error){
+                                  return Container();
+                                },
+                                imageUrl: drummer.imageUrl ?? "", fit: BoxFit.cover,fadeInCurve: Curves.easeIn,placeholder: (context, url) => Container(color: Colors.grey.shade900,),),
+                            ),
+                          ),
+                         if(widget.muted) Container(
+                             alignment: Alignment.bottomRight,
+                             padding: EdgeInsets.all(12),
+                             child: Container(
+                               height: 36,
+                                 width: 36,
+                                 decoration: BoxDecoration(
+                                   color: Colors.grey.shade900.withOpacity(0.5),
+                                   borderRadius: BorderRadius.circular(48),
+                                 ),
+                                 child: Icon(Icons.mic_off,size: 24,))),
+                        ],
                       ),
                     )
                 ),
@@ -114,6 +137,24 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
     super.initState();
    // getDrummer(widget.drummerId);
    // listenToJamState();
+    widget.muteController.listen((statusMap) {
+      if (statusMap.containsKey(widget.drummerId)) {
+        // Update the mute status when the status changes
+        setState(() {
+          widget.muted = statusMap[widget.drummerId] ?? true;
+        });
+      }
+    });
+
+    widget.speechController.listen((statusMap) {
+      if (statusMap.containsKey(widget.drummerId)) {
+        // Update the mute status when the status changes
+        setState(() {
+          widget.talking = statusMap[widget.drummerId] ?? false;
+        });
+      }
+    });
+
   }
 
   void getDrummer(int rid)  async{
@@ -142,3 +183,5 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
   //   };
   // }
 }
+
+

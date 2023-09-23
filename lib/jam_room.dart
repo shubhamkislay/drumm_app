@@ -180,7 +180,7 @@ class _JamRoomState extends State<JamRoom> {
       getLiveDetails();
     },false,(val){
 
-    },(userJoined){},(userLeft){});
+    },(userJoined){},(userLeft){},(rid,mute){},(rid,talking){});
     else
       getLiveDetails();
   }

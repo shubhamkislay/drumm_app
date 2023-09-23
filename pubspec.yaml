@@ -147,6 +147,8 @@ flutter:
     - images/logout.png
     - images/drumm_logo_main.png
     - images/back.png
+    - images/animation_drumm_loading.json
+    - images/animation_pulse.json
   #   - images/a_dot_ham.jpeg
 
   fonts:

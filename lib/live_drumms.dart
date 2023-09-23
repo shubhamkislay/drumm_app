@@ -36,152 +36,157 @@ class LiveDrummsState extends State<LiveDrumms>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-            RefreshIndicator(
-              onRefresh: _refreshData,
-              child: SingleChildScrollView(
-                child: SafeArea(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        padding:
-                        EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SafeArea(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: () => Navigator.pop(context),
-                                  child: Container(
-                                    padding: EdgeInsets.all(4),
-                                    child: Icon(
-                                      Icons.arrow_back_ios_new_rounded,
-                                      size: 24,
+      body: SafeArea(
+        child: Stack(
+          children: [
+              RefreshIndicator(
+                onRefresh: _refreshData,
+                child: SingleChildScrollView(
+                  child: SafeArea(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          padding:
+                          EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SafeArea(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () => Navigator.pop(context),
+                                    child: Container(
+                                      padding: EdgeInsets.all(4),
+                                      child: Icon(
+                                        Icons.arrow_back_ios_new_rounded,
+                                        size: 24,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Container(
-                                padding: EdgeInsets.all(2),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(24),
-                                    gradient: LinearGradient(
-                                        colors: [
-                                          Colors.grey.shade900,
-                                          Colors.grey.shade900
-                                        ]
-                                    )
-                                ),
-                                child: Container(
-                                    decoration: BoxDecoration(
+                              Container(
+                                  padding: EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(24),
-                                      color: Colors.grey.shade900,
-                                    ),
-                                    child: Icon(Icons.language,size: 42))),
-                            SizedBox(width: 8,),
-                            AutoSizeText(
-                              "Live",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontSize: 22.0,
-                                fontWeight: FontWeight.bold,
+                                      gradient: LinearGradient(
+                                          colors: [
+                                            Colors.grey.shade900,
+                                            Colors.grey.shade900
+                                          ]
+                                      )
+                                  ),
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(24),
+                                        color: Colors.grey.shade900,
+                                      ),
+                                      child: Icon(Icons.language,size: 42))),
+                              SizedBox(width: 8,),
+                              AutoSizeText(
+                                "Live",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (drummCards.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 16),
-                          child: GridView.count(
-                              crossAxisCount: 2, // Number of columns
-                              childAspectRatio: 0.8,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              padding: EdgeInsets.symmetric(horizontal: 0),
-                              crossAxisSpacing: 8,
-                              mainAxisSpacing: 8,
-                              children: drummCards),
-                        ),
-
-                      if (drummCards.isEmpty&&loaded)
-                        Center(
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.all(32),
-                            height: MediaQuery.of(context).size.height*0.7,
-                            child: Text("There are currently no live drumms",textAlign: TextAlign.center,),
+                            ],
                           ),
                         ),
-                      if (drummCards.isEmpty&&!loaded)
-                        Container(
-                            child: Lottie.asset('images/animation_loading.json',
-                                fit: BoxFit.contain, width: double.maxFinite)),
-                      SizedBox(
-                        height: 200,
-                      ),
-                    ],
+                        if (drummCards.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 16),
+                            child: GridView.count(
+                                crossAxisCount: 3, // Number of columns
+                                childAspectRatio: 0.8,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                padding: EdgeInsets.symmetric(horizontal: 0),
+                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 8,
+                                children: drummCards),
+                          ),
+
+                        if (drummCards.isEmpty&&loaded)
+                          Center(
+                            child: Container(
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.all(32),
+                              height: MediaQuery.of(context).size.height*0.7,
+                              child: Text("There are currently no live drumms",textAlign: TextAlign.center,),
+                            ),
+                          ),
+                        SizedBox(
+                          height: 200,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          if (loaded)
-            if(false)Container(
-              alignment: Alignment.bottomLeft,
-              height: 100,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [Colors.transparent, Colors.black])),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 16,horizontal: 32),
-              alignment: Alignment.bottomCenter,
-              child: IconLabelButton(
-                imageAsset: "images/logo_background_white.png",
-                label: "Start New",
-                height: 40,
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    backgroundColor: COLOR_PRIMARY_DARK,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(0.0)),
-                    ),
-                    builder: (BuildContext context) {
-                      return Padding(
-                        padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context)
-                                .viewInsets
-                                .bottom),
-                        child: ClipRRect(
-                          borderRadius:
-                          BorderRadius.vertical(
-                              top:
-                              Radius.circular(0.0)),
-                          child: CreateJam(
-                              title: "",
-                              bandId: "",
-                              imageUrl: ""),
-                        ),
-                      );
-                    },
-                  );
-                },
+            if (loaded)
+              if(false)Container(
+                alignment: Alignment.bottomLeft,
+                height: 100,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.transparent, Colors.black])),
               ),
-            ),
-        ],
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 16,horizontal: 32),
+                alignment: Alignment.bottomCenter,
+                child: IconLabelButton(
+                  imageAsset: "images/logo_background_white.png",
+                  label: "Start New",
+                  height: 40,
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: COLOR_PRIMARY_DARK,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(0.0)),
+                      ),
+                      builder: (BuildContext context) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context)
+                                  .viewInsets
+                                  .bottom),
+                          child: ClipRRect(
+                            borderRadius:
+                            BorderRadius.vertical(
+                                top:
+                                Radius.circular(0.0)),
+                            child: CreateJam(
+                                title: "",
+                                bandId: "",
+                                imageUrl: ""),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+
+            if (drummCards.isEmpty&&!loaded)
+              Center(
+                child: Container(
+                    child: Lottie.asset('images/animation_pulse.json',
+                        fit: BoxFit.contain, width: double.maxFinite)),
+              ),
+          ],
+        ),
       ),
     );
   }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:expandable_text/expandable_text.dart';
@@ -25,6 +27,9 @@ import 'model/article.dart';
 import 'model/band.dart';
 import 'model/drummer_join_card.dart';
 
+final StreamController<Map<int, bool>> _muteStreamController = StreamController<Map<int, bool>>.broadcast();
+final StreamController<Map<int, bool>> _speechStreamController = StreamController<Map<int, bool>>.broadcast();
+
 class JamRoomPage extends StatefulWidget {
   Jam jam;
   bool open;
@@ -47,6 +52,8 @@ class _JamRoomPageState extends State<JamRoomPage> {
   Band? band;
 
   bool userJoined = false;
+
+  bool shownWarning = false;
 
   @override
   Widget build(BuildContext context) {
@@ -221,7 +228,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       if (!userJoined)
-                        Lottie.asset('images/animation_loading.json',
+                        Lottie.asset('images/animation_drumm_loading.json',
                             height: 400,
                             fit: BoxFit.contain,
                             width: double.maxFinite),
@@ -308,8 +315,10 @@ class _JamRoomPageState extends State<JamRoomPage> {
                       child: Container(
                         padding: EdgeInsets.all(14),
                         decoration: BoxDecoration(
-                            color: Colors.grey.shade800,
-                            borderRadius: BorderRadius.circular(14)),
+                            color: Colors.grey.shade900,
+                            border: Border.all(
+                                color: Colors.grey.shade800, width: 1),
+                            borderRadius: BorderRadius.circular(20)),
                         child: Text(
                           "Leave Drumm",
                           textAlign: TextAlign.center,
@@ -333,6 +342,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                         else
                           micMute = true;
 
+                        updateLocalUserMic(micMute);
                         ConnectToChannel.setMute(micMute);
                       });
                     },
@@ -351,32 +361,36 @@ class _JamRoomPageState extends State<JamRoomPage> {
     // TODO: implement initState
     super.initState();
 
-  //  if (widget.jam.jamId != ConnectToChannel.jam?.jamId) {
-      ConnectToChannel.joinRoom(
-          widget.jam,
-          false,
-          (joined, userID) {
-            print("$userID joinStatus $joined");
-            // getLiveDetails();
-            addUserToRoom(0);
-          },
-          widget.open,
-          (val) {
-            print("Calling log from jam_room!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            setState(() {
-              AnimatedSnackBar.material(val,
-                      type: AnimatedSnackBarType.success,
-                      mobileSnackBarPosition: MobileSnackBarPosition.top)
-                  .show(context);
-            });
-          },
-          (userJoined) {
-            addUserToRoom(userJoined);
-          },
-          (userLeft) {
-            removeUserToRoom(userLeft);
-          });
-   // } //else
+    //  if (widget.jam.jamId != ConnectToChannel.jam?.jamId) {
+    ConnectToChannel.joinRoom(
+        widget.jam,
+        false,
+        (joined, userID) {
+          print("$userID joinStatus $joined");
+          // getLiveDetails();
+          addUserToRoom(0);
+        },
+        widget.open,
+        (val) {
+        },
+        (userJoined) {
+          addUserToRoom(userJoined);
+        },
+        (userLeft) {
+          removeUserToRoom(userLeft);
+        },(rid,mute){
+          for(DrummerJoinCard dj in drummerCards){
+            if(dj.drummerId == rid){
+              setState(() {
+                final updateMap = {rid: mute};
+                _muteStreamController.sink.add(updateMap);
+              });
+            }
+          }
+    },(rid,talking){
+      updateSpeech(rid,talking);
+    });
+    // } //else
     // getLiveDetails();
 
     String startedBy = widget.jam.startedBy ?? "";
@@ -394,73 +408,42 @@ class _JamRoomPageState extends State<JamRoomPage> {
     listenToJamState();
   }
 
-  void addUserToRoom(int rid) async{
+  void addUserToRoom(int rid) async {
     List<DrummerJoinCard> dCards = drummerCards;
     setState(() {
       drummerCards = [];
       drummerCards.clear();
     });
-    if(rid==0) {
+    if (rid == 0) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       rid = await FirebaseDBOperations.getDrummer(
-          FirebaseAuth.instance.currentUser?.uid ?? prefs.getString('uid') ?? "")
+              FirebaseAuth.instance.currentUser?.uid ??
+                  prefs.getString('uid') ??
+                  "")
           .then((value) => value.rid ?? rid);
     }
 
     bool alreadyAdded = false;
-    for(DrummerJoinCard drummerCard in dCards){
-      if(drummerCard.drummerId == rid)
-        alreadyAdded = true;
+    for (DrummerJoinCard drummerCard in dCards) {
+      if (drummerCard.drummerId == rid) alreadyAdded = true;
     }
-    if(!alreadyAdded) {
-      dCards.add(DrummerJoinCard(rid));
-      // AnimatedSnackBar.material("$rid Added to room",
-      //     type: AnimatedSnackBarType.success,
-      //     mobileSnackBarPosition: MobileSnackBarPosition.top)
-      //     .show(context);
+    if (!alreadyAdded) {
+      dCards.add(DrummerJoinCard(rid,true,false,_muteStreamController.stream,_speechStreamController.stream));
     }
 
     setState(() {
-     // drummerCards.clear();
+      // drummerCards.clear();
       userJoined = true;
       drummerCards = dCards;
     });
-
   }
-  void removeUserToRoom(int rid) async{
+
+  void removeUserToRoom(int rid) async {
     setState(() {
-      for(DrummerJoinCard dj in drummerCards)
-      {
-        if(dj.drummerId == rid)
-          drummerCards.remove(dj);
+      for (DrummerJoinCard dj in drummerCards) {
+        if (dj.drummerId == rid) drummerCards.remove(dj);
       }
     });
-
-    // setState(() {
-    //   drummerCards = [];
-    //   drummerCards.clear();
-    // });
-
-    // List<DrummerJoinCard> dCards = drummerCards;
-    // dCards.where((element) {
-    //   if (element.drummerId == rid) {
-    //
-    //     AnimatedSnackBar.material("$rid Removed from room",
-    //         type: AnimatedSnackBarType.success,
-    //         mobileSnackBarPosition: MobileSnackBarPosition.top)
-    //         .show(context);
-    //
-    //    // List<DrummerJoinCard> dCards = drummerCards;
-    //     dCards.remove(element);
-    //     return true;
-    //   } else
-    //     return false;
-    // });
-    //
-    // setState(() {
-    //   // drummerCards.clear();
-    //   drummerCards = dCards;
-    // });
   }
 
   void getLiveDetails() {
@@ -470,7 +453,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
         userJoined = true;
         memberList = jam.membersID ?? [];
         mJoined = jam.membersID?.length ?? 0;
-        drummerCards = memberList.map((e) => DrummerJoinCard(e)).toList();
+        drummerCards = memberList.map((e) => DrummerJoinCard(e,true,false,_muteStreamController.stream,_speechStreamController.stream)).toList();
       });
     });
   }
@@ -478,8 +461,8 @@ class _JamRoomPageState extends State<JamRoomPage> {
   void listenToJamState() {
     ConnectionListener.onConnectionChangedinRoom = (connected, jam, open) {
       // Handle the channelID change here
-     // print("onConnectionChangedinRoom called in JamRoomPage");
-     // getLiveDetails();
+      // print("onConnectionChangedinRoom called in JamRoomPage");
+      // getLiveDetails();
     };
   }
 
@@ -505,5 +488,51 @@ class _JamRoomPageState extends State<JamRoomPage> {
         band = value;
       });
     });
+  }
+
+  void updateSpeech(int rid,bool talking) async {
+    if(rid==0&&talking&&micMute){
+      if(!shownWarning) {
+        AnimatedSnackBar.material(
+            'You are talking on mute',
+            type: AnimatedSnackBarType.warning,
+            mobileSnackBarPosition: MobileSnackBarPosition.bottom
+        ).show(context);
+        shownWarning = true;
+        Vibrate.feedback(FeedbackType.heavy);
+        Future.delayed(Duration(
+          milliseconds: 10000
+        ),() {
+          shownWarning = false;
+        },);
+      }
+    }
+
+    bool showTalk = (rid==0&&micMute)?false:talking;
+
+    if (rid == 0) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      rid = await FirebaseDBOperations.getDrummer(
+          FirebaseAuth.instance.currentUser?.uid ??
+              prefs.getString('uid') ??
+              "")
+          .then((value) => value.rid ?? rid);
+    }
+    final updateMap = {rid: showTalk};
+
+    // Add the update to the stream
+
+    _speechStreamController.sink.add(updateMap);
+  }
+
+  void updateLocalUserMic(bool micMute) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int rid = await FirebaseDBOperations.getDrummer(
+        FirebaseAuth.instance.currentUser?.uid ??
+            prefs.getString('uid') ??
+            "")
+        .then((value) => value.rid ?? 0);
+    final updateMap = {rid: micMute};
+    _muteStreamController.sink.add(updateMap);
   }
 }
