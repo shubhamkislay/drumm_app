@@ -39,43 +39,33 @@ class _HomeItemState extends State<HomeItem> {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(curve),
-        topRight: Radius.circular(curve),
-      ),
+      borderRadius: BorderRadius.circular(curve),
       child: Container(
         decoration: BoxDecoration(
             color: Colors.black,//COLOR_PRIMARY_DARK,
             borderRadius: BorderRadius.circular(curve),
-            border: Border.all(color: Colors.grey.shade800, width: 1)),
+            border: Border.all(color: Colors.grey.shade700, width: 1)),
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
             children: [
               Stack(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(curve),
-                      topRight: Radius.circular(curve),
-                    ),
-                    child: CachedNetworkImage(
-                      imageUrl: widget.article.imageUrl ?? "",
-                      filterQuality: FilterQuality.low,
-                      placeholder: (context, imageUrl) {
-                        String imageUrl = widget.article.imageUrl ??"";
-                        return Container(
-                          height: (imageUrl.length < 1) ? 0:150 ,
-                          color: Colors.transparent,
-                          width: double.infinity,
-                        );
-                      },
-                      errorWidget: (context, url, error) {
-                        return Container();
-                      },
-                      fit: BoxFit.fitWidth,
-                    ),
-
+                  CachedNetworkImage(
+                    imageUrl: widget.article.imageUrl ?? "",
+                    filterQuality: FilterQuality.low,
+                    placeholder: (context, imageUrl) {
+                      String imageUrl = widget.article.imageUrl ??"";
+                      return Container(
+                        height: (imageUrl.length < 1) ? 0:150 ,
+                        color: Colors.transparent,
+                        width: double.infinity,
+                      );
+                    },
+                    errorWidget: (context, url, error) {
+                      return Container();
+                    },
+                    fit: BoxFit.fitWidth,
                   ),
                   GestureDetector(
                     onTap: widget.undo,
@@ -104,7 +94,6 @@ class _HomeItemState extends State<HomeItem> {
                       Text(
                           "${widget.article.source} | ${widget.article.category}",
                           style: TextStyle(
-                            fontWeight: FontWeight.bold,
                             fontSize: 14,
                           )),
                       SizedBox(
@@ -119,7 +108,8 @@ class _HomeItemState extends State<HomeItem> {
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 26,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold
                               ),
                             ),
                           ),
@@ -143,6 +133,7 @@ class _HomeItemState extends State<HomeItem> {
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 16,
+                          color: Colors.white70
                         ),
                       ),
                       SizedBox(
