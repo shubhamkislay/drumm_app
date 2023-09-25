@@ -268,7 +268,7 @@ class FirebaseDBOperations {
   }
 
   static Future<List<Jam>> getDrummsFromBands() async {
-    print("getJamsFromBand triggered");
+    print("getDrummsFromBands triggered");
 
     List<Band> bandsList = await FirebaseDBOperations.getBandByUser();
 
@@ -282,19 +282,23 @@ class FirebaseDBOperations {
     var data = await FirebaseFirestore.instance
         .collection('jams')
         .where('bandId', whereIn: bandIDList)
+        .where('broadcast', isEqualTo: false)
+        .where('count', isGreaterThan:0)
         .get();
-    List<Jam> fetchedList =
-        List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
-    List<Jam> filterList = [];
-    for (Jam jam in fetchedList) {
-      int memLen = jam.membersID?.length ?? 0;
-      bool isBroadcast = jam.broadcast ?? false;
-      if (memLen > 0 && !isBroadcast) {
-        filterList.add(jam);
-      }
-    }
 
-    return filterList; //List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+
+    // List<Jam> fetchedList =
+    //     List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+    // List<Jam> filterList = [];
+    // for (Jam jam in fetchedList) {
+    //   int memLen = jam.membersID?.length ?? 0;
+    //   bool isBroadcast = jam.broadcast ?? false;
+    //   if (memLen > 0 && !isBroadcast) {
+    //     filterList.add(jam);
+    //   }
+    // }
+
+    return List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
   }
 
   static Future<List<Jam>> getOpenDrummsFromBands() async {
@@ -312,19 +316,21 @@ class FirebaseDBOperations {
     var data = await FirebaseFirestore.instance
         .collection('openDrumm')
         .where('bandId', whereIn: bandIDList)
+        .where('broadcast', isEqualTo: false)
+        .where('count', isGreaterThan:0)
         .get();
-    List<Jam> fetchedList =
-        List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
-    List<Jam> filterList = [];
-    for (Jam jam in fetchedList) {
-      int memLen = jam.membersID?.length ?? 0;
-      bool isBroadcast = jam.broadcast ?? false;
-      if (memLen > 0 && !isBroadcast) {
-        filterList.add(jam);
-      }
-    }
+    // List<Jam> fetchedList =
+    //     List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+    // List<Jam> filterList = [];
+    // for (Jam jam in fetchedList) {
+    //   int memLen = jam.membersID?.length ?? 0;
+    //   bool isBroadcast = jam.broadcast ?? false;
+    //   if (memLen > 0 && !isBroadcast) {
+    //     filterList.add(jam);
+    //   }
+    // }
 
-    return filterList; //List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+    return List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
   }
 
   static Future<List<Jam>> getJamsFromArticle(String articleId) async {

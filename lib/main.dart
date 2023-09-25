@@ -349,7 +349,7 @@ class _MyAppState extends State<MyApp>
     Map<String, dynamic> json = jsonDecode(message.data["jam"]);
     Jam jam = Jam.fromJson(json);
 
-    if (true||drummerID != FirebaseAuth.instance.currentUser?.uid) {
+    if (drummerID != FirebaseAuth.instance.currentUser?.uid) {
       Drummer drummer = await FirebaseDBOperations.getDrummer(drummerID);
       String drummerImage = drummer.imageUrl ?? "";
 

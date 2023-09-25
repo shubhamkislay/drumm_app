@@ -226,7 +226,7 @@ class _CreateJamState extends State<CreateJam> {
                             print("createJam ${createJam.jamId}");
 
                             FirebaseDBOperations.createJamData(createJam);
-                            FirebaseDBOperations.sendNotificationToTopic(createJam,true,false);
+                            FirebaseDBOperations.sendNotificationToTopic(createJam,false,false);
                             Navigator.pop(context);
                             showModalBottomSheet(
                               context: context,

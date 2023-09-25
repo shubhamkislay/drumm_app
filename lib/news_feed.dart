@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -34,7 +36,8 @@ class NewsFeed extends StatefulWidget {
   State<NewsFeed> createState() => _NewsFeedState();
 }
 
-class _NewsFeedState extends State<NewsFeed> {
+class _NewsFeedState extends State<NewsFeed>
+    with AutomaticKeepAliveClientMixin<NewsFeed>{
   List<Article> articles = [];
   late CardSwiperController? controller;
   List<MultiSelectCard<dynamic>> mulList = [];
@@ -48,11 +51,17 @@ class _NewsFeedState extends State<NewsFeed> {
   final String LOADING_ASSET = "images/animation_loading.json";
   final String NO_FOUND_ASSET = "images/animation_nothing_found.json";
 
+  DateTime? _lastRefreshTime;
+  Timer? _refreshTimer;
+  final Duration refreshInterval = const Duration(minutes: 15);
+
   bool loadAnimation = false;
 
   String selectedBandID = "All";
 
   bool noArticlesPresent=false;
+
+  var keepAlive = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -253,6 +262,8 @@ class _NewsFeedState extends State<NewsFeed> {
     loadingAnimation = LOADING_ASSET;
     super.initState();
     setOnboarded();
+    _lastRefreshTime = DateTime.now();
+    _checkAndScheduleRefresh();
     FirebaseDBOperations.lastDocument = null;
     controller = CardSwiperController();
     getArticles();
@@ -626,5 +637,44 @@ class _NewsFeedState extends State<NewsFeed> {
   void setOnboarded() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isOnboarded', true);
+  }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => keepAlive;
+
+  void _checkAndScheduleRefresh() {
+    // AnimatedSnackBar.material(
+    //     'Checking refresh',
+    //     type: AnimatedSnackBarType.info,
+    //     mobileSnackBarPosition: MobileSnackBarPosition.top
+    // ).show(context);
+    final now = DateTime.now();
+    if (now.difference(_lastRefreshTime!) >= refreshInterval) {
+      // Call your refresh() function if it hasn't been called within the refreshInterval
+      keepAlive = false;
+
+      _lastRefreshTime = now;
+    } else {
+      // Calculate the remaining time until the next refresh and schedule the timer
+      final remainingTime = refreshInterval - now.difference(_lastRefreshTime!);
+      _startRefreshTimer(remainingTime);
+    }
+  }
+
+
+  void _stopRefreshTimer() {
+    keepAlive = true;
+    _refreshTimer?.cancel(); // Stop the timer if it's active
+  }
+
+  void _startRefreshTimer(Duration duration) {
+    _refreshTimer?.cancel(); // Cancel any existing timer
+    _refreshTimer = Timer(duration, () {
+      // Call your refresh() function when the timer fires
+      keepAlive = true;
+      _lastRefreshTime = DateTime.now(); // Update the last refresh time
+      _checkAndScheduleRefresh(); // Reschedule the next refresh
+    });
   }
 }
