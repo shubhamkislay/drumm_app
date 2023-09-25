@@ -19,6 +19,8 @@ typedef void UserJoined(int remoteUid);
 typedef void UserLeft(int remoteUid);
 typedef void UserMute(int remoteUid, bool mute);
 typedef void UserTalking(int remoteUid, bool talking);
+typedef void ConnectionInterrupted();
+typedef void RejoinSuccess();
 
 class ConnectToChannel {
   static late RtcEngine _rtcEngine;
@@ -67,11 +69,14 @@ class ConnectToChannel {
 
     ConnectToChannel.joinRoom(jam, listenOnly, (joined, userID) {
       print("$userID joinStatus $joined");
-    }, openJam, (val) {}, (rid) {},(leftUID){},(rid,mute){},(rid,talking){});
+    }, openJam, (val) {}, (rid) {},(leftUID){},(rid,mute){},(rid,talking){},(){},(){});
   }
 
   static void joinRoom(Jam _jam, bool listenOnly, JoinCallback joinCallback,
-      bool open, RemoteCallback remoteCallback, UserJoined userJoined, UserLeft userLeft,UserMute userMute,UserTalking userTalking) async {
+      bool open, RemoteCallback remoteCallback, UserJoined userJoined,
+      UserLeft userLeft,UserMute userMute,UserTalking userTalking,
+      ConnectionInterrupted connectionInterrupted,
+      RejoinSuccess rejoinSuccess) async {
     await [Permission.microphone].request();
     // if(jam!=null)
     //   await leaveChannel();
@@ -109,6 +114,10 @@ class ConnectToChannel {
       userMute(rid,mute);
     },(rid,talking){
       userTalking(rid,talking);
+    },(){
+      connectionInterrupted();
+    },(){
+      rejoinSuccess();
     }
     );
   }
@@ -117,7 +126,8 @@ class ConnectToChannel {
       String? _channelID,
       JoinCallback joinCallback,
       RemoteCallback remoteCallback,
-      UserJoined userJoined, UserLeft userLeft,UserMute userMute,UserTalking userTalking) async {
+      UserJoined userJoined, UserLeft userLeft,UserMute userMute,UserTalking userTalking,
+      ConnectionInterrupted connectionInterrupted, RejoinSuccess rejoinSuccess) async {
     Random random = new Random();
     int randomNumber = random.nextInt(1000000001) + 1;
     print("User RANDOM ID GENERATED $randomNumber");
@@ -141,19 +151,24 @@ class ConnectToChannel {
 
     rtcEngineEventHandler = RtcEngineEventHandler(
       onConnectionLost: (RtcConnection connection) {
-        if (!listenOnlyMode)
-          FirebaseDBOperations.removeMemberFromJam(jam?.jamId ?? "",
-              FirebaseAuth.instance.currentUser?.uid ?? "", openJam);
+        // if (!listenOnlyMode)
+        //   FirebaseDBOperations.removeMemberFromJam(jam?.jamId ?? "",
+        //       FirebaseAuth.instance.currentUser?.uid ?? "", openJam);
+
+        remoteCallback("onConnectionLost");
       },
+
       onUserMuteAudio: (RtcConnection connection, int remoteUid, bool muted) {
         //remote user mute status
         userMute(remoteUid,muted);
         print("Remote user muted: ${remoteUid}");
       },
       onConnectionInterrupted: (RtcConnection connection) {
-        if (!listenOnlyMode)
-          FirebaseDBOperations.removeMemberFromJam(jam?.jamId ?? "",
-              FirebaseAuth.instance.currentUser?.uid ?? "", openJam);
+        // if (!listenOnlyMode)
+        //   FirebaseDBOperations.removeMemberFromJam(jam?.jamId ?? "",
+        //       FirebaseAuth.instance.currentUser?.uid ?? "", openJam);
+        connectionInterrupted();
+        remoteCallback("onConnectionInterrupted");
       },
       onError: (ErrorCodeType err, String msg) {
         debugPrint("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! $msg");
@@ -172,8 +187,8 @@ class ConnectToChannel {
           print("Local user uid:${connection.localUid} joined the channel");
 
           _isJoined = true;
-          FirebaseDBOperations.addMemberToJam(jam?.jamId ?? "",
-              FirebaseAuth.instance.currentUser?.uid ?? "", openJam);
+          // FirebaseDBOperations.addMemberToJam(jam?.jamId ?? "",
+          //     FirebaseAuth.instance.currentUser?.uid ?? "", openJam);
           ConnectionListener.updateConnectionDetails(
               _isJoined, ConnectToChannel.jam, openJam);
           joinCallback(_isJoined, connection.localUid ?? uid);
@@ -209,8 +224,8 @@ class ConnectToChannel {
       },
       onLeaveChannel: (RtcConnection connection, RtcStats rtcStats) {
         if (!listenOnlyMode) {
-          FirebaseDBOperations.removeMemberFromJam(jam?.jamId ?? "",
-              FirebaseAuth.instance.currentUser?.uid ?? "", openJam);
+          // FirebaseDBOperations.removeMemberFromJam(jam?.jamId ?? "",
+          //     FirebaseAuth.instance.currentUser?.uid ?? "", openJam);
         }
         try {
           FirebaseDBOperations.stopListening();
@@ -221,12 +236,15 @@ class ConnectToChannel {
       onRejoinChannelSuccess: (RtcConnection connection, int elapsed) {
         if (!listenOnlyMode) {
           _isJoined = true;
-          FirebaseDBOperations.addMemberToJam(jam?.jamId ?? "",
-              FirebaseAuth.instance.currentUser?.uid ?? "", openJam);
+          // FirebaseDBOperations.addMemberToJam(jam?.jamId ?? "",
+          //     FirebaseAuth.instance.currentUser?.uid ?? "", openJam);
+          rejoinSuccess();
           ConnectionListener.updateConnectionDetails(
               _isJoined, ConnectToChannel.jam, openJam);
           joinCallback(_isJoined, connection.localUid ?? uid);
         }
+
+        remoteCallback("onRejoinChannelSuccess");
       },
       onAudioVolumeIndication: (RtcConnection connection,
           List<AudioVolumeInfo> speakers, int speakerNumber, int totalVolume) {

@@ -140,6 +140,7 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
     widget.muteController.listen((statusMap) {
       if (statusMap.containsKey(widget.drummerId)) {
         // Update the mute status when the status changes
+        if(mounted)
         setState(() {
           widget.muted = statusMap[widget.drummerId] ?? true;
         });
@@ -149,6 +150,7 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
     widget.speechController.listen((statusMap) {
       if (statusMap.containsKey(widget.drummerId)) {
         // Update the mute status when the status changes
+        if(mounted)
         setState(() {
           widget.talking = statusMap[widget.drummerId] ?? false;
         });

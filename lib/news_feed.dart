@@ -44,10 +44,15 @@ class _NewsFeedState extends State<NewsFeed> {
   List<MultiSelectCard<dynamic>> bandsCards = [];
   Drummer drummer = Drummer();
   double horizontalPadding = 8;
+  late String loadingAnimation;
+  final String LOADING_ASSET = "images/animation_loading.json";
+  final String NO_FOUND_ASSET = "images/animation_nothing_found.json";
 
   bool loadAnimation = false;
 
   String selectedBandID = "All";
+
+  bool noArticlesPresent=false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -178,8 +183,10 @@ class _NewsFeedState extends State<NewsFeed> {
               ),
               if (articles.length < 1 || loadAnimation)
                 Expanded(
-                    child: Lottie.asset('images/animation_loading.json',
-                        fit: BoxFit.contain, width: double.maxFinite)),
+                    child: Center(
+                      child: Lottie.asset(loadingAnimation,
+                          fit: BoxFit.contain, width: double.maxFinite),
+                    )),
               if (articles.length > 0)
                 Expanded(
                   child: CardSwiper(
@@ -217,7 +224,12 @@ class _NewsFeedState extends State<NewsFeed> {
                           openArticle: (article) {
                             openArticlePage(article, index);
                           },
-                          updateList: (article) {}, undo: () { controller?.undo(); },
+                          updateList: (article) {}, undo: () {
+                            // setState(() {
+                            //   controller = CardSwiperController();
+                            // });
+
+                            controller?.undo(); },
                         );
                     },
                   ),
@@ -238,6 +250,7 @@ class _NewsFeedState extends State<NewsFeed> {
   @override
   void initState() {
     // TODO: implement initState
+    loadingAnimation = LOADING_ASSET;
     super.initState();
     setOnboarded();
     FirebaseDBOperations.lastDocument = null;
@@ -380,6 +393,7 @@ class _NewsFeedState extends State<NewsFeed> {
         controller = CardSwiperController();
         setState(() {
           //selectedCategory = selectedItem;
+          loadingAnimation = LOADING_ASSET;
           Band selectedBand = selectedItem;
           print("Selected Band ID: ${selectedBand.bandId}");
 
@@ -414,6 +428,20 @@ class _NewsFeedState extends State<NewsFeed> {
 
     List<Article> articleFetched =
         await FirebaseDBOperations.getArticlesByBands();
+    if(articleFetched.length<1) {
+      setState(() {
+        noArticlesPresent = true;
+        loadingAnimation = NO_FOUND_ASSET;
+      });
+
+    }
+    else {
+      setState(() {
+        noArticlesPresent = false;
+        loadingAnimation = LOADING_ASSET;
+      });
+
+    }
     setState(() {
       articles = articleFetched;
       print("Article length ${articles.length}");
@@ -428,6 +456,7 @@ class _NewsFeedState extends State<NewsFeed> {
     cleanCache();
     if (direction == CardSwiperDirection.left) {
       Vibrate.feedback(FeedbackType.selection);
+      FirebaseDBOperations.updateSeen(articles.elementAt(previousIndex).articleId);
       return true;
     }
 
@@ -515,6 +544,21 @@ class _NewsFeedState extends State<NewsFeed> {
     });
     List<Article> fetchcedArticle =
         await FirebaseDBOperations.getArticlesByBandID(bandID);
+
+    if(fetchcedArticle.length<1) {
+      setState(() {
+        noArticlesPresent = true;
+        loadingAnimation = NO_FOUND_ASSET;
+      });
+
+    }
+    else {
+      setState(() {
+        noArticlesPresent = false;
+        loadingAnimation = LOADING_ASSET;
+      });
+
+    }
 
     setState(() {
       articles = fetchcedArticle;

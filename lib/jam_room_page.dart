@@ -232,7 +232,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                             height: 400,
                             fit: BoxFit.contain,
                             width: double.maxFinite),
-                      if (drummerCards.length > 0)
+                      if (drummerCards.length > 0 && userJoined)
                         Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: GridView.count(
@@ -310,6 +310,10 @@ class _JamRoomPageState extends State<JamRoomPage> {
                       onTap: () {
                         ConnectToChannel.leaveChannel();
                         FlutterCallkitIncoming.endAllCalls();
+
+                        if(drummerCards.length==1)
+                          FirebaseDBOperations.updateCount(widget.jam.jamId, 0);
+
                         Navigator.pop(context);
                       },
                       child: Container(
@@ -372,6 +376,11 @@ class _JamRoomPageState extends State<JamRoomPage> {
         },
         widget.open,
         (val) {
+          // AnimatedSnackBar.material(
+          //     val,
+          //     type: AnimatedSnackBarType.success,
+          //     mobileSnackBarPosition: MobileSnackBarPosition.top
+          // ).show(context);
         },
         (userJoined) {
           addUserToRoom(userJoined);
@@ -389,6 +398,28 @@ class _JamRoomPageState extends State<JamRoomPage> {
           }
     },(rid,talking){
       updateSpeech(rid,talking);
+    },() {
+      //connection Interrupted
+
+      setState(() {
+        AnimatedSnackBar.material(
+            "Trying to connect. Please check your internet connection.",
+            type: AnimatedSnackBarType.error,
+            mobileSnackBarPosition: MobileSnackBarPosition.top
+        ).show(context);
+        userJoined = false;
+      });
+    },(){
+          //rejoin success
+
+      setState(() {
+        AnimatedSnackBar.material(
+            "Rejoined",
+            type: AnimatedSnackBarType.success,
+            mobileSnackBarPosition: MobileSnackBarPosition.top
+        ).show(context);
+        userJoined = true;
+      });
     });
     // } //else
     // getLiveDetails();
@@ -435,6 +466,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
       // drummerCards.clear();
       userJoined = true;
       drummerCards = dCards;
+      FirebaseDBOperations.updateCount(widget.jam.jamId, drummerCards.length);
     });
   }
 

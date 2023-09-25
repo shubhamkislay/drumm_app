@@ -126,7 +126,7 @@ class _DrummCardState extends State<DrummCard> {
                                 color: Colors.grey.shade700.withOpacity(0.75)
                               ),
                               child: AutoSizeText(
-                                "${widget.jam.membersID?.length} joined",
+                                "${widget.jam.count} joined",
                                 textAlign: TextAlign.left,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,

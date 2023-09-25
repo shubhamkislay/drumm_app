@@ -174,15 +174,15 @@ class _JamRoomState extends State<JamRoom> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    if(widget.jam.jamId != ConnectToChannel.jam?.jamId)
-    ConnectToChannel.joinRoom(widget.jam,false, (joined, userID) {
-      print("$userID joinStatus $joined");
-      getLiveDetails();
-    },false,(val){
-
-    },(userJoined){},(userLeft){},(rid,mute){},(rid,talking){});
-    else
-      getLiveDetails();
+    //if(widget.jam.jamId != ConnectToChannel.jam?.jamId)
+    // ConnectToChannel.joinRoom(widget.jam,false, (joined, userID) {
+    //   print("$userID joinStatus $joined");
+    //   getLiveDetails();
+    // },false,(val){
+    //
+    // },(userJoined){},(userLeft){},(rid,mute){},(rid,talking){});
+    // else
+    //   getLiveDetails();
   }
 
   void getLiveDetails() {

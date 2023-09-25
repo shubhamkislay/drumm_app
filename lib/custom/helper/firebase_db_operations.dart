@@ -86,6 +86,21 @@ class FirebaseDBOperations {
     }
   }
 
+  static Future<bool> updateCount(String? jamID,int count) async {
+
+    final DocumentReference jams = FirebaseFirestore.instance
+        .collection("jams")
+        .doc(jamID);
+
+    final DocumentReference openDrumms = FirebaseFirestore.instance
+        .collection("openDrumm")
+        .doc(jamID);
+
+    jams.update({'count': count});
+    openDrumms.update({'count': count});
+    return true;
+  }
+
   static void updateSummary(String? articleID, String? summary) async {
     FirebaseFirestore.instance
         .collection("articles")
@@ -128,7 +143,7 @@ class FirebaseDBOperations {
   static String getCurrentUserID() {
     final User? user = FirebaseAuth.instance.currentUser;
     final String userID = user?.uid ?? '';
-  //  print("CurrentUserID is $userID");
+    //  print("CurrentUserID is $userID");
     return userID;
   }
 
@@ -145,6 +160,52 @@ class FirebaseDBOperations {
     } catch (error) {
       print("Error checking like status: $error");
       return false;
+    }
+  }
+
+  static Future<bool> updateSeen(String? articleID) async {
+    final String currentUserID = getCurrentUserID();
+    // final DocumentReference articleRef =
+    // FirebaseFirestore.instance.collection("articles").doc(articleID);
+    final DocumentReference userLikeRef = FirebaseFirestore.instance
+        .collection("userActivity")
+        .doc(currentUserID)
+        .collection("seen")
+        .doc(articleID);
+
+    try {
+      final WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      // batch.update(articleRef, {'likes': FieldValue.increment(1)});
+      batch.set(userLikeRef, {'seen': true});
+
+      await batch.commit();
+      return true;
+    } catch (error) {
+      print("Error updating like status: $error");
+      return false;
+    }
+  }
+
+  static Future<List<String>> fetchSeenList() async {
+    final String currentUserID = getCurrentUserID();
+    try {
+      final QuerySnapshot userSeenSnapshot = await FirebaseFirestore.instance
+          .collection("userActivity")
+          .doc(currentUserID)
+          .collection("seen")
+          .get();
+
+      // Extract the list of seen articles from the snapshot
+      final List<String> seenArticles = userSeenSnapshot.docs
+          .map((DocumentSnapshot doc) =>
+              doc.id) // Get the document IDs (article IDs)
+          .toList();
+
+      return seenArticles;
+    } catch (error) {
+      print("Error fetching seen list: $error");
+      return [];
     }
   }
 
@@ -193,11 +254,12 @@ class FirebaseDBOperations {
         .collection('jams')
         .where('bandId', isEqualTo: bandId)
         .get();
-    List<Jam> fetchedList = List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+    List<Jam> fetchedList =
+        List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
     List<Jam> filterList = [];
     for (Jam jam in fetchedList) {
-      int memLen = jam.membersID?.length??0;
-      if(memLen>0){
+      int memLen = jam.membersID?.length ?? 0;
+      if (memLen > 0) {
         filterList.add(jam);
       }
     }
@@ -216,23 +278,23 @@ class FirebaseDBOperations {
     for (Band band in bandsList) {
       bandIDList.add(band.bandId ?? "");
     }
-    if(bandIDList.isEmpty)
-      return [];
+    if (bandIDList.isEmpty) return [];
     var data = await FirebaseFirestore.instance
         .collection('jams')
         .where('bandId', whereIn: bandIDList)
         .get();
-    List<Jam> fetchedList = List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+    List<Jam> fetchedList =
+        List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
     List<Jam> filterList = [];
     for (Jam jam in fetchedList) {
-      int memLen = jam.membersID?.length??0;
-      bool isBroadcast = jam.broadcast??false;
-      if(memLen>0 && !isBroadcast){
+      int memLen = jam.membersID?.length ?? 0;
+      bool isBroadcast = jam.broadcast ?? false;
+      if (memLen > 0 && !isBroadcast) {
         filterList.add(jam);
       }
     }
 
-    return filterList;//List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+    return filterList; //List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
   }
 
   static Future<List<Jam>> getOpenDrummsFromBands() async {
@@ -246,23 +308,23 @@ class FirebaseDBOperations {
     for (Band band in bandsList) {
       bandIDList.add(band.bandId ?? "");
     }
-    if(bandIDList.isEmpty)
-      return [];
+    if (bandIDList.isEmpty) return [];
     var data = await FirebaseFirestore.instance
         .collection('openDrumm')
         .where('bandId', whereIn: bandIDList)
         .get();
-    List<Jam> fetchedList = List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+    List<Jam> fetchedList =
+        List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
     List<Jam> filterList = [];
     for (Jam jam in fetchedList) {
-      int memLen = jam.membersID?.length??0;
-      bool isBroadcast = jam.broadcast??false;
-      if(memLen>0 && !isBroadcast){
+      int memLen = jam.membersID?.length ?? 0;
+      bool isBroadcast = jam.broadcast ?? false;
+      if (memLen > 0 && !isBroadcast) {
         filterList.add(jam);
       }
     }
 
-    return filterList;//List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+    return filterList; //List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
   }
 
   static Future<List<Jam>> getJamsFromArticle(String articleId) async {
@@ -273,11 +335,12 @@ class FirebaseDBOperations {
         .where('articleId', isEqualTo: articleId)
         .get();
 
-    List<Jam> fetchedList = List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+    List<Jam> fetchedList =
+        List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
     List<Jam> filterList = [];
     for (Jam jam in fetchedList) {
-      int memLen = jam.membersID?.length??0;
-      if(memLen>0){
+      int memLen = jam.membersID?.length ?? 0;
+      if (memLen > 0) {
         filterList.add(jam);
       }
     }
@@ -292,7 +355,8 @@ class FirebaseDBOperations {
         .where('broadcast', isEqualTo: true)
         .get();
 
-    List<Jam> fetchedList = List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+    List<Jam> fetchedList =
+        List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
     return fetchedList;
   }
 
@@ -373,7 +437,7 @@ class FirebaseDBOperations {
       batch.set(userBandRef, {'bandId': band?.bandId});
 
       await batch.commit();
-      FirebaseDBOperations.subscribeToTopic(band?.bandId??"");
+      FirebaseDBOperations.subscribeToTopic(band?.bandId ?? "");
       return true;
     } catch (error) {
       print("Error joining band: $error");
@@ -407,7 +471,7 @@ class FirebaseDBOperations {
       batch.delete(userBandRef);
 
       await batch.commit();
-      FirebaseDBOperations.unsubscribeFromTopic(band?.bandId??"");
+      FirebaseDBOperations.unsubscribeFromTopic(band?.bandId ?? "");
       return true;
     } catch (error) {
       print("Error leaving band: $error");
@@ -471,10 +535,10 @@ class FirebaseDBOperations {
         .doc(currentUserID);
 
     final DocumentReference userFollowerCountRef =
-    FirebaseFirestore.instance.collection("users").doc(userID);
+        FirebaseFirestore.instance.collection("users").doc(userID);
 
     final DocumentReference userFollowingCountRef =
-    FirebaseFirestore.instance.collection("users").doc(currentUserID);
+        FirebaseFirestore.instance.collection("users").doc(currentUserID);
 
     final DocumentReference userFollowingRef = FirebaseFirestore.instance
         .collection("users")
@@ -485,13 +549,15 @@ class FirebaseDBOperations {
     try {
       final WriteBatch batch = FirebaseFirestore.instance.batch();
 
-      batch.update(userFollowerCountRef, {'followerCount': FieldValue.increment(1)});
-      batch.update(userFollowingCountRef, {'followingCount': FieldValue.increment(1)});
+      batch.update(
+          userFollowerCountRef, {'followerCount': FieldValue.increment(1)});
+      batch.update(
+          userFollowingCountRef, {'followingCount': FieldValue.increment(1)});
       batch.set(userFollowerRef, {'userId': currentUserID});
       batch.set(userFollowingRef, {'userId': userID});
 
       await batch.commit();
-      FirebaseDBOperations.subscribeToTopic(userID??"");
+      FirebaseDBOperations.subscribeToTopic(userID ?? "");
       return true;
     } catch (error) {
       print("Error joining band: $error");
@@ -503,10 +569,10 @@ class FirebaseDBOperations {
     final String currentUserID = getCurrentUserID();
 
     final DocumentReference userFollowerCountRef =
-    FirebaseFirestore.instance.collection("users").doc(userID);
+        FirebaseFirestore.instance.collection("users").doc(userID);
 
     final DocumentReference userFollowingCountRef =
-    FirebaseFirestore.instance.collection("users").doc(currentUserID);
+        FirebaseFirestore.instance.collection("users").doc(currentUserID);
 
     final DocumentReference bandMemRef = FirebaseFirestore.instance
         .collection("users")
@@ -523,13 +589,15 @@ class FirebaseDBOperations {
     try {
       final WriteBatch batch = FirebaseFirestore.instance.batch();
 
-      batch.update(userFollowerCountRef, {'followerCount': FieldValue.increment(-1)});
-      batch.update(userFollowingCountRef, {'followingCount': FieldValue.increment(-1)});
+      batch.update(
+          userFollowerCountRef, {'followerCount': FieldValue.increment(-1)});
+      batch.update(
+          userFollowingCountRef, {'followingCount': FieldValue.increment(-1)});
       batch.delete(bandMemRef);
       batch.delete(userBandRef);
 
       await batch.commit();
-      FirebaseDBOperations.unsubscribeFromTopic(userID??"");
+      FirebaseDBOperations.unsubscribeFromTopic(userID ?? "");
       return true;
     } catch (error) {
       print("Error leaving band: $error");
@@ -566,14 +634,17 @@ class FirebaseDBOperations {
 
   static Future<Drummer> getDrummer(String uid) async {
     Drummer drummer = Drummer();
-   // print("getQuestionsAsked triggered");
-    var data =
-        await FirebaseFirestore.instance.collection('users').doc(uid).get().onError((error, stackTrace) {
-          var data;
-          DocumentSnapshot<Map<String, dynamic>> snapshot = data;
-          return snapshot;});
-    if(data.exists)
-      drummer = Drummer.fromSnapshot(data);
+    // print("getQuestionsAsked triggered");
+    var data = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get()
+        .onError((error, stackTrace) {
+      var data;
+      DocumentSnapshot<Map<String, dynamic>> snapshot = data;
+      return snapshot;
+    });
+    if (data.exists) drummer = Drummer.fromSnapshot(data);
 
     return drummer;
   }
@@ -603,8 +674,8 @@ class FirebaseDBOperations {
 
   static void subscribeToUserBands() async {
     List<Band> userBands = await FirebaseDBOperations.getBandByUser();
-    for(Band band in userBands){
-      FirebaseDBOperations.subscribeToTopic(band.bandId??"");
+    for (Band band in userBands) {
+      FirebaseDBOperations.subscribeToTopic(band.bandId ?? "");
     }
   }
 
@@ -652,7 +723,8 @@ class FirebaseDBOperations {
     }
   }
 
-  static Future<void> sendNotificationToTopic(Jam jam,bool ring,bool open) async {
+  static Future<void> sendNotificationToTopic(
+      Jam jam, bool ring, bool open) async {
     print("Sending notification");
     var url = Uri.https('fcm.googleapis.com', '/fcm/send');
     final uid = FirebaseAuth.instance.currentUser?.uid;
@@ -666,20 +738,22 @@ class FirebaseDBOperations {
     };
 
     String type = "notification";
-    String subtitle = (ring) ? "${drummer.username} started a drumm": "${drummer.username} joined the drumm";
-    if(ring)
-      type = "data";
+    String subtitle = (ring)
+        ? "${drummer.username} started a drumm"
+        : "${drummer.username} joined the drumm";
+    if (ring) type = "data";
     final body = jsonEncode({
       "to": "${toParams}",
-      if(!ring)"notification": {
-        "body": jam.title,
-        "title": subtitle,
-        "image": "${jam.imageUrl}"
-      },
+      if (!ring)
+        "notification": {
+          "body": jam.title,
+          "title": subtitle,
+          "image": "${jam.imageUrl}"
+        },
       "priority": "high",
       "content_available": true,
       "mutable_content": true,
-      "data": {"jam": jam,"ring":ring,"drummerID":uid,"open":open}
+      "data": {"jam": jam, "ring": ring, "drummerID": uid, "open": open}
     });
     var response = await http.post(url, headers: header, body: body);
 
@@ -796,8 +870,7 @@ class FirebaseDBOperations {
 
     // Construct the query
     print("getBandByUser triggered");
-    if(list.isEmpty)
-      return [];
+    if (list.isEmpty) return [];
     var data = await bandsCollectionRef.where("bandId", whereIn: list).get();
     print(data.docs.toString());
 
@@ -815,6 +888,8 @@ class FirebaseDBOperations {
 
     //print("Fetched interesets: ${userInterests.toString()}");
     //print("Fetched categories: ${bandCategoryList.toString()}");
+    List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
+    //if(seenPosts.isEmpty)
 
     Query<Map<String, dynamic>> query = FirebaseFirestore.instance
         .collection('articles')
@@ -822,44 +897,75 @@ class FirebaseDBOperations {
         .where('country', isEqualTo: 'in')
         .where('source', isNotEqualTo: null)
         .orderBy("publishedAt", descending: true)
-        .limit(25);
-    if (lastDocument != null) {
-      query = query.startAfterDocument(lastDocument!);
+        .limit(50);
+
+    List<Article> filterArticle = [];
+    bool checkedEverything = false;
+
+    while(filterArticle.length<1&&!checkedEverything) {
+      if (lastDocument != null) {
+        query = query.startAfterDocument(lastDocument!);
+      }
+      final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+      lastDocument = snapshot.docs.last;
+      List<Article> newArticles =
+      snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+      if(newArticles.length<1)
+        checkedEverything = true;
+
+
+      for (Article article in newArticles) {
+        if (!seenPosts.contains(article.articleId)|| checkedEverything)
+          filterArticle.add(article);
+
+      }
     }
-    final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
-    lastDocument = snapshot.docs.last;
-    List<Article> newArticles =
-    snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
 
-
-    return newArticles;
+    return filterArticle;
   }
 
   static Future<List<Article>> getArticlesByBandID(String bandID) async {
+    List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
 
     Query<Map<String, dynamic>> query = FirebaseFirestore.instance
         .collection('articles')
         .where('category', isEqualTo: bandID)
+       // .where('articleId', whereNotIn: seenPosts)
         .where('country', isEqualTo: 'in')
         .where('source', isNotEqualTo: null)
         .orderBy("publishedAt", descending: true)
-        .limit(25);
+        .limit(50);
+
+    List<Article> filterArticle = [];
+    bool checkedEverything = false;
+    while(filterArticle.length<1&&!checkedEverything) {
+
     if (lastDocument != null) {
       query = query.startAfterDocument(lastDocument!);
     }
 
     final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
-    lastDocument = snapshot.docs.last;
+    if(snapshot.docs.isNotEmpty)
+      lastDocument = snapshot.docs.last;
 
     List<Article> newArticles =
     snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
 
-    return newArticles;
+    if(newArticles.length<1)
+      checkedEverything = true;
+
+    for (Article article in newArticles) {
+      if (!seenPosts.contains(article.articleId)||checkedEverything)
+        filterArticle.add(article);
+    }
+  }
+
+    return filterArticle;
   }
 
   static Future<List<Band>> getOnboardingBands() async {
     CollectionReference bandsCollectionRef =
-    FirebaseFirestore.instance.collection("bands");
+        FirebaseFirestore.instance.collection("bands");
 
     // Define the userID you want to search for
 
@@ -872,10 +978,10 @@ class FirebaseDBOperations {
       "science",
       "health",
       "business",
-    "technology"];
+      "technology"
+    ];
 
-    var data = await bandsCollectionRef.where("bandId",  whereIn: bandIDs)
-        .get();
+    var data = await bandsCollectionRef.where("bandId", whereIn: bandIDs).get();
     print(data.docs.toString());
 
     // Execute the query
@@ -891,9 +997,9 @@ class FirebaseDBOperations {
   //   });
   // }
 
-  static Future<Jam> getJamData(String jamId,bool open) async {
+  static Future<Jam> getJamData(String jamId, bool open) async {
     String path = "";
-    if(open)
+    if (open)
       path = "openDrumm";
     else
       path = "jams";
@@ -901,11 +1007,15 @@ class FirebaseDBOperations {
     CollectionReference jamCollection =
         FirebaseFirestore.instance.collection(path);
 
-    DocumentSnapshot doc = await jamCollection.doc("$jamId").get().catchError((onError){ var data; return data;});
+    DocumentSnapshot doc =
+        await jamCollection.doc("$jamId").get().catchError((onError) {
+      var data;
+      return data;
+    });
 
     try {
       return Jam.fromDocListenSnapshot(doc);
-    }catch(error){
+    } catch (error) {
       return Jam();
     }
     // listener = jamCollection.doc("$jamId").snapshots().listen((event) {
@@ -930,8 +1040,11 @@ class FirebaseDBOperations {
 
   static void createOpenDrumm(Jam jam) {
     CollectionReference jamCollection =
-    FirebaseFirestore.instance.collection('openDrumm');
-    jamCollection.doc(jam.jamId ?? "").set(jam.toJson(),SetOptions(merge: true)).then((_) {
+        FirebaseFirestore.instance.collection('openDrumm');
+    jamCollection
+        .doc(jam.jamId ?? "")
+        .set(jam.toJson(), SetOptions(merge: true))
+        .then((_) {
       print('Jam data stored successfully in Realtime Database and Firestore.');
     }).catchError((error) {
       print('Error storing open data in Firestore: $error');
@@ -940,15 +1053,10 @@ class FirebaseDBOperations {
 
   static void updateDrummerSpeaking(bool talking) {
     DocumentReference drummerSpeaking =
-    FirebaseFirestore.instance.collection('users').doc(getCurrentUserID());
+        FirebaseFirestore.instance.collection('users').doc(getCurrentUserID());
 
-    drummerSpeaking.update({
-      "speaking": talking
-    });
-
+    drummerSpeaking.update({"speaking": talking});
   }
-
-
 
   static void addMemberToRoom(String jamId, String memberId) async {
     DocumentReference memberRef =
@@ -972,7 +1080,8 @@ class FirebaseDBOperations {
     );
   }
 
-  static Future<bool> addMemberToJam(String jamId, String memberId,bool open) async {
+  static Future<bool> addMemberToJam(
+      String jamId, String memberId, bool open) async {
     print("adding Member from Jam $jamId");
     bool result = false;
     try {
@@ -982,7 +1091,7 @@ class FirebaseDBOperations {
       else
         path = "jams";
       DocumentReference memberRef =
-      FirebaseFirestore.instance.collection(path).doc(jamId);
+          FirebaseFirestore.instance.collection(path).doc(jamId);
 
       result = await memberRef.update({
         "membersID": FieldValue.arrayUnion([memberId])
@@ -992,12 +1101,11 @@ class FirebaseDBOperations {
         print('Error while adding member: $onError');
         return false;
       });
-    }catch(e){
-      return result=false;
+    } catch (e) {
+      return result = false;
     }
 
     return result;
-
 
     // final sfDocRef = FirebaseFirestore.instance.collection("jams").doc(jamId);
     // FirebaseFirestore.instance.runTransaction((transaction) async {
@@ -1017,7 +1125,8 @@ class FirebaseDBOperations {
     // );
   }
 
-  static void removeMemberFromJam(String jamId, String memberId,bool open) async {
+  static void removeMemberFromJam(
+      String jamId, String memberId, bool open) async {
     try {
       print("removing Member from Jam $jamId");
       String path = "";
@@ -1028,19 +1137,19 @@ class FirebaseDBOperations {
         path = "jams";
       try {
         DocumentReference memberRef =
-        FirebaseFirestore.instance.collection(path).doc(jamId);
+            FirebaseFirestore.instance.collection(path).doc(jamId);
 
-        memberRef.update({
-          "membersID": FieldValue.arrayRemove([memberId])
-        }).onError((error, stackTrace) => null).then((value) => print("Member removed successfully"));
+        memberRef
+            .update({
+              "membersID": FieldValue.arrayRemove([memberId])
+            })
+            .onError((error, stackTrace) => null)
+            .then((value) => print("Member removed successfully"));
       } catch (err) {
         print("jamId ${jamId}");
         print("Error while removing member ${err}");
       }
-    }catch(e){
-
-    }
-
+    } catch (e) {}
   }
 
   static void removeMemberFromRoom(String jamId, String memberId) async {

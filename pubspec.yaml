@@ -149,6 +149,7 @@ flutter:
     - images/back.png
     - images/animation_drumm_loading.json
     - images/animation_pulse.json
+    - images/animation_nothing_found.json
   #   - images/a_dot_ham.jpeg
 
   fonts:
