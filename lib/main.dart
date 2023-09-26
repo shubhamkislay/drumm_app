@@ -584,10 +584,12 @@ class _SplashScreenState extends State<SplashScreen> {
       _isOnboarded = prefs.getBool('isOnboarded') ?? false;
     });
     String userID = FirebaseAuth.instance.currentUser?.uid??"";
-    Drummer drummer = await FirebaseDBOperations.getDrummer(userID);
-    if(userID.length>1) {
-      await prefs.setString('uid', userID);
-      await prefs.setInt('rid', drummer.rid??0);
+    if(userID.length>0) {
+      Drummer drummer = await FirebaseDBOperations.getDrummer(userID);
+      if (userID.length > 1) {
+        await prefs.setString('uid', userID);
+        await prefs.setInt('rid', drummer.rid ?? 0);
+      }
     }
 
   }

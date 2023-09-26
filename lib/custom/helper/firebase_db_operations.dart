@@ -750,7 +750,7 @@ class FirebaseDBOperations {
     if (ring) type = "data";
     final body = jsonEncode({
       "to": "${toParams}",
-      if (!ring)
+      //if (!ring)
         "notification": {
           "body": jam.title,
           "title": subtitle,

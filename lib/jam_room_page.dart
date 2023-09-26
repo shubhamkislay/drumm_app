@@ -393,6 +393,8 @@ class _JamRoomPageState extends State<JamRoomPage> {
               setState(() {
                 final updateMap = {rid: mute};
                 _muteStreamController.sink.add(updateMap);
+                if(mute)
+                  _speechStreamController.sink.add({rid: false});
               });
             }
           }
