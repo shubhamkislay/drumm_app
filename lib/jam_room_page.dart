@@ -228,10 +228,24 @@ class _JamRoomPageState extends State<JamRoomPage> {
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       if (!userJoined)
-                        Lottie.asset('images/animation_drumm_loading.json',
-                            height: 400,
-                            fit: BoxFit.contain,
-                            width: double.maxFinite),
+                        Container(
+                          height: 400,
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              Lottie.asset('images/animation_drumm_loading.json',
+                                  fit: BoxFit.contain,
+                                  width: double.maxFinite),
+                              Center(
+                                child: Text("Connecting...",style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14
+                                ),),
+                              )
+                            ],
+                          ),
+                        ),
                       if (drummerCards.length > 0 && userJoined)
                         Padding(
                           padding: const EdgeInsets.all(4.0),

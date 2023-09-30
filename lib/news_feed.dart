@@ -60,6 +60,7 @@ class _NewsFeedState extends State<NewsFeed>
   String selectedBandID = "All";
 
   bool noArticlesPresent=false;
+  bool liveDrummsExist = false;
 
   var keepAlive = true;
   @override
@@ -79,14 +80,15 @@ class _NewsFeedState extends State<NewsFeed>
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    SizedBox(width: 4,),
                     SizedBox(
-                      height: 24,
-                      width: 24,
+                      height: 26,
+                      width: 26,
                       child: Padding(
-                        padding: const EdgeInsets.all(1.0),
+                        padding: const EdgeInsets.only(left: 0),
                         child: Image.asset(
                           "images/logo_icon.png",
-                          color: Colors.white,
+                          color: Colors.blue,
                           width: 16,
                           height: 16,
                           fit: BoxFit.contain,
@@ -95,63 +97,72 @@ class _NewsFeedState extends State<NewsFeed>
                     ),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 0),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: Text(
-                          "rumm",
+                          "Drumm",
                           textAlign: TextAlign.left,
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 26,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'alata',
                           ),
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: (){
-                        print("Tapped on live drumm");
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  LiveDrumms(),
-                            ));
-                      },
-                      child: SizedBox(
-                        height: 36,
-                        child: Column(
-                          children: [
-                            GestureDetector(
-                              onTap: (){
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          LiveDrumms(),
-                                    ));
-                              },
-                              child: Container(
-                                  padding: EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
+                    SizedBox(
+                      height: 36,
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: (){
+                              setState(() {
+                                liveDrummsExist = false;
+                              });
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: COLOR_PRIMARY_DARK,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+                                ),
+                                builder: (BuildContext context) {
+                                  return Padding(
+                                    padding:
+                                    EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+                                      child: LiveDrumms(),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Container(
+                                padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(24),
+                                    gradient: (liveDrummsExist) ? LinearGradient(
+                                        colors: [
+                                          Colors.blue,
+                                          Colors.cyan
+                                        ]
+                                    ) : LinearGradient(
+                                        colors: [
+                                          Colors.grey.shade800,
+                                          Colors.grey.shade800,
+                                        ]
+                                    )
+                                ),
+                                child: Container(
+                                    decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(24),
-                                      gradient: LinearGradient(
-                                          colors: [
-                                            Colors.blue,
-                                            Colors.cyan
-                                          ]
-                                      )
-                                  ),
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(24),
-                                        color: Colors.grey.shade900,
-                                      ),
-                                      child: Icon(Icons.language,size: 32))),
-                            ),
-                            if(false)  SizedBox(height: 2,),
-                            if(false)  Flexible(child: AutoSizeText("Live",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.red),)),
-                          ],
-                        ),
+                                      color: Colors.grey.shade900,
+                                    ),
+                                    child: Icon(Icons.radar_rounded,size: 32))),
+                          ),
+                          if(false)  SizedBox(height: 2,),
+                          if(false)  Flexible(child: AutoSizeText("Live",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.red),)),
+                        ],
                       ),
                     ),
                     SizedBox(width: 8,),
@@ -197,7 +208,7 @@ class _NewsFeedState extends State<NewsFeed>
               ),
               if (bandsCards.length > 0)
                 SizedBox(
-                  height: 4,
+                  height: 2,
                 ),
               if (bandsCards.length > 0)
                 Container(
@@ -208,7 +219,7 @@ class _NewsFeedState extends State<NewsFeed>
                     height: 50,
                     child: multiSelectContainer),
               SizedBox(
-                height: 4,
+                height: 2,
               ),
               if (articles.length < 1 || loadAnimation)
                 Expanded(
@@ -265,6 +276,9 @@ class _NewsFeedState extends State<NewsFeed>
                             // });
 
                             controller?.undo(); },
+                          onRefresh: () {
+                            return _refreshData();
+                          },
                         );
                     },
                   ),
@@ -274,6 +288,20 @@ class _NewsFeedState extends State<NewsFeed>
         ),
       ),
     );
+  }
+  Future<void> _refreshData() async {
+    // Simulate a delay
+   // initState();
+    setOnboarded();
+    _lastRefreshTime = DateTime.now();
+    _checkAndScheduleRefresh();
+    FirebaseDBOperations.lastDocument = null;
+    //controller = CardSwiperController();
+    getArticles();
+    getCurrentDrummer();
+    checkLiveDrumms();
+    // Refresh your data
+    //getNews();
   }
   @override
   void dispose() {
@@ -295,6 +323,7 @@ class _NewsFeedState extends State<NewsFeed>
     getArticles();
     getBandsCards();
     getCurrentDrummer();
+    checkLiveDrumms();
   }
 
 
@@ -366,6 +395,24 @@ class _NewsFeedState extends State<NewsFeed>
       multiSelectContainer = getMultiSelectWidget(context);
       print("bandsCards size ${bandsCards.length}");
     });
+  }
+
+  Future<void> checkLiveDrumms() async {
+    List<Jam> fetchedDrumms =
+    await FirebaseDBOperations.getDrummsFromBands();
+    if(fetchedDrumms.length>0){
+      setState(() {
+        liveDrummsExist = true;
+      });
+      return;
+    }
+    List<Jam> broadcastJams = await FirebaseDBOperations.getBroadcastJams();
+    if(broadcastJams.length>0){
+      setState(() {
+        liveDrummsExist = true;
+      });
+
+    }
   }
 
   MultiSelectContainer getMultiSelectWidget(BuildContext bContext) {

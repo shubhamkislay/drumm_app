@@ -17,9 +17,11 @@ class HomeItem extends StatefulWidget {
   VoidCallback undo;
   Function(Article) updateList;
   Function(Article) openArticle;
+  Future<void> Function() onRefresh;
   HomeItem(
       {Key? key,
       required this.article,
+        required this.onRefresh,
         required this.undo,
       required this.isContainerVisible,
       required this.updateList,
@@ -45,251 +47,254 @@ class _HomeItemState extends State<HomeItem> {
             color: COLOR_PRIMARY_DARK,//Color(0xff012036FF)
             borderRadius: BorderRadius.circular(curve),
             border: Border.all(color: Colors.grey.shade900, width: 1)),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(curve-4),
-                      child: CachedNetworkImage(
-                        imageUrl: widget.article.imageUrl ?? "",
-                        filterQuality: FilterQuality.low,
-                        placeholder: (context, imageUrl) {
-                          String imageUrl = widget.article.imageUrl ??"";
-                          return Container(
-                            height: (imageUrl.length < 1) ? 0:150 ,
-                            color: Colors.transparent,
-                            width: double.infinity,
-                          );
-                        },
-                        errorWidget: (context, url, error) {
-                          return Container();
-                        },
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: widget.undo,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade900.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(48),
-                      ),
-                      margin: EdgeInsets.all(10),
-                      padding: EdgeInsets.all(6),
-                        child: Icon(Icons.arrow_back_ios_new_rounded,size: 24,)),
-                  )
-                ],
-              ),
-              GestureDetector(
-                onTap: () {
-                  Vibrate.feedback(FeedbackType.impact);
-                  widget.openArticle(widget.article);
-                  print("Tapped article");
-                },
-                child: Container(
-                  padding: EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          "${widget.article.source} | ${widget.article.category}",
-                          style: TextStyle(
-                            fontSize: 14,
-                          )),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Wrap(
-                        children: [
-                          Container(
-                            child: AutoSizeText(
-                              RemoveDuplicate.removeTitleSource(
-                                  widget.article.title ?? ""),
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      InstagramDateTimeWidget(
-                          publishedAt:
-                              widget.article.publishedAt.toString() ?? ""),
-                      SizedBox(
-                        height: 12,
-                      ),
-                      Text(
-                        (widget.article.description != null)
-                            ? "${widget.article.description}"
-                            : (widget.article.content != null)
-                                ? "${widget.article.content}"
-                                : "",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white70
-                        ),
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Text(
-                        "Tap to view",
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          color: Colors.grey.shade700,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Column(
-                children: [
-                  RoundedButton(
-                    padding: 14,
-                    height: iconHeight, //iconHeight,
-                    color: Colors.white,
-                    bgColor: iconBGColor,
-                    onPressed: () {
-                      AISummary.showBottomSheet(context,
-                          widget.article ?? Article(), Colors.transparent);
-                    },
-                    assetPath: 'images/sparkles.png',
-                  ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Text(
-                    "Summary",
-                    style: TextStyle(fontSize: fontSize, color: Colors.white),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 6,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: RefreshIndicator(
+          onRefresh: widget.onRefresh,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                Stack(
                   children: [
-                    Column(
-                      children: [
-                        RoundedButton(
-                          padding: 16,
-                          height: iconHeight,
-                          color: widget.article.liked ?? false
-                              ? Colors.red
-                              : Colors.white,
-                          bgColor: iconBGColor,
-                          hoverColor: Colors.redAccent,
-                          onPressed: () {
-                            setState(() {
-                              if (widget.article.liked ?? false) {
-                                FirebaseDBOperations.removeLike(
-                                    widget.article.articleId);
-                                widget.article.liked = false;
-                                int currentLikes = widget.article.likes ?? 1;
-                                currentLikes -= 1;
-                                widget.article.likes = currentLikes;
-                                widget.updateList(widget.article);
-                                //  _articlesController.add(articles);
-                              } else {
-                                FirebaseDBOperations.updateLike(
-                                    widget.article.articleId);
-
-                                widget.article.liked = true;
-                                int currentLikes = widget.article.likes ?? 0;
-                                currentLikes += 1;
-                                widget.article.likes = currentLikes;
-                                widget.updateList(widget.article);
-                                //_articlesController.add(articles);
-
-                                Vibrate.feedback(FeedbackType.impact);
-                              }
-                            });
-                          },
-                          assetPath: widget.article.liked ?? false
-                              ? 'images/liked.png'
-                              : 'images/heart.png',
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),
-                        Text(
-                          ((widget.article.likes ?? 0) > 0)
-                              ? "${widget.article.likes}"
-                              : "Likes",
-                          style: TextStyle(fontSize: fontSize),
-                        ),
-                      ],
-                    ),
-                    // if ((articles!.elementAt(index).likes ?? 0) > 0)
-                    Column(
-                      children: [
-                        RoundedButton(
-                          padding: 12,
-                          height: 64, //iconHeight,
-                          color: Colors.blue,
-                          bgColor: iconBGColor, //Colors.white24,
-                          onPressed: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.grey.shade900,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(0.0)),
-                              ),
-                              builder: (BuildContext context) {
-                                return Padding(
-                                  padding: EdgeInsets.only(
-                                      bottom: MediaQuery.of(context)
-                                          .viewInsets
-                                          .bottom),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(0.0)),
-                                    child: ArticleJamPage(
-                                      article: widget.article,
-                                    ),
-                                  ),
-                                );
-                              },
+                    Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(curve-4),
+                        child: CachedNetworkImage(
+                          imageUrl: widget.article.imageUrl ?? "",
+                          filterQuality: FilterQuality.low,
+                          placeholder: (context, imageUrl) {
+                            String imageUrl = widget.article.imageUrl ??"";
+                            return Container(
+                              height: (imageUrl.length < 1) ? 0:150 ,
+                              color: Colors.transparent,
+                              width: double.infinity,
                             );
                           },
-                          assetPath: 'images/drumm_logo.png',
+                          errorWidget: (context, url, error) {
+                            return Container();
+                          },
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: widget.undo,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade900.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(48),
+                        ),
+                        margin: EdgeInsets.all(10),
+                        padding: EdgeInsets.all(6),
+                          child: Icon(Icons.arrow_back_ios_new_rounded,size: 24,)),
+                    )
+                  ],
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Vibrate.feedback(FeedbackType.impact);
+                    widget.openArticle(widget.article);
+                    print("Tapped article");
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            "${widget.article.source} | ${widget.article.category}",
+                            style: TextStyle(
+                              fontSize: 14,
+                            )),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Wrap(
+                          children: [
+                            Container(
+                              child: AutoSizeText(
+                                RemoveDuplicate.removeTitleSource(
+                                    widget.article.title ?? ""),
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        InstagramDateTimeWidget(
+                            publishedAt:
+                                widget.article.publishedAt.toString() ?? ""),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        Text(
+                          (widget.article.description != null)
+                              ? "${widget.article.description}"
+                              : (widget.article.content != null)
+                                  ? "${widget.article.content}"
+                                  : "",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white70
+                          ),
                         ),
                         SizedBox(
                           height: 6,
                         ),
                         Text(
-                          "Drumms",
-                          style: TextStyle(fontSize: fontSize,),
+                          "Tap to view",
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: Colors.grey.shade700,
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),
+                  ),
+                ),
+                Column(
+                  children: [
+                    RoundedButton(
+                      padding: 14,
+                      height: iconHeight, //iconHeight,
+                      color: Colors.white,
+                      bgColor: iconBGColor,
+                      onPressed: () {
+                        AISummary.showBottomSheet(context,
+                            widget.article ?? Article(), Colors.transparent);
+                      },
+                      assetPath: 'images/sparkles.png',
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      "Summary",
+                      style: TextStyle(fontSize: fontSize, color: Colors.white),
+                    ),
                   ],
                 ),
-              ),
-              SizedBox(
-                height: 50,
-              )
-            ],
+                SizedBox(
+                  height: 6,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        children: [
+                          RoundedButton(
+                            padding: 16,
+                            height: iconHeight,
+                            color: widget.article.liked ?? false
+                                ? Colors.red
+                                : Colors.white,
+                            bgColor: iconBGColor,
+                            hoverColor: Colors.redAccent,
+                            onPressed: () {
+                              setState(() {
+                                if (widget.article.liked ?? false) {
+                                  FirebaseDBOperations.removeLike(
+                                      widget.article.articleId);
+                                  widget.article.liked = false;
+                                  int currentLikes = widget.article.likes ?? 1;
+                                  currentLikes -= 1;
+                                  widget.article.likes = currentLikes;
+                                  widget.updateList(widget.article);
+                                  //  _articlesController.add(articles);
+                                } else {
+                                  FirebaseDBOperations.updateLike(
+                                      widget.article.articleId);
+
+                                  widget.article.liked = true;
+                                  int currentLikes = widget.article.likes ?? 0;
+                                  currentLikes += 1;
+                                  widget.article.likes = currentLikes;
+                                  widget.updateList(widget.article);
+                                  //_articlesController.add(articles);
+
+                                  Vibrate.feedback(FeedbackType.impact);
+                                }
+                              });
+                            },
+                            assetPath: widget.article.liked ?? false
+                                ? 'images/liked.png'
+                                : 'images/heart.png',
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Text(
+                            ((widget.article.likes ?? 0) > 0)
+                                ? "${widget.article.likes}"
+                                : "Likes",
+                            style: TextStyle(fontSize: fontSize),
+                          ),
+                        ],
+                      ),
+                      // if ((articles!.elementAt(index).likes ?? 0) > 0)
+                      Column(
+                        children: [
+                          RoundedButton(
+                            padding: 12,
+                            height: 64, //iconHeight,
+                            color: Colors.blue,
+                            bgColor: iconBGColor, //Colors.white24,
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.grey.shade900,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(0.0)),
+                                ),
+                                builder: (BuildContext context) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(0.0)),
+                                      child: ArticleJamPage(
+                                        article: widget.article,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            assetPath: 'images/drumm_logo.png',
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "Drumms",
+                            style: TextStyle(fontSize: fontSize,),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 50,
+                )
+              ],
+            ),
           ),
         ),
       ),
