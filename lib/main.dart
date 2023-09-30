@@ -145,6 +145,16 @@ class _MyAppState extends State<MyApp>
     Jam jam = Jam.fromJson(json);
     print("Handling a background message title: ${jam.title}");
     bool ring = jsonDecode(message.data["ring"]);
+
+    addToNotification(message);
+
+    //Map userMap = jsonDecode(shared_User.getString('user'));
+    //
+    //
+    //
+    // var user = User.fromJson(userMap);
+
+
     if (FirebaseAuth.instance.currentUser?.uid != jam.startedBy) if (ring)
       startCallingNotification(message);
   }
@@ -349,7 +359,9 @@ class _MyAppState extends State<MyApp>
     Map<String, dynamic> json = jsonDecode(message.data["jam"]);
     Jam jam = Jam.fromJson(json);
 
+    addToNotification(message);
     if (drummerID != FirebaseAuth.instance.currentUser?.uid) {
+
       Drummer drummer = await FirebaseDBOperations.getDrummer(drummerID);
       String drummerImage = drummer.imageUrl ?? "";
 
@@ -550,6 +562,14 @@ class _MyAppState extends State<MyApp>
             .show(context);
       }
     }
+  }
+
+  void addToNotification(RemoteMessage message) async {
+    SharedPreferences notiPref = await SharedPreferences.getInstance();
+    List<String>? notifications = notiPref.getStringList("notifications");
+    notifications ??= [];
+    notifications.add(message.data["jam"]);
+    notiPref.setStringList("notifications", notifications);
   }
 }
 

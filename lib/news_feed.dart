@@ -8,6 +8,7 @@ import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/live_drumms.dart';
 import 'package:drumm_app/model/band.dart';
 import 'package:drumm_app/model/drummer_image_card.dart';
+import 'package:drumm_app/notification_widget.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +63,8 @@ class _NewsFeedState extends State<NewsFeed>
   bool noArticlesPresent=false;
   bool liveDrummsExist = false;
 
+  double drummLogoSize = 25;
+
   var keepAlive = true;
   @override
   Widget build(BuildContext context) {
@@ -81,9 +84,47 @@ class _NewsFeedState extends State<NewsFeed>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(width: 4,),
-                    SizedBox(
-                      height: 26,
-                      width: 26,
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  UserProfilePage(
+                                    drummer: drummer,
+                                    fromSearch: true,
+                                  ),
+                            ));
+                      },
+                      child: Container(
+                          width: 36,
+                          height: 36,
+                          padding: EdgeInsets.all(1),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.grey.shade800
+                          ),
+                          child: (drummer.imageUrl!=null)?Container(
+                            padding: EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(19),
+                                color: Colors.black
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(17),
+                              clipBehavior: Clip.hardEdge,
+                              child: CachedNetworkImage(
+                                  width: 36,
+                                  height: 36,
+                                  imageUrl: drummer.imageUrl ?? "",
+                                  fit: BoxFit.cover),
+                            ),
+                          ):RoundedButton(height: 32,padding: 6,assetPath: "images/user_profile_active.png",color: Colors.white, bgColor: Colors.grey.shade900, onPressed: (){})),
+                    ),
+                    SizedBox(width: 4,),
+                   if(false) SizedBox(
+                      height: drummLogoSize,
+                      width: drummLogoSize,
                       child: Padding(
                         padding: const EdgeInsets.only(left: 0),
                         child: Image.asset(
@@ -95,20 +136,21 @@ class _NewsFeedState extends State<NewsFeed>
                         ),
                       ),
                     ),
-                    Expanded(
+                   if(true) Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
                         child: Text(
                           "Drumm",
                           textAlign: TextAlign.left,
                           style: TextStyle(
-                            fontSize: 26,
+                            fontSize: drummLogoSize,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'alata',
                           ),
                         ),
                       ),
                     ),
+                   if(false)  Expanded(child: Container()),
                     SizedBox(
                       height: 36,
                       child: Column(
@@ -165,50 +207,51 @@ class _NewsFeedState extends State<NewsFeed>
                         ],
                       ),
                     ),
-                    SizedBox(width: 8,),
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  UserProfilePage(
-                                    drummer: drummer,
-                                    fromSearch: true,
-                                  ),
-                            ));
-                      },
-                      child: Container(
-                        width: 36,
-                          height: 36,
-                          padding: EdgeInsets.all(1),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.grey.shade800
+                    SizedBox(width: 4,),
+                    SizedBox(
+                      height: 36,
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: (){
+                              setState(() {
+                                liveDrummsExist = false;
+                              });
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: COLOR_PRIMARY_DARK,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+                                ),
+                                builder: (BuildContext context) {
+                                  return Padding(
+                                    padding:
+                                    EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+                                      child: NotificationWidget(),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Container(
+                                padding: EdgeInsets.all(2),
+                                child: Image.asset("images/notification.png",height: 30,fit: BoxFit.contain,color: Colors.white,)),//Icon(Icons.notifications_on_rounded,size: 32))),
                           ),
-                          child: (drummer.imageUrl!=null)?Container(
-                            padding: EdgeInsets.all(2),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(19),
-                                color: Colors.black
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(17),
-                              clipBehavior: Clip.hardEdge,
-                              child: CachedNetworkImage(
-                                  width: 36,
-                                  height: 36,
-                                  imageUrl: drummer.imageUrl ?? "",
-                                  fit: BoxFit.cover),
-                            ),
-                          ):RoundedButton(height: 32,padding: 6,assetPath: "images/user_profile_active.png",color: Colors.white, bgColor: Colors.grey.shade900, onPressed: (){})),
+                          if(false)  SizedBox(height: 2,),
+                          if(false)  Flexible(child: AutoSizeText("Live",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.red),)),
+                        ],
+                      ),
                     ),
+                    SizedBox(width: 10,),
                   ],
                 ),
               ),
               if (bandsCards.length > 0)
                 SizedBox(
-                  height: 2,
+                  height: 8,
                 ),
               if (bandsCards.length > 0)
                 Container(
