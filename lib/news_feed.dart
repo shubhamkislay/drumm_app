@@ -79,64 +79,82 @@ class _NewsFeedState extends State<NewsFeed>
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                  GestureDetector(
-                    onTap: (){
-                      print("Tapped on live drumm");
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                LiveDrumms(),
-                          ));
-                    },
-                    child: SizedBox(
-                      height: 42,
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: (){
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        LiveDrumms(),
-                                  ));
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(2),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(24),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.grey.shade800,
-                                      Colors.grey.shade800
-                                    ]
-                                  )
-                                ),
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(24),
-                                        color: Colors.grey.shade900,
-                                    ),
-                                    child: Icon(Icons.language,size: 36))),
-                          ),
-                        if(false)  SizedBox(height: 2,),
-                          if(false)  Flexible(child: AutoSizeText("Live",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.red),)),
-                        ],
-                      ),
-                    ),
-                  ),
-                    Expanded(
-                      child: Text(
-                        "drumm",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'alata',
+                    SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: Padding(
+                        padding: const EdgeInsets.all(1.0),
+                        child: Image.asset(
+                          "images/logo_icon.png",
+                          color: Colors.white,
+                          width: 16,
+                          height: 16,
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 0),
+                        child: Text(
+                          "rumm",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'alata',
+                          ),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        print("Tapped on live drumm");
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  LiveDrumms(),
+                            ));
+                      },
+                      child: SizedBox(
+                        height: 36,
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onTap: (){
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          LiveDrumms(),
+                                    ));
+                              },
+                              child: Container(
+                                  padding: EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(24),
+                                      gradient: LinearGradient(
+                                          colors: [
+                                            Colors.blue,
+                                            Colors.cyan
+                                          ]
+                                      )
+                                  ),
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(24),
+                                        color: Colors.grey.shade900,
+                                      ),
+                                      child: Icon(Icons.language,size: 32))),
+                            ),
+                            if(false)  SizedBox(height: 2,),
+                            if(false)  Flexible(child: AutoSizeText("Live",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.red),)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8,),
                     GestureDetector(
                       onTap: (){
                         Navigator.push(
@@ -150,7 +168,8 @@ class _NewsFeedState extends State<NewsFeed>
                             ));
                       },
                       child: Container(
-                        width: 42,
+                        width: 36,
+                          height: 36,
                           padding: EdgeInsets.all(1),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
@@ -164,13 +183,14 @@ class _NewsFeedState extends State<NewsFeed>
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(17),
+                              clipBehavior: Clip.hardEdge,
                               child: CachedNetworkImage(
                                   width: 36,
                                   height: 36,
                                   imageUrl: drummer.imageUrl ?? "",
                                   fit: BoxFit.cover),
                             ),
-                          ):RoundedButton(height: 30,padding: 6,assetPath: "images/user_profile_active.png",color: Colors.white, bgColor: Colors.grey.shade900, onPressed: (){})),
+                          ):RoundedButton(height: 32,padding: 6,assetPath: "images/user_profile_active.png",color: Colors.white, bgColor: Colors.grey.shade900, onPressed: (){})),
                     ),
                   ],
                 ),
@@ -193,15 +213,21 @@ class _NewsFeedState extends State<NewsFeed>
               if (articles.length < 1 || loadAnimation)
                 Expanded(
                     child: Center(
-                      child: Lottie.asset(loadingAnimation,
-                          fit: BoxFit.contain, width: double.maxFinite),
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Lottie.asset(loadingAnimation,
+                              fit: BoxFit.contain, width: double.maxFinite),
+                          if(articles.length < 1 && loadAnimation) Center(child: Text("You're all caught up")),
+                        ],
+                      ),
                     )),
               if (articles.length > 0)
                 Expanded(
                   child: CardSwiper(
                     controller: controller,
                     cardsCount: articles.length,
-                    duration: Duration(milliseconds: 300),
+                    duration: Duration(milliseconds: 200),
                     maxAngle: 60,
                     scale: 0.85,
                     numberOfCardsDisplayed: (articles.length>1)?2:1,
@@ -373,8 +399,8 @@ class _NewsFeedState extends State<NewsFeed>
       ),
       itemsDecoration: MultiSelectDecorations(
         decoration: BoxDecoration(
-            color: Colors.grey.shade900,
-            border: Border.all(color: Color(0xff2f2f2f)),
+            color: COLOR_PRIMARY_DARK,//Colors.grey.shade900,
+            border: Border.all(color: Colors.grey.shade900),//Color(0xff2f2f2f)),
             borderRadius: BorderRadius.circular(18)),
         selectedDecoration: BoxDecoration(
             gradient: LinearGradient(colors: [
@@ -442,13 +468,15 @@ class _NewsFeedState extends State<NewsFeed>
     if(articleFetched.length<1) {
       setState(() {
         noArticlesPresent = true;
-        loadingAnimation = NO_FOUND_ASSET;
+        //loadingAnimation = NO_FOUND_ASSET;
+        loadAnimation = true;
       });
 
     }
     else {
       setState(() {
         noArticlesPresent = false;
+        loadAnimation = false;
         loadingAnimation = LOADING_ASSET;
       });
 
@@ -559,13 +587,15 @@ class _NewsFeedState extends State<NewsFeed>
     if(fetchcedArticle.length<1) {
       setState(() {
         noArticlesPresent = true;
-        loadingAnimation = NO_FOUND_ASSET;
+       // loadingAnimation = NO_FOUND_ASSET;
+        loadAnimation = true;
       });
 
     }
     else {
       setState(() {
         noArticlesPresent = false;
+        loadAnimation = false;
         loadingAnimation = LOADING_ASSET;
       });
 

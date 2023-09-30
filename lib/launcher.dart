@@ -153,9 +153,9 @@ class _LauncherPageState extends State<LauncherPage>
                   padding: EdgeInsets.symmetric(horizontal: 0,),
                   margin: EdgeInsets.symmetric(horizontal: 6,vertical: 4),
                   decoration: BoxDecoration(
-                      color: Colors.grey.shade900,//COLOR_PRIMARY_DARK,
+                      color: COLOR_PRIMARY_DARK,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.grey.shade800, width: 1)),
+                      border: Border.all(color: Colors.grey.shade900, width: 1)),
                   child: Row(
                     children: [
                       Padding(

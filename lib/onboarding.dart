@@ -33,24 +33,33 @@ class OnBoarding extends StatefulWidget {
 
 class _OnBoardingState extends State<OnBoarding> {
   bool _isOnboarded = false;
+  String actionState = "Continue";
   @override
   Widget build(BuildContext context) {
     double textSize = 32;
     double marginHeight = 200;
+
 
     return Scaffold(
       backgroundColor: Colors.black,
       body: OnBoardingSlider(
         headerBackgroundColor: Colors.black,
         controllerColor: Colors.white,
-        finishButtonText: 'Continue',
+        finishButtonText: actionState,
         pageBackgroundColor: Colors.black,
         onFinish: (){
-          Future<UserCredential> signin = signInWithGoogle();
-          signin.then((value) => {checkIfUserExists(value)});
+         // Future<UserCredential> signin =
+
+          if(actionState == "Continue") {
+            setState(() {
+              actionState = "Signing in...";
+            });
+            signInWithGoogle();
+          }
+         // signin.then((value) => {checkIfUserExists(value)});
         },
         finishButtonStyle: FinishButtonStyle(
-          backgroundColor: Color(0xff008cff),
+          backgroundColor: (actionState == "Continue") ? Color(0xff008cff):Colors.grey.shade900,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(50.0),
@@ -230,7 +239,8 @@ class _OnBoardingState extends State<OnBoarding> {
     );
   }
 
-  Future<UserCredential> signInWithGoogle() async {
+  //Future<UserCredential>
+  void signInWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -239,13 +249,33 @@ class _OnBoardingState extends State<OnBoarding> {
     await googleUser?.authentication;
 
     // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
+    var credential;
+    try {
+      credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+    }catch(e){
+      print("Exception returned ${e.toString()}");
+      setState(() {
+        actionState = "Continue";
+      });
+      return;
+    }
+
+    FirebaseAuth.instance.signInWithCredential(credential).then((value) {
+      if(value.credential!=null)
+        checkIfUserExists(value);
+      else
+        setState(() {
+          actionState = "Continue";
+        });
+    });
+   // signin.then((value) => {checkIfUserExists(value)});
+
 
     // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+   // return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
   void checkIfUserExists(UserCredential userCredential) async {

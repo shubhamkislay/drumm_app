@@ -32,7 +32,7 @@ class HomeItem extends StatefulWidget {
 
 class _HomeItemState extends State<HomeItem> {
   double fontSize = 10;
-  Color iconBGColor = Colors.grey.shade900;//COLOR_PRIMARY_DARK;
+  Color iconBGColor = Colors.grey.shade900.withOpacity(0.5);//COLOR_PRIMARY_DARK;
   double iconHeight = 64;
   double sizedBoxedHeight = 12;
   double curve = 20;
@@ -42,41 +42,47 @@ class _HomeItemState extends State<HomeItem> {
       borderRadius: BorderRadius.circular(curve),
       child: Container(
         decoration: BoxDecoration(
-            color: Colors.black,//COLOR_PRIMARY_DARK,
+            color: COLOR_PRIMARY_DARK,//Color(0xff012036FF)
             borderRadius: BorderRadius.circular(curve),
-            border: Border.all(color: Colors.grey.shade700, width: 1)),
+            border: Border.all(color: Colors.grey.shade900, width: 1)),
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
             children: [
               Stack(
                 children: [
-                  CachedNetworkImage(
-                    imageUrl: widget.article.imageUrl ?? "",
-                    filterQuality: FilterQuality.low,
-                    placeholder: (context, imageUrl) {
-                      String imageUrl = widget.article.imageUrl ??"";
-                      return Container(
-                        height: (imageUrl.length < 1) ? 0:150 ,
-                        color: Colors.transparent,
-                        width: double.infinity,
-                      );
-                    },
-                    errorWidget: (context, url, error) {
-                      return Container();
-                    },
-                    fit: BoxFit.fitWidth,
+                  Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(curve-4),
+                      child: CachedNetworkImage(
+                        imageUrl: widget.article.imageUrl ?? "",
+                        filterQuality: FilterQuality.low,
+                        placeholder: (context, imageUrl) {
+                          String imageUrl = widget.article.imageUrl ??"";
+                          return Container(
+                            height: (imageUrl.length < 1) ? 0:150 ,
+                            color: Colors.transparent,
+                            width: double.infinity,
+                          );
+                        },
+                        errorWidget: (context, url, error) {
+                          return Container();
+                        },
+                        fit: BoxFit.fitWidth,
+                      ),
+                    ),
                   ),
                   GestureDetector(
                     onTap: widget.undo,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade700.withOpacity(0.5),
+                        color: Colors.grey.shade900.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(48),
                       ),
-                      margin: EdgeInsets.all(8),
+                      margin: EdgeInsets.all(10),
                       padding: EdgeInsets.all(6),
-                        child: Icon(Icons.undo_rounded,size: 28,)),
+                        child: Icon(Icons.arrow_back_ios_new_rounded,size: 24,)),
                   )
                 ],
               ),
@@ -87,7 +93,7 @@ class _HomeItemState extends State<HomeItem> {
                   print("Tapped article");
                 },
                 child: Container(
-                  padding: EdgeInsets.all(16),
+                  padding: EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
