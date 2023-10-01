@@ -84,6 +84,28 @@ Future<CroppedFile?> cropImage(File _pickedFile) async {
   }
 }
 
+modifyImageUrl(String originalUrl, String newSize) {
+  // Split the URL into parts using the last '.' as the separator
+  //String newSize = "100x100";
+  List<String> parts = originalUrl.split('.');
+
+  if (parts.length >= 2) {
+    // Get the file extension from the last part
+    String fileExtension = parts.last;
+
+    // Remove the file extension from the last part
+    parts.removeLast();
+
+    // Join the parts back together with the new size and file extension
+    String modifiedUrl = '${parts.join('.')}_$newSize.$fileExtension';
+
+    return modifiedUrl;
+  } else {
+    // If the URL doesn't contain a '.', simply add the new size specification
+    return '${originalUrl}_${newSize}';
+  }
+}
+
 // void main() {
 //   // Initialize Firebase and other configurations
 //

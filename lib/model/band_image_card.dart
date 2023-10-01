@@ -11,6 +11,8 @@ import 'package:drumm_app/model/band.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/view_band.dart';
 
+import '../custom/helper/image_uploader.dart';
+
 typedef void BandCallback(Band band);
 
 class BandImageCard extends StatefulWidget {
@@ -58,7 +60,7 @@ class BandImageCardState extends State<BandImageCard> {
                           child: CachedNetworkImage(
                               width: double.infinity,
                               height: double.infinity,
-                              imageUrl: widget.band.url ?? "",
+                              imageUrl:modifyImageUrl(widget.band.url ?? "","300x300"),
                               errorWidget:(context,url,error){
                                 return Container(color:COLOR_PRIMARY_DARK);
                               },
@@ -175,7 +177,7 @@ class BandImageCardState extends State<BandImageCard> {
             child: CachedNetworkImage(
                 width: 20,
                 height: 20,
-                imageUrl: e.imageUrl ?? "",
+                imageUrl: modifyImageUrl(e.imageUrl ?? "","100x100"),
                 fit: BoxFit.cover),
           ),
         );

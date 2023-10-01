@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drumm_app/custom/helper/image_uploader.dart';
 import 'package:flutter/material.dart';
 import 'package:drumm_app/custom/helper/remove_duplicate.dart';
 import 'package:drumm_app/custom/random_custom_bk.dart';
@@ -40,7 +41,7 @@ class DrummerImageCard extends StatelessWidget {
                 width: double.infinity,
                 height: double.infinity,
                 placeholder: (context, url) => Container(color: Colors.grey.shade900,),
-                imageUrl: drummer.imageUrl ?? "", fit: BoxFit.cover),
+                imageUrl: modifyImageUrl(drummer?.imageUrl ??"","300x300"), fit: BoxFit.cover),
             Container(
               alignment: Alignment.bottomLeft,
               padding: EdgeInsets.all(3),

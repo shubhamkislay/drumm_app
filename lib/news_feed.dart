@@ -21,6 +21,7 @@ import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'custom/create_jam_bottom_sheet.dart';
+import 'custom/helper/image_uploader.dart';
 import 'custom/rounded_button.dart';
 import 'jam_room_page.dart';
 import 'model/Drummer.dart';
@@ -284,7 +285,7 @@ class _NewsFeedState extends State<NewsFeed>
                               child: CachedNetworkImage(
                                   width: 30,
                                   height: 30,
-                                  imageUrl: drummer.imageUrl ?? "",
+                                  imageUrl: modifyImageUrl(drummer.imageUrl ?? "","100x100"),
                                   fit: BoxFit.cover),
                             ),
                           ):RoundedButton(height: 20,padding: 6,assetPath: "images/user_profile_active.png",color: Colors.white, bgColor: Colors.grey.shade900, onPressed: (){})),
@@ -465,7 +466,10 @@ class _NewsFeedState extends State<NewsFeed>
             ),
           ),
         );
-      } else
+      } else {
+
+        String imageUrl = modifyImageUrl(element.url ?? "","100x100");
+        print("The imageUrl is $imageUrl");
         mulList.add(
           MultiSelectCard(
             value: element,
@@ -477,7 +481,7 @@ class _NewsFeedState extends State<NewsFeed>
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: CachedNetworkImage(
-                      imageUrl: element.url ?? "",
+                      imageUrl: imageUrl,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -490,6 +494,7 @@ class _NewsFeedState extends State<NewsFeed>
             ),
           ),
         );
+      }
     });
 
     setState(() {
@@ -498,6 +503,8 @@ class _NewsFeedState extends State<NewsFeed>
       print("bandsCards size ${bandsCards.length}");
     });
   }
+
+
 
   Future<void> checkLiveDrumms() async {
     List<Jam> fetchedDrumms =
@@ -627,13 +634,11 @@ class _NewsFeedState extends State<NewsFeed>
         noArticlesPresent = false;
         loadAnimation = false;
         loadingAnimation = LOADING_ASSET;
+        articles = articleFetched;
       });
 
     }
-    setState(() {
-      articles = articleFetched;
-      print("Article length ${articles.length}");
-    });
+
   }
 
   bool _onSwipe(
@@ -745,15 +750,11 @@ class _NewsFeedState extends State<NewsFeed>
       setState(() {
         noArticlesPresent = false;
         loadAnimation = false;
+        articles = fetchcedArticle;
         loadingAnimation = LOADING_ASSET;
       });
 
     }
-
-    setState(() {
-      articles = fetchcedArticle;
-      print("Article length ${articles.length}");
-    });
   }
 
   void joinOpenDrumm(Article article) {

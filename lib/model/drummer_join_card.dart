@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/custom/helper/image_uploader.dart';
 import 'package:flutter/material.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/custom/helper/remove_duplicate.dart';
@@ -103,7 +104,7 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
                                 errorWidget: (context,url,error){
                                   return Container();
                                 },
-                                imageUrl: drummer.imageUrl ?? "", fit: BoxFit.cover,fadeInCurve: Curves.easeIn,placeholder: (context, url) => Container(color: Colors.grey.shade900,),),
+                                imageUrl: modifyImageUrl(drummer?.imageUrl ??"","300x300"), fit: BoxFit.cover,fadeInCurve: Curves.easeIn,placeholder: (context, url) => Container(color: Colors.grey.shade900,),),
                             ),
                           ),
                          if(widget.muted) Container(

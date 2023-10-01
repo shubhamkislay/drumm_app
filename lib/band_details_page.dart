@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drumm_app/custom/helper/image_uploader.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -56,8 +57,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                           CachedNetworkImage(
                             height: double.maxFinite,
                             width: double.maxFinite,
-                            imageUrl:
-                                band?.url ?? "", //widget.band?.imageUrl ?? "",
+                            imageUrl:modifyImageUrl(band?.url ?? "","100x100"),//widget.band?.imageUrl ?? "",
                             fit: BoxFit.cover,
                             alignment: Alignment.topCenter,
                             errorWidget: (context, url, error) {
@@ -80,7 +80,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: CachedNetworkImage(
-                                  imageUrl: band?.url ?? "",
+                                  imageUrl:modifyImageUrl(band?.url ?? "","300x300"),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -534,7 +534,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
               child: CachedNetworkImage(
                   width: 36,
                   height: 36,
-                  imageUrl: e.imageUrl ?? "",
+                  imageUrl: modifyImageUrl(e.imageUrl ?? "","100x100"),
                   fit: BoxFit.cover),
             ),
           ),

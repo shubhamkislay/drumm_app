@@ -9,6 +9,7 @@ import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/theme/theme_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'custom/helper/image_uploader.dart';
 import 'launcher.dart';
 import 'model/band_image_card.dart';
 
@@ -216,7 +217,7 @@ class _InterestsPageState extends State<InterestsPage> {
                                       borderRadius: BorderRadius.circular(6),
                                       child: CachedNetworkImage(
                                           fit: BoxFit.cover,
-                                          imageUrl: band.url ?? ""),
+                                          imageUrl: modifyImageUrl(band.url ?? "","300x300")),
                                     )),
                               ),
                             ),

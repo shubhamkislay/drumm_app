@@ -14,6 +14,8 @@ import 'package:drumm_app/model/article_image_card.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'custom/helper/image_uploader.dart';
+
 class UserProfilePage extends StatefulWidget {
   Drummer? drummer;
   bool? fromSearch;
@@ -53,8 +55,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                             height: double.maxFinite,
                             width: double.maxFinite,
                             alignment: Alignment.center,
-                            imageUrl: drummer?.imageUrl ??
-                                "", //widget.drummer?.imageUrl ?? "",
+                            imageUrl: modifyImageUrl(drummer?.imageUrl ??"","100x100"), //widget.drummer?.imageUrl ?? "",
                             fit: BoxFit.cover,
                             placeholder: (context, url) =>
                                 Container(color: COLOR_PRIMARY_DARK),
@@ -77,7 +78,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: CachedNetworkImage(
-                                  imageUrl: drummer?.imageUrl ?? "",
+                                  imageUrl: modifyImageUrl(drummer?.imageUrl ??"","300x300"),
                                 ),
                               ),
                             ),
