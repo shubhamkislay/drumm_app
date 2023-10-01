@@ -20,6 +20,7 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'custom/create_jam_bottom_sheet.dart';
 import 'custom/rounded_button.dart';
 import 'jam_room_page.dart';
 import 'model/Drummer.dart';
@@ -63,7 +64,8 @@ class _NewsFeedState extends State<NewsFeed>
   bool noArticlesPresent=false;
   bool liveDrummsExist = false;
 
-  double drummLogoSize = 25;
+  double drummLogoSize = 24;
+  double iconSpaces = 28;
 
   var keepAlive = true;
   @override
@@ -84,45 +86,7 @@ class _NewsFeedState extends State<NewsFeed>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(width: 4,),
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  UserProfilePage(
-                                    drummer: drummer,
-                                    fromSearch: true,
-                                  ),
-                            ));
-                      },
-                      child: Container(
-                          width: 36,
-                          height: 36,
-                          padding: EdgeInsets.all(1),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: Colors.grey.shade800
-                          ),
-                          child: (drummer.imageUrl!=null)?Container(
-                            padding: EdgeInsets.all(2),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(19),
-                                color: Colors.black
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(17),
-                              clipBehavior: Clip.hardEdge,
-                              child: CachedNetworkImage(
-                                  width: 36,
-                                  height: 36,
-                                  imageUrl: drummer.imageUrl ?? "",
-                                  fit: BoxFit.cover),
-                            ),
-                          ):RoundedButton(height: 32,padding: 6,assetPath: "images/user_profile_active.png",color: Colors.white, bgColor: Colors.grey.shade900, onPressed: (){})),
-                    ),
-                    SizedBox(width: 4,),
-                   if(false) SizedBox(
+                   if(true) SizedBox(
                       height: drummLogoSize,
                       width: drummLogoSize,
                       child: Padding(
@@ -136,6 +100,7 @@ class _NewsFeedState extends State<NewsFeed>
                         ),
                       ),
                     ),
+                   if(false)Expanded(child: Container()),
                    if(true) Expanded(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 2),
@@ -152,7 +117,86 @@ class _NewsFeedState extends State<NewsFeed>
                     ),
                    if(false)  Expanded(child: Container()),
                     SizedBox(
-                      height: 36,
+                      height: 32,
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: (){
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: COLOR_PRIMARY_DARK,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+                                ),
+                                builder: (BuildContext context) {
+                                  return Padding(
+                                    padding:
+                                    EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+                                      child: CreateJam(
+                                          title: "",
+                                          bandId: "",
+                                          imageUrl: ""),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Container(
+                                padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(24),
+                                ),
+                                child: Image.asset("images/edit.png",height: 26,fit: BoxFit.contain,color: Colors.grey.shade200,)),
+                          ),
+                          if(false)  SizedBox(height: 2,),
+                          if(false)  Flexible(child: AutoSizeText("Live",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.red),)),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: iconSpaces,),
+                    SizedBox(
+                      height: 26,
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: (){
+                              setState(() {
+                                liveDrummsExist = false;
+                              });
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: COLOR_PRIMARY_DARK,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+                                ),
+                                builder: (BuildContext context) {
+                                  return Padding(
+                                    padding:
+                                    EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+                                      child: NotificationWidget(),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Container(
+                                padding: EdgeInsets.all(2),
+                                child: Image.asset("images/notification.png",height: 20,fit: BoxFit.contain,color: Colors.white,)),//Icon(Icons.notifications_on_rounded,size: 32))),
+                          ),
+                          if(false)  SizedBox(height: 2,),
+                          if(false)  Flexible(child: AutoSizeText("Live",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.red),)),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: iconSpaces,),
+                    SizedBox(
+                      height: 26,
                       child: Column(
                         children: [
                           GestureDetector(
@@ -200,52 +244,52 @@ class _NewsFeedState extends State<NewsFeed>
                                       borderRadius: BorderRadius.circular(24),
                                       color: Colors.grey.shade900,
                                     ),
-                                    child: Icon(Icons.radar_rounded,size: 32))),
+                                    child: Icon(Icons.radar_rounded,size: 22))),
                           ),
                           if(false)  SizedBox(height: 2,),
                           if(false)  Flexible(child: AutoSizeText("Live",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.red),)),
                         ],
                       ),
                     ),
-                    SizedBox(width: 4,),
-                    SizedBox(
-                      height: 36,
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: (){
-                              setState(() {
-                                liveDrummsExist = false;
-                              });
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: COLOR_PRIMARY_DARK,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
-                                ),
-                                builder: (BuildContext context) {
-                                  return Padding(
-                                    padding:
-                                    EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
-                                      child: NotificationWidget(),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            child: Container(
-                                padding: EdgeInsets.all(2),
-                                child: Image.asset("images/notification.png",height: 30,fit: BoxFit.contain,color: Colors.white,)),//Icon(Icons.notifications_on_rounded,size: 32))),
+                    SizedBox(width: iconSpaces,),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  UserProfilePage(
+                                    drummer: drummer,
+                                    fromSearch: true,
+                                  ),
+                            ));
+                      },
+                      child: Container(
+                          width: 30,
+                          height: 30,
+                          padding: EdgeInsets.all(1),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.grey.shade800
                           ),
-                          if(false)  SizedBox(height: 2,),
-                          if(false)  Flexible(child: AutoSizeText("Live",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.red),)),
-                        ],
-                      ),
+                          child: (drummer.imageUrl!=null)?Container(
+                            padding: EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(19),
+                                color: Colors.black
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(17),
+                              clipBehavior: Clip.hardEdge,
+                              child: CachedNetworkImage(
+                                  width: 30,
+                                  height: 30,
+                                  imageUrl: drummer.imageUrl ?? "",
+                                  fit: BoxFit.cover),
+                            ),
+                          ):RoundedButton(height: 20,padding: 6,assetPath: "images/user_profile_active.png",color: Colors.white, bgColor: Colors.grey.shade900, onPressed: (){})),
                     ),
-                    SizedBox(width: 10,),
+                    SizedBox(width: 8,),
                   ],
                 ),
               ),
@@ -280,7 +324,7 @@ class _NewsFeedState extends State<NewsFeed>
                 Expanded(
                   child: CardSwiper(
                     controller: controller,
-                    cardsCount: articles.length,
+                    cardsCount: (articles.length > 0) ? articles.length:0,
                     duration: Duration(milliseconds: 200),
                     maxAngle: 60,
                     scale: 0.85,

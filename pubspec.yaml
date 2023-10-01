@@ -152,7 +152,12 @@ flutter:
     - images/animation_nothing_found.json
     - images/logo_icon.png
     - images/add-image.png
+    - images/add-file.png
     - images/notification.png
+    - images/add_new.png
+    - images/plus-button.png
+    - images/plus.png
+    - images/edit.png
   #   - images/a_dot_ham.jpeg
 
   fonts:

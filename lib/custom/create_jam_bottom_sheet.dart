@@ -65,7 +65,7 @@ class _CreateJamState extends State<CreateJam> {
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     alignment: Alignment.topCenter,
                     child: Text(
-                      "Create Drumm",
+                      "Start a Drumm",
                       textAlign: TextAlign.start,
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.bold),

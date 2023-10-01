@@ -900,7 +900,7 @@ class FirebaseDBOperations {
     Query<Map<String, dynamic>> query = FirebaseFirestore.instance
         .collection('articles')
         .where('category', whereIn: bandCategoryList)
-        .where('country', isEqualTo: 'in')
+       // .where('country', isEqualTo: 'in')
         .where('source', isNotEqualTo: null)
         .orderBy("publishedAt", descending: true)
         .limit(50);
@@ -937,7 +937,7 @@ class FirebaseDBOperations {
         .collection('articles')
         .where('category', isEqualTo: bandID)
        // .where('articleId', whereNotIn: seenPosts)
-        .where('country', isEqualTo: 'in')
+        //.where('country', isEqualTo: 'in')
         .where('source', isNotEqualTo: null)
         .orderBy("publishedAt", descending: true)
         .limit(50);

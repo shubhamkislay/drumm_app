@@ -51,9 +51,9 @@ class _HomeItemState extends State<HomeItem> {
           onRefresh: widget.onRefresh,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
-            child: Column(
+            child: Stack(
               children: [
-                Stack(
+                Column(
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(6.0),
@@ -78,220 +78,220 @@ class _HomeItemState extends State<HomeItem> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: widget.undo,
+                      onTap: () {
+                        Vibrate.feedback(FeedbackType.impact);
+                        widget.openArticle(widget.article);
+                        print("Tapped article");
+                      },
                       child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade900.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(48),
-                        ),
-                        margin: EdgeInsets.all(10),
-                        padding: EdgeInsets.all(6),
-                          child: Icon(Icons.arrow_back_ios_new_rounded,size: 24,)),
-                    )
-                  ],
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Vibrate.feedback(FeedbackType.impact);
-                    widget.openArticle(widget.article);
-                    print("Tapped article");
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            "${widget.article.source} | ${widget.article.category}",
-                            style: TextStyle(
-                              fontSize: 14,
-                            )),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        Wrap(
+                        padding: EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              child: AutoSizeText(
-                                RemoveDuplicate.removeTitleSource(
-                                    widget.article.title ?? ""),
-                                textAlign: TextAlign.start,
+                            Text(
+                                "${widget.article.source} | ${widget.article.category}",
                                 style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold
+                                  fontSize: 14,
+                                )),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            Wrap(
+                              children: [
+                                Container(
+                                  child: AutoSizeText(
+                                    RemoveDuplicate.removeTitleSource(
+                                        widget.article.title ?? ""),
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold
+                                    ),
+                                  ),
                                 ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            InstagramDateTimeWidget(
+                                publishedAt:
+                                    widget.article.publishedAt.toString() ?? ""),
+                            SizedBox(
+                              height: 12,
+                            ),
+                            Text(
+                              (widget.article.description != null)
+                                  ? "${widget.article.description}"
+                                  : (widget.article.content != null)
+                                      ? "${widget.article.content}"
+                                      : "",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white70
+                              ),
+                            ),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            Text(
+                              "Tap to view",
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                color: Colors.grey.shade700,
+                                fontSize: 12,
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: 6,
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        RoundedButton(
+                          padding: 14,
+                          height: iconHeight, //iconHeight,
+                          color: Colors.white,
+                          bgColor: iconBGColor,
+                          onPressed: () {
+                            AISummary.showBottomSheet(context,
+                                widget.article ?? Article(), Colors.transparent);
+                          },
+                          assetPath: 'images/sparkles.png',
                         ),
-                        InstagramDateTimeWidget(
-                            publishedAt:
-                                widget.article.publishedAt.toString() ?? ""),
                         SizedBox(
-                          height: 12,
+                          height: 4,
                         ),
                         Text(
-                          (widget.article.description != null)
-                              ? "${widget.article.description}"
-                              : (widget.article.content != null)
-                                  ? "${widget.article.content}"
-                                  : "",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white70
-                          ),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        Text(
-                          "Tap to view",
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            color: Colors.grey.shade700,
-                            fontSize: 12,
-                          ),
+                          "Summary",
+                          style: TextStyle(fontSize: fontSize, color: Colors.white),
                         ),
                       ],
                     ),
-                  ),
-                ),
-                Column(
-                  children: [
-                    RoundedButton(
-                      padding: 14,
-                      height: iconHeight, //iconHeight,
-                      color: Colors.white,
-                      bgColor: iconBGColor,
-                      onPressed: () {
-                        AISummary.showBottomSheet(context,
-                            widget.article ?? Article(), Colors.transparent);
-                      },
-                      assetPath: 'images/sparkles.png',
-                    ),
                     SizedBox(
-                      height: 4,
+                      height: 6,
                     ),
-                    Text(
-                      "Summary",
-                      style: TextStyle(fontSize: fontSize, color: Colors.white),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 6,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          RoundedButton(
-                            padding: 16,
-                            height: iconHeight,
-                            color: widget.article.liked ?? false
-                                ? Colors.red
-                                : Colors.white,
-                            bgColor: iconBGColor,
-                            hoverColor: Colors.redAccent,
-                            onPressed: () {
-                              setState(() {
-                                if (widget.article.liked ?? false) {
-                                  FirebaseDBOperations.removeLike(
-                                      widget.article.articleId);
-                                  widget.article.liked = false;
-                                  int currentLikes = widget.article.likes ?? 1;
-                                  currentLikes -= 1;
-                                  widget.article.likes = currentLikes;
-                                  widget.updateList(widget.article);
-                                  //  _articlesController.add(articles);
-                                } else {
-                                  FirebaseDBOperations.updateLike(
-                                      widget.article.articleId);
+                          Column(
+                            children: [
+                              RoundedButton(
+                                padding: 16,
+                                height: iconHeight,
+                                color: widget.article.liked ?? false
+                                    ? Colors.red
+                                    : Colors.white,
+                                bgColor: iconBGColor,
+                                hoverColor: Colors.redAccent,
+                                onPressed: () {
+                                  setState(() {
+                                    if (widget.article.liked ?? false) {
+                                      FirebaseDBOperations.removeLike(
+                                          widget.article.articleId);
+                                      widget.article.liked = false;
+                                      int currentLikes = widget.article.likes ?? 1;
+                                      currentLikes -= 1;
+                                      widget.article.likes = currentLikes;
+                                      widget.updateList(widget.article);
+                                      //  _articlesController.add(articles);
+                                    } else {
+                                      FirebaseDBOperations.updateLike(
+                                          widget.article.articleId);
 
-                                  widget.article.liked = true;
-                                  int currentLikes = widget.article.likes ?? 0;
-                                  currentLikes += 1;
-                                  widget.article.likes = currentLikes;
-                                  widget.updateList(widget.article);
-                                  //_articlesController.add(articles);
+                                      widget.article.liked = true;
+                                      int currentLikes = widget.article.likes ?? 0;
+                                      currentLikes += 1;
+                                      widget.article.likes = currentLikes;
+                                      widget.updateList(widget.article);
+                                      //_articlesController.add(articles);
 
-                                  Vibrate.feedback(FeedbackType.impact);
-                                }
-                              });
-                            },
-                            assetPath: widget.article.liked ?? false
-                                ? 'images/liked.png'
-                                : 'images/heart.png',
+                                      Vibrate.feedback(FeedbackType.impact);
+                                    }
+                                  });
+                                },
+                                assetPath: widget.article.liked ?? false
+                                    ? 'images/liked.png'
+                                    : 'images/heart.png',
+                              ),
+                              SizedBox(
+                                height: 4,
+                              ),
+                              Text(
+                                ((widget.article.likes ?? 0) > 0)
+                                    ? "${widget.article.likes}"
+                                    : "Likes",
+                                style: TextStyle(fontSize: fontSize),
+                              ),
+                            ],
                           ),
-                          SizedBox(
-                            height: 4,
-                          ),
-                          Text(
-                            ((widget.article.likes ?? 0) > 0)
-                                ? "${widget.article.likes}"
-                                : "Likes",
-                            style: TextStyle(fontSize: fontSize),
-                          ),
-                        ],
-                      ),
-                      // if ((articles!.elementAt(index).likes ?? 0) > 0)
-                      Column(
-                        children: [
-                          RoundedButton(
-                            padding: 12,
-                            height: 64, //iconHeight,
-                            color: Colors.blue,
-                            bgColor: iconBGColor, //Colors.white24,
-                            onPressed: () {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.grey.shade900,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(0.0)),
-                                ),
-                                builder: (BuildContext context) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom),
-                                    child: ClipRRect(
+                          // if ((articles!.elementAt(index).likes ?? 0) > 0)
+                          Column(
+                            children: [
+                              RoundedButton(
+                                padding: 12,
+                                height: 64, //iconHeight,
+                                color: Colors.blue,
+                                bgColor: iconBGColor, //Colors.white24,
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.grey.shade900,
+                                    shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.vertical(
                                           top: Radius.circular(0.0)),
-                                      child: ArticleJamPage(
-                                        article: widget.article,
-                                      ),
                                     ),
+                                    builder: (BuildContext context) {
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(0.0)),
+                                          child: ArticleJamPage(
+                                            article: widget.article,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
-                              );
-                            },
-                            assetPath: 'images/drumm_logo.png',
-                          ),
-                          SizedBox(
-                            height: 6,
-                          ),
-                          Text(
-                            "Drumms",
-                            style: TextStyle(fontSize: fontSize,),
+                                assetPath: 'images/drumm_logo.png',
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Text(
+                                "Drumms",
+                                style: TextStyle(fontSize: fontSize,),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(
+                      height: 50,
+                    )
+                  ],
                 ),
-                SizedBox(
-                  height: 50,
+                GestureDetector(
+                  onTap: widget.undo,
+                  child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade900.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(48),
+                      ),
+                      margin: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(6),
+                      child: Icon(Icons.arrow_back_ios_new_rounded,size: 24,)),
                 )
               ],
             ),

@@ -54,6 +54,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
   bool userJoined = false;
 
   bool shownWarning = false;
+  double curve = 32;
 
   @override
   Widget build(BuildContext context) {
@@ -81,28 +82,29 @@ class _JamRoomPageState extends State<JamRoomPage> {
                     },
                     child: Container(
                       height: 120,
-                      margin: EdgeInsets.all(12),
+                      margin: EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.grey.shade900,
+                        borderRadius: BorderRadius.circular(curve),
+                        color:  COLOR_PRIMARY_DARK,
+                          border: Border.all(color: Colors.grey.shade900, width: 1),
                       ),
                       child: Row(
                         children: [
-                          SizedBox(
-                            width: 10,
-                          ),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: CachedNetworkImage(
-                              height: 100,
-                              width: 100,
-                              imageUrl: article?.imageUrl ??
-                                  "", //widget.article?.imageUrl ?? "",
-                              fit: BoxFit.cover,
-                              alignment: Alignment.topCenter,
-                              errorWidget: (context, url, error) {
-                                return Container(color: COLOR_PRIMARY_DARK);
-                              },
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(curve-4),
+                              child: CachedNetworkImage(
+                                width: 100,
+                                height: double.infinity,
+                                imageUrl: article?.imageUrl ??
+                                    "", //widget.article?.imageUrl ?? "",
+                                fit: BoxFit.cover,
+                                alignment: Alignment.topCenter,
+                                errorWidget: (context, url, error) {
+                                  return Container(color: COLOR_PRIMARY_DARK);
+                                },
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -132,6 +134,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                 const SizedBox(
                   height: 4,
                 ),
+                if (drummer?.username != null)
                 Container(
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.only(top: 16.0, left: 16),
@@ -187,9 +190,9 @@ class _JamRoomPageState extends State<JamRoomPage> {
                       //     ? COLOR_PRIMARY_DARK
                       //     : Colors.black,
                       color: COLOR_PRIMARY_DARK,
-                      border: const Border(
+                      border:  Border(
                         top: BorderSide(
-                          color: Colors.white12,
+                          color:  (drummer?.username != null)? Colors.white12:Colors.transparent,
                           width: 1.0,
                         ),
                       )),
