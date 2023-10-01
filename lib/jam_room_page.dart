@@ -81,7 +81,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                                   )));
                     },
                     child: Container(
-                      height: 120,
+                      height: 110,
                       margin: EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(curve),

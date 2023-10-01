@@ -30,6 +30,8 @@ class ArticleJamPageState extends State<ArticleJamPage> {
   String profileImageUrl = "";
   Article? article = Article();
 
+  double curve = 32;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -54,30 +56,34 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                                   )));
                     },
                     child: Container(
-                      height: 120,
-                      margin: EdgeInsets.all(12),
+                      height: 110,
+                      margin: EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: Colors.grey.shade900,
+                          borderRadius: BorderRadius.circular(curve),
+                        color:  COLOR_PRIMARY_DARK,
+                        border: Border.all(color: Colors.grey.shade900, width: 1),
                       ),
                       child: Row(
                         children: [
                           SizedBox(
-                            width: 10,
+                            width: 2,
                           ),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: CachedNetworkImage(
-                              height: 100,
-                              width: 100,
-                              imageUrl: article?.imageUrl ??
-                                  "", //widget.article?.imageUrl ?? "",
-                              fit: BoxFit.cover,
-                              alignment: Alignment.topCenter,
-                              placeholder: (context,url) => Container(color: COLOR_PRIMARY_DARK),
-                              errorWidget: (context, url, error) {
-                                return Container(color: COLOR_PRIMARY_DARK);
-                              },
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(curve-4),
+                              child: CachedNetworkImage(
+                                height: double.infinity,
+                                width: 100,
+                                imageUrl: article?.imageUrl ??
+                                    "", //widget.article?.imageUrl ?? "",
+                                fit: BoxFit.cover,
+                                alignment: Alignment.topCenter,
+                                placeholder: (context,url) => Container(color: COLOR_PRIMARY_DARK),
+                                errorWidget: (context, url, error) {
+                                  return Container(color: COLOR_PRIMARY_DARK);
+                                },
+                              ),
                             ),
                           ),
                           SizedBox(

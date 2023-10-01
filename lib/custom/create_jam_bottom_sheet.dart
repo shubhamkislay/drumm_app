@@ -127,7 +127,7 @@ class _CreateJamState extends State<CreateJam> {
                         padding: const EdgeInsets.all(8.0),
                         margin: const EdgeInsets.all(12.0),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(24),
                             border: Border.all(color: Colors.white38)),
                         child: Stack(
 

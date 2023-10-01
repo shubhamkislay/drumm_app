@@ -34,28 +34,40 @@ class BandImageCardState extends State<BandImageCard> {
 
   @override
   Widget build(BuildContext context) {
+    double curve = 20;
 
     return GestureDetector(
       onTap: () {
         onSelected();
       },
       child:  ClipRRect(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(curve),
               child: Container(
-                color: Colors.grey.shade900,
+                decoration: BoxDecoration(
+                  color: COLOR_PRIMARY_DARK,
+                    borderRadius: BorderRadius.circular(curve),
+                  border: Border.all(color: Colors.grey.shade900, width: 1)
+                ),
                 child: Column(
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(5.0),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(curve-4),
                           child: CachedNetworkImage(
                               width: double.infinity,
                               height: double.infinity,
                               imageUrl: widget.band.url ?? "",
                               errorWidget:(context,url,error){
                                 return Container(color:COLOR_PRIMARY_DARK);
+                              },
+                              placeholder: (context, imageUrl) {
+                                return Container(
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  color: Colors.transparent,
+                                );
                               },
                               fit: BoxFit.cover),
                         ),

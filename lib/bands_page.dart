@@ -182,6 +182,7 @@ with AutomaticKeepAliveClientMixin<BandSearchPage>{
           onlySelectable: false,
         );
       }).toList();
+      loaded = true;
     });
   }
 
@@ -217,12 +218,12 @@ with AutomaticKeepAliveClientMixin<BandSearchPage>{
 
   void initialise(){
     getUserBands();
-    getBandDrumms().then((value) {
-      setState(() {
-        print("Loaded list//////////");
-        loaded = true;
-      });
-    });
+    // getBandDrumms().then((value) {
+    //   setState(() {
+    //     print("Loaded list//////////");
+    //     loaded = true;
+    //   });
+    // });
   }
 
   @override
