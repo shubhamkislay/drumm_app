@@ -319,17 +319,25 @@ class _NewsFeedState extends State<NewsFeed>
                           ),
                         if(!loadAnimation)  Center(
                             child: Container(
-                              height: 55,
-                                width: 65,
-                                child: Image.asset("images/logo_background_white.png",color: Colors.blue.withOpacity(0.15),fit: BoxFit.contain,)),
+                              height: 150,
+                                width: 150,
+                                padding: EdgeInsets.all(32),
+                                decoration: BoxDecoration(
+                                  color: Colors.black,//COLOR_PRIMARY_DARK,
+                                  borderRadius: BorderRadius.circular(75),
+                                  border: Border.all(color: Colors.transparent, width: 1),
+
+                                ),
+                                child: Image.asset("images/logo_background_white.png",color: Colors.white,fit: BoxFit.contain,)),
                           ),
                           if(articles.length < 1 && loadAnimation) Center(child: Text("You're all caught up")),
                         ],
                       ),
                     )),
+
               if (articles.length > 0)
                 Expanded(
-                  child: CardSwiper(
+                  child: (articles.isEmpty)? Container():CardSwiper(
                     controller: controller,
                     cardsCount: (articles.length > 0) ? articles.length:0,
                     duration: Duration(milliseconds: 200),

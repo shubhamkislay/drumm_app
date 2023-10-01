@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:drumm_app/custom/create_jam_bottom_sheet.dart';
+import 'package:drumm_app/notification_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:drumm_app/custom/icon_button.dart';
@@ -28,6 +29,7 @@ class NotificationWidget extends StatefulWidget {
 class NotificationWidgetState extends State<NotificationWidget>
     with AutomaticKeepAliveClientMixin<NotificationWidget>{
   List<DrummCard> drummCards = [];
+  List<NotificationItem>? notiList = [];
   List<DrummCard> userDrummCards = [];
   List<Band> bands = [];
   List<Jam> drumms = [];
@@ -68,7 +70,7 @@ class NotificationWidgetState extends State<NotificationWidget>
                                     child: Container(
                                       padding: EdgeInsets.all(4),
                                       child: Icon(
-                                        Icons.arrow_back_ios_new_rounded,
+                                        Icons.keyboard_arrow_down_rounded,
                                         size: 32,
                                       ),
                                     ),
@@ -93,39 +95,66 @@ class NotificationWidgetState extends State<NotificationWidget>
                                       ),
                                       child: Icon(Icons.language,size: 42))),
                               SizedBox(width: 0,),
-                              AutoSizeText(
-                                "Notifications",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  fontSize: 22.0,
-                                  fontWeight: FontWeight.bold,
+                              Expanded(
+                                child: AutoSizeText(
+                                  "Notifications",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontSize: 22.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 24),
+                                child: GestureDetector(
+                                    onTap: (){
+                                      clearNotifications();
+                                    },
+                                    child: Text("Clear",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.redAccent),)),
+                              )
                             ],
                           ),
                         ),
-                        if (drummCards.isNotEmpty)
+                        if (false &&notiList!.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 16),
                             child: GridView.count(
-                                crossAxisCount: 3, // Number of columns
-                                childAspectRatio: 0.8,
+                                crossAxisCount: 1, // Number of columns
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
                                 padding: EdgeInsets.symmetric(horizontal: 0),
-                                crossAxisSpacing: 8,
-                                mainAxisSpacing: 8,
-                                children: drummCards),
+                                crossAxisSpacing: 0,
+                                mainAxisSpacing: 0,
+                                children: notiList??[]),
                           ),
 
-                        if (drummCards.isEmpty&&loaded)
+                        if (notiList!.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 16),
+                            child: ListView.separated(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: notiList?.length??0,
+                                padding: EdgeInsets.all(8),
+                                itemBuilder: (context, index) =>
+                                    notiList?.elementAt(index),
+                                separatorBuilder: (context, index) =>
+                                    SizedBox(
+                                      height: 4,
+                                    )),
+                          ),
+
+                        if (notiList!.isEmpty&&loaded)
                           Center(
                             child: Container(
                               alignment: Alignment.center,
                               padding: EdgeInsets.all(32),
                               height: MediaQuery.of(context).size.height*0.7,
-                              child: Text("There are currently no live drumms",textAlign: TextAlign.center,),
+                              child: Text("Nothing much going on here",textAlign: TextAlign.center,),
                             ),
                           ),
                         SizedBox(
@@ -192,11 +221,24 @@ class NotificationWidgetState extends State<NotificationWidget>
     List<String>? notifications = notiPref.getStringList("notifications");
     List<Jam> fetchedJams = [];
 
+    notifications = new List.from(notifications?.reversed as Iterable);
+
+    setState(() {
+      notiList = notifications?.map((msg) {
+        return NotificationItem(message: msg,
+        );
+      }).toList();
+      loaded=true;
+    });
+
+    return;
+
     for(String jamJson in notifications!){
       Map<String, dynamic> json = jsonDecode(jamJson);
       Jam jam = Jam.fromJson(json);
       fetchedJams.add(jam);
     }
+    fetchedJams = new List.from(fetchedJams.reversed);
 
     setState(() {
       drummCards = fetchedJams.map((jam) {
@@ -205,6 +247,16 @@ class NotificationWidgetState extends State<NotificationWidget>
         );
       }).toList();
 
+      loaded=true;
+    });
+  }
+
+  void clearNotifications() async {
+    SharedPreferences notiPref = await SharedPreferences.getInstance();
+    notiPref.setStringList("notifications", []);
+
+    setState(() {
+      notiList = [];
       loaded=true;
     });
   }

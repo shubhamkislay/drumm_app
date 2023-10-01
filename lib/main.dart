@@ -568,10 +568,20 @@ class _MyAppState extends State<MyApp>
     SharedPreferences notiPref = await SharedPreferences.getInstance();
     List<String>? notifications = notiPref.getStringList("notifications");
     notifications ??= [];
-    notifications.add(message.data["jam"]);
+    notifications.add(remoteMessageToJson(message));
     notiPref.setStringList("notifications", notifications);
   }
+  String remoteMessageToJson(RemoteMessage remoteMessage) {
+    final Map<String, dynamic> data = remoteMessage.data;
+    final Map<String, dynamic> jsonMessage = {
+      'data': data,
+    };
+    return jsonEncode(jsonMessage);
+  }
+
 }
+
+
 
 class SplashScreen extends StatefulWidget {
   final FirebaseAnalyticsObserver observer;
