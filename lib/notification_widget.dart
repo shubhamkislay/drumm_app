@@ -221,15 +221,24 @@ class NotificationWidgetState extends State<NotificationWidget>
     List<String>? notifications = notiPref.getStringList("notifications");
     List<Jam> fetchedJams = [];
 
-    notifications = new List.from(notifications?.reversed as Iterable);
+    int notifLen = notifications?.length??0;
 
-    setState(() {
-      notiList = notifications?.map((msg) {
-        return NotificationItem(message: msg,
-        );
-      }).toList();
-      loaded=true;
-    });
+    if(notifLen>0) {
+      notifications = new List.from(notifications?.reversed as Iterable);
+
+      setState(() {
+        notiList = notifications?.map((msg) {
+          return NotificationItem(message: msg,
+          );
+        }).toList();
+        loaded = true;
+      });
+    }
+    else
+      setState(() {
+        notiList = [];
+        loaded = true;
+      });
 
     return;
 
