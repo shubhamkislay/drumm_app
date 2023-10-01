@@ -158,6 +158,11 @@ flutter:
     - images/plus-button.png
     - images/plus.png
     - images/edit.png
+    - images/lottie_loading.json
+    - images/lottie_ripple.json
+    - images/pulse.json
+    - images/join_room.json
+    - images/lottie_pulse.json
   #   - images/a_dot_ham.jpeg
 
   fonts:

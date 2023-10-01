@@ -236,7 +236,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                           child: Stack(
                             fit: StackFit.expand,
                             children: [
-                              Lottie.asset('images/animation_drumm_loading.json',
+                              Lottie.asset('images/join_room.json',
                                   fit: BoxFit.contain,
                                   width: double.maxFinite),
                               Center(

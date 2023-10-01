@@ -50,7 +50,7 @@ class _NewsFeedState extends State<NewsFeed>
   Drummer drummer = Drummer();
   double horizontalPadding = 8;
   late String loadingAnimation;
-  final String LOADING_ASSET = "images/animation_loading.json";
+  final String LOADING_ASSET = "images/pulse.json";
   final String NO_FOUND_ASSET = "images/animation_nothing_found.json";
 
   DateTime? _lastRefreshTime;
@@ -312,10 +312,17 @@ class _NewsFeedState extends State<NewsFeed>
                 Expanded(
                     child: Center(
                       child: Stack(
-                        fit: StackFit.expand,
                         children: [
-                          Lottie.asset(loadingAnimation,
-                              fit: BoxFit.contain, width: double.maxFinite),
+                          Center(
+                            child: Lottie.asset(loadingAnimation,
+                                fit: BoxFit.contain, width: double.maxFinite),
+                          ),
+                        if(!loadAnimation)  Center(
+                            child: Container(
+                              height: 55,
+                                width: 65,
+                                child: Image.asset("images/logo_background_white.png",color: Colors.blue.withOpacity(0.15),fit: BoxFit.contain,)),
+                          ),
                           if(articles.length < 1 && loadAnimation) Center(child: Text("You're all caught up")),
                         ],
                       ),

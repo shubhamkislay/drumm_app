@@ -159,14 +159,14 @@ class _LauncherPageState extends State<LauncherPage>
                   child: Row(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(18),
                           child: CachedNetworkImage(
                             imageUrl: currentJam.imageUrl ?? "",
                             fit: BoxFit.cover,
-                            height: 42,
-                            width: 42,
+                            height: 50,
+                            width: 50,
                             errorWidget: (context,url,error) => Container(color:COLOR_PRIMARY_DARK),
                           ),
                         ),
