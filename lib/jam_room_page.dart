@@ -238,13 +238,21 @@ class _JamRoomPageState extends State<JamRoomPage> {
                             children: [
                               Lottie.asset('images/join_room.json',
                                   fit: BoxFit.contain,
+                                  height: double.maxFinite,
                                   width: double.maxFinite),
                               Center(
-                                child: Text("Connecting...",style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14
-                                ),),
+                                child: Container(
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade900.withOpacity(0.35),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text("Connecting...",style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 12
+                                  ),),
+                                ),
                               )
                             ],
                           ),
@@ -336,9 +344,9 @@ class _JamRoomPageState extends State<JamRoomPage> {
                       child: Container(
                         padding: EdgeInsets.all(14),
                         decoration: BoxDecoration(
-                            color: Colors.grey.shade900,
+                            color: COLOR_PRIMARY_DARK,
                             border: Border.all(
-                                color: Colors.grey.shade800, width: 1),
+                                color: Colors.grey.shade900, width: 1),
                             borderRadius: BorderRadius.circular(20)),
                         child: Text(
                           "Leave Drumm",

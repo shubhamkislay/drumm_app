@@ -55,8 +55,19 @@ class _HomeItemState extends State<HomeItem> {
               children: [
                 Column(
                   children: [
-                    Padding(
+                    Container(
                       padding: const EdgeInsets.all(6.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(curve),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.15), // Shadow color
+                              offset: Offset(0, -2), // Shadow offset (horizontal, vertical)
+                              blurRadius: 8, // Blur radius
+                              spreadRadius: 0, // Spread radius
+                            ),
+                          ]
+                      ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(curve-4),
                         child: CachedNetworkImage(
@@ -235,7 +246,7 @@ class _HomeItemState extends State<HomeItem> {
                               RoundedButton(
                                 padding: 12,
                                 height: 64, //iconHeight,
-                                color: Colors.blue,
+                                color: Colors.white,
                                 bgColor: iconBGColor, //Colors.white24,
                                 onPressed: () {
                                   showModalBottomSheet(

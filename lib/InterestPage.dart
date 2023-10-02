@@ -58,7 +58,7 @@ class _InterestsPageState extends State<InterestsPage> {
       if (selectedInterests.contains(interest)) {
         selectedInterests.remove(interest);
       } else {
-        if (selectedInterests.length < 3) {
+        if (selectedInterests.length < 7) {
           selectedInterests.add(interest);
         } else {
           // Show a toast or display an error message indicating the limit has been reached
@@ -73,7 +73,7 @@ class _InterestsPageState extends State<InterestsPage> {
       if (selectedBands.contains(band)) {
         selectedBands.remove(band);
       } else {
-        if (selectedBands.length < 3) {
+        if (selectedBands.length < 7) {
           selectedBands.add(band);
         } else {
           // Show a toast or display an error message indicating the limit has been reached
@@ -131,23 +131,32 @@ class _InterestsPageState extends State<InterestsPage> {
         padding: EdgeInsets.symmetric(vertical: 42, horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
+            SizedBox(height: 36.0),
+            Image.asset(
+                alignment: Alignment.center,
+                color: Colors.white,
+                width: 76,
+                "images/team_active.png",
+                height: 76),
+            SizedBox(height: 8.0),
             Padding(
               padding: const EdgeInsets.symmetric(
-                vertical: 48,
-                horizontal: 16,
+                vertical: 4,
+                horizontal: 36,
               ),
               child: Text(
-                'Choose upto 3 bands',
+                'Choose the bands you\'re curious or passionate about',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  fontWeight: FontWeight.normal,
                 ),
               ),
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 36.0),
             if (false)
               Wrap(
                 spacing: 14.0,
@@ -194,7 +203,7 @@ class _InterestsPageState extends State<InterestsPage> {
               ),
             Center(
               child: Wrap(
-                spacing: 24.0,
+                spacing: 18.0,
                 runSpacing: 12.0,
                 alignment: WrapAlignment.center,
                 children: bands
@@ -204,17 +213,23 @@ class _InterestsPageState extends State<InterestsPage> {
                         child: Column(
                           children: [
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(24),
                               child: Container(
-                                padding: EdgeInsets.all(4),
-                                color: selectedBands.contains(band)
-                                    ? Colors.white //Color(COLOR_PRIMARY_VAL)
-                                    : Colors.grey.shade900,
+                                padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  color: COLOR_PRIMARY_DARK,
+                                    borderRadius: BorderRadius.circular(24),
+                                  border: Border.all(color: selectedBands.contains(band)
+                                      ? Colors.white //Color(COLOR_PRIMARY_VAL)
+                                      : Colors.grey.shade900, width: 2.5)
+                                ),
+
                                 child: Container(
                                     height: 125,
                                     width: 125,
+                                    margin: EdgeInsets.all(2),
                                     child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(6),
+                                      borderRadius: BorderRadius.circular(20),
                                       child: CachedNetworkImage(
                                           fit: BoxFit.cover,
                                           imageUrl: modifyImageUrl(band.url ?? "","300x300")),
@@ -231,7 +246,7 @@ class _InterestsPageState extends State<InterestsPage> {
                                         ? Colors.white
                                         : Colors.grey.shade700,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16),
+                                    fontSize: 14),
                               ),
                             ),
                           ],

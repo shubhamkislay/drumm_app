@@ -37,21 +37,21 @@ class _NotificationItemState extends State<NotificationItem> {
     return Wrap(
       children: [
         Container(
-          padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
+          padding: EdgeInsets.all(4),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-                colors: [Colors.grey.shade900, Colors.grey.shade900]),
+            color: Colors.black,
             borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: Colors.grey.shade900,width: 1)
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: EdgeInsets.all(8),
+                padding: EdgeInsets.all(4),
                 decoration: BoxDecoration(
                   color: COLOR_PRIMARY_DARK,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

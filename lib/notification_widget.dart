@@ -133,13 +133,13 @@ class NotificationWidgetState extends State<NotificationWidget>
                         if (notiList!.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 16),
+                                horizontal: 2, vertical: 2),
                             child: ListView.separated(
                                 scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
                                 itemCount: notiList?.length??0,
-                                padding: EdgeInsets.all(8),
+                                padding: EdgeInsets.all(4),
                                 itemBuilder: (context, index) =>
                                     notiList?.elementAt(index),
                                 separatorBuilder: (context, index) =>

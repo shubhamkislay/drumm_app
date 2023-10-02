@@ -65,7 +65,7 @@ class _NewsFeedState extends State<NewsFeed>
   bool noArticlesPresent = false;
   bool liveDrummsExist = false;
 
-  double drummLogoSize = 24;
+  double drummLogoSize = 26;
   double iconSpaces = 20;
 
   var keepAlive = true;
@@ -92,8 +92,8 @@ class _NewsFeedState extends State<NewsFeed>
                     ),
                     if (true)
                       SizedBox(
-                        height: drummLogoSize + 2,
-                        width: drummLogoSize + 2,
+                        height: drummLogoSize,
+                        width: drummLogoSize,
                         child: Padding(
                           padding: const EdgeInsets.only(left: 0),
                           child: Image.asset(
@@ -372,6 +372,7 @@ class _NewsFeedState extends State<NewsFeed>
                 ),
               if (bandsCards.length > 0)
                 Container(
+                  alignment: Alignment.centerLeft,
                     padding: EdgeInsets.only(
                       left: horizontalPadding,
                       right: horizontalPadding,
@@ -498,6 +499,7 @@ class _NewsFeedState extends State<NewsFeed>
     _checkAndScheduleRefresh();
     FirebaseDBOperations.lastDocument = null;
     //controller = CardSwiperController();
+    getBandsCards();
     getArticles();
     getCurrentDrummer();
     checkLiveDrumms();
@@ -527,7 +529,9 @@ class _NewsFeedState extends State<NewsFeed>
     checkLiveDrumms();
   }
 
+
   void getBandsCards() async {
+    mulList.clear();
     List<Band> bandList = await FirebaseDBOperations.getBandByUser();
     Band allBands = Band();
     allBands.name = "All";
@@ -929,7 +933,7 @@ class _NewsFeedState extends State<NewsFeed>
     if (now.difference(_lastRefreshTime!) >= refreshInterval) {
       // Call your refresh() function if it hasn't been called within the refreshInterval
       keepAlive = false;
-
+      _refreshData();
       _lastRefreshTime = now;
     } else {
       // Calculate the remaining time until the next refresh and schedule the timer
