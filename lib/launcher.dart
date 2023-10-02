@@ -56,7 +56,7 @@ class _LauncherPageState extends State<LauncherPage>
   late TabController tabController;
   double iconPadding = 6;
 
-  Color disableColor = Colors.white70;//Color(0xff4d4d4d); //Colors.grey.shade800;
+  Color disableColor = Colors.grey.shade800;//Color(0xff4d4d4d); //Colors.grey.shade800;
 
   double tabsWidthDivision = 4; //Value will be 10 for Wave mode
   late AnimationController rotationAnimcontroller;

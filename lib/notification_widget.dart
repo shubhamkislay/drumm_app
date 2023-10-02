@@ -144,7 +144,7 @@ class NotificationWidgetState extends State<NotificationWidget>
                                     notiList?.elementAt(index),
                                 separatorBuilder: (context, index) =>
                                     SizedBox(
-                                      height: 4,
+                                      height: 12,
                                     )),
                           ),
 

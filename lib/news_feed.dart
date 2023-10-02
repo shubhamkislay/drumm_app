@@ -427,14 +427,13 @@ class _NewsFeedState extends State<NewsFeed>
                           duration: Duration(milliseconds: 200),
                           maxAngle: 45,
                           scale: 0.9,
-                          numberOfCardsDisplayed: (articles.length > 1) ? 2 : 1,
+                          numberOfCardsDisplayed: (articles.length > 1) ? 2 : (articles.length <1) ? 0 : 1,
                           isVerticalSwipingEnabled: false,
                           onEnd: () {
                             print("Ended swipes");
                             setState(() {
                               //loadAnimation = true;
-                              articles.clear();
-                              controller = CardSwiperController();
+                              //articles.clear();
                             });
 
                             if (selectedBandID == "All")
@@ -517,17 +516,19 @@ class _NewsFeedState extends State<NewsFeed>
   void initState() {
     // TODO: implement initState
     loadingAnimation = LOADING_ASSET;
+    controller = CardSwiperController();
     super.initState();
     setOnboarded();
     _lastRefreshTime = DateTime.now();
     _checkAndScheduleRefresh();
     FirebaseDBOperations.lastDocument = null;
-    controller = CardSwiperController();
     getArticles();
     getBandsCards();
     getCurrentDrummer();
     checkLiveDrumms();
   }
+
+
 
 
   void getBandsCards() async {
@@ -716,6 +717,10 @@ class _NewsFeedState extends State<NewsFeed>
   }
 
   void getArticles() async {
+    setState(() {
+      articles.clear();
+    });
+    controller = CardSwiperController();
     List<Article> articleFetched =
         await FirebaseDBOperations.getArticlesByBands();
     if (articleFetched.length < 1) {
@@ -837,6 +842,7 @@ class _NewsFeedState extends State<NewsFeed>
     setState(() {
       articles.clear();
     });
+    controller = CardSwiperController();
     List<Article> fetchcedArticle =
         await FirebaseDBOperations.getArticlesByBandID(bandID);
 

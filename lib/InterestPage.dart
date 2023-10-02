@@ -144,10 +144,10 @@ class _InterestsPageState extends State<InterestsPage> {
             Padding(
               padding: const EdgeInsets.symmetric(
                 vertical: 4,
-                horizontal: 36,
+                horizontal: 30,
               ),
               child: Text(
-                'Choose the bands you\'re curious or passionate about',
+                'Select the bands that you\'re passionate or curious about',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
@@ -204,7 +204,7 @@ class _InterestsPageState extends State<InterestsPage> {
             Center(
               child: Wrap(
                 spacing: 18.0,
-                runSpacing: 12.0,
+                runSpacing: 8.0,
                 alignment: WrapAlignment.center,
                 children: bands
                     .map(
