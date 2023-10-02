@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drumm_app/register_user.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -609,7 +610,73 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _checkOnboardingStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    _isOnboarded = prefs.getBool('isOnboarded') ?? false;
     //prefs.remove('isOnboarded');
+    if(_isOnboarded){
+      Navigator.of(context).push(PageRouteBuilder(
+          opaque: false,
+          pageBuilder: (context, animation, _) {
+            return LauncherPage(themeManager: widget.themeManager,
+              analytics: widget.analytics,
+              observer: widget.observer,);
+          }));
+    }else{
+      if ((FirebaseAuth.instance.currentUser != null)) {
+        FirebaseDBOperations.subscribeToUserBands();
+        Drummer drummer = await FirebaseDBOperations.getDrummer(FirebaseAuth.instance.currentUser?.uid??"");
+        if(drummer!=null){
+          int userLen = drummer.username?.length??0;
+          if(userLen>0){
+            await prefs.setBool("isOnboarded", true);
+            await prefs.setString('uid', drummer.uid??"");
+            await prefs.setInt('rid', drummer.rid ?? 0);
+
+            Navigator.of(context).push(PageRouteBuilder(
+                opaque: false,
+                pageBuilder: (context, animation, _) {
+                  return LauncherPage(themeManager: widget.themeManager,
+                    analytics: widget.analytics,
+                    observer: widget.observer,);
+                }));
+          }else{
+            Navigator.of(context).push(PageRouteBuilder(
+                opaque: false,
+                pageBuilder: (context, animation, _) {
+                  return RegisterUser(
+                      themeManager: widget.themeManager,
+                      analytics: widget.analytics,
+                      observer: widget.observer,
+                      name: "",
+                      email: "");
+                }));
+          }
+        }else{
+          Navigator.of(context).push(PageRouteBuilder(
+              opaque: false,
+              pageBuilder: (context, animation, _) {
+                return RegisterUser(
+                    themeManager: widget.themeManager,
+                    analytics: widget.analytics,
+                    observer: widget.observer,
+                    name: "",
+                    email: "");
+              }));
+        }
+
+      }else{
+        Navigator.of(context).push(PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (context, animation, _) {
+              return OnBoarding(
+                themeManager: widget.themeManager,
+                analytics: widget.analytics,
+                observer: widget.observer,
+              );
+            }));
+      }
+    }
+
+
     setState(() {
       _isOnboarded = prefs.getBool('isOnboarded') ?? false;
     });
@@ -628,6 +695,13 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     if ((FirebaseAuth.instance.currentUser != null))
       FirebaseDBOperations.subscribeToUserBands();
+
+    return Container(
+      color: Color(0xff202020),
+      height: double.infinity,
+      width: double.infinity,
+      child: Image.asset("images/drumm_logo_main.png",fit: BoxFit.fitWidth,),
+    );
 
     return (FirebaseAuth.instance.currentUser != null)
         ? _isOnboarded

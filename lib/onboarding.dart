@@ -39,7 +39,6 @@ class _OnBoardingState extends State<OnBoarding> {
     double textSize = 32;
     double marginHeight = 200;
 
-
     return Scaffold(
       backgroundColor: Colors.black,
       body: OnBoardingSlider(

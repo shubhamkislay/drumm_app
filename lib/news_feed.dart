@@ -372,7 +372,7 @@ class _NewsFeedState extends State<NewsFeed>
                 ),
               if (bandsCards.length > 0)
                 Container(
-                  alignment: Alignment.centerLeft,
+                    alignment: Alignment.centerLeft,
                     padding: EdgeInsets.only(
                       left: horizontalPadding,
                       right: horizontalPadding,
@@ -421,13 +421,16 @@ class _NewsFeedState extends State<NewsFeed>
                       try {
                         return CardSwiper(
                           controller: controller,
-                          cardsCount: (articles.length > 0)
-                              ? articles.length
-                              : 0,
+                          cardsCount:
+                              (articles.length > 0) ? articles.length : 0,
                           duration: Duration(milliseconds: 200),
                           maxAngle: 45,
                           scale: 0.9,
-                          numberOfCardsDisplayed: (articles.length > 1) ? 2 : (articles.length <1) ? 0 : 1,
+                          numberOfCardsDisplayed: (articles.length > 1)
+                              ? 2
+                              : (articles.length < 1)
+                                  ? 0
+                                  : 1,
                           isVerticalSwipingEnabled: false,
                           onEnd: () {
                             print("Ended swipes");
@@ -445,8 +448,8 @@ class _NewsFeedState extends State<NewsFeed>
                           onSwipe: _onSwipe,
                           isLoop: false,
                           onUndo: _onUndo,
-                          padding:
-                          EdgeInsets.symmetric(horizontal: horizontalPadding),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: horizontalPadding),
                           cardBuilder: (context, index) {
                             // print("Index of element $index");
                             try {
@@ -471,13 +474,14 @@ class _NewsFeedState extends State<NewsFeed>
                                 );
                               else
                                 return Container();
-                            }catch(e){
-                              print("//////////////////////////ERROR/////////////////////");
+                            } catch (e) {
+                              print(
+                                  "//////////////////////////ERROR/////////////////////");
                               return Container();
                             }
                           },
                         );
-                      }catch(e){
+                      } catch (e) {
                         return Container();
                       }
                     },
@@ -527,9 +531,6 @@ class _NewsFeedState extends State<NewsFeed>
     getCurrentDrummer();
     checkLiveDrumms();
   }
-
-
-
 
   void getBandsCards() async {
     mulList.clear();
