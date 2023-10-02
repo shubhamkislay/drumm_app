@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drumm_app/custom/helper/image_uploader.dart';
 import 'package:drumm_app/model/Drummer.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -189,7 +190,7 @@ class _NotificationItemState extends State<NotificationItem> {
   void getDrummer(String drummerID) async{
     drummer = await FirebaseDBOperations.getDrummer(drummerID);
     setState(() {
-      drummerImage = drummer?.imageUrl ?? "";
+      drummerImage = modifyImageUrl(drummer?.imageUrl ?? "", "100x100");
       drummerUsername = drummer?.username ?? "";
     });
 

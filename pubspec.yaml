@@ -163,6 +163,10 @@ flutter:
     - images/pulse.json
     - images/join_room.json
     - images/lottie_pulse.json
+    - images/notif.png
+    - images/bell.png
+    - images/hotspot.png
+    - images/radio.png
   #   - images/a_dot_ham.jpeg
 
   fonts:

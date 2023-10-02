@@ -544,18 +544,18 @@ class _JamRoomPageState extends State<JamRoomPage> {
   void updateSpeech(int rid,bool talking) async {
     if(rid==0&&talking&&micMute){
       if(!shownWarning) {
-        AnimatedSnackBar.material(
-            'You are talking on mute',
-            type: AnimatedSnackBarType.warning,
-            mobileSnackBarPosition: MobileSnackBarPosition.bottom
-        ).show(context);
-        shownWarning = true;
-        Vibrate.feedback(FeedbackType.heavy);
-        Future.delayed(Duration(
-          milliseconds: 10000
-        ),() {
-          shownWarning = false;
-        },);
+        // AnimatedSnackBar.material(
+        //     'You are talking on mute',
+        //     type: AnimatedSnackBarType.warning,
+        //     mobileSnackBarPosition: MobileSnackBarPosition.bottom
+        // ).show(context);
+        // shownWarning = true;
+        // Vibrate.feedback(FeedbackType.heavy);
+        // Future.delayed(Duration(
+        //   milliseconds: 10000
+        // ),() {
+        //   shownWarning = false;
+        // },);
       }
     }
 
