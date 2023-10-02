@@ -227,10 +227,10 @@ class _UserProfilePageState extends State<UserProfilePage>
                       linkColor: Colors.blue,
                     ),
                   ),
-                  const SizedBox(
+                  if(false)const SizedBox(
                     height: 24,
                   ),
-                  Container(
+                  if(false)Container(
                     padding: EdgeInsets.symmetric(vertical: 8,horizontal: 4),
                     color: COLOR_PRIMARY_DARK,
                     child: Row(
@@ -281,7 +281,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                       ),
                     ),
                   ),
-                  if (drummer?.uid != currentID)
+                  if (drummer?.uid != currentID&&false)
                     if (!followed)
                       GestureDetector(
                         onTap: () {
@@ -303,7 +303,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                           ),
                         ),
                       ),
-                  if (followed)
+                  if (followed&&false)
                     GestureDetector(
                       onTap: () {
                         unfollow();

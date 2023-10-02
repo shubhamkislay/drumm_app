@@ -424,8 +424,8 @@ class _NewsFeedState extends State<NewsFeed>
                               ? articles.length
                               : 0,
                           duration: Duration(milliseconds: 200),
-                          maxAngle: 60,
-                          scale: 0.85,
+                          maxAngle: 45,
+                          scale: 0.9,
                           numberOfCardsDisplayed: (articles.length > 1) ? 2 : 1,
                           isVerticalSwipingEnabled: false,
                           onEnd: () {
