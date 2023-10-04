@@ -167,6 +167,8 @@ flutter:
     - images/bell.png
     - images/hotspot.png
     - images/radio.png
+    - images/swipe_right.json
+    - images/swipe_left.json
   #   - images/a_dot_ham.jpeg
 
   fonts:

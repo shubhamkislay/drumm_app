@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/custom/helper/connect_channel.dart';
@@ -15,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
+import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:lottie/lottie.dart';
@@ -23,6 +25,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'custom/create_jam_bottom_sheet.dart';
 import 'custom/helper/image_uploader.dart';
 import 'custom/rounded_button.dart';
+import 'custom/transparent_slider.dart';
 import 'jam_room_page.dart';
 import 'model/Drummer.dart';
 import 'model/article.dart';
@@ -65,430 +68,611 @@ class _NewsFeedState extends State<NewsFeed>
   bool noArticlesPresent = false;
   bool liveDrummsExist = false;
 
-  double drummLogoSize = 26;
+  double drummLogoSize = 24;
   double iconSpaces = 20;
+  double textSize = 28;
+  double marginHeight = 200;
 
   var keepAlive = true;
+
+  bool isOnboarded = false;
+  bool isTutorialDone = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
         bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: 2, horizontal: horizontalPadding),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 4,
-                    ),
-                    if (true)
-                      SizedBox(
-                        height: drummLogoSize,
-                        width: drummLogoSize,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 0),
-                          child: Image.asset(
-                            "images/logo_icon.png",
-                            color: Colors.blue,
-                            width: 16,
-                            height: 16,
-                            fit: BoxFit.contain,
-                          ),
+        child: Stack(
+          fit: StackFit.passthrough,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: 2, horizontal: horizontalPadding),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 4,
                         ),
-                      ),
-                    if (false) Expanded(child: Container()),
-                    if (true)
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: Text(
-                            "Drumm",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontSize: drummLogoSize,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'alata',
+                        if (true)
+                          SizedBox(
+                            height: drummLogoSize,
+                            width: drummLogoSize,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 0),
+                              child: Image.asset(
+                                "images/logo_icon.png",
+                                color: Colors.blue,
+                                width: 16,
+                                height: 16,
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    if (false) Expanded(child: Container()),
-                    SizedBox(
-                      height: 30,
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: COLOR_PRIMARY_DARK,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(0.0)),
-                                ),
-                                builder: (BuildContext context) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(0.0)),
-                                      child: CreateJam(
-                                          title: "", bandId: "", imageUrl: ""),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            child: Container(
-                                padding: EdgeInsets.all(2),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(24),
-                                ),
-                                child: Image.asset(
-                                  "images/edit.png",
-                                  height: 26,
-                                  fit: BoxFit.contain,
-                                  color: Colors.grey.shade200,
-                                )),
-                          ),
-                          if (false)
-                            SizedBox(
-                              height: 2,
-                            ),
-                          if (false)
-                            Flexible(
-                                child: AutoSizeText(
-                              "Live",
-                              style: TextStyle(
-                                  fontSize: 16,
+                        if (false) Expanded(child: Container()),
+                        if (true)
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 2),
+                              child: Text(
+                                "Drumm",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontSize: drummLogoSize,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.red),
-                            )),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      width: iconSpaces,
-                    ),
-                    SizedBox(
-                      height: 28,
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                liveDrummsExist = false;
-                              });
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: COLOR_PRIMARY_DARK,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(0.0)),
+                                  fontFamily: 'alata',
                                 ),
-                                builder: (BuildContext context) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(0.0)),
-                                      child: NotificationWidget(),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            child: Container(
-                                padding: EdgeInsets.all(2),
-                                child: Image.asset(
-                                  "images/bell.png",
-                                  height: 24,
-                                  fit: BoxFit.contain,
-                                  color: Colors.white,
-                                )), //Icon(Icons.notifications_on_rounded,size: 32))),
-                          ),
-                          if (false)
-                            SizedBox(
-                              height: 2,
+                              ),
                             ),
-                          if (false)
-                            Flexible(
-                                child: AutoSizeText(
-                              "Live",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red),
-                            )),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      width: iconSpaces,
-                    ),
-                    SizedBox(
-                      height: 32,
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                liveDrummsExist = false;
-                              });
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: COLOR_PRIMARY_DARK,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(0.0)),
-                                ),
-                                builder: (BuildContext context) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom),
-                                    child: ClipRRect(
+                          ),
+                        if (false) Expanded(child: Container()),
+                        SizedBox(
+                          height: 30,
+                          child: Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: COLOR_PRIMARY_DARK,
+                                    shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.vertical(
                                           top: Radius.circular(0.0)),
-                                      child: LiveDrumms(),
                                     ),
+                                    builder: (BuildContext context) {
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(0.0)),
+                                          child: CreateJam(
+                                              title: "", bandId: "", imageUrl: ""),
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
-                              );
-                            },
-                            child: Container(
-                                padding: EdgeInsets.all(2),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(24),
-                                    gradient: (liveDrummsExist)
-                                        ? LinearGradient(colors: [
-                                            Colors.blue.shade600,
-                                            Colors.blue.shade800,
-                                          ])
-                                        : LinearGradient(colors: [
-                                            Colors.grey.shade900,
-                                            Colors.grey.shade900,
-                                          ])),
                                 child: Container(
+                                    padding: EdgeInsets.all(2),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(24),
-                                      color: Colors.grey.shade900,
                                     ),
-                                    child: Icon(
-                                      Icons.data_saver_off_rounded,
-                                      size: 26,
-                                    ))), // data_saver_off_rounded Image.asset("images/hotspot.png",height: 24,fit: BoxFit.contain,color: Colors.white,))),
+                                    child: Image.asset(
+                                      "images/edit.png",
+                                      height: 26,
+                                      fit: BoxFit.contain,
+                                      color: Colors.grey.shade200,
+                                    )),
+                              ),
+                              if (false)
+                                SizedBox(
+                                  height: 2,
+                                ),
+                              if (false)
+                                Flexible(
+                                    child: AutoSizeText(
+                                  "Live",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red),
+                                )),
+                            ],
                           ),
-                          if (false)
-                            SizedBox(
-                              height: 2,
+                        ),
+                        SizedBox(
+                          width: iconSpaces,
+                        ),
+                        SizedBox(
+                          height: 28,
+                          child: Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    liveDrummsExist = false;
+                                  });
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: COLOR_PRIMARY_DARK,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(0.0)),
+                                    ),
+                                    builder: (BuildContext context) {
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(0.0)),
+                                          child: NotificationWidget(),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                    padding: EdgeInsets.all(2),
+                                    child: Image.asset(
+                                      "images/bell.png",
+                                      height: 24,
+                                      fit: BoxFit.contain,
+                                      color: Colors.white,
+                                    )), //Icon(Icons.notifications_on_rounded,size: 32))),
+                              ),
+                              if (false)
+                                SizedBox(
+                                  height: 2,
+                                ),
+                              if (false)
+                                Flexible(
+                                    child: AutoSizeText(
+                                  "Live",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red),
+                                )),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: iconSpaces,
+                        ),
+                        SizedBox(
+                          height: 32,
+                          child: Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    liveDrummsExist = false;
+                                  });
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: COLOR_PRIMARY_DARK,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(0.0)),
+                                    ),
+                                    builder: (BuildContext context) {
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(0.0)),
+                                          child: LiveDrumms(),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                    padding: EdgeInsets.all(2),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(24),
+                                        gradient: (liveDrummsExist)
+                                            ? LinearGradient(colors: [
+                                                Colors.blue.shade600,
+                                                Colors.blue.shade800,
+                                              ])
+                                            : LinearGradient(colors: [
+                                                Colors.grey.shade900,
+                                                Colors.grey.shade900,
+                                              ])),
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(24),
+                                          color: Colors.grey.shade900,
+                                        ),
+                                        child: Icon(
+                                          Icons.data_saver_off_rounded,
+                                          size: 26,
+                                        ))), // data_saver_off_rounded Image.asset("images/hotspot.png",height: 24,fit: BoxFit.contain,color: Colors.white,))),
+                              ),
+                              if (false)
+                                SizedBox(
+                                  height: 2,
+                                ),
+                              if (false)
+                                Flexible(
+                                    child: AutoSizeText(
+                                  "Live",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red),
+                                )),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: iconSpaces,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => UserProfilePage(
+                                    drummer: drummer,
+                                    fromSearch: true,
+                                  ),
+                                ));
+                          },
+                          child: Container(
+                              width: 30,
+                              height: 30,
+                              padding: EdgeInsets.all(1),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.grey.shade800),
+                              child: (drummer.imageUrl != null)
+                                  ? Container(
+                                      padding: EdgeInsets.all(2),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(19),
+                                          color: Colors.black),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(17),
+                                        clipBehavior: Clip.hardEdge,
+                                        child: CachedNetworkImage(
+                                            width: 30,
+                                            height: 30,
+                                            imageUrl: modifyImageUrl(
+                                                drummer.imageUrl ?? "", "100x100"),
+                                            fit: BoxFit.cover),
+                                      ),
+                                    )
+                                  : RoundedButton(
+                                      height: 20,
+                                      padding: 6,
+                                      assetPath: "images/user_profile_active.png",
+                                      color: Colors.white,
+                                      bgColor: Colors.grey.shade900,
+                                      onPressed: () {})),
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (bandsCards.length > 0)
+                    SizedBox(
+                      height: 8,
+                    ),
+                  if (bandsCards.length > 0)
+                    Container(
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.only(
+                          left: horizontalPadding,
+                          right: horizontalPadding,
+                        ),
+                        height: 50,
+                        child: multiSelectContainer),
+                  SizedBox(
+                    height: 2,
+                  ),
+                  if (articles.length < 1 || loadAnimation)
+                    Expanded(
+                        child: Center(
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: Lottie.asset(loadingAnimation,
+                                fit: BoxFit.contain, width: double.maxFinite),
+                          ),
+                          if (!loadAnimation)
+                            Center(
+                              child: Container(
+                                  height: 175,
+                                  width: 175,
+                                  padding: EdgeInsets.all(32),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black, //COLOR_PRIMARY_DARK,
+                                    borderRadius: BorderRadius.circular(175),
+                                    border: Border.all(
+                                        color: Colors.transparent, width: 1),
+                                  ),
+                                  child: Image.asset(
+                                    "images/logo_background_white.png",
+                                    color: Colors.white24,
+                                    fit: BoxFit.contain,
+                                  )),
                             ),
-                          if (false)
-                            Flexible(
-                                child: AutoSizeText(
-                              "Live",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red),
-                            )),
+                          if (articles.length < 1 && loadAnimation)
+                            Center(child: Text("You're all caught up")),
                         ],
                       ),
-                    ),
-                    SizedBox(
-                      width: iconSpaces,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => UserProfilePage(
-                                drummer: drummer,
-                                fromSearch: true,
-                              ),
-                            ));
-                      },
-                      child: Container(
-                          width: 30,
-                          height: 30,
-                          padding: EdgeInsets.all(1),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: Colors.grey.shade800),
-                          child: (drummer.imageUrl != null)
-                              ? Container(
-                                  padding: EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(19),
-                                      color: Colors.black),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(17),
-                                    clipBehavior: Clip.hardEdge,
-                                    child: CachedNetworkImage(
-                                        width: 30,
-                                        height: 30,
-                                        imageUrl: modifyImageUrl(
-                                            drummer.imageUrl ?? "", "100x100"),
-                                        fit: BoxFit.cover),
-                                  ),
-                                )
-                              : RoundedButton(
-                                  height: 20,
-                                  padding: 6,
-                                  assetPath: "images/user_profile_active.png",
-                                  color: Colors.white,
-                                  bgColor: Colors.grey.shade900,
-                                  onPressed: () {})),
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                  ],
-                ),
-              ),
-              if (bandsCards.length > 0)
-                SizedBox(
-                  height: 8,
-                ),
-              if (bandsCards.length > 0)
-                Container(
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.only(
-                      left: horizontalPadding,
-                      right: horizontalPadding,
-                    ),
-                    height: 50,
-                    child: multiSelectContainer),
-              SizedBox(
-                height: 2,
-              ),
-              if (articles.length < 1 || loadAnimation)
-                Expanded(
-                    child: Center(
-                  child: Stack(
-                    children: [
-                      Center(
-                        child: Lottie.asset(loadingAnimation,
-                            fit: BoxFit.contain, width: double.maxFinite),
+                    )),
+                  if (articles.length > 0)
+                    Expanded(
+                      child: Builder(
+                        builder: (BuildContext context) {
+                          try {
+                            return CardSwiper(
+                              controller: controller,
+                              cardsCount:
+                                  (articles.length > 0) ? articles.length : 0,
+                              duration: Duration(milliseconds: 200),
+                              maxAngle: 45,
+                              scale: 0.9,
+                              numberOfCardsDisplayed: (articles.length > 1)
+                                  ? 2
+                                  : (articles.length < 1)
+                                      ? 0
+                                      : 1,
+                              isVerticalSwipingEnabled: false,
+                              onEnd: () {
+                                print("Ended swipes");
+                                setState(() {
+                                  //loadAnimation = true;
+                                  //articles.clear();
+                                });
+
+                                if (selectedBandID == "All")
+                                  getArticles();
+                                else
+                                  getArticlesForBand(selectedBandID);
+                              },
+                              threshold: 25,
+                              onSwipe: _onSwipe,
+                              isLoop: false,
+                              onUndo: _onUndo,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: horizontalPadding),
+                              cardBuilder: (context, index) {
+                                // print("Index of element $index");
+                                try {
+                                  if (index >= 0)
+                                    return HomeItem(
+                                      article: articles.elementAt(index),
+                                      isContainerVisible: false,
+                                      openArticle: (article) {
+                                        openArticlePage(article, index);
+                                      },
+                                      updateList: (article) {},
+                                      undo: () {
+                                        // setState(() {
+                                        //   controller = CardSwiperController();
+                                        // });
+
+                                        controller?.undo();
+                                      },
+                                      onRefresh: () {
+                                        return _refreshData();
+                                      },
+                                    );
+                                  else
+                                    return Container();
+                                } catch (e) {
+                                  print(
+                                      "//////////////////////////ERROR/////////////////////");
+                                  return Container();
+                                }
+                              },
+                            );
+                          } catch (e) {
+                            return Container();
+                          }
+                        },
                       ),
-                      if (!loadAnimation)
-                        Center(
-                          child: Container(
-                              height: 150,
-                              width: 150,
-                              padding: EdgeInsets.all(32),
-                              decoration: BoxDecoration(
-                                color: Colors.black, //COLOR_PRIMARY_DARK,
-                                borderRadius: BorderRadius.circular(75),
-                                border: Border.all(
-                                    color: Colors.transparent, width: 1),
-                              ),
-                              child: Image.asset(
-                                "images/logo_background_white.png",
-                                color: Colors.white,
-                                fit: BoxFit.contain,
-                              )),
-                        ),
-                      if (articles.length < 1 && loadAnimation)
-                        Center(child: Text("You're all caught up")),
-                    ],
-                  ),
-                )),
-              if (articles.length > 0)
-                Expanded(
-                  child: Builder(
-                    builder: (BuildContext context) {
-                      try {
-                        return CardSwiper(
-                          controller: controller,
-                          cardsCount:
-                              (articles.length > 0) ? articles.length : 0,
-                          duration: Duration(milliseconds: 200),
-                          maxAngle: 45,
-                          scale: 0.9,
-                          numberOfCardsDisplayed: (articles.length > 1)
-                              ? 2
-                              : (articles.length < 1)
-                                  ? 0
-                                  : 1,
-                          isVerticalSwipingEnabled: false,
-                          onEnd: () {
-                            print("Ended swipes");
-                            setState(() {
-                              //loadAnimation = true;
-                              //articles.clear();
-                            });
-
-                            if (selectedBandID == "All")
-                              getArticles();
-                            else
-                              getArticlesForBand(selectedBandID);
-                          },
-                          threshold: 25,
-                          onSwipe: _onSwipe,
-                          isLoop: false,
-                          onUndo: _onUndo,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: horizontalPadding),
-                          cardBuilder: (context, index) {
-                            // print("Index of element $index");
-                            try {
-                              if (index >= 0)
-                                return HomeItem(
-                                  article: articles.elementAt(index),
-                                  isContainerVisible: false,
-                                  openArticle: (article) {
-                                    openArticlePage(article, index);
-                                  },
-                                  updateList: (article) {},
-                                  undo: () {
-                                    // setState(() {
-                                    //   controller = CardSwiperController();
-                                    // });
-
-                                    controller?.undo();
-                                  },
-                                  onRefresh: () {
-                                    return _refreshData();
-                                  },
-                                );
-                              else
-                                return Container();
-                            } catch (e) {
-                              print(
-                                  "//////////////////////////ERROR/////////////////////");
-                              return Container();
-                            }
-                          },
-                        );
-                      } catch (e) {
-                        return Container();
-                      }
-                    },
-                  ),
-                ),
-            ],
-          ),
+                    ),
+                ],
+              ),
+            ),
+           if(!isTutorialDone) Container(
+             color: Colors.transparent,
+             child: TransparentSlider(
+               headerBackgroundColor: Colors.transparent,
+               pageBackgroundColor: Colors.transparent,
+               controllerColor: Colors.white,
+               finishButtonText: "End tutorial",
+               onFinish: (){
+                 setState(() {
+                  finishedTutorial();
+                 });
+               },
+               finishButtonStyle: FinishButtonStyle(
+                 backgroundColor: Color(0xff008cff),
+                 shape: RoundedRectangleBorder(
+                   borderRadius: BorderRadius.all(
+                     Radius.circular(50.0),
+                   ),
+                 ),
+               ),
+               skipTextButton: Text('Skip'),
+               background: [
+                 Container(
+                   color: Colors.transparent,
+                   width: MediaQuery.of(context).size.width,
+                   height: 400,
+                   child: Container(
+                     alignment: Alignment.center,
+                     child: Lottie.asset('images/swipe_left.json',height: 300,fit:BoxFit.contain ,width: double.maxFinite),
+                   ),
+                 ),
+                 Container(
+                   color: Colors.transparent,
+                   width: MediaQuery.of(context).size.width,
+                   height: 400,
+                   child: Container(
+                     alignment: Alignment.center,
+                     child: Lottie.asset('images/swipe_right.json',height: 300,fit:BoxFit.contain ,width: double.maxFinite),
+                   ),
+                 ),
+                 Container(
+                   color: Colors.transparent,
+                   width: MediaQuery.of(context).size.width,
+                   height: 400,
+                   child: Container(
+                     alignment: Alignment.center,
+                     child: Icon(
+                       Icons.data_saver_off_rounded,
+                       size: 200,
+                       color: Colors.white,
+                     ),
+                   ),
+                 ),
+               ],
+               totalPage: 3,
+               speed: 1.8,
+               pageBodies: [
+                 Container(
+                   color: Colors.transparent,
+                   padding: EdgeInsets.symmetric(horizontal: 40),
+                   child: Column(
+                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                     children: <Widget>[
+                       SizedBox(
+                         height: marginHeight,
+                       ),
+                       Center(
+                         child: RichText(
+                           textAlign: TextAlign.center,
+                           text: TextSpan(
+                             text: 'Swipe',
+                             style: TextStyle(
+                                 fontWeight: FontWeight.bold,
+                                 fontSize: textSize),
+                             children: <TextSpan>[
+                               TextSpan(
+                                 text: ' Left',
+                                 style: TextStyle(
+                                     color: Colors.redAccent,
+                                     fontWeight: FontWeight.bold,
+                                     fontStyle: FontStyle.italic,
+                                     fontSize: textSize),
+                               ),
+                               TextSpan(
+                                 text: '\nto skip and check out the next news article',
+                                 style: TextStyle(
+                                     color: Colors.white,
+                                     fontWeight: FontWeight.normal,
+                                     fontStyle: FontStyle.normal,
+                                     fontSize: textSize-10),
+                               ),
+                             ],
+                           ),
+                         ),
+                       ),
+                     ],
+                   ),
+                 ),
+                 Container(
+                   color: Colors.transparent,
+                   padding: EdgeInsets.symmetric(horizontal: 40),
+                   child: Column(
+                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                     children: <Widget>[
+                       SizedBox(
+                         height: marginHeight,
+                       ),
+                       RichText(
+                         textAlign: TextAlign.center,
+                         text: TextSpan(
+                           text: 'Swipe',
+                           style: TextStyle(
+                               fontWeight: FontWeight.bold,
+                               fontSize: textSize),
+                           children: <TextSpan>[
+                             TextSpan(
+                               text: ' Right',
+                               style: TextStyle(
+                                   color: Colors.blue,
+                                   fontWeight: FontWeight.bold,
+                                   fontStyle: FontStyle.italic,
+                                   fontSize: textSize),
+                             ),
+                             TextSpan(
+                               text: '\nto join in or start a conversation with your band members on the news article',
+                               style: TextStyle(
+                                   color: Colors.white,
+                                   fontWeight: FontWeight.normal,
+                                   fontStyle: FontStyle.normal,
+                                   fontSize: textSize-10),
+                             ),
+                           ],
+                         ),
+                       ),
+                     ],
+                   ),
+                 ),
+                 Container(
+                   color: Colors.transparent,
+                   padding: EdgeInsets.symmetric(horizontal: 40),
+                   child: Column(
+                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                     children: <Widget>[
+                       SizedBox(
+                         height: marginHeight,
+                       ),
+                       RichText(
+                         textAlign: TextAlign.center,
+                         text: TextSpan(
+                           text: 'Tap the icon',
+                           style: TextStyle(
+                               fontWeight: FontWeight.bold,
+                               fontSize: textSize),
+                           children: [
+                             TextSpan(
+                               text: '\n to checkout out live drumms and see what the community is talking about',
+                               style: TextStyle(
+                                   color: Colors.white,
+                                   fontWeight: FontWeight.normal,
+                                   fontStyle: FontStyle.normal,
+                                   fontSize: textSize-10),
+                             ),
+                           ]
+                         ),
+                       ),
+                     ],
+                   ),
+                 ),
+               ],
+             )
+            ).frosted(blur: 15,frostColor: Colors.black),
+          ],
         ),
       ),
     );
@@ -923,7 +1107,13 @@ class _NewsFeedState extends State<NewsFeed>
 
   void setOnboarded() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool checkTutorial = await prefs.getBool('isTutorialDone')??false;
+    setState(() {
+      isTutorialDone = checkTutorial;
+    });
+
     await prefs.setBool('isOnboarded', true);
+
   }
 
   @override
@@ -962,5 +1152,13 @@ class _NewsFeedState extends State<NewsFeed>
       _lastRefreshTime = DateTime.now(); // Update the last refresh time
       _checkAndScheduleRefresh(); // Reschedule the next refresh
     });
+  }
+
+  void finishedTutorial() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isTutorialDone = true;
+    });
+    await prefs.setBool('isTutorialDone', true);
   }
 }
