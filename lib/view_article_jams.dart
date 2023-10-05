@@ -245,7 +245,7 @@ class ViewArticleJamState extends State<ViewArticleJam> {
                         BorderRadius.vertical(top: Radius.circular(0.0)),
                         child: CreateJam(
                             title: widget.article?.title,
-                            articleId: widget.article?.articleId,
+                            articleId: widget.article?.jamId,
                             imageUrl: widget.article?.imageUrl),
                       ),
                     );

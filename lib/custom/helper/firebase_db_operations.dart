@@ -913,19 +913,32 @@ class FirebaseDBOperations {
         query = query.startAfterDocument(lastDocument!);
       }
       final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
-      lastDocument = snapshot.docs.last;
+      if(snapshot.docs.isNotEmpty)
+        lastDocument = snapshot.docs.last;
       List<Article> newArticles =
       snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
-      if(newArticles.length<1)
+      if(newArticles.length<1) {
         checkedEverything = true;
-
-
+      }
       for (Article article in newArticles) {
         if (!seenPosts.contains(article.articleId)|| checkedEverything)
           filterArticle.add(article);
 
       }
     }
+
+    ///Uncomment the below code if you want to replay the articles after you have seen everything
+    // if(filterArticle.length<1&&checkedEverything){
+    //   Query<Map<String, dynamic>> query = FirebaseFirestore.instance
+    //       .collection('articles')
+    //       .where('category', whereIn: bandCategoryList)
+    //   // .where('country', isEqualTo: 'in')
+    //       .where('source', isNotEqualTo: null)
+    //       .orderBy("publishedAt", descending: true)
+    //       .limit(50);
+    //   final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+    //   filterArticle = snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+    // }
 
     return filterArticle;
   }
@@ -965,6 +978,19 @@ class FirebaseDBOperations {
         filterArticle.add(article);
     }
   }
+
+  ///Uncomment the below code if you want to replay the articles after you have seen everything
+    // if(filterArticle.length<1&&checkedEverything){
+    //   Query<Map<String, dynamic>> query = FirebaseFirestore.instance
+    //       .collection('articles')
+    //       .where('category', isEqualTo: bandID)
+    //   // .where('country', isEqualTo: 'in')
+    //       .where('source', isNotEqualTo: null)
+    //       .orderBy("publishedAt", descending: true)
+    //       .limit(50);
+    //   final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+    //   filterArticle = snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+    // }
 
     return filterArticle;
   }

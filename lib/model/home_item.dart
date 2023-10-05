@@ -76,13 +76,27 @@ class _HomeItemState extends State<HomeItem> {
                           placeholder: (context, imageUrl) {
                             String imageUrl = widget.article.imageUrl ??"";
                             return Container(
-                              height: (imageUrl.length < 1) ? 0:150 ,
-                              color: Colors.transparent,
+                              height: 150,
                               width: double.infinity,
+                              padding: EdgeInsets.all(32),
+                              decoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.circular(curve-4),
+                              ),
+                              child: Image.asset("images/logo_background_white.png",color: Colors.white.withOpacity(0.1),),
                             );
                           },
                           errorWidget: (context, url, error) {
-                            return Container();
+                            return Container(
+                              height: 150,
+                              width: double.infinity,
+                              padding: EdgeInsets.all(32),
+                              decoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.circular(curve-4),
+                              ),
+                              child: Image.asset("images/logo_background_white.png",color: Colors.white.withOpacity(0.1),),
+                            );
                           },
                           fit: BoxFit.fitWidth,
                         ),
@@ -176,7 +190,8 @@ class _HomeItemState extends State<HomeItem> {
                           height: 4,
                         ),
                         Text(
-                          "Summary",
+                          "Gen AI\nSummary",
+                          textAlign: TextAlign.center,
                           style: TextStyle(fontSize: fontSize, color: Colors.white),
                         ),
                       ],

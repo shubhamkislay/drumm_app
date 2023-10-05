@@ -11,6 +11,7 @@ class Article {
   String? summary;
   String? content;
   String? articleId;
+  String? jamId;
   String? source;
   bool? liked;
   int? likes = 0;
@@ -31,6 +32,7 @@ class Article {
       this.imageUrl,
       this.publishedAt,
       this.articleId,
+        this.jamId,
         this.reads,
         this.uid,
       this.content});
@@ -45,6 +47,7 @@ class Article {
     articleId = snapshot.data()['articleId'];
     country = snapshot.data()['country'];
     title = snapshot.data()['title'];
+    jamId = snapshot.data()['jamId'];
     description = snapshot.data()['description'];
     url = snapshot.data()['url'];
     imageUrl = snapshot.data()['imageUrl'];
@@ -61,6 +64,7 @@ class Article {
     source = snapshot['source'];
     category = snapshot['category'];
     articleId = snapshot['articleId'];
+    jamId = snapshot['jamId'];
     country = snapshot['country'];
     title = snapshot['title'];
     description = snapshot['description'];
@@ -84,6 +88,7 @@ class Article {
       imageUrl: this.imageUrl,
       publishedAt: this.publishedAt,
       articleId: this.articleId,
+      jamId: this.jamId,
       content: this.content,
       liked: this.liked,
       likes: this.likes,
@@ -104,6 +109,7 @@ class Article {
     data['publishedAt'] = this.publishedAt;
     data['content'] = this.content;
     data['articleId'] = this.articleId;
+    data['jamId'] = this.jamId;
     data['summary'] = this.summary;
     data['likes'] = this.likes;
     data['uid'] = this.uid;

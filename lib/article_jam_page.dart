@@ -214,8 +214,8 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                     jam.broadcast=false;
                     jam.title=widget.article?.title;
                     jam.bandId=widget.article?.category;
-                    jam.jamId=widget.article?.articleId;
-                    jam.articleId=widget.article?.articleId;
+                    jam.jamId=widget.article?.jamId;
+                    jam.articleId=widget.article?.jamId;
                     jam.startedBy=widget.article?.source;
                     jam.imageUrl=widget.article?.imageUrl;
                     jam.count=0;
@@ -288,7 +288,7 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                             child: CreateJam(
                               bandId: widget.article?.category,
                                 title: widget.article?.title,
-                                articleId: widget.article?.articleId,
+                                articleId: widget.article?.jamId,
                                 imageUrl: widget.article?.imageUrl),
                           ),
                         );

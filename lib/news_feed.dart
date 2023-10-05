@@ -55,7 +55,7 @@ class _NewsFeedState extends State<NewsFeed>
   double horizontalPadding = 8;
   late String loadingAnimation;
   final String LOADING_ASSET = "images/pulse.json";
-  final String NO_FOUND_ASSET = "images/animation_nothing_found.json";
+  final String NO_FOUND_ASSET = "images/caught_up.json";
 
   DateTime? _lastRefreshTime;
   Timer? _refreshTimer;
@@ -68,8 +68,8 @@ class _NewsFeedState extends State<NewsFeed>
   bool noArticlesPresent = false;
   bool liveDrummsExist = false;
 
-  double drummLogoSize = 24;
-  double iconSpaces = 20;
+  double drummLogoSize = 28;
+  double iconSpaces = 18;
   double textSize = 28;
   double marginHeight = 200;
 
@@ -77,6 +77,8 @@ class _NewsFeedState extends State<NewsFeed>
 
   bool isOnboarded = false;
   bool isTutorialDone = false;
+
+  bool showNotification = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,7 +103,7 @@ class _NewsFeedState extends State<NewsFeed>
                         SizedBox(
                           width: 4,
                         ),
-                        if (true)
+                        if (false)
                           SizedBox(
                             height: drummLogoSize,
                             width: drummLogoSize,
@@ -109,7 +111,7 @@ class _NewsFeedState extends State<NewsFeed>
                               padding: const EdgeInsets.only(left: 0),
                               child: Image.asset(
                                 "images/logo_icon.png",
-                                color: Colors.blue,
+                                color: Colors.white,
                                 width: 16,
                                 height: 16,
                                 fit: BoxFit.contain,
@@ -134,7 +136,7 @@ class _NewsFeedState extends State<NewsFeed>
                           ),
                         if (false) Expanded(child: Container()),
                         SizedBox(
-                          height: 30,
+                          height: 32,
                           child: Column(
                             children: [
                               GestureDetector(
@@ -170,7 +172,7 @@ class _NewsFeedState extends State<NewsFeed>
                                     ),
                                     child: Image.asset(
                                       "images/edit.png",
-                                      height: 26,
+                                      height: 28,
                                       fit: BoxFit.contain,
                                       color: Colors.grey.shade200,
                                     )),
@@ -195,13 +197,14 @@ class _NewsFeedState extends State<NewsFeed>
                           width: iconSpaces,
                         ),
                         SizedBox(
-                          height: 28,
+                          height: 32,
                           child: Column(
                             children: [
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
                                     liveDrummsExist = false;
+                                    showNotification = false;
                                   });
                                   showModalBottomSheet(
                                     context: context,
@@ -229,8 +232,8 @@ class _NewsFeedState extends State<NewsFeed>
                                 child: Container(
                                     padding: EdgeInsets.all(2),
                                     child: Image.asset(
-                                      "images/bell.png",
-                                      height: 24,
+                                      showNotification ? "images/notification_active.png":"images/notification_inactive.png",
+                                      height: 28,
                                       fit: BoxFit.contain,
                                       color: Colors.white,
                                     )), //Icon(Icons.notifications_on_rounded,size: 32))),
@@ -255,7 +258,7 @@ class _NewsFeedState extends State<NewsFeed>
                           width: iconSpaces,
                         ),
                         SizedBox(
-                          height: 32,
+                          height: 34,
                           child: Column(
                             children: [
                               GestureDetector(
@@ -292,21 +295,22 @@ class _NewsFeedState extends State<NewsFeed>
                                         borderRadius: BorderRadius.circular(24),
                                         gradient: (liveDrummsExist)
                                             ? LinearGradient(colors: [
-                                                Colors.blue.shade600,
-                                                Colors.blue.shade800,
+
+                                          Colors.blueAccent,
+                                                Colors.blue,
                                               ])
                                             : LinearGradient(colors: [
-                                                Colors.grey.shade900,
-                                                Colors.grey.shade900,
+                                                Colors.grey.shade800,
+                                                Colors.grey.shade800,
                                               ])),
                                     child: Container(
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(24),
-                                          color: Colors.grey.shade900,
+                                          color: Colors.black,
                                         ),
                                         child: Icon(
                                           Icons.data_saver_off_rounded,
-                                          size: 26,
+                                          size: 28,
                                         ))), // data_saver_off_rounded Image.asset("images/hotspot.png",height: 24,fit: BoxFit.contain,color: Colors.white,))),
                               ),
                               if (false)
@@ -340,15 +344,15 @@ class _NewsFeedState extends State<NewsFeed>
                                 ));
                           },
                           child: Container(
-                              width: 30,
-                              height: 30,
-                              padding: EdgeInsets.all(1),
+                              width: 29,
+                              height: 29,
+                              padding: EdgeInsets.all(0),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
-                                  color: Colors.grey.shade800),
+                                  color: Colors.black),
                               child: (drummer.imageUrl != null)
                                   ? Container(
-                                      padding: EdgeInsets.all(2),
+                                      padding: EdgeInsets.all(0),
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(19),
                                           color: Colors.black),
@@ -356,8 +360,8 @@ class _NewsFeedState extends State<NewsFeed>
                                         borderRadius: BorderRadius.circular(17),
                                         clipBehavior: Clip.hardEdge,
                                         child: CachedNetworkImage(
-                                            width: 30,
-                                            height: 30,
+                                            width: 29,
+                                            height: 29,
                                             imageUrl: modifyImageUrl(
                                                 drummer.imageUrl ?? "", "100x100"),
                                             fit: BoxFit.cover),
@@ -368,7 +372,7 @@ class _NewsFeedState extends State<NewsFeed>
                                       padding: 6,
                                       assetPath: "images/user_profile_active.png",
                                       color: Colors.white,
-                                      bgColor: Colors.grey.shade900,
+                                      bgColor: Colors.black,
                                       onPressed: () {})),
                         ),
                         SizedBox(
@@ -416,12 +420,12 @@ class _NewsFeedState extends State<NewsFeed>
                                   ),
                                   child: Image.asset(
                                     "images/logo_background_white.png",
-                                    color: Colors.white24,
+                                    color: Colors.blue.withOpacity(0.2),
                                     fit: BoxFit.contain,
                                   )),
                             ),
-                          if (articles.length < 1 && loadAnimation)
-                            Center(child: Text("You're all caught up")),
+                          // if (articles.length < 1 && loadAnimation)
+                          //   Center(child: Text("You're all caught up")),
                         ],
                       ),
                     )),
@@ -690,6 +694,7 @@ class _NewsFeedState extends State<NewsFeed>
     getArticles();
     getCurrentDrummer();
     checkLiveDrumms();
+    getNotifications();
     // Refresh your data
     //getNews();
   }
@@ -714,6 +719,20 @@ class _NewsFeedState extends State<NewsFeed>
     getBandsCards();
     getCurrentDrummer();
     checkLiveDrumms();
+    getNotifications();
+  }
+
+  void getNotifications() async {
+    SharedPreferences notiPref = await SharedPreferences.getInstance();
+    List<String>? notifications = notiPref.getStringList("notifications");
+
+    int notifLen = notifications?.length??0;
+
+    if(notifLen>0) {
+      setState(() {
+        showNotification = true;
+      });
+    }
   }
 
   void getBandsCards() async {
@@ -804,6 +823,13 @@ class _NewsFeedState extends State<NewsFeed>
         liveDrummsExist = true;
       });
     }
+    List<Jam> openDrumms = await FirebaseDBOperations.getOpenDrummsFromBands();
+    if (openDrumms.length > 0) {
+      setState(() {
+        liveDrummsExist = true;
+      });
+    }
+
   }
 
   MultiSelectContainer getMultiSelectWidget(BuildContext bContext) {
@@ -911,7 +937,7 @@ class _NewsFeedState extends State<NewsFeed>
     if (articleFetched.length < 1) {
       setState(() {
         noArticlesPresent = true;
-        //loadingAnimation = NO_FOUND_ASSET;
+        loadingAnimation = NO_FOUND_ASSET;
         loadAnimation = true;
       });
     } else {
@@ -1034,7 +1060,7 @@ class _NewsFeedState extends State<NewsFeed>
     if (fetchcedArticle.length < 1) {
       setState(() {
         noArticlesPresent = true;
-        // loadingAnimation = NO_FOUND_ASSET;
+        loadingAnimation = NO_FOUND_ASSET;
         loadAnimation = true;
       });
     } else {
@@ -1052,7 +1078,7 @@ class _NewsFeedState extends State<NewsFeed>
     jam.broadcast = false;
     jam.title = article.title;
     jam.bandId = article.category;
-    jam.jamId = article.articleId;
+    jam.jamId = article.jamId;
     jam.articleId = article.articleId;
     jam.startedBy = article.source;
     jam.imageUrl = article.imageUrl;
