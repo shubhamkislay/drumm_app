@@ -68,8 +68,8 @@ class _NewsFeedState extends State<NewsFeed>
   bool noArticlesPresent = false;
   bool liveDrummsExist = false;
 
-  double drummLogoSize = 28;
-  double iconSpaces = 18;
+  double drummLogoSize = 30;
+  double iconSpaces = 22;
   double textSize = 28;
   double marginHeight = 200;
 
@@ -89,7 +89,7 @@ class _NewsFeedState extends State<NewsFeed>
           fit: StackFit.passthrough,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 4),
+              padding: const EdgeInsets.only(bottom: 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -296,12 +296,12 @@ class _NewsFeedState extends State<NewsFeed>
                                         gradient: (liveDrummsExist)
                                             ? LinearGradient(colors: [
 
-                                          Colors.blueAccent,
-                                                Colors.blue,
+                                          Colors.grey.shade400,
+                                                Colors.grey.shade400,
                                               ])
                                             : LinearGradient(colors: [
-                                                Colors.grey.shade800,
-                                                Colors.grey.shade800,
+                                                Colors.grey.shade900,
+                                                Colors.grey.shade900,
                                               ])),
                                     child: Container(
                                         decoration: BoxDecoration(
@@ -383,14 +383,14 @@ class _NewsFeedState extends State<NewsFeed>
                   ),
                   if (bandsCards.length > 0)
                     SizedBox(
-                      height: 8,
+                      height: 4,
                     ),
                   if (bandsCards.length > 0)
                     Container(
                         alignment: Alignment.centerLeft,
                         padding: EdgeInsets.only(
-                          left: horizontalPadding,
-                          right: horizontalPadding,
+                          left: horizontalPadding+2,
+                          right: horizontalPadding+2,
                         ),
                         height: 50,
                         child: multiSelectContainer),
@@ -420,7 +420,7 @@ class _NewsFeedState extends State<NewsFeed>
                                   ),
                                   child: Image.asset(
                                     "images/logo_background_white.png",
-                                    color: Colors.blue.withOpacity(0.2),
+                                    color: Colors.white.withOpacity(0.25),
                                     fit: BoxFit.contain,
                                   )),
                             ),
@@ -440,7 +440,7 @@ class _NewsFeedState extends State<NewsFeed>
                                   (articles.length > 0) ? articles.length : 0,
                               duration: Duration(milliseconds: 200),
                               maxAngle: 45,
-                              scale: 0.9,
+                              scale: 0.85,
                               numberOfCardsDisplayed: (articles.length > 1)
                                   ? 2
                                   : (articles.length < 1)
@@ -502,6 +502,9 @@ class _NewsFeedState extends State<NewsFeed>
                         },
                       ),
                     ),
+                  SizedBox(
+                    height: 8,
+                  ),
                 ],
               ),
             ),
@@ -751,16 +754,18 @@ class _NewsFeedState extends State<NewsFeed>
             child: Row(
               children: [
                 SizedBox(
-                  height: 28,
-                  width: 28,
-                  child: Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: Image.asset(
-                      "images/drumm_logo.png",
-                      color: Colors.white,
-                      width: 16,
-                      height: 16,
-                      fit: BoxFit.contain,
+                  height: 26,
+                  width: 26,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      color: Colors.grey.shade800,
+                      padding: const EdgeInsets.all(5.0),
+                      child: Image.asset(
+                        "images/logo_background_white.png",
+                        color: Colors.white,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
                 ),
@@ -784,7 +789,7 @@ class _NewsFeedState extends State<NewsFeed>
                   height: 28,
                   width: 28,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(13),
                     child: CachedNetworkImage(
                       imageUrl: imageUrl,
                       fit: BoxFit.cover,
@@ -844,12 +849,7 @@ class _NewsFeedState extends State<NewsFeed>
       ),
       suffix: MultiSelectSuffix(
           selectedSuffix: const Padding(
-            padding: EdgeInsets.only(left: 1, right: 2),
-            child: Icon(
-              Icons.check,
-              color: Colors.white,
-              size: 14,
-            ),
+            padding: EdgeInsets.only(left: 1, right: 1),
           ),
           disabledSuffix: const Padding(
             padding: EdgeInsets.only(left: 1),
@@ -869,21 +869,15 @@ class _NewsFeedState extends State<NewsFeed>
             borderRadius: BorderRadius.circular(18)),
         selectedDecoration: BoxDecoration(
             gradient: LinearGradient(colors: [
-              Colors.blue.shade600,
-              Colors.blue.shade800, //Colors.cyan,
+              Colors.white,//Colors.blue.shade600,
+              Colors.white,//Colors.blue.shade800, //Colors.cyan,
             ]),
-            border: Border.all(color: Colors.blue[700]!),
-            borderRadius: BorderRadius.circular(18)),
-        disabledDecoration: BoxDecoration(
-            gradient: LinearGradient(colors: [Colors.blue, Colors.blue]),
-            color: Color(0xff2f2f2f),
-            border: Border.all(color: Color(0xff2f2f2f)),
             borderRadius: BorderRadius.circular(18)),
       ),
       items: bandsCards,
       textStyles: MultiSelectTextStyles(
         selectedTextStyle: TextStyle(
-          color: Colors.white,
+          color: Colors.black,
           fontFamily: 'alata',
         ),
         textStyle: TextStyle(
@@ -892,6 +886,7 @@ class _NewsFeedState extends State<NewsFeed>
         ),
       ),
       onChange: (allSelectedItems, selectedItem) {
+        Vibrate.feedback(FeedbackType.selection);
         FirebaseDBOperations.lastDocument = null;
         controller = CardSwiperController();
         setState(() {

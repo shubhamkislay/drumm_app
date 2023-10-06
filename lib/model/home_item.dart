@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import '../article_jam_page.dart';
@@ -80,7 +81,7 @@ class _HomeItemState extends State<HomeItem> {
                               width: double.infinity,
                               padding: EdgeInsets.all(32),
                               decoration: BoxDecoration(
-                                color: Colors.black,
+                                color: Colors.transparent,
                                 borderRadius: BorderRadius.circular(curve-4),
                               ),
                               child: Image.asset("images/logo_background_white.png",color: Colors.white.withOpacity(0.1),),
@@ -130,7 +131,7 @@ class _HomeItemState extends State<HomeItem> {
                                     textAlign: TextAlign.start,
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 22,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.bold
                                     ),
                                   ),
@@ -146,7 +147,7 @@ class _HomeItemState extends State<HomeItem> {
                             SizedBox(
                               height: 12,
                             ),
-                            Text(
+                            ExpandableText(
                               (widget.article.description != null)
                                   ? "${widget.article.description}"
                                   : (widget.article.content != null)
@@ -156,7 +157,10 @@ class _HomeItemState extends State<HomeItem> {
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.white70
-                              ),
+                              ), expandText: 'See more',
+                              collapseText: 'Hide',
+                              maxLines: 1,
+                              linkColor: Colors.white,
                             ),
                             SizedBox(
                               height: 6,

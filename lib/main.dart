@@ -697,10 +697,10 @@ class _SplashScreenState extends State<SplashScreen> {
       FirebaseDBOperations.subscribeToUserBands();
 
     return Container(
-      color: Color(0xff202020),
+      color: Colors.black,//Color(0xff202020),
       height: double.infinity,
       width: double.infinity,
-      child: Image.asset("images/drumm_logo_main.png",fit: BoxFit.fitWidth,),
+      child: Image.asset("images/logo_dark.png",fit: BoxFit.fitWidth,),
     );
 
     return (FirebaseAuth.instance.currentUser != null)

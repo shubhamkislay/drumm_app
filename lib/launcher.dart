@@ -210,10 +210,11 @@ class _LauncherPageState extends State<LauncherPage>
                           margin: EdgeInsets.all(5),
                           padding: EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                              color: Colors.red,
+                              color: Colors.grey.shade900,
                               borderRadius: BorderRadius.circular(18),),
-                          child: Transform.rotate(angle: 180 * 3.1415927 / 180,
-                          child: Image.asset("images/logout.png",fit: BoxFit.contain,color: Colors.white,)),
+                        //  child: Transform.rotate(angle: 180 * 3.1415927 / 180,
+                          child: Image.asset("images/leave.png",fit: BoxFit.contain,color: Colors.white,),
+                        //  ),
                         ),
                       )
                     ],

@@ -100,15 +100,15 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "images/drumm_logo_main.png"
+  image_path: "images/logo_dark.png"
   remove_alpha_ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 flutter_native_splash:
-  color: "#202020"
+  color: "#000000"
   #background_image: "assets/background.png"
-  image: "images/drumm_logo_main.png"
+  image: "images/logo_dark.png"
     #color_dark: "#042a49"
     #background_image_dark: "assets/dark-background.png"
     #android_12:
@@ -172,6 +172,8 @@ flutter:
     - images/notification_active.png
     - images/notification_inactive.png
     - images/caught_up.json
+    - images/logo_dark.png
+    - images/leave.png
   #   - images/a_dot_ham.jpeg
 
   fonts:
