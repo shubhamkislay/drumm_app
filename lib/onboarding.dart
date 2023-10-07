@@ -1,4 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:blur/blur.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -39,7 +41,7 @@ class _OnBoardingState extends State<OnBoarding> {
   Widget build(BuildContext context) {
     double textSize = 28;
     double marginHeight = 200;
-    Color offText = Colors.white.withOpacity(0.5);
+    Color offText = Colors.white.withOpacity(0.6);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -119,29 +121,40 @@ class _OnBoardingState extends State<OnBoarding> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 40),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                SizedBox(
-                  height: marginHeight,
-                ),
+
                 RichText(
                   text: TextSpan(
-                    text: 'Discover Breaking',
+                    text: 'Discover ',
                     style: TextStyle(
-                        fontFamily: "sans",
-                        color: offText,
-                        fontSize: textSize),
+                        fontFamily: "alata",
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: textSize+8),
                     children: <TextSpan>[
                       TextSpan(
-                        text: ' News',
+                        text: 'Breaking ',
                         style: TextStyle(
-                            fontFamily: "alata",
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: textSize+8),
+
+                            fontFamily: "sans",
+                            color: offText,
+                            fontWeight: FontWeight.normal,
+                            fontSize: textSize),
+                      ),
+                      TextSpan(
+                        text: 'News',
+                        style: TextStyle(
+                            fontFamily: "sans",
+                            color: offText,
+                            fontWeight: FontWeight.normal,
+                            fontSize: textSize),
                       ),
                     ],
                   ),
+                ),
+                SizedBox(
+                  height: 32,
                 ),
               ],
             ),
@@ -149,11 +162,8 @@ class _OnBoardingState extends State<OnBoarding> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 40),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                SizedBox(
-                  height: marginHeight,
-                ),
                 RichText(
                   text: TextSpan(
                     text: 'Drumm',
@@ -161,10 +171,10 @@ class _OnBoardingState extends State<OnBoarding> {
                         fontFamily: "alata",
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
-                        fontSize: textSize+4),
+                        fontSize: textSize+8),
                     children: <TextSpan>[
                       TextSpan(
-                        text: ' and talk with Fellow Enthusiasts',
+                        text: ' with the community',
                         style: TextStyle(
                           color: offText,
                           fontWeight: FontWeight.normal,
@@ -176,17 +186,17 @@ class _OnBoardingState extends State<OnBoarding> {
                     ],
                   ),
                 ),
+                SizedBox(
+                  height: 32,
+                ),
               ],
             ),
           ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 40),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                SizedBox(
-                  height: marginHeight,
-                ),
                 RichText(
 
                   text: TextSpan(
@@ -200,7 +210,7 @@ class _OnBoardingState extends State<OnBoarding> {
                           text: 'Bands',
                           style: TextStyle(
                             fontFamily: "alata",
-                            fontSize: textSize+4,
+                            fontSize: textSize+8,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           )
@@ -215,17 +225,17 @@ class _OnBoardingState extends State<OnBoarding> {
                     ],
                   ),
                 ),
+                SizedBox(
+                  height: 32,
+                ),
               ],
             ),
           ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 40),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                SizedBox(
-                  height: marginHeight,
-                ),
                 RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
@@ -241,11 +251,14 @@ class _OnBoardingState extends State<OnBoarding> {
                             color: Colors.white,
                               fontFamily: "alata",
                             fontWeight: FontWeight.bold,
-                              fontSize: textSize+4,
+                              fontSize: textSize+8,
                           )
                       ),
                     ],
                   ),
+                ),
+                SizedBox(
+                  height: 100,
                 ),
               ],
             ),
