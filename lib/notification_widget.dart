@@ -101,6 +101,7 @@ class NotificationWidgetState extends State<NotificationWidget>
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontSize: 22.0,
+                                    fontFamily: 'alata',
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

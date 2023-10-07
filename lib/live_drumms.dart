@@ -95,6 +95,7 @@ class LiveDrummsState extends State<LiveDrumms>
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontSize: 22.0,
+                                    fontFamily: 'alata',
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

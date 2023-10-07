@@ -15,6 +15,7 @@ import 'package:drumm_app/register_user.dart';
 import 'package:drumm_app/theme/theme_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'custom/transparent_slider.dart';
 import 'model/band.dart';
 
 class OnBoarding extends StatefulWidget {
@@ -36,12 +37,13 @@ class _OnBoardingState extends State<OnBoarding> {
   String actionState = "Continue";
   @override
   Widget build(BuildContext context) {
-    double textSize = 32;
+    double textSize = 28;
     double marginHeight = 200;
+    Color offText = Colors.white.withOpacity(0.5);
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: OnBoardingSlider(
+      body: TransparentSlider(
         headerBackgroundColor: Colors.black,
         controllerColor: Colors.white,
         finishButtonText: actionState,
@@ -58,14 +60,15 @@ class _OnBoardingState extends State<OnBoarding> {
          // signin.then((value) => {checkIfUserExists(value)});
         },
         finishButtonStyle: FinishButtonStyle(
-          backgroundColor: (actionState == "Continue") ? Color(0xff008cff):Colors.grey.shade900,
+          backgroundColor: (actionState == "Continue") ? Colors.white:Colors.grey.shade900,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(50.0),
             ),
           ),
         ),
-        skipTextButton: Text('Skip'),
+        finishButtonTextStyle: TextStyle(color: actionState == "Continue" ?Colors.black:Colors.white,fontFamily: "alata",fontWeight: FontWeight.bold,fontSize: 16),
+        skipTextButton: Text('Skip',style: TextStyle(color: Colors.white),),
         background: [
           Container(
             width: MediaQuery.of(context).size.width,
@@ -125,16 +128,17 @@ class _OnBoardingState extends State<OnBoarding> {
                   text: TextSpan(
                     text: 'Discover Breaking',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                        fontFamily: "sans",
+                        color: offText,
                         fontSize: textSize),
                     children: <TextSpan>[
                       TextSpan(
                         text: ' News',
                         style: TextStyle(
-                          color: Colors.blue,
+                            fontFamily: "alata",
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
-                            fontSize: textSize+4),
+                            fontSize: textSize+8),
                       ),
                     ],
                   ),
@@ -154,15 +158,18 @@ class _OnBoardingState extends State<OnBoarding> {
                   text: TextSpan(
                     text: 'Drumm',
                     style: TextStyle(
-                        color: Colors.blue,
+                        fontFamily: "alata",
                         fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic,
-                        fontSize: textSize),
+                        color: Colors.white,
+                        fontSize: textSize+4),
                     children: <TextSpan>[
                       TextSpan(
                         text: ' and talk with Fellow Enthusiasts',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: offText,
+                          fontWeight: FontWeight.normal,
+                          fontSize:textSize,
+                          fontFamily: "sans",
                           fontStyle: FontStyle.normal,
                         )
                       ),
@@ -185,18 +192,25 @@ class _OnBoardingState extends State<OnBoarding> {
                   text: TextSpan(
                     text: 'Join ',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                        fontFamily: "sans",
+                        color: offText,
                         fontSize: textSize),
                     children: <TextSpan>[
                       TextSpan(
                           text: 'Bands',
                           style: TextStyle(
-                              color: Colors.blue,
-                            fontStyle: FontStyle.italic,
+                            fontFamily: "alata",
+                            fontSize: textSize+4,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           )
                       ),
                       TextSpan(
                           text: ' of Shared Passions',
+                          style: TextStyle(
+                            color: offText,
+                            fontFamily: "sans",
+                          )
                       ),
                     ],
                   ),
@@ -217,14 +231,17 @@ class _OnBoardingState extends State<OnBoarding> {
                   text: TextSpan(
                     text: 'Let\'s ',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                      color: offText,
+                        fontFamily: "sans",
                         fontSize: textSize),
                     children: <TextSpan>[
                       TextSpan(
                           text: 'Drumm!',
                           style: TextStyle(
-                              fontStyle: FontStyle.italic,
-                              color: Colors.blue
+                            color: Colors.white,
+                              fontFamily: "alata",
+                            fontWeight: FontWeight.bold,
+                              fontSize: textSize+4,
                           )
                       ),
                     ],

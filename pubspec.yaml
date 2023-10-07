@@ -161,6 +161,7 @@ flutter:
     - images/lottie_loading.json
     - images/lottie_ripple.json
     - images/pulse.json
+    - images/pulse_white.json
     - images/join_room.json
     - images/lottie_pulse.json
     - images/notif.png
@@ -180,6 +181,9 @@ flutter:
     - family: alata
       fonts:
         - asset: fonts/Poppins-Medium.ttf
+    - family: monoton
+      fonts:
+        - asset: fonts/Monoton-Regular.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -199,37 +199,6 @@ class _JamRoomPageState extends State<JamRoomPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // if (jamImageCards.isNotEmpty)
-                      //   Container(
-                      //     alignment: Alignment.topCenter,
-                      //     child: GridView.custom(
-                      //       shrinkWrap: true,
-                      //       physics: const NeverScrollableScrollPhysics(),
-                      //       padding: const EdgeInsets.symmetric(
-                      //           horizontal: 2, vertical: 2),
-                      //       gridDelegate: SliverQuiltedGridDelegate(
-                      //         crossAxisCount: 3,
-                      //         mainAxisSpacing: 3,
-                      //         crossAxisSpacing: 3,
-                      //         repeatPattern: QuiltedGridRepeatPattern.inverted,
-                      //         pattern: [
-                      //           const QuiltedGridTile(2, 1),
-                      //           const QuiltedGridTile(2, 1),
-                      //           const QuiltedGridTile(2, 1),
-                      //         ],
-                      //       ),
-                      //       childrenDelegate: SliverChildBuilderDelegate(
-                      //         childCount: jamImageCards.length,
-                      //             (context, index) => jamImageCards.elementAt(index),
-                      //       ),
-                      //     ),
-                      //   ),
-                      if (false)
-                        Text(
-                          "Joining Drumm...",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
                       if (!userJoined)
                         Container(
                           height: 400,
@@ -261,7 +230,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                         Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: GridView.count(
-                            childAspectRatio: 0.85,
+                            childAspectRatio: 0.825,
                             crossAxisCount:
                                 3, //(drummerCards.length > 4) ? 3 : 2, // Number of columns
                             shrinkWrap: true,
@@ -314,6 +283,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                         expandText: 'show more',
                         collapseText: 'show less',
                         style: TextStyle(
+                            fontFamily: 'alata',
                             fontWeight: FontWeight.bold, fontSize: 16),
                         maxLines: 3,
                         linkColor: Colors.blue,
@@ -351,7 +321,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                         child: Text(
                           "Leave Drumm",
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'alata',),
                         ),
                       ),
                     ),
@@ -362,7 +332,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                     assetPath:
                         micMute ? "images/mic_off.png" : "images/mic_on.png",
                     color: Colors.white,
-                    bgColor: micMute ? Colors.red : Colors.green,
+                    bgColor: micMute ? Colors.grey.shade800 : Colors.blue,
                     onPressed: () {
                       setState(() {
                         Vibrate.feedback(FeedbackType.impact);

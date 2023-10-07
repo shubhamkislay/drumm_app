@@ -77,8 +77,8 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
                             begin: Alignment.bottomLeft,
                             end: Alignment.topRight,
                             colors: (widget.talking)? [
-                              Colors.greenAccent,
-                              Colors.green
+                              Colors.blueAccent,
+                              Colors.blue
                             ] : (!widget.muted) ? [
                               Colors.grey.shade700,
                               Colors.grey.shade700
@@ -114,7 +114,7 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
                                height: 36,
                                  width: 36,
                                  decoration: BoxDecoration(
-                                   color: Colors.grey.shade900.withOpacity(0.5),
+                                   color: Colors.grey.shade900.withOpacity(0.75),
                                    borderRadius: BorderRadius.circular(48),
                                  ),
                                  child: Icon(Icons.mic_off,size: 24,))),
@@ -124,7 +124,7 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
                 ),
               ),
               SizedBox(height: 4,),
-              if(drummer.username!=null)Text("${drummer.username}",style: TextStyle(fontSize: 12),),
+              if(drummer.username!=null)Text("${drummer.username}",style: TextStyle(fontSize: 12,fontFamily: 'alata',),),
             ],
           );
         }),

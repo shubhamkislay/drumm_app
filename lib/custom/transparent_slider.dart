@@ -127,7 +127,7 @@ class TransparentSlider extends StatefulWidget {
     ),
     this.skipIcon = const Icon(
       Icons.arrow_forward,
-      color: Colors.white,
+      color: Colors.black,
     ),
     this.indicatorAbove = false,
     this.indicatorPosition = 90,
@@ -169,7 +169,7 @@ class _TransparentSliderState extends State<TransparentSlider> {
         )
             : SizedBox.shrink(),
         body: CupertinoPageScaffold(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.black.withOpacity(0.25),
           navigationBar: OnBoardingNavigationBar(
             skipFunctionOverride: widget.skipFunctionOverride,
             leading: widget.leading,

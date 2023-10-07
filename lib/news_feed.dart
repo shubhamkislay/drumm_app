@@ -54,7 +54,7 @@ class _NewsFeedState extends State<NewsFeed>
   Drummer drummer = Drummer();
   double horizontalPadding = 8;
   late String loadingAnimation;
-  final String LOADING_ASSET = "images/pulse.json";
+  final String LOADING_ASSET = "images/pulse_white.json";
   final String NO_FOUND_ASSET = "images/caught_up.json";
 
   DateTime? _lastRefreshTime;
@@ -69,11 +69,13 @@ class _NewsFeedState extends State<NewsFeed>
   bool liveDrummsExist = false;
 
   double drummLogoSize = 30;
-  double iconSpaces = 22;
+  double iconSpaces = 26;
   double textSize = 28;
   double marginHeight = 200;
 
   var keepAlive = true;
+
+  double iconSize = 30;
 
   bool isOnboarded = false;
   bool isTutorialDone = false;
@@ -122,7 +124,8 @@ class _NewsFeedState extends State<NewsFeed>
                         if (true)
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 2),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 2),
                               child: Text(
                                 "Drumm",
                                 textAlign: TextAlign.left,
@@ -136,11 +139,12 @@ class _NewsFeedState extends State<NewsFeed>
                           ),
                         if (false) Expanded(child: Container()),
                         SizedBox(
-                          height: 32,
+                          height: iconSize,
                           child: Column(
                             children: [
                               GestureDetector(
                                 onTap: () {
+                                  Vibrate.feedback(FeedbackType.selection);
                                   showModalBottomSheet(
                                     context: context,
                                     isScrollControlled: true,
@@ -159,7 +163,9 @@ class _NewsFeedState extends State<NewsFeed>
                                           borderRadius: BorderRadius.vertical(
                                               top: Radius.circular(0.0)),
                                           child: CreateJam(
-                                              title: "", bandId: "", imageUrl: ""),
+                                              title: "",
+                                              bandId: "",
+                                              imageUrl: ""),
                                         ),
                                       );
                                     },
@@ -172,7 +178,7 @@ class _NewsFeedState extends State<NewsFeed>
                                     ),
                                     child: Image.asset(
                                       "images/edit.png",
-                                      height: 28,
+                                      height: iconSize - 4,
                                       fit: BoxFit.contain,
                                       color: Colors.grey.shade200,
                                     )),
@@ -197,11 +203,12 @@ class _NewsFeedState extends State<NewsFeed>
                           width: iconSpaces,
                         ),
                         SizedBox(
-                          height: 32,
+                          height: iconSize,
                           child: Column(
                             children: [
                               GestureDetector(
                                 onTap: () {
+                                  Vibrate.feedback(FeedbackType.selection);
                                   setState(() {
                                     liveDrummsExist = false;
                                     showNotification = false;
@@ -232,8 +239,10 @@ class _NewsFeedState extends State<NewsFeed>
                                 child: Container(
                                     padding: EdgeInsets.all(2),
                                     child: Image.asset(
-                                      showNotification ? "images/notification_active.png":"images/notification_inactive.png",
-                                      height: 28,
+                                      showNotification
+                                          ? "images/notification_active.png"
+                                          : "images/notification_inactive.png",
+                                      height: iconSize - 4,
                                       fit: BoxFit.contain,
                                       color: Colors.white,
                                     )), //Icon(Icons.notifications_on_rounded,size: 32))),
@@ -258,11 +267,12 @@ class _NewsFeedState extends State<NewsFeed>
                           width: iconSpaces,
                         ),
                         SizedBox(
-                          height: 34,
+                          height: iconSize,
                           child: Column(
                             children: [
                               GestureDetector(
                                 onTap: () {
+                                  Vibrate.feedback(FeedbackType.selection);
                                   setState(() {
                                     liveDrummsExist = false;
                                   });
@@ -290,14 +300,13 @@ class _NewsFeedState extends State<NewsFeed>
                                   );
                                 },
                                 child: Container(
-                                    padding: EdgeInsets.all(2),
+                                    padding: EdgeInsets.all(1.75),
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(24),
                                         gradient: (liveDrummsExist)
                                             ? LinearGradient(colors: [
-
-                                          Colors.grey.shade400,
-                                                Colors.grey.shade400,
+                                                Colors.grey.shade500,
+                                                Colors.grey.shade500,
                                               ])
                                             : LinearGradient(colors: [
                                                 Colors.grey.shade900,
@@ -305,12 +314,13 @@ class _NewsFeedState extends State<NewsFeed>
                                               ])),
                                     child: Container(
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(24),
+                                          borderRadius:
+                                              BorderRadius.circular(24),
                                           color: Colors.black,
                                         ),
                                         child: Icon(
                                           Icons.data_saver_off_rounded,
-                                          size: 28,
+                                          size: iconSize - 4,
                                         ))), // data_saver_off_rounded Image.asset("images/hotspot.png",height: 24,fit: BoxFit.contain,color: Colors.white,))),
                               ),
                               if (false)
@@ -334,6 +344,7 @@ class _NewsFeedState extends State<NewsFeed>
                         ),
                         GestureDetector(
                           onTap: () {
+                            Vibrate.feedback(FeedbackType.selection);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -344,8 +355,8 @@ class _NewsFeedState extends State<NewsFeed>
                                 ));
                           },
                           child: Container(
-                              width: 29,
-                              height: 29,
+                              width: iconSize - 4,
+                              height: iconSize - 4,
                               padding: EdgeInsets.all(0),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
@@ -354,23 +365,26 @@ class _NewsFeedState extends State<NewsFeed>
                                   ? Container(
                                       padding: EdgeInsets.all(0),
                                       decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(19),
+                                          borderRadius:
+                                              BorderRadius.circular(19),
                                           color: Colors.black),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(17),
                                         clipBehavior: Clip.hardEdge,
                                         child: CachedNetworkImage(
-                                            width: 29,
-                                            height: 29,
+                                            width: iconSize - 3,
+                                            height: iconSize - 3,
                                             imageUrl: modifyImageUrl(
-                                                drummer.imageUrl ?? "", "100x100"),
+                                                drummer.imageUrl ?? "",
+                                                "100x100"),
                                             fit: BoxFit.cover),
                                       ),
                                     )
                                   : RoundedButton(
                                       height: 20,
                                       padding: 6,
-                                      assetPath: "images/user_profile_active.png",
+                                      assetPath:
+                                          "images/user_profile_active.png",
                                       color: Colors.white,
                                       bgColor: Colors.black,
                                       onPressed: () {})),
@@ -389,8 +403,8 @@ class _NewsFeedState extends State<NewsFeed>
                     Container(
                         alignment: Alignment.centerLeft,
                         padding: EdgeInsets.only(
-                          left: horizontalPadding+2,
-                          right: horizontalPadding+2,
+                          left: horizontalPadding + 2,
+                          right: horizontalPadding + 2,
                         ),
                         height: 50,
                         child: multiSelectContainer),
@@ -403,29 +417,39 @@ class _NewsFeedState extends State<NewsFeed>
                       child: Stack(
                         children: [
                           Center(
-                            child: Lottie.asset(loadingAnimation,
+                            child: Lottie.asset("images/pulse_white.json",//loadingAnimation,
                                 fit: BoxFit.contain, width: double.maxFinite),
                           ),
                           if (!loadAnimation)
                             Center(
                               child: Container(
-                                  height: 175,
-                                  width: 175,
-                                  padding: EdgeInsets.all(32),
+                                  height: 250,
+                                  width: 250,
+                                  padding: EdgeInsets.all(54),
                                   decoration: BoxDecoration(
-                                    color: Colors.black, //COLOR_PRIMARY_DARK,
-                                    borderRadius: BorderRadius.circular(175),
-                                    border: Border.all(
-                                        color: Colors.transparent, width: 1),
+                                    color: COLOR_PRIMARY_DARK,
+                                    borderRadius: BorderRadius.circular(250),
                                   ),
                                   child: Image.asset(
                                     "images/logo_background_white.png",
-                                    color: Colors.white.withOpacity(0.25),
+                                    color: Colors.white,//.withOpacity(0.125),
                                     fit: BoxFit.contain,
                                   )),
                             ),
-                          // if (articles.length < 1 && loadAnimation)
-                          //   Center(child: Text("You're all caught up")),
+                           if (articles.length < 1 && loadAnimation)
+                             Center(child:
+                             Container(
+                               alignment: Alignment.center,
+                                 height: 250,
+                                 width: 250,
+                                 padding: EdgeInsets.all(4),
+                                 decoration: BoxDecoration(
+                                   color: COLOR_PRIMARY_DARK,
+                                   borderRadius: BorderRadius.circular(250),
+                                   border: Border.all(
+                                       color: Colors.transparent, width: 1),
+                                 ),
+                                 child: Text("You're all caught up",textAlign: TextAlign.center,))),
                         ],
                       ),
                     )),
@@ -508,177 +532,193 @@ class _NewsFeedState extends State<NewsFeed>
                 ],
               ),
             ),
-           if(!isTutorialDone) Container(
-             color: Colors.transparent,
-             child: TransparentSlider(
-               headerBackgroundColor: Colors.transparent,
-               pageBackgroundColor: Colors.transparent,
-               controllerColor: Colors.white,
-               finishButtonText: "End tutorial",
-               onFinish: (){
-                 setState(() {
-                  finishedTutorial();
-                 });
-               },
-               finishButtonStyle: FinishButtonStyle(
-                 backgroundColor: Color(0xff008cff),
-                 shape: RoundedRectangleBorder(
-                   borderRadius: BorderRadius.all(
-                     Radius.circular(50.0),
-                   ),
-                 ),
-               ),
-               skipTextButton: Text('Skip'),
-               background: [
-                 Container(
-                   color: Colors.transparent,
-                   width: MediaQuery.of(context).size.width,
-                   height: 400,
-                   child: Container(
-                     alignment: Alignment.center,
-                     child: Lottie.asset('images/swipe_left.json',height: 300,fit:BoxFit.contain ,width: double.maxFinite),
-                   ),
-                 ),
-                 Container(
-                   color: Colors.transparent,
-                   width: MediaQuery.of(context).size.width,
-                   height: 400,
-                   child: Container(
-                     alignment: Alignment.center,
-                     child: Lottie.asset('images/swipe_right.json',height: 300,fit:BoxFit.contain ,width: double.maxFinite),
-                   ),
-                 ),
-                 Container(
-                   color: Colors.transparent,
-                   width: MediaQuery.of(context).size.width,
-                   height: 400,
-                   child: Container(
-                     alignment: Alignment.center,
-                     child: Icon(
-                       Icons.data_saver_off_rounded,
-                       size: 200,
-                       color: Colors.white,
-                     ),
-                   ),
-                 ),
-               ],
-               totalPage: 3,
-               speed: 1.8,
-               pageBodies: [
-                 Container(
-                   color: Colors.transparent,
-                   padding: EdgeInsets.symmetric(horizontal: 40),
-                   child: Column(
-                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                     children: <Widget>[
-                       SizedBox(
-                         height: marginHeight,
-                       ),
-                       Center(
-                         child: RichText(
-                           textAlign: TextAlign.center,
-                           text: TextSpan(
-                             text: 'Swipe',
-                             style: TextStyle(
-                                 fontWeight: FontWeight.bold,
-                                 fontSize: textSize),
-                             children: <TextSpan>[
-                               TextSpan(
-                                 text: ' Left',
-                                 style: TextStyle(
-                                     color: Colors.redAccent,
-                                     fontWeight: FontWeight.bold,
-                                     fontStyle: FontStyle.italic,
-                                     fontSize: textSize),
-                               ),
-                               TextSpan(
-                                 text: '\nto skip and check out the next news article',
-                                 style: TextStyle(
-                                     color: Colors.white,
-                                     fontWeight: FontWeight.normal,
-                                     fontStyle: FontStyle.normal,
-                                     fontSize: textSize-10),
-                               ),
-                             ],
-                           ),
-                         ),
-                       ),
-                     ],
-                   ),
-                 ),
-                 Container(
-                   color: Colors.transparent,
-                   padding: EdgeInsets.symmetric(horizontal: 40),
-                   child: Column(
-                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                     children: <Widget>[
-                       SizedBox(
-                         height: marginHeight,
-                       ),
-                       RichText(
-                         textAlign: TextAlign.center,
-                         text: TextSpan(
-                           text: 'Swipe',
-                           style: TextStyle(
-                               fontWeight: FontWeight.bold,
-                               fontSize: textSize),
-                           children: <TextSpan>[
-                             TextSpan(
-                               text: ' Right',
-                               style: TextStyle(
-                                   color: Colors.blue,
-                                   fontWeight: FontWeight.bold,
-                                   fontStyle: FontStyle.italic,
-                                   fontSize: textSize),
-                             ),
-                             TextSpan(
-                               text: '\nto join in or start a conversation with your band members on the news article',
-                               style: TextStyle(
-                                   color: Colors.white,
-                                   fontWeight: FontWeight.normal,
-                                   fontStyle: FontStyle.normal,
-                                   fontSize: textSize-10),
-                             ),
-                           ],
-                         ),
-                       ),
-                     ],
-                   ),
-                 ),
-                 Container(
-                   color: Colors.transparent,
-                   padding: EdgeInsets.symmetric(horizontal: 40),
-                   child: Column(
-                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                     children: <Widget>[
-                       SizedBox(
-                         height: marginHeight,
-                       ),
-                       RichText(
-                         textAlign: TextAlign.center,
-                         text: TextSpan(
-                           text: 'Tap the icon',
-                           style: TextStyle(
-                               fontWeight: FontWeight.bold,
-                               fontSize: textSize),
-                           children: [
-                             TextSpan(
-                               text: '\n to checkout out live drumms and see what the community is talking about',
-                               style: TextStyle(
-                                   color: Colors.white,
-                                   fontWeight: FontWeight.normal,
-                                   fontStyle: FontStyle.normal,
-                                   fontSize: textSize-10),
-                             ),
-                           ]
-                         ),
-                       ),
-                     ],
-                   ),
-                 ),
-               ],
-             )
-            ).frosted(blur: 15,frostColor: Colors.black),
+            if (!isTutorialDone)
+              Container(
+                  color: Colors.transparent,
+                  child: TransparentSlider(
+                    headerBackgroundColor: Colors.transparent,
+
+                    pageBackgroundColor: Colors.transparent,
+                    controllerColor: Colors.white,
+                    finishButtonText: "End tutorial",
+                    finishButtonTextStyle: TextStyle(color: Colors.black,fontFamily: "alata",fontWeight: FontWeight.bold),
+                    onFinish: () {
+                      setState(() {
+                        finishedTutorial();
+                      });
+                    },
+                    finishButtonStyle: FinishButtonStyle(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(64.0),
+                        ),
+                      ),
+                    ),
+                    skipTextButton: Text('Skip',style: TextStyle(color: Colors.white),),
+                    background: [
+                      Container(
+                        color: Colors.transparent,
+                        width: MediaQuery.of(context).size.width,
+                        height: 400,
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Lottie.asset('images/swipe_right.json',
+                              height: 300,
+                              fit: BoxFit.contain,
+                              width: double.maxFinite),
+                        ),
+                      ),
+                      Container(
+                        color: Colors.transparent,
+                        width: MediaQuery.of(context).size.width,
+                        height: 400,
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Lottie.asset('images/swipe_left.json',
+                              height: 300,
+                              fit: BoxFit.contain,
+                              width: double.maxFinite),
+                        ),
+                      ),
+                      Container(
+                        color: Colors.transparent,
+                        width: MediaQuery.of(context).size.width,
+                        height: 400,
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Icon(
+                            Icons.data_saver_off_rounded,
+                            size: 200,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                    totalPage: 3,
+                    speed: 1.8,
+                    pageBodies: [
+                      Container(
+                        color: Colors.transparent,
+                        padding: EdgeInsets.symmetric(horizontal: 40),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            SizedBox(
+                              height: marginHeight,
+                            ),
+                            RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                text: 'Swipe',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "alata",
+                                    fontSize: textSize),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: ' Right',
+                                    style: TextStyle(
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: "alata",
+                                        fontSize: textSize),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        '\non the news article card to start drumming',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: "alata",
+                                        fontWeight: FontWeight.normal,
+                                        fontStyle: FontStyle.normal,
+                                        fontSize: textSize - 10),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        color: Colors.transparent,
+                        padding: EdgeInsets.symmetric(horizontal: 40),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            SizedBox(
+                              height: marginHeight,
+                            ),
+                            Center(
+                              child: RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  text: 'Swipe',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "alata",
+                                      fontSize: textSize),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: ' Left',
+                                      style: TextStyle(
+                                          color: Colors.redAccent,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: "alata",
+                                          fontSize: textSize),
+                                    ),
+                                    TextSpan(
+                                      text:
+                                      '\nto skip to the next article',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.normal,
+                                          fontStyle: FontStyle.normal,
+                                          fontFamily: "alata",
+                                          fontSize: textSize - 10),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        color: Colors.transparent,
+                        padding: EdgeInsets.symmetric(horizontal: 40),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            SizedBox(
+                              height: marginHeight,
+                            ),
+                            RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                  text: 'Tap the icon',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "alata",
+                                      fontSize: textSize),
+                                  children: [
+                                    TextSpan(
+                                      text:
+                                          '\n to checkout out the live drumms',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.normal,
+                                          fontFamily: "alata",
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: textSize - 10),
+                                    ),
+                                  ]),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )).frosted(blur: 7, frostColor: Colors.black),
           ],
         ),
       ),
@@ -729,9 +769,9 @@ class _NewsFeedState extends State<NewsFeed>
     SharedPreferences notiPref = await SharedPreferences.getInstance();
     List<String>? notifications = notiPref.getStringList("notifications");
 
-    int notifLen = notifications?.length??0;
+    int notifLen = notifications?.length ?? 0;
 
-    if(notifLen>0) {
+    if (notifLen > 0) {
       setState(() {
         showNotification = true;
       });
@@ -751,30 +791,11 @@ class _NewsFeedState extends State<NewsFeed>
           MultiSelectCard(
             value: element,
             selected: true,
-            child: Row(
-              children: [
-                SizedBox(
-                  height: 26,
-                  width: 26,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      color: Colors.grey.shade800,
-                      padding: const EdgeInsets.all(5.0),
-                      child: Image.asset(
-                        "images/logo_background_white.png",
-                        color: Colors.white,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-                Text("All")
-              ],
-            ),
+            child: Container(
+              alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                height: 28,
+                child: Text("All",textAlign: TextAlign.center,)),
           ),
         );
       } else {
@@ -834,7 +855,6 @@ class _NewsFeedState extends State<NewsFeed>
         liveDrummsExist = true;
       });
     }
-
   }
 
   MultiSelectContainer getMultiSelectWidget(BuildContext bContext) {
@@ -869,8 +889,8 @@ class _NewsFeedState extends State<NewsFeed>
             borderRadius: BorderRadius.circular(18)),
         selectedDecoration: BoxDecoration(
             gradient: LinearGradient(colors: [
-              Colors.white,//Colors.blue.shade600,
-              Colors.white,//Colors.blue.shade800, //Colors.cyan,
+              Colors.white, //Colors.blue.shade600,
+              Colors.white, //Colors.blue.shade800, //Colors.cyan,
             ]),
             borderRadius: BorderRadius.circular(18)),
       ),
@@ -891,6 +911,7 @@ class _NewsFeedState extends State<NewsFeed>
         controller = CardSwiperController();
         setState(() {
           //selectedCategory = selectedItem;
+          loadAnimation = false;
           loadingAnimation = LOADING_ASSET;
           Band selectedBand = selectedItem;
           print("Selected Band ID: ${selectedBand.bandId}");
@@ -1128,13 +1149,12 @@ class _NewsFeedState extends State<NewsFeed>
 
   void setOnboarded() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool checkTutorial = await prefs.getBool('isTutorialDone')??false;
+    bool checkTutorial = await prefs.getBool('isTutorialDone') ?? false;
     setState(() {
       isTutorialDone = checkTutorial;
     });
 
     await prefs.setBool('isOnboarded', true);
-
   }
 
   @override
