@@ -380,6 +380,7 @@ class _LauncherPageState extends State<LauncherPage>
                     ),
                   ],
                   onTap: (index) {
+                    Vibrate.feedback(FeedbackType.selection);
                     if (index !=
                             4 //2 This should be 2 for Wave Mode. Currently it's commented
                         ) {
@@ -453,7 +454,7 @@ class _LauncherPageState extends State<LauncherPage>
                       child: Container(
                         alignment: Alignment.center,
                         child: Lottie.asset('images/swipe_left.json',
-                            height: 300,
+                            height: 500,
                             fit: BoxFit.contain,
                             width: double.maxFinite),
                       ),
@@ -465,7 +466,7 @@ class _LauncherPageState extends State<LauncherPage>
                       child: Container(
                         alignment: Alignment.center,
                         child: Lottie.asset('images/swipe_right.json',
-                            height: 300,
+                            height: 500,
                             fit: BoxFit.contain,
                             width: double.maxFinite),
                       ),

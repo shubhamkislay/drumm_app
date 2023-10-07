@@ -297,7 +297,7 @@ class _NewsFeedState extends State<NewsFeed>
                               );
                             },
                             child: Container(
-                                padding: EdgeInsets.all(1.75),
+                                padding: EdgeInsets.all(1.25),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(24),
                                     gradient: (liveDrummsExist)

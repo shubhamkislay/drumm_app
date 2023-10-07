@@ -186,7 +186,7 @@ class LiveDrummsState extends State<LiveDrumms>
               if (drummCards.isEmpty&&!loaded)
                 Center(
                   child: Container(
-                      child: Lottie.asset('images/lottie_pulse.json',
+                      child: Lottie.asset('images/loading_live.json',
                           fit: BoxFit.contain, width: double.maxFinite)),
                 ),
             ],

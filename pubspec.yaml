@@ -178,6 +178,7 @@ flutter:
     - images/breaking_news.json
     - images/wave_drumm.json
     - images/drumm_band.json
+    - images/loading_live.json
   #   - images/a_dot_ham.jpeg
 
   fonts:
