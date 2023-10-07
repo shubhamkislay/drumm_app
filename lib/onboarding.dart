@@ -50,6 +50,7 @@ class _OnBoardingState extends State<OnBoarding> {
         controllerColor: Colors.white,
         finishButtonText: actionState,
         pageBackgroundColor: Colors.black,
+        centerBackground: true,
         onFinish: (){
          // Future<UserCredential> signin =
 
@@ -73,36 +74,37 @@ class _OnBoardingState extends State<OnBoarding> {
         skipTextButton: Text('Skip',style: TextStyle(color: Colors.white),),
         background: [
           Container(
-            width: MediaQuery.of(context).size.width,
-            height: 400,
+            height: MediaQuery.of(context).size.height/1.75,
             child: Container(
               alignment: Alignment.center,
-              child: Lottie.asset('images/animation_news.json',height: 300,fit:BoxFit.contain ,width: double.maxFinite),
+              child: ClipRRect(child: Lottie.asset('images/breaking_news.json',height: MediaQuery.of(context).size.height,fit:BoxFit.cover,)),
             ),
           ),
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 400,
+            height: MediaQuery.of(context).size.height/1.75,
             child: Container(
               alignment: Alignment.center,
-              child: Lottie.asset('images/animation_bands.json',height: 300,fit:BoxFit.contain ,width: double.maxFinite),
+              child: Lottie.asset('images/wave_drumm.json',height: MediaQuery.of(context).size.height,fit:BoxFit.contain),
             ),
           ),
 
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 400,
+            height: MediaQuery.of(context).size.height/1.75,
+
             child: Container(
-              alignment: Alignment.center,
+              alignment: Alignment.centerLeft,
+              width: MediaQuery.of(context).size.width,
               child: Container(
-                alignment: Alignment.center,
-                child: Lottie.asset('images/animation_band.json',height: 300,fit:BoxFit.contain ,width: double.maxFinite),
+                alignment: Alignment.centerLeft,
+                child: ClipRRect(child: Lottie.asset('images/drumm_band.json',height: MediaQuery.of(context).size.height,fit:BoxFit.cover,width: MediaQuery.of(context).size.width,alignment: Alignment(1, -1) )),
               ),
             ),
           ),
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 400,
+            height: MediaQuery.of(context).size.height/1.75,
             child: Container(
               alignment: Alignment.center,
               child: Image.asset(
@@ -123,7 +125,6 @@ class _OnBoardingState extends State<OnBoarding> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-
                 RichText(
                   text: TextSpan(
                     text: 'Discover ',

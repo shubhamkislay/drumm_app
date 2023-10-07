@@ -175,6 +175,9 @@ flutter:
     - images/caught_up.json
     - images/logo_dark.png
     - images/leave.png
+    - images/breaking_news.json
+    - images/wave_drumm.json
+    - images/drumm_band.json
   #   - images/a_dot_ham.jpeg
 
   fonts:
