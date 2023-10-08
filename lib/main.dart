@@ -36,6 +36,7 @@ import 'package:drumm_app/onboarding.dart';
 import 'package:drumm_app/swipe_page.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/theme/theme_manager.dart';
+import 'package:lottie/lottie.dart';
 import 'package:scroll_app_bar/scroll_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -601,6 +602,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   bool _isOnboarded = false;
+  bool toggleLogo = false;
 
   @override
   void initState() {
@@ -613,13 +615,22 @@ class _SplashScreenState extends State<SplashScreen> {
     _isOnboarded = prefs.getBool('isOnboarded') ?? false;
     //prefs.remove('isOnboarded');
     if(_isOnboarded){
-      Navigator.of(context).push(PageRouteBuilder(
-          opaque: false,
-          pageBuilder: (context, animation, _) {
-            return LauncherPage(themeManager: widget.themeManager,
-              analytics: widget.analytics,
-              observer: widget.observer,);
-          }));
+      Future.delayed(Duration(seconds: 1),(){
+        setState(() {
+          toggleLogo = true;
+        });
+        Future.delayed(Duration(seconds: 1),(){
+          Navigator.of(context).push(PageRouteBuilder(
+              opaque: false,
+              pageBuilder: (context, animation, _) {
+                return LauncherPage(themeManager: widget.themeManager,
+                  analytics: widget.analytics,
+                  observer: widget.observer,);
+              }));
+        });
+
+      });
+
     }else{
       if ((FirebaseAuth.instance.currentUser != null)) {
         FirebaseDBOperations.subscribeToUserBands();
@@ -631,13 +642,21 @@ class _SplashScreenState extends State<SplashScreen> {
             await prefs.setString('uid', drummer.uid??"");
             await prefs.setInt('rid', drummer.rid ?? 0);
 
-            Navigator.of(context).push(PageRouteBuilder(
-                opaque: false,
-                pageBuilder: (context, animation, _) {
-                  return LauncherPage(themeManager: widget.themeManager,
-                    analytics: widget.analytics,
-                    observer: widget.observer,);
-                }));
+            Future.delayed(Duration(seconds: 1),(){
+              setState(() {
+                toggleLogo = true;
+              });
+              Future.delayed(Duration(seconds: 1),(){
+                Navigator.of(context).push(PageRouteBuilder(
+                    opaque: false,
+                    pageBuilder: (context, animation, _) {
+                      return LauncherPage(themeManager: widget.themeManager,
+                        analytics: widget.analytics,
+                        observer: widget.observer,);
+                    }));
+              });
+
+            });
           }else{
             Navigator.of(context).push(PageRouteBuilder(
                 opaque: false,
@@ -696,11 +715,39 @@ class _SplashScreenState extends State<SplashScreen> {
     if ((FirebaseAuth.instance.currentUser != null))
       FirebaseDBOperations.subscribeToUserBands();
 
-    return Container(
-      color: Colors.black,//Color(0xff202020),
-      height: double.infinity,
-      width: double.infinity,
-      child: Image.asset("images/logo_dark.png",fit: BoxFit.fitWidth,),
+    return Scaffold(
+      body: Container(
+        color: Colors.black,//Color(0xff202020),
+        height: double.infinity,
+        width: double.infinity,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: double.infinity,
+              child: Container(
+                alignment: Alignment.center,
+                child: Lottie.asset('images/breaking_news.json',height: MediaQuery.of(context).size.height,fit:BoxFit.cover),
+              ),
+            ),
+            if(!toggleLogo) Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset("images/logo_dark.png",fit: BoxFit.fitWidth,),
+            ),
+            if(toggleLogo)Text(
+              "Drumm",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 48,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'alata',
+              ),
+            ),
+          ],
+        ),
+      ),
     );
 
     return (FirebaseAuth.instance.currentUser != null)

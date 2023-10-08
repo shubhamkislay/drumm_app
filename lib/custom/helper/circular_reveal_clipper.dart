@@ -12,7 +12,7 @@ class CircleRevealClipper extends CustomClipper<Path> {
     var path = Path();
     path.addOval(
       Rect.fromCircle(
-          center: Offset(size.width / 2, size.height / 1.1),
+          center: Offset(size.width / 2, size.height / 2),
           radius: fraction * size.height),
     );
     path.close();

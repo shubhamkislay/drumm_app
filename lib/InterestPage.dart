@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'custom/helper/image_uploader.dart';
 import 'launcher.dart';
+import 'main.dart';
 import 'model/band_image_card.dart';
 
 class InterestsPage extends StatefulWidget {
@@ -36,6 +37,7 @@ class _InterestsPageState extends State<InterestsPage> {
 
   final List<String> interests = [
     "GENERAL",
+    "TECHNOLOGY",
     "BUSINESS",
     "ENTERTAINMENT",
     //"environment",
@@ -44,7 +46,6 @@ class _InterestsPageState extends State<InterestsPage> {
     "POLITICS",
     "SCIENCE",
     "SPORTS",
-    "TECHNOLOGY",
     // "top",
     // "tourism",
     // "world",
@@ -144,13 +145,14 @@ class _InterestsPageState extends State<InterestsPage> {
             Padding(
               padding: const EdgeInsets.symmetric(
                 vertical: 4,
-                horizontal: 30,
+                horizontal: 20,
               ),
               child: Text(
                 'Select the bands that you\'re passionate or curious about',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
+                  fontFamily: "alata",
                   fontSize: 16,
                   fontWeight: FontWeight.normal,
                 ),
@@ -203,9 +205,11 @@ class _InterestsPageState extends State<InterestsPage> {
               ),
             Center(
               child: Wrap(
-                spacing: 18.0,
                 runSpacing: 8.0,
-                alignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                runAlignment: WrapAlignment.spaceBetween,
+                spacing: 42,
+                alignment: WrapAlignment.spaceEvenly,
                 children: bands
                     .map(
                       (band) => GestureDetector(
@@ -246,6 +250,7 @@ class _InterestsPageState extends State<InterestsPage> {
                                         ? Colors.white
                                         : Colors.grey.shade700,
                                     fontWeight: FontWeight.bold,
+                                    fontFamily: "alata",
                                     fontSize: 14),
                               ),
                             ),
@@ -282,6 +287,7 @@ class _InterestsPageState extends State<InterestsPage> {
       //   ),
       // ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
         onPressed: () {
           if (selectedInterests.length >= minInterests) {
             _onboardingComplete();
@@ -299,7 +305,7 @@ class _InterestsPageState extends State<InterestsPage> {
         },
         child: Icon(
           Icons.done,
-          color: Colors.white,
+          color: Colors.black,
         ),
       ),
     );
@@ -321,11 +327,7 @@ class _InterestsPageState extends State<InterestsPage> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => LauncherPage(
-          themeManager: widget.themeManager,
-          analytics: widget.analytics,
-          observer: widget.observer,
-        ),
+        builder: (context) => MyApp(),
       ),
     );
   }

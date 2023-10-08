@@ -628,8 +628,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                           height: double.infinity,
                                           width: 3,
                                           decoration: BoxDecoration(
-                                            color: Color(COLOR_PRIMARY_VAL)
-                                                .withOpacity(1.0),
+                                            color: Colors.white,
                                             borderRadius: BorderRadius.only(
                                                 topRight: Radius.circular(0),
                                                 bottomRight: Radius.circular(0)),
@@ -881,7 +880,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                 RoundedButton(
                                   padding: 10,
                                   height: 52, //iconHeight,
-                                  color: Colors.blue,
+                                  color: Colors.white,
                                   bgColor: Colors.grey.shade600
                                       .withOpacity(0.30), //Colors.white24,
                                   onPressed: () {

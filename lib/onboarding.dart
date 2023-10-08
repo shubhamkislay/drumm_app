@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/main.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -132,7 +133,7 @@ class _OnBoardingState extends State<OnBoarding> {
                         fontFamily: "alata",
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: textSize+8),
+                        fontSize: textSize),
                     children: <TextSpan>[
                       TextSpan(
                         text: 'Breaking ',
@@ -172,7 +173,7 @@ class _OnBoardingState extends State<OnBoarding> {
                         fontFamily: "alata",
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
-                        fontSize: textSize+8),
+                        fontSize: textSize),
                     children: <TextSpan>[
                       TextSpan(
                         text: ' with the community',
@@ -211,7 +212,7 @@ class _OnBoardingState extends State<OnBoarding> {
                           text: 'Bands',
                           style: TextStyle(
                             fontFamily: "alata",
-                            fontSize: textSize+8,
+                            fontSize: textSize,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           )
@@ -252,7 +253,7 @@ class _OnBoardingState extends State<OnBoarding> {
                             color: Colors.white,
                               fontFamily: "alata",
                             fontWeight: FontWeight.bold,
-                              fontSize: textSize+8,
+                              fontSize: textSize,
                           )
                       ),
                     ],
@@ -364,14 +365,12 @@ class _OnBoardingState extends State<OnBoarding> {
       FirebaseDBOperations.subscribeToUserBands();
 
     if (_isOnboarded) {
+      print("Calling launcer Page from onboarding page");
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LauncherPage(
-        themeManager: widget.themeManager,
-        analytics: widget.analytics,
-        observer: widget.observer,
-      )));
+          context, MaterialPageRoute(builder: (context) => MyApp()));
 
     } else {
+      print("Calling interest Page from onboarding page");
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => InterestsPage(
         themeManager: widget.themeManager,

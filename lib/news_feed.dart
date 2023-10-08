@@ -121,8 +121,7 @@ class _NewsFeedState extends State<NewsFeed>
                     if (true)
                       Expanded(
                         child: Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 2),
+                          padding: const EdgeInsets.symmetric(horizontal: 2),
                           child: Text(
                             "Drumm",
                             textAlign: TextAlign.left,
@@ -160,9 +159,7 @@ class _NewsFeedState extends State<NewsFeed>
                                       borderRadius: BorderRadius.vertical(
                                           top: Radius.circular(0.0)),
                                       child: CreateJam(
-                                          title: "",
-                                          bandId: "",
-                                          imageUrl: ""),
+                                          title: "", bandId: "", imageUrl: ""),
                                     ),
                                   );
                                 },
@@ -302,17 +299,16 @@ class _NewsFeedState extends State<NewsFeed>
                                     borderRadius: BorderRadius.circular(24),
                                     gradient: (liveDrummsExist)
                                         ? LinearGradient(colors: [
-                                            Colors.grey.shade300,
-                                            Colors.grey.shade300,
+                                            Colors.grey.shade700,
+                                            Colors.grey.shade700,
                                           ])
                                         : LinearGradient(colors: [
-                                            Colors.grey.shade900,
-                                            Colors.grey.shade900,
+                                            COLOR_PRIMARY_DARK,
+                                            COLOR_PRIMARY_DARK,
                                           ])),
                                 child: Container(
                                     decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.circular(24),
+                                      borderRadius: BorderRadius.circular(24),
                                       color: Colors.black,
                                     ),
                                     child: Icon(
@@ -362,8 +358,7 @@ class _NewsFeedState extends State<NewsFeed>
                               ? Container(
                                   padding: EdgeInsets.all(0),
                                   decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.circular(19),
+                                      borderRadius: BorderRadius.circular(19),
                                       color: Colors.black),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(17),
@@ -372,16 +367,14 @@ class _NewsFeedState extends State<NewsFeed>
                                         width: iconSize - 3,
                                         height: iconSize - 3,
                                         imageUrl: modifyImageUrl(
-                                            drummer.imageUrl ?? "",
-                                            "100x100"),
+                                            drummer.imageUrl ?? "", "100x100"),
                                         fit: BoxFit.cover),
                                   ),
                                 )
                               : RoundedButton(
                                   height: 20,
                                   padding: 6,
-                                  assetPath:
-                                      "images/user_profile_active.png",
+                                  assetPath: "images/user_profile_active.png",
                                   color: Colors.white,
                                   bgColor: Colors.black,
                                   onPressed: () {})),
@@ -414,39 +407,44 @@ class _NewsFeedState extends State<NewsFeed>
                   child: Stack(
                     children: [
                       Center(
-                        child: Lottie.asset("images/pulse_white.json",//loadingAnimation,
-                            fit: BoxFit.contain, width: double.maxFinite),
+                        child: Lottie.asset(
+                            "images/pulse_white.json", //loadingAnimation,
+                            fit: BoxFit.contain,
+                            width: double.maxFinite),
                       ),
-                      if (!loadAnimation)
+                      //if (!loadAnimation)
                         Center(
                           child: Container(
                               height: 250,
                               width: 250,
                               padding: EdgeInsets.all(54),
                               decoration: BoxDecoration(
-                                color: COLOR_PRIMARY_DARK,
+                                color: Colors.black,//COLOR_PRIMARY_DARK,
                                 borderRadius: BorderRadius.circular(250),
                               ),
                               child: Image.asset(
                                 "images/logo_background_white.png",
-                                color: Colors.white,//.withOpacity(0.125),
+                                color: (!loadAnimation) ? Colors.white.withOpacity(0.25):Colors.white.withOpacity(0.05),
                                 fit: BoxFit.contain,
                               )),
                         ),
-                       if (articles.length < 1 && loadAnimation)
-                         Center(child:
-                         Container(
-                           alignment: Alignment.center,
-                             height: 250,
-                             width: 250,
-                             padding: EdgeInsets.all(4),
-                             decoration: BoxDecoration(
-                               color: COLOR_PRIMARY_DARK,
-                               borderRadius: BorderRadius.circular(250),
-                               border: Border.all(
-                                   color: Colors.transparent, width: 1),
-                             ),
-                             child: Text("You're all caught up",textAlign: TextAlign.center,))),
+                      if (articles.length < 1 && loadAnimation)
+                        Center(
+                            child: Container(
+                                alignment: Alignment.center,
+                                height: 250,
+                                width: 250,
+                                padding: EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  //color: Colors.black,
+                                  borderRadius: BorderRadius.circular(250),
+                                  border: Border.all(
+                                      color: Colors.transparent, width: 1),
+                                ),
+                                child: Text(
+                                  "You're all caught up",
+                                  textAlign: TextAlign.center,
+                                ))),
                     ],
                   ),
                 )),
@@ -598,10 +596,13 @@ class _NewsFeedState extends State<NewsFeed>
             value: element,
             selected: true,
             child: Container(
-              alignment: Alignment.center,
+                alignment: Alignment.center,
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 height: 28,
-                child: Text("All",textAlign: TextAlign.center,)),
+                child: Text(
+                  "All",
+                  textAlign: TextAlign.center,
+                )),
           ),
         );
       } else {
@@ -952,7 +953,6 @@ class _NewsFeedState extends State<NewsFeed>
   void cleanCache() async {
     await DefaultCacheManager().emptyCache();
   }
-
 
   @override
   // TODO: implement wantKeepAlive

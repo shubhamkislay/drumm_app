@@ -148,7 +148,7 @@ class _OpenArticlePageState extends State<OpenArticlePage> with RouteAware {
                     RoundedButton(
                       padding: 10,
                       height: 48, //iconHeight,
-                      color: Colors.blue,
+                      color: Colors.white,
                       bgColor: Colors.grey.shade600
                           .withOpacity(0.30),
                       onPressed: () {
