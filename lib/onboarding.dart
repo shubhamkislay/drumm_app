@@ -355,6 +355,7 @@ class _OnBoardingState extends State<OnBoarding> {
     bool isOnboarded = prefs.getBool('isOnboarded') ?? false;
     if(bandList.length>0) {
       isOnboarded = true;
+      await prefs.setBool('isOnboarded', true);
       _isOnboarded = isOnboarded;
     }
     setState(() {

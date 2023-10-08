@@ -85,6 +85,7 @@ dependencies:
   lottie: ^2.3.2
   flutter_multi_select_items: ^0.4.2
   flutter_cache_manager: ^3.3.1
+  flutter_chip_tags: ^2.0.2
 
 dev_dependencies:
   flutter_test:

@@ -81,6 +81,8 @@ class _NewsFeedState extends State<NewsFeed>
   bool isTutorialDone = false;
 
   bool showNotification = false;
+
+  Band selectedBand = Band();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -476,7 +478,7 @@ class _NewsFeedState extends State<NewsFeed>
                             if (selectedBandID == "All")
                               getArticles();
                             else
-                              getArticlesForBand(selectedBandID);
+                              getArticlesForBand(selectedBand);
                           },
                           threshold: 25,
                           onSwipe: _onSwipe,
@@ -720,14 +722,12 @@ class _NewsFeedState extends State<NewsFeed>
           //selectedCategory = selectedItem;
           loadAnimation = false;
           loadingAnimation = LOADING_ASSET;
-          Band selectedBand = selectedItem;
-          print("Selected Band ID: ${selectedBand.bandId}");
-
+          selectedBand = selectedItem;
           selectedBandID = selectedBand.bandId ?? "All";
           if (selectedBandID == "All")
             getArticles();
           else
-            getArticlesForBand(selectedBandID);
+            getArticlesForBand(selectedBand);
         });
       },
       singleSelectedItem: true,
@@ -872,13 +872,13 @@ class _NewsFeedState extends State<NewsFeed>
     return true;
   }
 
-  void getArticlesForBand(String bandID) async {
+  void getArticlesForBand(Band bandSelected) async {
     setState(() {
       articles.clear();
     });
     controller = CardSwiperController();
     List<Article> fetchcedArticle =
-        await FirebaseDBOperations.getArticlesByBandID(bandID);
+        await FirebaseDBOperations.getArticlesByBandID(bandSelected.hooks??[]);
 
     if (fetchcedArticle.length < 1) {
       setState(() {

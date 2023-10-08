@@ -616,9 +616,11 @@ class _SplashScreenState extends State<SplashScreen> {
     //prefs.remove('isOnboarded');
     if(_isOnboarded){
       Future.delayed(Duration(seconds: 1),(){
+
         setState(() {
           toggleLogo = true;
         });
+
         Future.delayed(Duration(seconds: 1),(){
           Navigator.of(context).push(PageRouteBuilder(
               opaque: false,
@@ -642,21 +644,15 @@ class _SplashScreenState extends State<SplashScreen> {
             await prefs.setString('uid', drummer.uid??"");
             await prefs.setInt('rid', drummer.rid ?? 0);
 
-            Future.delayed(Duration(seconds: 1),(){
-              setState(() {
-                toggleLogo = true;
-              });
-              Future.delayed(Duration(seconds: 1),(){
-                Navigator.of(context).push(PageRouteBuilder(
-                    opaque: false,
-                    pageBuilder: (context, animation, _) {
-                      return LauncherPage(themeManager: widget.themeManager,
-                        analytics: widget.analytics,
-                        observer: widget.observer,);
-                    }));
-              });
+            print("This part is being called");
 
-            });
+            Navigator.of(context).push(PageRouteBuilder(
+                opaque: false,
+                pageBuilder: (context, animation, _) {
+                  return LauncherPage(themeManager: widget.themeManager,
+                    analytics: widget.analytics,
+                    observer: widget.observer,);
+                }));
           }else{
             Navigator.of(context).push(PageRouteBuilder(
                 opaque: false,
@@ -732,15 +728,12 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: Lottie.asset('images/breaking_news.json',height: MediaQuery.of(context).size.height,fit:BoxFit.cover),
               ),
             ),
-            if(!toggleLogo) Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset("images/logo_dark.png",fit: BoxFit.fitWidth,),
-            ),
+            if(!toggleLogo) Image.asset("images/logo_dark.png",fit: BoxFit.fitWidth,),
             if(toggleLogo)Text(
               "Drumm",
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 48,
+                fontSize: 54,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'alata',
               ),

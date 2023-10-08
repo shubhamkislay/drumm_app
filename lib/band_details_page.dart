@@ -17,6 +17,7 @@ import 'package:drumm_app/model/jam.dart';
 import 'package:drumm_app/model/jam_image_card.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/user_profile_page.dart';
+import 'package:flutter_chip_tags/flutter_chip_tags.dart';
 
 import 'model/Drummer.dart';
 import 'model/band.dart';
@@ -33,6 +34,7 @@ class BandDetailsPage extends StatefulWidget {
 class BandDetailsPageState extends State<BandDetailsPage> {
   String profileImageUrl = "";
   List<Container> memberCards = [];
+  List<String> categoryList = [];
   Band? band = Band();
   Drummer drummer = Drummer();
 
@@ -118,6 +120,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                                         minFontSize: 24,
                                         style: const TextStyle(
                                             overflow: TextOverflow.ellipsis,
+                                            fontFamily: "alata",
                                             fontWeight: FontWeight.bold),
                                         maxLines: 4,
                                       ),
@@ -143,6 +146,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                                                 "Founded by",
                                                 style: const TextStyle(
                                                     fontSize: 12,
+                                                    fontFamily: "alata",
                                                     fontWeight:
                                                         FontWeight.normal,
                                                     color: Colors.white54),
@@ -195,7 +199,28 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                       ),
                     ),
                   const SizedBox(
-                    height: 8,
+                    height: 12,
+                  ),
+                  Wrap(
+                    runSpacing: 8.0,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    runAlignment: WrapAlignment.spaceBetween,
+                    spacing: 4,
+                    alignment: WrapAlignment.spaceEvenly,
+                    children: categoryList.map(
+                          (hook) => Container(
+                            padding: EdgeInsets.symmetric(vertical: 4,horizontal: 12),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade900,
+                              border: Border.all(color: Colors.grey.shade800,width: 1.25),
+                              borderRadius: BorderRadius.circular(32),
+                            ),
+                            child: Text(hook,style: TextStyle(color: Colors.white,fontFamily: "alata"),),
+                          ),
+                    ).toList(),
+                  ),
+                  const SizedBox(
+                    height: 12,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
@@ -492,6 +517,10 @@ class BandDetailsPageState extends State<BandDetailsPage> {
     // TODO: implement initState
     super.initState();
     band = widget.band;
+    setState(() {
+      categoryList = List<String>.from(band?.hooks??[]);
+    });
+    print("Band hooks ${band?.hooks?.elementAt(0)}");
     checkIfUserisMember();
     getBands(widget.band?.bandId);
     getDrummer(widget.band?.foundedBy ?? "");

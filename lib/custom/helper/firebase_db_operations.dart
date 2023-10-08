@@ -886,9 +886,10 @@ class FirebaseDBOperations {
 
   static Future<List<Article>> getArticlesByBands() async {
     List<Band> fetchedBands = await FirebaseDBOperations.getBandByUser();
-    List<String> bandCategoryList = [];
+    List<dynamic> bandCategoryList = [];
     for (Band band in fetchedBands) {
-      bandCategoryList.add(band.bandId ?? "");
+      bandCategoryList += band.hooks??[];
+      print("Band name: ${band.name} Band hooks: ${band.hooks?.elementAt(0)}");
     }
     if (fetchedBands.length < 1) bandCategoryList.add("general");
 
@@ -943,12 +944,12 @@ class FirebaseDBOperations {
     return filterArticle;
   }
 
-  static Future<List<Article>> getArticlesByBandID(String bandID) async {
+  static Future<List<Article>> getArticlesByBandID(List<dynamic> bandHook) async {
     List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
 
     Query<Map<String, dynamic>> query = FirebaseFirestore.instance
         .collection('articles')
-        .where('category', isEqualTo: bandID)
+        .where('category', whereIn: bandHook)
        // .where('articleId', whereNotIn: seenPosts)
         //.where('country', isEqualTo: 'in')
         .where('source', isNotEqualTo: null)

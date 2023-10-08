@@ -107,7 +107,7 @@ class LiveDrummsState extends State<LiveDrumms>
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 12, vertical: 16),
                               child: GridView.count(
-                                  crossAxisCount: 3, // Number of columns
+                                  crossAxisCount: 2, // Number of columns
                                   childAspectRatio: 0.8,
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),

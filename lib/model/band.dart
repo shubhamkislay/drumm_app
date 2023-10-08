@@ -9,6 +9,7 @@ class Band {
   String? name;
   String? url;
   String? visibility;
+  List<dynamic>? hooks;
 
   Band({
     this.foundedBy,
@@ -19,6 +20,7 @@ class Band {
     this.name,
     this.url,
     this.visibility,
+    this.hooks,
   });
 
   Map<String, dynamic> toJson() => {
@@ -30,6 +32,7 @@ class Band {
         'url': url,
         'visibility': visibility,
         'description': description,
+        'hooks': hooks,
       };
 
   Band.fromSnapshot(snapshot)
@@ -40,7 +43,8 @@ class Band {
         name = snapshot.data()['name'],
         url = snapshot.data()['url'],
         visibility = snapshot.data()['visibility'],
-        description = snapshot.data()['description'];
+        description = snapshot.data()['description'],
+        hooks = snapshot.data()['hooks'];
 
   Band.fromAlgoliaSnapshot(snapshot)
       : foundedBy = snapshot['foundedBy'],
@@ -50,5 +54,6 @@ class Band {
         name = snapshot['name'],
         url = snapshot['url'],
         visibility = snapshot['visibility'],
+        hooks = snapshot['hooks'],
         description = snapshot['description'];
 }
