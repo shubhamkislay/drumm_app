@@ -417,16 +417,16 @@ class _NewsFeedState extends State<NewsFeed>
                       //if (!loadAnimation)
                         Center(
                           child: Container(
-                              height: 250,
-                              width: 250,
-                              padding: EdgeInsets.all(54),
+                              height: 275,
+                              width: 275,
+                              padding: EdgeInsets.all(28),
                               decoration: BoxDecoration(
                                 color: Colors.black,//COLOR_PRIMARY_DARK,
-                                borderRadius: BorderRadius.circular(250),
+                                borderRadius: BorderRadius.circular(275),
                               ),
                               child: Image.asset(
                                 "images/logo_background_white.png",
-                                color: (!loadAnimation) ? Colors.white.withOpacity(0.25):Colors.white.withOpacity(0.05),
+                                color: (!loadAnimation) ? Colors.white.withOpacity(1):Colors.white.withOpacity(0.05),
                                 fit: BoxFit.contain,
                               )),
                         ),
@@ -506,7 +506,7 @@ class _NewsFeedState extends State<NewsFeed>
                                   },
                                   onRefresh: () {
                                     return _refreshData();
-                                  },
+                                  }, index: index,
                                 );
                               else
                                 return Container();

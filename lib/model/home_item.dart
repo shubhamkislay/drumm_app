@@ -14,6 +14,7 @@ import 'article.dart';
 
 class HomeItem extends StatefulWidget {
   Article article;
+  int index;
   bool isContainerVisible = false;
   VoidCallback undo;
   Function(Article) updateList;
@@ -21,6 +22,7 @@ class HomeItem extends StatefulWidget {
   Future<void> Function() onRefresh;
   HomeItem(
       {Key? key,
+        required this.index,
       required this.article,
         required this.onRefresh,
         required this.undo,
@@ -114,11 +116,29 @@ class _HomeItemState extends State<HomeItem> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                                "${widget.article.source} | ${widget.article.category}",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                )),
+                            Row(
+                              children: [
+                                Text(
+                                    "${widget.article.source}",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                    )),
+                                SizedBox(width: 8,),
+                                Container(
+                                  padding: EdgeInsets.symmetric(vertical: 2,horizontal: 8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade900,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text("${widget.article.category}",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontFamily: "alata"
+                                    ),),
+                                )
+                              ],
+                            ),
                             SizedBox(
                               height: 6,
                             ),
@@ -312,7 +332,7 @@ class _HomeItemState extends State<HomeItem> {
                     )
                   ],
                 ),
-                GestureDetector(
+                if(widget.index!=0)GestureDetector(
                   onTap: widget.undo,
                   child: Container(
                       decoration: BoxDecoration(

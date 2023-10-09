@@ -855,6 +855,24 @@ class FirebaseDBOperations {
     return List.from(data.docs.map((e) => Drummer.fromSnapshot(e)));
   }
 
+  static Future<List<String>> getBandHooks() async{
+    var data = await FirebaseFirestore.instance
+        .collection("hooks")
+        .doc("tags")
+        .get()
+        .onError((error, stackTrace) {
+      var data;
+      DocumentSnapshot<Map<String, dynamic>> snapshot = data;
+      return snapshot;
+    });
+    List<dynamic> bandHooks = [];
+    if (data.exists){
+      bandHooks = data.data()!['hooks'];
+    }
+
+    return List<String>.from(bandHooks);
+  }
+
   static Future<List<Band>> getBandByUser() async {
     // Assuming you have already initialized the Firestore instance and have a reference to the "bands" collection
     String userID = FirebaseAuth.instance.currentUser!.uid;

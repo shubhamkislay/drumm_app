@@ -36,13 +36,16 @@ class CreateBandState extends State<CreateBand> {
   double uploadProgress = 0;
   File? pickedImage;
   Band band = Band();
+  List<String> selectedHooks = [];
+
+  List<String> hookList = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(vertical: 42, horizontal: 16),
+        padding: EdgeInsets.symmetric(vertical: 42, horizontal: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -56,31 +59,37 @@ class CreateBandState extends State<CreateBand> {
                   color: Colors.white,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
+                    fontFamily: "alata"
                 ),
               ),
             ),
             if (pickedImage == null)
-            Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: RoundedButton(
-                assetPath: "images/add-image.png",
-                height: 100,
-                color: Colors.white,
-                bgColor: Colors.transparent,
-                onPressed: () {
-                  selectData();
-                },
+              Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: RoundedButton(
+                  assetPath: "images/add-image.png",
+                  height: 100,
+                  color: Colors.white,
+                  bgColor: Colors.transparent,
+                  onPressed: () {
+                    selectData();
+                  },
+                ),
               ),
-            ),
             if (pickedImage != null)
               GestureDetector(
-                onTap: (){ selectData();},
+                onTap: () {
+                  selectData();
+                },
                 child: Container(
                     alignment: Alignment.center,
-                    child: Image.file(
-                      pickedImage!,
-                      height: 100,
-                      alignment: Alignment.center,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(36),
+                      child: Image.file(
+                        pickedImage!,
+                        height: 150,
+                        alignment: Alignment.center,
+                      ),
                     )),
               ),
             if (uploadProgress > 0 && uploadProgress < 1.0)
@@ -90,7 +99,75 @@ class CreateBandState extends State<CreateBand> {
                   value: uploadProgress,
                 ),
               ),
+            SizedBox(
+              height: 4,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                "Add hooks",
+                style: TextStyle(fontSize: 18, fontFamily: "alata"),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                "Hooks let your band pick news articles based on the category, which you can use to drumm with your band members",
+                style: TextStyle(
+                    fontSize: 10, fontFamily: "alata", color: Colors.white54),
+              ),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Wrap(
+                runSpacing: 8.0,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                runAlignment: WrapAlignment.spaceBetween,
+                spacing: 4,
+                alignment: WrapAlignment.spaceBetween,
+                children: hookList
+                    .map(
+                      (hook) => GestureDetector(
+                        onTap: () {
+                          List<String> tempHooks = selectedHooks;
+                          if (tempHooks.contains(hook)) {
+                            tempHooks.remove(hook);
+                          } else
+                            tempHooks.add(hook);
 
+                          setState(() {
+                            selectedHooks = tempHooks;
+                          });
+                        },
+                        child: Container(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: selectedHooks.contains(hook)
+                                ? Colors.white
+                                : Colors.grey.shade900,
+                            border: Border.all(
+                                color: Colors.grey.shade800, width: 1.25),
+                            borderRadius: BorderRadius.circular(32),
+                          ),
+                          child: Text(
+                            hook,
+                            style: TextStyle(
+                                color: selectedHooks.contains(hook)
+                                    ? Colors.black
+                                    : Colors.white,
+                                fontFamily: "alata"),
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+            SizedBox(height: 8),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: TextField(
@@ -99,20 +176,25 @@ class CreateBandState extends State<CreateBand> {
                 },
                 maxLines: 1,
                 minLines: 1,
+                cursorColor: Colors.white,
                 decoration: InputDecoration(
                   hintText: "Enter Band Name...",
-                  labelText: "Name",
+                  labelText: "Band Name",
+                  hoverColor: Colors.white,
+                  iconColor: Colors.white,
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: BorderSide(
-                      color: Colors.blue,
-                      width: 2,
+                      color: Colors.white,
+                      width: 1.5,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide.none,
-                  ),
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        color: Colors.white12,
+                        width: 1,
+                      )),
                 ),
               ),
             ),
@@ -124,19 +206,22 @@ class CreateBandState extends State<CreateBand> {
                 },
                 maxLines: 10,
                 minLines: 10,
-
+                keyboardType: TextInputType.text,
                 decoration: InputDecoration(
                   hintText: "Enter Band description...",
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(16.0),
                     borderSide: BorderSide(
-                      color: Colors.blue,
-                      width: 2,
+                      color: Colors.white,
+                      width: 1.5,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide.none,
+                    borderSide: BorderSide(
+                      color: Colors.white12,
+                      width: 1,
+                    ),
                   ),
                 ),
               ),
@@ -153,10 +238,13 @@ class CreateBandState extends State<CreateBand> {
                   alignment: Alignment.center,
                   padding: EdgeInsets.symmetric(horizontal: 0, vertical: 16),
                   decoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Text("Create"),
+                  child: Text(
+                    "Create",
+                    style: TextStyle(color: Colors.black, fontFamily: "alata"),
+                  ),
                 ),
               ),
             ),
@@ -171,6 +259,7 @@ class CreateBandState extends State<CreateBand> {
     // TODO: implement initState
     getPrefs();
     bandsRef = FirebaseFirestore.instance.collection("bands").doc();
+    getHooks();
 
     // Add a new document with an automatically generated push
     String pushId = bandsRef.id;
@@ -186,6 +275,7 @@ class CreateBandState extends State<CreateBand> {
     band.foundedBy = getCurrentUserID();
     band.count = "1";
     band.visibility = "public";
+    band.hooks = selectedHooks;
     band.creationTime = Timestamp.now();
 
     FirebaseDBOperations.createBand(band).then((value) {
@@ -202,21 +292,21 @@ class CreateBandState extends State<CreateBand> {
     });
   }
 
-  void selectData(){
+  void selectData() {
     final Reference storageReference = FirebaseStorage.instance
         .ref()
         .child('post_images')
         .child('$bandID.jpg');
     uploadPicture(
         storageReference,
-            (double progress) {
+        (double progress) {
           // Handle progress updates here
           print('Upload progress: $progress');
           setState(() {
             uploadProgress = progress;
           });
         },
-            (String imageUrl) {
+        (String imageUrl) {
           print("Uploaded Image: ${imageUrl}");
           imageURL = imageUrl;
           band.url = imageUrl;
@@ -224,7 +314,7 @@ class CreateBandState extends State<CreateBand> {
         },
         19,
         19,
-            (File? image) {
+        (File? image) {
           setState(() {
             pickedImage = image;
           });
@@ -261,5 +351,12 @@ class CreateBandState extends State<CreateBand> {
     // setState(() {
     //   selectedInterests = userInterests;
     // });
+  }
+
+  void getHooks() async {
+    List<String> bandHooks = await FirebaseDBOperations.getBandHooks();
+    setState(() {
+      hookList = bandHooks;
+    });
   }
 }
