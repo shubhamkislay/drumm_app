@@ -80,7 +80,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                               width: 175,
                               height: 175,
                               child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(64),
                                 child: CachedNetworkImage(
                                   imageUrl:modifyImageUrl(band?.url ?? "","300x300"),
                                   fit: BoxFit.cover,
@@ -209,10 +209,10 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                     alignment: WrapAlignment.spaceEvenly,
                     children: categoryList.map(
                           (hook) => Container(
-                            padding: EdgeInsets.symmetric(vertical: 4,horizontal: 12),
+                            padding: EdgeInsets.symmetric(vertical: 2,horizontal: 12),
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade900,
-                              border: Border.all(color: Colors.grey.shade800,width: 1.25),
+                              color: COLOR_PRIMARY_DARK,
+                              border: Border.all(color: Colors.grey.shade900,width: 1.25),
                               borderRadius: BorderRadius.circular(32),
                             ),
                             child: Text(hook,style: TextStyle(color: Colors.white,fontFamily: "alata"),),

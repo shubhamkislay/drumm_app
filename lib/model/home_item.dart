@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drumm_app/band_details_page.dart';
 import 'package:drumm_app/model/band.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import '../article_jam_page.dart';
 import '../custom/ai_summary.dart';
 import '../custom/helper/firebase_db_operations.dart';
+import '../custom/helper/image_uploader.dart';
 import '../custom/helper/remove_duplicate.dart';
 import '../custom/instagram_date_time_widget.dart';
 import '../custom/rounded_button.dart';
@@ -122,43 +124,77 @@ class _HomeItemState extends State<HomeItem> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Text(
-                                    "${widget.articleBand.article?.source}",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    )),
-                                SizedBox(width: 8,),
-                                Container(
-                                  padding: EdgeInsets.symmetric(vertical: 2,horizontal: 8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade900,
-                                    borderRadius: BorderRadius.circular(12),
+                            GestureDetector(
+                              onTap: (){
+                                Vibrate.feedback(FeedbackType.selection);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => BandDetailsPage(
+                                          band: widget.articleBand.band ?? Band(),
+                                        )));
+                              },
+                              child: Row(
+                                children: [
+
+                                  if(widget.articleBand.band!=null) Container(
+                                    padding: EdgeInsets.fromLTRB(3,3 , 3, 3),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black,
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          height: 28,
+                                          width: 28,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(13),
+                                            child: CachedNetworkImage(
+                                              imageUrl: modifyImageUrl(widget.articleBand.band?.url ?? "", "100x100"),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 6,
+                                        ),
+                                        Text("${widget.articleBand.band?.name}",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontFamily: "alata"
+                                          ),),
+                                        SizedBox(width: 2,),
+                                        Container(
+                                          padding: EdgeInsets.fromLTRB(8,3 , 8, 3),
+                                          decoration: BoxDecoration(
+                                            color: COLOR_PRIMARY_DARK,
+                                            border: Border.all(color: Colors.grey.shade900,width: 1.25),
+                                            borderRadius: BorderRadius.circular(16),
+                                          ),
+                                          child: Text("${widget.articleBand.article?.category}",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12,
+                                                fontFamily: "alata"
+                                            ),),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                  child: Text("${widget.articleBand.article?.category}",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontFamily: "alata"
-                                    ),),
-                                ),
-                                SizedBox(width: 8,),
-                               if(widget.articleBand.band!=null) Container(
-                                  padding: EdgeInsets.symmetric(vertical: 2,horizontal: 8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade900,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Text("${widget.articleBand.band?.name}",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontFamily: "alata"
-                                    ),),
-                                )
-                              ],
+
+                                ],
+                              ),
                             ),
+                            SizedBox(
+                              height: 12,
+                            ),
+                            Text(
+                                "${widget.articleBand.article?.source}",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                )),
                             SizedBox(
                               height: 6,
                             ),
