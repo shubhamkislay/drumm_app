@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
@@ -7,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/custom/helper/connect_channel.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/live_drumms.dart';
+import 'package:drumm_app/model/article_band.dart';
 import 'package:drumm_app/model/band.dart';
 import 'package:drumm_app/model/drummer_image_card.dart';
 import 'package:drumm_app/notification_widget.dart';
@@ -45,6 +47,7 @@ class NewsFeed extends StatefulWidget {
 class _NewsFeedState extends State<NewsFeed>
     with AutomaticKeepAliveClientMixin<NewsFeed> {
   List<Article> articles = [];
+  List<ArticleBand> articleBands = [];
   late CardSwiperController? controller;
   List<MultiSelectCard<dynamic>> mulList = [];
   String selectedCategory = "All";
@@ -72,6 +75,7 @@ class _NewsFeedState extends State<NewsFeed>
   double iconSpaces = 26;
   double textSize = 28;
   double marginHeight = 200;
+  late List<Band> bandList;
 
   var keepAlive = true;
 
@@ -83,6 +87,8 @@ class _NewsFeedState extends State<NewsFeed>
   bool showNotification = false;
 
   Band selectedBand = Band();
+
+  HashMap<String,Band> bandMap = HashMap();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -403,7 +409,7 @@ class _NewsFeedState extends State<NewsFeed>
               SizedBox(
                 height: 2,
               ),
-              if (articles.length < 1 || loadAnimation)
+              if (articleBands.length < 1 || loadAnimation)
                 Expanded(
                     child: Center(
                   child: Stack(
@@ -450,7 +456,7 @@ class _NewsFeedState extends State<NewsFeed>
                     ],
                   ),
                 )),
-              if (articles.length > 0)
+              if (articleBands.length > 0)
                 Expanded(
                   child: Builder(
                     builder: (BuildContext context) {
@@ -458,13 +464,13 @@ class _NewsFeedState extends State<NewsFeed>
                         return CardSwiper(
                           controller: controller,
                           cardsCount:
-                              (articles.length > 0) ? articles.length : 0,
+                              (articleBands.length > 0) ? articleBands.length : 0,
                           duration: Duration(milliseconds: 200),
                           maxAngle: 45,
                           scale: 0.85,
-                          numberOfCardsDisplayed: (articles.length > 1)
+                          numberOfCardsDisplayed: (articleBands.length > 1)
                               ? 2
-                              : (articles.length < 1)
+                              : (articleBands.length < 1)
                                   ? 0
                                   : 1,
                           isVerticalSwipingEnabled: false,
@@ -487,11 +493,12 @@ class _NewsFeedState extends State<NewsFeed>
                           padding: EdgeInsets.symmetric(
                               horizontal: horizontalPadding),
                           cardBuilder: (context, index) {
-                            // print("Index of element $index");
+                             print("Index of element $index ${articles.elementAt(index).title}");
                             try {
                               if (index >= 0)
                                 return HomeItem(
-                                  article: articles.elementAt(index),
+                                  bandId: selectedBandID !="All" ? selectedBandID:null,
+                                  articleBand: articleBands.elementAt(index),
                                   isContainerVisible: false,
                                   openArticle: (article) {
                                     openArticlePage(article, index);
@@ -541,7 +548,6 @@ class _NewsFeedState extends State<NewsFeed>
     FirebaseDBOperations.lastDocument = null;
     //controller = CardSwiperController();
     getBandsCards();
-    getArticles();
     getCurrentDrummer();
     checkLiveDrumms();
     getNotifications();
@@ -564,7 +570,6 @@ class _NewsFeedState extends State<NewsFeed>
     _lastRefreshTime = DateTime.now();
     _checkAndScheduleRefresh();
     FirebaseDBOperations.lastDocument = null;
-    getArticles();
     getBandsCards();
     getCurrentDrummer();
     checkLiveDrumms();
@@ -586,7 +591,11 @@ class _NewsFeedState extends State<NewsFeed>
 
   void getBandsCards() async {
     mulList.clear();
-    List<Band> bandList = await FirebaseDBOperations.getBandByUser();
+    bandList = await FirebaseDBOperations.getBandByUser();
+    for(Band band in bandList){
+      bandMap.putIfAbsent(band.bandId??"", () => band);
+    }
+    getArticles();
     Band allBands = Band();
     allBands.name = "All";
     allBands.bandId = "All";
@@ -753,6 +762,7 @@ class _NewsFeedState extends State<NewsFeed>
   void getArticles() async {
     setState(() {
       articles.clear();
+      articleBands.clear();
     });
     controller = CardSwiperController();
     List<Article> articleFetched =
@@ -764,11 +774,24 @@ class _NewsFeedState extends State<NewsFeed>
         loadAnimation = true;
       });
     } else {
+      List<ArticleBand> fetchedArticleBand = [];
+      for(Article article in articleFetched) {
+        for (Band band in bandList) {
+          List hooks = band.hooks??[];
+          if (hooks.contains(article.category)){
+            ArticleBand articleBand = ArticleBand(article: article,band:band);
+            fetchedArticleBand.add(articleBand);
+            break;
+          }
+        }
+      }
+
       setState(() {
         noArticlesPresent = false;
         loadAnimation = false;
         loadingAnimation = LOADING_ASSET;
         articles = articleFetched;
+        articleBands = fetchedArticleBand;
         print("Article length ${articles.length}");
       });
     }
@@ -784,7 +807,7 @@ class _NewsFeedState extends State<NewsFeed>
       Vibrate.feedback(FeedbackType.selection);
       try {
         FirebaseDBOperations.updateSeen(
-            articles.elementAt(previousIndex).articleId);
+            articleBands.elementAt(previousIndex).article?.articleId);
       } catch (e) {}
       return true;
     }
@@ -793,7 +816,7 @@ class _NewsFeedState extends State<NewsFeed>
         ConnectToChannel.channelID == "") {
       Vibrate.feedback(FeedbackType.heavy);
       try {
-        joinOpenDrumm(articles.elementAt(previousIndex));
+        joinOpenDrumm(articleBands.elementAt(previousIndex));
       } catch (e) {}
       return true;
     } else {
@@ -821,7 +844,7 @@ class _NewsFeedState extends State<NewsFeed>
                         onTap: () {
                           Navigator.pop(context);
                           try {
-                            joinOpenDrumm(articles.elementAt(previousIndex));
+                            joinOpenDrumm(articleBands.elementAt(previousIndex));
                           } catch (e) {}
                         },
                         child: Text(
@@ -875,10 +898,15 @@ class _NewsFeedState extends State<NewsFeed>
   void getArticlesForBand(Band bandSelected) async {
     setState(() {
       articles.clear();
+      articleBands.clear();
     });
     controller = CardSwiperController();
     List<Article> fetchcedArticle =
         await FirebaseDBOperations.getArticlesByBandID(bandSelected.hooks??[]);
+
+    List<ArticleBand> fetchedArticleBand = [];
+
+
 
     if (fetchcedArticle.length < 1) {
       setState(() {
@@ -887,24 +915,29 @@ class _NewsFeedState extends State<NewsFeed>
         loadAnimation = true;
       });
     } else {
+      for(Article article in fetchcedArticle){
+        ArticleBand articleBand = ArticleBand(article: article,band:bandSelected);
+        fetchedArticleBand.add(articleBand);
+      }
       setState(() {
         noArticlesPresent = false;
         loadAnimation = false;
         articles = fetchcedArticle;
+        articleBands = fetchedArticleBand;
         loadingAnimation = LOADING_ASSET;
       });
     }
   }
 
-  void joinOpenDrumm(Article article) {
+  void joinOpenDrumm(ArticleBand aBand) {
     Jam jam = Jam();
     jam.broadcast = false;
-    jam.title = article.title;
-    jam.bandId = article.category;
-    jam.jamId = article.jamId;
-    jam.articleId = article.articleId;
-    jam.startedBy = article.source;
-    jam.imageUrl = article.imageUrl;
+    jam.title = aBand.article?.title;
+    jam.bandId = aBand.band?.bandId;
+    jam.jamId = aBand.article?.jamId;
+    jam.articleId = aBand.article?.articleId;
+    jam.startedBy = aBand.article?.source;
+    jam.imageUrl = aBand.article?.imageUrl;
     jam.count = 0;
     jam.membersID = [];
     //FirebaseDBOperations.createOpenDrumm(jam);

@@ -108,7 +108,14 @@ class _NotificationItemState extends State<NotificationItem> {
                                   fit: BoxFit.cover,
                                   width: 72,
                                   height: 72,
-                                )),
+                                  errorWidget: (context,url,error) => Container(width: 72,
+                                    height: 72,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: COLOR_PRIMARY_DARK,
+                                  ),),
+                                ),
+                            ),
                             SizedBox(
                               width: 4,
                             ),

@@ -286,9 +286,9 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                             borderRadius:
                             BorderRadius.vertical(top: Radius.circular(0.0)),
                             child: CreateJam(
-                              bandId: widget.article?.category,
+                              jamId: widget.article?.jamId,
                                 title: widget.article?.title,
-                                articleId: widget.article?.jamId,
+                                articleId: widget.article?.articleId,
                                 imageUrl: widget.article?.imageUrl),
                           ),
                         );

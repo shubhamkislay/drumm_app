@@ -15,11 +15,12 @@ import 'package:drumm_app/theme/theme_constants.dart';
 
 class CreateJam extends StatefulWidget {
   String? articleId;
+  String? jamId;
   String? bandId;
   String? title;
   String? imageUrl;
 
-  CreateJam({Key? key, this.bandId, this.articleId, this.title, this.imageUrl})
+  CreateJam({Key? key, this.bandId, this.articleId, this.title, this.imageUrl, this.jamId})
       : super(key: key);
 
   @override
@@ -43,11 +44,11 @@ class _CreateJamState extends State<CreateJam> {
     String pushId = jamRef.id;
 
     jam.broadcast = false;
-    jam.jamId = pushId;
+    jam.jamId = widget.jamId != null ? pushId: widget.jamId;
     jam.articleId = this.widget.articleId;
     jam.imageUrl = this.widget.imageUrl;
     jam.title = widget.title == null ? null : '${widget.title}';
-    jam.bandId = this.widget.bandId;
+    //jam.bandId = this.widget.bandId;
     jam.count = 0;
     jam.startedBy = FirebaseAuth.instance.currentUser?.uid;
     jam.membersID = [];
@@ -283,6 +284,7 @@ class _CreateJamState extends State<CreateJam> {
                   setState(() {
                     selectedband = band;
                     selectBandID = band.bandId;
+                    jam.bandId = selectBandID;
                   });
                 },
               ))
@@ -295,7 +297,7 @@ class _CreateJamState extends State<CreateJam> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    selectBandID = widget.bandId;
+    selectBandID = widget.bandId??"";
     jamTitle = widget.title == null ? '' : '${widget.title}';
     _textEditingController = TextEditingController(text: jamTitle);
     //if (widget.bandId == null)

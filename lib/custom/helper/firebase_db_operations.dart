@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:algolia/algolia.dart';
@@ -30,6 +31,7 @@ class FirebaseDBOperations {
   );
 
   static List<Article> exploreArticles = [];
+  static HashMap<String,String> articleBand = HashMap();
 
   static DocumentSnapshot<Map<String, dynamic>>? lastDocument;
 
@@ -343,15 +345,23 @@ class FirebaseDBOperations {
 
     List<Jam> fetchedList =
         List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
-    List<Jam> filterList = [];
-    for (Jam jam in fetchedList) {
-      int memLen = jam.membersID?.length ?? 0;
-      if (memLen > 0) {
-        filterList.add(jam);
-      }
-    }
 
-    return filterList;
+    var opendata = await FirebaseFirestore.instance
+        .collection('openDrumm')
+        .where('articleId', isEqualTo: articleId)
+        .get();
+
+    fetchedList = fetchedList + List.from(opendata.docs.map((e) => Jam.fromSnapshot(e)));
+    // List<Jam> filterList = [];
+    // for (Jam jam in fetchedList) {
+    //   int memLen = jam.membersID?.length ?? 0;
+    //   if (memLen > 0) {
+    //     filterList.add(jam);
+    //   }
+    // }
+    print("fetchedList size: ${fetchedList.length}");
+
+    return fetchedList;
   }
 
   static Future<List<Jam>> getBroadcastJams() async {

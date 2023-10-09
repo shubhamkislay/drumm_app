@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drumm_app/model/band.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
@@ -11,10 +12,12 @@ import '../custom/instagram_date_time_widget.dart';
 import '../custom/rounded_button.dart';
 import '../theme/theme_constants.dart';
 import 'article.dart';
+import 'article_band.dart';
 
 class HomeItem extends StatefulWidget {
-  Article article;
+  ArticleBand articleBand;
   int index;
+  String? bandId;
   bool isContainerVisible = false;
   VoidCallback undo;
   Function(Article) updateList;
@@ -23,11 +26,12 @@ class HomeItem extends StatefulWidget {
   HomeItem(
       {Key? key,
         required this.index,
-      required this.article,
+      required this.articleBand,
         required this.onRefresh,
         required this.undo,
       required this.isContainerVisible,
       required this.updateList,
+        this.bandId,
       required this.openArticle})
       : super(key: key);
 
@@ -41,8 +45,10 @@ class _HomeItemState extends State<HomeItem> {
   double iconHeight = 64;
   double sizedBoxedHeight = 12;
   double curve = 20;
+  Band? band;
   @override
   Widget build(BuildContext context) {
+    //setband();
     return ClipRRect(
       borderRadius: BorderRadius.circular(curve),
       child: Container(
@@ -74,10 +80,10 @@ class _HomeItemState extends State<HomeItem> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(curve-4),
                         child: CachedNetworkImage(
-                          imageUrl: widget.article.imageUrl ?? "",
+                          imageUrl: widget.articleBand.article?.imageUrl ?? "",
                           filterQuality: FilterQuality.low,
                           placeholder: (context, imageUrl) {
-                            String imageUrl = widget.article.imageUrl ??"";
+                            String imageUrl = widget.articleBand.article?.imageUrl ??"";
                             return Container(
                               height: 150,
                               width: double.infinity,
@@ -108,7 +114,7 @@ class _HomeItemState extends State<HomeItem> {
                     GestureDetector(
                       onTap: () {
                         Vibrate.feedback(FeedbackType.impact);
-                        widget.openArticle(widget.article);
+                        widget.openArticle(widget.articleBand.article??Article());
                         print("Tapped article");
                       },
                       child: Container(
@@ -119,7 +125,7 @@ class _HomeItemState extends State<HomeItem> {
                             Row(
                               children: [
                                 Text(
-                                    "${widget.article.source}",
+                                    "${widget.articleBand.article?.source}",
                                     style: TextStyle(
                                       fontSize: 14,
                                     )),
@@ -130,11 +136,25 @@ class _HomeItemState extends State<HomeItem> {
                                     color: Colors.grey.shade900,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: Text("${widget.article.category}",
+                                  child: Text("${widget.articleBand.article?.category}",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 12,
                                       fontFamily: "alata"
+                                    ),),
+                                ),
+                                SizedBox(width: 8,),
+                               if(widget.articleBand.band!=null) Container(
+                                  padding: EdgeInsets.symmetric(vertical: 2,horizontal: 8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade900,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text("${widget.articleBand.band?.name}",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontFamily: "alata"
                                     ),),
                                 )
                               ],
@@ -147,7 +167,7 @@ class _HomeItemState extends State<HomeItem> {
                                 Container(
                                   child: AutoSizeText(
                                     RemoveDuplicate.removeTitleSource(
-                                        widget.article.title ?? ""),
+                                        widget.articleBand.article?.title ?? ""),
                                     textAlign: TextAlign.start,
                                     style: TextStyle(
                                       color: Colors.white,
@@ -163,15 +183,15 @@ class _HomeItemState extends State<HomeItem> {
                             ),
                             InstagramDateTimeWidget(
                                 publishedAt:
-                                    widget.article.publishedAt.toString() ?? ""),
+                                    widget.articleBand.article?.publishedAt.toString() ?? ""),
                             SizedBox(
                               height: 12,
                             ),
                             ExpandableText(
-                              (widget.article.description != null)
-                                  ? "${widget.article.description}"
-                                  : (widget.article.content != null)
-                                      ? "${widget.article.content}"
+                              (widget.articleBand.article?.description != null)
+                                  ? "${widget.articleBand.article?.description}"
+                                  : (widget.articleBand.article?.content != null)
+                                      ? "${widget.articleBand.article?.content}"
                                       : "",
                               textAlign: TextAlign.left,
                               style: TextStyle(
@@ -206,7 +226,7 @@ class _HomeItemState extends State<HomeItem> {
                           bgColor: iconBGColor,
                           onPressed: () {
                             AISummary.showBottomSheet(context,
-                                widget.article ?? Article(), Colors.transparent);
+                                widget.articleBand.article ?? Article(), Colors.transparent);
                           },
                           assetPath: 'images/sparkles.png',
                         ),
@@ -233,38 +253,38 @@ class _HomeItemState extends State<HomeItem> {
                               RoundedButton(
                                 padding: 16,
                                 height: iconHeight,
-                                color: widget.article.liked ?? false
+                                color: widget.articleBand.article?.liked ?? false
                                     ? Colors.red
                                     : Colors.white,
                                 bgColor: iconBGColor,
                                 hoverColor: Colors.redAccent,
                                 onPressed: () {
                                   setState(() {
-                                    if (widget.article.liked ?? false) {
+                                    if (widget.articleBand.article?.liked ?? false) {
                                       FirebaseDBOperations.removeLike(
-                                          widget.article.articleId);
-                                      widget.article.liked = false;
-                                      int currentLikes = widget.article.likes ?? 1;
+                                          widget.articleBand.article?.articleId);
+                                      widget.articleBand.article?.liked = false;
+                                      int currentLikes = widget.articleBand.article?.likes ?? 1;
                                       currentLikes -= 1;
-                                      widget.article.likes = currentLikes;
-                                      widget.updateList(widget.article);
+                                      widget.articleBand.article?.likes = currentLikes;
+                                      widget.updateList(widget.articleBand.article??Article());
                                       //  _articlesController.add(articles);
                                     } else {
                                       FirebaseDBOperations.updateLike(
-                                          widget.article.articleId);
+                                          widget.articleBand.article?.articleId);
 
-                                      widget.article.liked = true;
-                                      int currentLikes = widget.article.likes ?? 0;
+                                      widget.articleBand.article?.liked = true;
+                                      int currentLikes = widget.articleBand.article?.likes ?? 0;
                                       currentLikes += 1;
-                                      widget.article.likes = currentLikes;
-                                      widget.updateList(widget.article);
+                                      widget.articleBand.article?.likes = currentLikes;
+                                      widget.updateList(widget.articleBand.article??Article());
                                       //_articlesController.add(articles);
 
                                       Vibrate.feedback(FeedbackType.impact);
                                     }
                                   });
                                 },
-                                assetPath: widget.article.liked ?? false
+                                assetPath: widget.articleBand.article?.liked ?? false
                                     ? 'images/liked.png'
                                     : 'images/heart.png',
                               ),
@@ -272,9 +292,9 @@ class _HomeItemState extends State<HomeItem> {
                                 height: 4,
                               ),
                               Text(
-                                ((widget.article.likes ?? 0) > 0)
-                                    ? "${widget.article.likes}"
-                                    : "Likes",
+                                ((widget.articleBand.article?.likes ?? 0) > 0)
+                                    ? "${widget.articleBand.article?.likes}"
+                                    : "Like",
                                 style: TextStyle(fontSize: fontSize),
                               ),
                             ],
@@ -306,7 +326,7 @@ class _HomeItemState extends State<HomeItem> {
                                           borderRadius: BorderRadius.vertical(
                                               top: Radius.circular(0.0)),
                                           child: ArticleJamPage(
-                                            article: widget.article,
+                                            article: widget.articleBand.article??Article(),
                                           ),
                                         ),
                                       );
@@ -349,6 +369,39 @@ class _HomeItemState extends State<HomeItem> {
         ),
       ),
     );
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    print("Setting article in view");
+    super.initState();
+
+  }
+
+  void setband() async {
+   // band = null;
+    if(widget.bandId!=null){
+      Band fetchedBand = await FirebaseDBOperations.getBand(widget.bandId??"");
+      setState(() {
+        band = fetchedBand;
+        FirebaseDBOperations.articleBand.putIfAbsent(widget.articleBand.article?.articleId??"", () => band?.bandId??"");
+      });
+    }else{
+      List<Band> userBands = await FirebaseDBOperations.getBandByUser();
+      for(Band fetchedBand in userBands){
+        List bandHooks =fetchedBand.hooks??[];
+
+        if(bandHooks.contains(widget.articleBand.article?.category)){
+          print("BandHooks ${bandHooks} for bandName ${fetchedBand.name} and category ${widget.articleBand.article?.category}\n article ${widget.articleBand.article?.title}");
+          setState(() {
+            band = fetchedBand;
+            FirebaseDBOperations.articleBand.putIfAbsent(widget.articleBand.article?.articleId??"", () => band?.bandId??"");
+          });
+          break;
+        }
+
+      }
+    }
   }
 
 }
