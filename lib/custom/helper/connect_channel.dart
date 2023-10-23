@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:algolia_insights/algolia_insights.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
@@ -35,6 +36,11 @@ class ConnectToChannel {
 
   static bool engineInitialized = false; //
   static bool isTokenExpiring = false;
+
+  static var insights = Insights(applicationID: '6GGZ3SNOXT', apiKey: '490164dceb711d2a20364501566f7eb0');
+
+
+
 
   static String? channelID = "";
   static int tokenRole = 1;

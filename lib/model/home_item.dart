@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/band_details_page.dart';
+import 'package:drumm_app/custom/helper/connect_channel.dart';
 import 'package:drumm_app/model/band.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
@@ -306,6 +307,12 @@ class _HomeItemState extends State<HomeItem> {
                                       widget.updateList(widget.articleBand.article??Article());
                                       //  _articlesController.add(articles);
                                     } else {
+                                      ConnectToChannel.insights.convertedObjectsAfterSearch(
+                                          indexName: 'articles',
+                                          eventName: 'Liked Item',
+                                          queryID: 'query id',
+                                          objectIDs: [ widget.articleBand.article?.articleId??""]
+                                      );
                                       FirebaseDBOperations.updateLike(
                                           widget.articleBand.article?.articleId);
 

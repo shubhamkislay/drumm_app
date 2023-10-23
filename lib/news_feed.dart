@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/custom/helper/connect_channel.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/live_drumms.dart';
+import 'package:drumm_app/model/algolia_articles.dart';
 import 'package:drumm_app/model/article_band.dart';
 import 'package:drumm_app/model/band.dart';
 import 'package:drumm_app/model/drummer_image_card.dart';
@@ -786,11 +787,13 @@ class _NewsFeedState extends State<NewsFeed>
         }
       }
 
+      AlgoliaArticles algoliaArticles = await FirebaseDBOperations.getArticlesFromAlgolia();
+
       setState(() {
         noArticlesPresent = false;
         loadAnimation = false;
         loadingAnimation = LOADING_ASSET;
-        articles = articleFetched;
+        articles = algoliaArticles.articles??[];//articleFetched;
         articleBands = fetchedArticleBand;
         print("Article length ${articles.length}");
       });

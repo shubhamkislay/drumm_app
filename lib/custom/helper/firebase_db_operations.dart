@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
 
+import '../../model/algolia_articles.dart';
 import '../../model/band.dart';
 
 typedef void UpdateCallback();
@@ -46,6 +47,20 @@ class FirebaseDBOperations {
     if (query.isEmpty) exploreArticles = result;
 
     return result;
+  }
+
+  static Future<AlgoliaArticles> getArticlesFromAlgolia() async {
+    AlgoliaQuerySnapshot getArticles =
+    await algolia.instance.index('articles').getObjects();
+
+    print(
+        "Getting Articles from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
+    List<Article> result =
+    List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
+
+    AlgoliaArticles algoliaArticles = AlgoliaArticles(articles: result,queryID: getArticles.queryID);
+
+    return algoliaArticles;
   }
 
   static void updateArticle(

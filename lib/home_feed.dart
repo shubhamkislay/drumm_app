@@ -756,6 +756,14 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                           _articlesController.add(articles);
                                         });
                                       } else {
+
+                                        ConnectToChannel.insights.convertedObjectsAfterSearch(
+                                            indexName: 'articles',
+                                            eventName: 'Liked Item',
+                                            queryID: 'query id',
+                                            objectIDs: [ articles!.elementAt(index).articleId??""]
+                                        );
+
                                         FirebaseDBOperations.updateLike(
                                             articles!
                                                 .elementAt(index)
@@ -1167,6 +1175,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
 
     //searchHeadlinesAPI();
     super.initState();
+    ConnectToChannel.insights.userToken = FirebaseDBOperations.getCurrentUserID();
     WidgetsBinding.instance.addObserver(this);
     initToken();
     _lastRefreshTime = DateTime.now();
