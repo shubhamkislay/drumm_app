@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import '../article_jam_page.dart';
 import '../custom/ai_summary.dart';
+import '../custom/helper/connect_channel.dart';
 import '../custom/helper/firebase_db_operations.dart';
 import '../custom/helper/image_uploader.dart';
 import '../custom/helper/remove_duplicate.dart';
@@ -20,6 +21,7 @@ class HomeItem extends StatefulWidget {
   ArticleBand articleBand;
   int index;
   String? bandId;
+  String? queryID;
   bool isContainerVisible = false;
   VoidCallback undo;
   Function(Article) updateList;
@@ -34,6 +36,7 @@ class HomeItem extends StatefulWidget {
       required this.isContainerVisible,
       required this.updateList,
         this.bandId,
+        this.queryID,
       required this.openArticle})
       : super(key: key);
 
@@ -117,6 +120,14 @@ class _HomeItemState extends State<HomeItem> {
                       onTap: () {
                         Vibrate.feedback(FeedbackType.impact);
                         widget.openArticle(widget.articleBand.article??Article());
+
+                        ConnectToChannel.insights.viewedObjects(
+                          indexName: 'articles',
+                          eventName: 'Viewed Item',
+                          objectIDs: [ widget.articleBand.article?.articleId??""],
+
+                        );
+
                         print("Tapped article");
                       },
                       child: Container(
@@ -308,6 +319,14 @@ class _HomeItemState extends State<HomeItem> {
                                     } else {
                                       FirebaseDBOperations.updateLike(
                                           widget.articleBand.article?.articleId);
+
+                                      ConnectToChannel.insights.convertedObjectsAfterSearch(
+                                          indexName: 'articles',
+                                          eventName: 'Liked article',
+                                          queryID: widget.queryID??'query id',
+                                          objectIDs: [ widget.articleBand.article?.articleId??""],
+
+                                      );
 
                                       widget.articleBand.article?.liked = true;
                                       int currentLikes = widget.articleBand.article?.likes ?? 0;

@@ -30,6 +30,7 @@ import 'custom/rounded_button.dart';
 import 'custom/transparent_slider.dart';
 import 'jam_room_page.dart';
 import 'model/Drummer.dart';
+import 'model/algolia_article.dart';
 import 'model/article.dart';
 import 'model/home_item.dart';
 import 'model/home_item_default.dart';
@@ -50,7 +51,7 @@ class _NewsFeedState extends State<NewsFeed>
   List<ArticleBand> articleBands = [];
   late CardSwiperController? controller;
   List<MultiSelectCard<dynamic>> mulList = [];
-  String selectedCategory = "All";
+  String selectedCategory = "For You";
   List<dynamic> mAllSelectedItems = [];
   late MultiSelectContainer multiSelectContainer;
   List<MultiSelectCard<dynamic>> bandsCards = [];
@@ -66,7 +67,7 @@ class _NewsFeedState extends State<NewsFeed>
 
   bool loadAnimation = false;
 
-  String selectedBandID = "All";
+  String selectedBandID = "For You";
 
   bool noArticlesPresent = false;
   bool liveDrummsExist = false;
@@ -88,7 +89,11 @@ class _NewsFeedState extends State<NewsFeed>
 
   Band selectedBand = Band();
 
+  AlgoliaArticles? algoliaArticles;
+
   HashMap<String,Band> bandMap = HashMap();
+
+  String? queryID;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -481,7 +486,7 @@ class _NewsFeedState extends State<NewsFeed>
                               //articles.clear();
                             });
 
-                            if (selectedBandID == "All")
+                            if (selectedBandID == "For You")
                               getArticles();
                             else
                               getArticlesForBand(selectedBand);
@@ -497,8 +502,9 @@ class _NewsFeedState extends State<NewsFeed>
                             try {
                               if (index >= 0)
                                 return HomeItem(
-                                  bandId: selectedBandID !="All" ? selectedBandID:null,
+                                  bandId: selectedBandID !="For You" ? selectedBandID:null,
                                   articleBand: articleBands.elementAt(index),
+                                  queryID: queryID,
                                   isContainerVisible: false,
                                   openArticle: (article) {
                                     openArticlePage(article, index);
@@ -567,6 +573,7 @@ class _NewsFeedState extends State<NewsFeed>
     loadingAnimation = LOADING_ASSET;
     controller = CardSwiperController();
     super.initState();
+    ConnectToChannel.insights.userToken = FirebaseAuth.instance.currentUser?.uid??"";
     _lastRefreshTime = DateTime.now();
     _checkAndScheduleRefresh();
     FirebaseDBOperations.lastDocument = null;
@@ -597,11 +604,11 @@ class _NewsFeedState extends State<NewsFeed>
     }
     getArticles();
     Band allBands = Band();
-    allBands.name = "All";
-    allBands.bandId = "All";
+    allBands.name = "For You";
+    allBands.bandId = "For You";
     bandList.insert(0, allBands);
     bandList.forEach((element) {
-      if (element.bandId == "All") {
+      if (element.bandId == "For You") {
         mulList.add(
           MultiSelectCard(
             value: element,
@@ -611,7 +618,7 @@ class _NewsFeedState extends State<NewsFeed>
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 height: 28,
                 child: Text(
-                  "All",
+                  "For You",
                   textAlign: TextAlign.center,
                 )),
           ),
@@ -732,8 +739,8 @@ class _NewsFeedState extends State<NewsFeed>
           loadAnimation = false;
           loadingAnimation = LOADING_ASSET;
           selectedBand = selectedItem;
-          selectedBandID = selectedBand.bandId ?? "All";
-          if (selectedBandID == "All")
+          selectedBandID = selectedBand.bandId ?? "For You";
+          if (selectedBandID == "For You")
             getArticles();
           else
             getArticlesForBand(selectedBand);
@@ -765,8 +772,9 @@ class _NewsFeedState extends State<NewsFeed>
       articleBands.clear();
     });
     controller = CardSwiperController();
+    algoliaArticles = await FirebaseDBOperations.getArticlesFromAlgolia();
     List<Article> articleFetched =
-        await FirebaseDBOperations.getArticlesByBands();
+        algoliaArticles?.articles??[];//await FirebaseDBOperations.getArticlesByBands();
     if (articleFetched.length < 1) {
       setState(() {
         noArticlesPresent = true;
@@ -786,9 +794,12 @@ class _NewsFeedState extends State<NewsFeed>
         }
       }
 
+
+
       setState(() {
         noArticlesPresent = false;
         loadAnimation = false;
+        queryID = algoliaArticles?.queryID;
         loadingAnimation = LOADING_ASSET;
         articles = articleFetched;
         articleBands = fetchedArticleBand;

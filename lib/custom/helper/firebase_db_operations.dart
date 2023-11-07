@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
 
+import '../../model/algolia_article.dart';
 import '../../model/band.dart';
 
 typedef void UpdateCallback();
@@ -40,13 +41,72 @@ class FirebaseDBOperations {
         await algolia.instance.index('articles').query(query).getObjects();
 
     print(
-        "Getting Articles from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
+        "Getting News Feed from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
     List<Article> result =
         List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
     if (query.isEmpty) exploreArticles = result;
 
     return result;
   }
+
+  static Future<AlgoliaArticles> getArticlesFromAlgolia() async {
+    List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
+    AlgoliaQuerySnapshot getArticles =
+    await algolia.instance.index('articles')
+        .setRemoveStopWords(true)
+    .setFacets(['meta'])
+        .setHitsPerPage(1000)
+        .setUserToken(FirebaseAuth.instance.currentUser?.uid??"")
+        .setPersonalizationImpact(value: 100)
+        .setEnablePersonalization(enabled: true).getObjects();
+
+    print(
+        "Getting Articles from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
+    List<Article> result =
+    List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
+
+    List<Article> filteredList = [];
+    for(Article farticle in result){
+      if(!seenPosts.contains(farticle.articleId)){
+        filteredList.add(farticle);
+      }
+    }
+
+    AlgoliaArticles algoliaArticles = AlgoliaArticles(articles: filteredList,queryID: getArticles.queryID);
+
+    return algoliaArticles;
+  }
+
+  static Future<AlgoliaArticles> getArticlesByBandHookFromAlgolia(List<dynamic> bandHook) async {
+
+    List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
+    
+    AlgoliaQuerySnapshot getArticles =
+    await algolia.instance.index('articles')
+        .setRemoveStopWords(true)
+        .setFacets(['meta'])
+        .setHitsPerPage(1000)
+        .setUserToken(FirebaseAuth.instance.currentUser?.uid??"")
+        .setPersonalizationImpact(value: 100)
+        .setEnablePersonalization(enabled: true).getObjects();
+
+    print(
+        "Getting Articles from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
+    List<Article> result =
+    List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
+
+    List<Article> filteredList = [];
+    for(Article farticle in result){
+      if(!seenPosts.contains(farticle.articleId)){
+        filteredList.add(farticle);
+      }
+    }
+
+    AlgoliaArticles algoliaArticles = AlgoliaArticles(articles: filteredList,queryID: getArticles.queryID);
+
+    return algoliaArticles;
+  }
+
 
   static void updateArticle(
       String articleID, Article updatedArticle, UpdateCallback callback) {
