@@ -42,9 +42,10 @@ class _CreateJamState extends State<CreateJam> {
     DocumentReference jamRef =
         FirebaseFirestore.instance.collection("jams").doc();
     String pushId = jamRef.id;
+    print("pushId is $pushId");
 
     jam.broadcast = false;
-    jam.jamId = widget.jamId != null ? pushId: widget.jamId;
+    jam.jamId = widget.jamId == null ? pushId: widget.jamId;
     jam.articleId = this.widget.articleId;
     jam.imageUrl = this.widget.imageUrl;
     jam.title = widget.title == null ? null : '${widget.title}';
