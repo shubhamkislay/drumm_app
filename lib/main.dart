@@ -635,7 +635,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
     }else{
       if ((FirebaseAuth.instance.currentUser != null)) {
-        FirebaseDBOperations.subscribeToUserBands();
+        bool notify = prefs.getBool("notify")??true;
+        if(notify)
+          FirebaseDBOperations.subscribeToUserBands();
         Drummer drummer = await FirebaseDBOperations.getDrummer(FirebaseAuth.instance.currentUser?.uid??"");
         if(drummer!=null){
           int userLen = drummer.username?.length??0;
@@ -708,8 +710,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if ((FirebaseAuth.instance.currentUser != null))
-      FirebaseDBOperations.subscribeToUserBands();
+
+    // if ((FirebaseAuth.instance.currentUser != null))
+    //   FirebaseDBOperations.subscribeToUserBands();
 
     return Scaffold(
       body: Container(

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:drumm_app/custom/create_jam_bottom_sheet.dart';
 import 'package:drumm_app/notification_item.dart';
@@ -12,8 +13,10 @@ import 'package:drumm_app/model/drumm_card.dart';
 import 'package:drumm_app/skeleton_band.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 import 'create_band.dart';
 import 'custom/helper/firebase_db_operations.dart';
@@ -36,6 +39,11 @@ class NotificationWidgetState extends State<NotificationWidget>
   List<Jam> openDrumms = [];
   List<DrummCard> openDrummCards = [];
   bool loaded = false;
+  late SharedPreferences notiPref;
+
+  int notifactionValue = 1;
+
+  bool notify = true;
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +60,17 @@ class NotificationWidgetState extends State<NotificationWidget>
                 child: SingleChildScrollView(
                   child: SafeArea(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 12),
+                          child: GestureDetector(
+                              onTap: (){
+                                clearNotifications();
+                              },
+                              child: Text("Clear",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.redAccent),)),
+                        ),
                         Container(
                           alignment: Alignment.centerLeft,
                           padding:
@@ -106,14 +122,30 @@ class NotificationWidgetState extends State<NotificationWidget>
                                   ),
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 24),
-                                child: GestureDetector(
-                                    onTap: (){
-                                      clearNotifications();
-                                    },
-                                    child: Text("Clear",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.redAccent),)),
-                              )
+                              Padding(padding: EdgeInsets.all(4),
+                                child: ToggleSwitch(
+                                  minWidth: 60.0,
+                                  cornerRadius: 20.0,
+                                  activeBgColors: [[Colors.redAccent], [Colors.white!]],
+                                  activeFgColor:  Colors.black,
+                                  inactiveBgColor: Colors.grey.shade900,
+                                  inactiveFgColor: Colors.white,
+                                  initialLabelIndex: notify ? 1:0,
+                                  totalSwitches: 2,
+                                  labels: ['OFF', 'ON'],
+                                  radiusStyle: true,
+                                  customTextStyles: [
+                                    TextStyle(
+                                      fontWeight: FontWeight.bold
+                                    )
+                                  ],
+                                  onToggle: (index) {
+                                    Vibrate.feedback(FeedbackType.impact);
+                                    print('switched to: $index');
+                                    setNotify(index);
+                                  },
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -206,12 +238,21 @@ class NotificationWidgetState extends State<NotificationWidget>
   void initState() {
     // TODO: implement initState
     super.initState();
+
     initialise();
   }
 
-  void initialise(){
+  void initialise() async{
+    notiPref = await SharedPreferences.getInstance();
+    notify = notiPref.getBool("notify")??true;
+
     getNotifications();
   }
+
+  Widget rollingIconBuilder(int? value, bool foreground) {
+    return notifactionValue == 1 ? Icon(Icons.access_time_rounded):Icon(Icons.ac_unit);
+  }
+
 
   @override
   // TODO: implement wantKeepAlive
@@ -262,12 +303,25 @@ class NotificationWidgetState extends State<NotificationWidget>
   }
 
   void clearNotifications() async {
-    SharedPreferences notiPref = await SharedPreferences.getInstance();
+   // SharedPreferences notiPref = await SharedPreferences.getInstance();
     notiPref.setStringList("notifications", []);
 
     setState(() {
       notiList = [];
       loaded=true;
     });
+  }
+
+  void setNotify(int? index) {
+    if(index == 1){
+      notiPref.setBool("notify", true);
+      notify=true;
+      FirebaseDBOperations.subscribeToUserBands();
+    }
+    else {
+      notiPref.setBool("notify", false);
+      notify = false;
+      FirebaseDBOperations.unSubscribeToUserBands();
+    }
   }
 }

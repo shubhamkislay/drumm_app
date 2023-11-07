@@ -38,12 +38,28 @@ class FirebaseDBOperations {
 
   static Future<List<Article>> searchArticles(String query) async {
     AlgoliaQuerySnapshot getArticles =
-        await algolia.instance.index('articles').query(query).getObjects();
+        await algolia.instance.index('articles').setFacets(['meta'])
+            .setUserToken(FirebaseAuth.instance.currentUser?.uid??"").query(query).setPersonalizationImpact(value: 100).setHitsPerPage(300).setEnablePersonalization(enabled: true).getObjects();
 
     print(
         "Getting News Feed from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
+    List<Article> filteredList = [];
     List<Article> result =
-        List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
+    List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
+    if(query == ""){
+      List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
+
+
+
+      for(Article farticle in result){
+        if(!seenPosts.contains(farticle.articleId)){
+          filteredList.add(farticle);
+        }
+      }
+      result = filteredList;
+    }
+
+
     if (query.isEmpty) exploreArticles = result;
 
     return result;
@@ -752,6 +768,12 @@ class FirebaseDBOperations {
     List<Band> userBands = await FirebaseDBOperations.getBandByUser();
     for (Band band in userBands) {
       FirebaseDBOperations.subscribeToTopic(band.bandId ?? "");
+    }
+  }
+  static void unSubscribeToUserBands() async {
+    List<Band> userBands = await FirebaseDBOperations.getBandByUser();
+    for (Band band in userBands) {
+      FirebaseDBOperations.unsubscribeFromTopic(band.bandId ?? "");
     }
   }
 
