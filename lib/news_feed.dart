@@ -520,6 +520,7 @@ class _NewsFeedState extends State<NewsFeed>
                                   onRefresh: () {
                                     return _refreshData();
                                   }, index: index,
+                                  joinDrumm: (articleBand) { startDrumming(articleBand); },
                                 );
                               else
                                 return Container();
@@ -559,6 +560,74 @@ class _NewsFeedState extends State<NewsFeed>
     getNotifications();
     // Refresh your data
     //getNews();
+  }
+
+  startDrumming(ArticleBand articleBand){
+    if (ConnectToChannel.channelID == null ||
+        ConnectToChannel.channelID == "") {
+      Vibrate.feedback(FeedbackType.heavy);
+      try {
+        joinOpenDrumm(articleBand);
+      } catch (e) {}
+      return true;
+    } else {
+      showBottomSheet(
+          context: context,
+          builder: (context) {
+            return Container(
+              height: 200,
+              width: double.maxFinite,
+              padding: EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.grey.shade900),
+              child: Column(
+                children: [
+                  Text(
+                      "You are currently in a drumm already. Do you want to still join this drumm?"),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                          try {
+                            joinOpenDrumm(articleBand);
+                          } catch (e) {}
+                        },
+                        child: Text(
+                          "Yes",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          "No",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            );
+          });
+      return false;
+    }
   }
 
   @override

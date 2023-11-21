@@ -24,19 +24,21 @@ class HomeItem extends StatefulWidget {
   String? queryID;
   bool isContainerVisible = false;
   VoidCallback undo;
+  Function(ArticleBand) joinDrumm;
   Function(Article) updateList;
   Function(Article) openArticle;
   Future<void> Function() onRefresh;
   HomeItem(
       {Key? key,
-        required this.index,
+      required this.index,
       required this.articleBand,
-        required this.onRefresh,
-        required this.undo,
+        required this.joinDrumm,
+      required this.onRefresh,
+      required this.undo,
       required this.isContainerVisible,
       required this.updateList,
-        this.bandId,
-        this.queryID,
+      this.bandId,
+      this.queryID,
       required this.openArticle})
       : super(key: key);
 
@@ -46,7 +48,8 @@ class HomeItem extends StatefulWidget {
 
 class _HomeItemState extends State<HomeItem> {
   double fontSize = 10;
-  Color iconBGColor = Colors.grey.shade900.withOpacity(0.5);//COLOR_PRIMARY_DARK;
+  Color iconBGColor =
+      Colors.grey.shade900.withOpacity(0.5); //COLOR_PRIMARY_DARK;
   double iconHeight = 64;
   double sizedBoxedHeight = 12;
   double curve = 20;
@@ -58,7 +61,7 @@ class _HomeItemState extends State<HomeItem> {
       borderRadius: BorderRadius.circular(curve),
       child: Container(
         decoration: BoxDecoration(
-            color: COLOR_PRIMARY_DARK,//Color(0xff012036FF)
+            color: COLOR_PRIMARY_DARK, //Color(0xff012036FF)
             borderRadius: BorderRadius.circular(curve),
             border: Border.all(color: Colors.grey.shade900, width: 1)),
         child: RefreshIndicator(
@@ -69,144 +72,182 @@ class _HomeItemState extends State<HomeItem> {
               children: [
                 Column(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(6.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(curve),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.15), // Shadow color
-                              offset: Offset(0, -2), // Shadow offset (horizontal, vertical)
-                              blurRadius: 8, // Blur radius
-                              spreadRadius: 0, // Spread radius
-                            ),
-                          ]
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(curve-4),
-                        child: CachedNetworkImage(
-                          imageUrl: widget.articleBand.article?.imageUrl ?? "",
-                          filterQuality: FilterQuality.low,
-                          placeholder: (context, imageUrl) {
-                            String imageUrl = widget.articleBand.article?.imageUrl ??"";
-                            return Container(
-                              height: 150,
-                              width: double.infinity,
-                              padding: EdgeInsets.all(32),
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius: BorderRadius.circular(curve-4),
+                    GestureDetector(
+                      onTap: (){
+                        Vibrate.feedback(FeedbackType.impact);
+                        widget.openArticle(
+                            widget.articleBand.article ?? Article());
+
+                        ConnectToChannel.insights.viewedObjects(
+                          indexName: 'articles',
+                          eventName: 'Viewed Item',
+                          objectIDs: [
+                            widget.articleBand.article?.articleId ?? ""
+                          ],
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(6.0),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(curve),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black
+                                    .withOpacity(0.15), // Shadow color
+                                offset: const Offset(0,
+                                    -2), // Shadow offset (horizontal, vertical)
+                                blurRadius: 8, // Blur radius
+                                spreadRadius: 0, // Spread radius
                               ),
-                              child: Image.asset("images/logo_background_white.png",color: Colors.white.withOpacity(0.1),),
-                            );
-                          },
-                          errorWidget: (context, url, error) {
-                            return Container(
-                              height: 150,
-                              width: double.infinity,
-                              padding: EdgeInsets.all(32),
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(curve-4),
-                              ),
-                              child: Image.asset("images/logo_background_white.png",color: Colors.white.withOpacity(0.1),),
-                            );
-                          },
-                          fit: BoxFit.fitWidth,
+                            ]),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(curve - 4),
+                          child: CachedNetworkImage(
+                            imageUrl: widget.articleBand.article?.imageUrl ?? "",
+                            filterQuality: FilterQuality.low,
+                            placeholder: (context, imageUrl) {
+                              String imageUrl =
+                                  widget.articleBand.article?.imageUrl ?? "";
+                              return Container(
+                                height: 150,
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(32),
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius: BorderRadius.circular(curve - 4),
+                                ),
+                                child: Image.asset(
+                                  "images/logo_background_white.png",
+                                  color: Colors.white.withOpacity(0.1),
+                                ),
+                              );
+                            },
+                            errorWidget: (context, url, error) {
+                              return Container(
+                                height: 150,
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(32),
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(curve - 4),
+                                ),
+                                child: Image.asset(
+                                  "images/logo_background_white.png",
+                                  color: Colors.white.withOpacity(0.1),
+                                ),
+                              );
+                            },
+                            fit: BoxFit.fitWidth,
+                          ),
                         ),
                       ),
                     ),
                     GestureDetector(
                       onTap: () {
                         Vibrate.feedback(FeedbackType.impact);
-                        widget.openArticle(widget.articleBand.article??Article());
+                        widget.openArticle(
+                            widget.articleBand.article ?? Article());
 
                         ConnectToChannel.insights.viewedObjects(
                           indexName: 'articles',
                           eventName: 'Viewed Item',
-                          objectIDs: [ widget.articleBand.article?.articleId??""],
-
+                          objectIDs: [
+                            widget.articleBand.article?.articleId ?? ""
+                          ],
                         );
 
                         print("Tapped article");
                       },
                       child: Container(
-                        padding: EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(12),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 Vibrate.feedback(FeedbackType.selection);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => BandDetailsPage(
-                                          band: widget.articleBand.band ?? Band(),
-                                        )));
+                                              band: widget.articleBand.band ??
+                                                  Band(),
+                                            )));
                               },
                               child: Row(
                                 children: [
-
-                                  if(widget.articleBand.band!=null) Container(
-                                    padding: EdgeInsets.fromLTRB(3,3 , 3, 3),
-                                    decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        SizedBox(
-                                          height: 28,
-                                          width: 28,
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(13),
-                                            child: CachedNetworkImage(
-                                              imageUrl: modifyImageUrl(widget.articleBand.band?.url ?? "", "100x100"),
-                                              fit: BoxFit.cover,
+                                  if (widget.articleBand.band != null)
+                                    Container(
+                                      padding:
+                                          const EdgeInsets.fromLTRB(3, 3, 3, 3),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            height: 28,
+                                            width: 28,
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(13),
+                                              child: CachedNetworkImage(
+                                                imageUrl: modifyImageUrl(
+                                                    widget.articleBand.band
+                                                            ?.url ??
+                                                        "",
+                                                    "100x100"),
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 6,
-                                        ),
-                                        Text("${widget.articleBand.band?.name}",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                              fontFamily: "alata"
-                                          ),),
-                                        SizedBox(width: 2,),
-                                        Container(
-                                          padding: EdgeInsets.fromLTRB(8,3 , 8, 3),
-                                          decoration: BoxDecoration(
-                                            color: COLOR_PRIMARY_DARK,
-                                            border: Border.all(color: Colors.grey.shade900,width: 1.25),
-                                            borderRadius: BorderRadius.circular(16),
+                                          const SizedBox(
+                                            width: 6,
                                           ),
-                                          child: Text("${widget.articleBand.article?.category}",
-                                            style: TextStyle(
+                                          Text(
+                                            "${widget.articleBand.band?.name}",
+                                            style: const TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 12,
-                                                fontFamily: "alata"
-                                            ),),
-                                        )
-                                      ],
+                                                fontFamily: "alata"),
+                                          ),
+                                          const SizedBox(
+                                            width: 2,
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                8, 3, 8, 3),
+                                            decoration: BoxDecoration(
+                                              color: COLOR_PRIMARY_DARK,
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                            ),
+                                            child: Text(
+                                              "${widget.articleBand.article?.category}",
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12,
+                                                  fontFamily: "alata"),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 2,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-
                                 ],
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 12,
                             ),
-                            Text(
-                                "${widget.articleBand.article?.source}",
-                                style: TextStyle(
+                            Text("${widget.articleBand.article?.source}",
+                                style: const TextStyle(
                                   fontSize: 14,
                                 )),
-                            SizedBox(
+                            const SizedBox(
                               height: 6,
                             ),
                             Wrap(
@@ -214,81 +255,128 @@ class _HomeItemState extends State<HomeItem> {
                                 Container(
                                   child: AutoSizeText(
                                     RemoveDuplicate.removeTitleSource(
-                                        widget.articleBand.article?.title ?? ""),
+                                        widget.articleBand.article?.title ??
+                                            ""),
                                     textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold
-                                    ),
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 6,
                             ),
                             InstagramDateTimeWidget(
-                                publishedAt:
-                                    widget.articleBand.article?.publishedAt.toString() ?? ""),
-                            SizedBox(
+                                publishedAt: widget
+                                        .articleBand.article?.publishedAt
+                                        .toString() ??
+                                    ""),
+                            const SizedBox(
                               height: 12,
                             ),
                             ExpandableText(
                               (widget.articleBand.article?.description != null)
                                   ? "${widget.articleBand.article?.description}"
-                                  : (widget.articleBand.article?.content != null)
+                                  : (widget.articleBand.article?.content !=
+                                          null)
                                       ? "${widget.articleBand.article?.content}"
                                       : "",
                               textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.white70
-                              ), expandText: 'See more',
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.white38),
+                              expandText: 'See more',
                               collapseText: 'Hide',
                               maxLines: 1,
                               linkColor: Colors.white,
-                            ),
-                            SizedBox(
-                              height: 6,
-                            ),
-                            Text(
-                              "Tap to view",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                color: Colors.grey.shade700,
-                                fontSize: 12,
-                              ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    Column(
-                      children: [
-                        RoundedButton(
-                          padding: 14,
-                          height: iconHeight, //iconHeight,
-                          color: Colors.white,
-                          bgColor: iconBGColor,
-                          onPressed: () {
-                            AISummary.showBottomSheet(context,
-                                widget.articleBand.article ?? Article(), Colors.transparent);
-                          },
-                          assetPath: 'images/sparkles.png',
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),
-                        Text(
-                          "Gen AI\nSummary",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: fontSize, color: Colors.white),
-                        ),
-                      ],
+                    const SizedBox(
+                      height: 16,
                     ),
-                    SizedBox(
-                      height: 6,
+
+                    Container(
+                      width: double.maxFinite,
+                      padding: EdgeInsets.all(8),
+                      margin: EdgeInsets.symmetric(horizontal: 12),
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(
+                          color: Colors.grey.shade900.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(color:  Colors.grey.shade900.withOpacity(0.5),)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              RoundedButton(
+                                padding: 14,
+                                height: iconHeight, //iconHeight,
+                                color: Colors.white,
+                                bgColor: COLOR_PRIMARY_DARK,//iconBGColor,
+                                onPressed: () {
+                                  widget.joinDrumm(widget.articleBand);
+                                },
+                                assetPath: 'images/team_active.png',
+                              ),
+                              const SizedBox(
+                                width: 6,
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: (){
+                                    print("Join Drumm");
+                                    widget.joinDrumm(widget.articleBand);
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                              widget.articleBand.article?.question ?? "",
+                                          textAlign: TextAlign.start,
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(height: 4,),
+                                        Container(
+                                          width: double.infinity,
+                                          alignment: Alignment.centerLeft,
+                                          padding: const EdgeInsets.all(0.0),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Text("Generated by Drumm AI",
+                                            textAlign: TextAlign.start,
+                                            style: const TextStyle(
+                                                color: Colors.white38,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.normal),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 32,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -300,50 +388,67 @@ class _HomeItemState extends State<HomeItem> {
                               RoundedButton(
                                 padding: 16,
                                 height: iconHeight,
-                                color: widget.articleBand.article?.liked ?? false
+                                color:
+                                widget.articleBand.article?.liked ?? false
                                     ? Colors.red
                                     : Colors.white,
                                 bgColor: iconBGColor,
                                 hoverColor: Colors.redAccent,
                                 onPressed: () {
                                   setState(() {
-                                    if (widget.articleBand.article?.liked ?? false) {
-                                      FirebaseDBOperations.removeLike(
-                                          widget.articleBand.article?.articleId);
+                                    if (widget.articleBand.article?.liked ??
+                                        false) {
+                                      FirebaseDBOperations.removeLike(widget
+                                          .articleBand.article?.articleId);
                                       widget.articleBand.article?.liked = false;
-                                      int currentLikes = widget.articleBand.article?.likes ?? 1;
+                                      int currentLikes =
+                                          widget.articleBand.article?.likes ??
+                                              1;
                                       currentLikes -= 1;
-                                      widget.articleBand.article?.likes = currentLikes;
-                                      widget.updateList(widget.articleBand.article??Article());
+                                      widget.articleBand.article?.likes =
+                                          currentLikes;
+                                      widget.updateList(
+                                          widget.articleBand.article ??
+                                              Article());
                                       //  _articlesController.add(articles);
                                     } else {
-                                      FirebaseDBOperations.updateLike(
-                                          widget.articleBand.article?.articleId);
+                                      FirebaseDBOperations.updateLike(widget
+                                          .articleBand.article?.articleId);
 
-                                      ConnectToChannel.insights.convertedObjectsAfterSearch(
-                                          indexName: 'articles',
-                                          eventName: 'Liked article',
-                                          queryID: widget.queryID??'query id',
-                                          objectIDs: [ widget.articleBand.article?.articleId??""],
-
+                                      ConnectToChannel.insights
+                                          .convertedObjectsAfterSearch(
+                                        indexName: 'articles',
+                                        eventName: 'Liked article',
+                                        queryID: widget.queryID ?? 'query id',
+                                        objectIDs: [
+                                          widget.articleBand.article
+                                              ?.articleId ??
+                                              ""
+                                        ],
                                       );
 
                                       widget.articleBand.article?.liked = true;
-                                      int currentLikes = widget.articleBand.article?.likes ?? 0;
+                                      int currentLikes =
+                                          widget.articleBand.article?.likes ??
+                                              0;
                                       currentLikes += 1;
-                                      widget.articleBand.article?.likes = currentLikes;
-                                      widget.updateList(widget.articleBand.article??Article());
+                                      widget.articleBand.article?.likes =
+                                          currentLikes;
+                                      widget.updateList(
+                                          widget.articleBand.article ??
+                                              Article());
                                       //_articlesController.add(articles);
 
                                       Vibrate.feedback(FeedbackType.impact);
                                     }
                                   });
                                 },
-                                assetPath: widget.articleBand.article?.liked ?? false
+                                assetPath:
+                                widget.articleBand.article?.liked ?? false
                                     ? 'images/liked.png'
                                     : 'images/heart.png',
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 4,
                               ),
                               Text(
@@ -354,70 +459,106 @@ class _HomeItemState extends State<HomeItem> {
                               ),
                             ],
                           ),
-                          // if ((articles!.elementAt(index).likes ?? 0) > 0)
                           Column(
                             children: [
                               RoundedButton(
-                                padding: 12,
-                                height: 64, //iconHeight,
+                                padding: 14,
+                                height: iconHeight, //iconHeight,
                                 color: Colors.white,
-                                bgColor: iconBGColor, //Colors.white24,
+                                bgColor: iconBGColor,
                                 onPressed: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.grey.shade900,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(0.0)),
-                                    ),
-                                    builder: (BuildContext context) {
-                                      return Padding(
-                                        padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(0.0)),
-                                          child: ArticleJamPage(
-                                            article: widget.articleBand.article??Article(),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
+                                  AISummary.showBottomSheet(
+                                      context,
+                                      widget.articleBand.article ?? Article(),
+                                      Colors.transparent);
                                 },
-                                assetPath: 'images/drumm_logo.png',
+                                assetPath: 'images/sparkles.png',
                               ),
-                              SizedBox(
-                                height: 6,
+                              const SizedBox(
+                                height: 4,
                               ),
                               Text(
-                                "Drumms",
-                                style: TextStyle(fontSize: fontSize,),
+                                "Summary",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: fontSize, color: Colors.white),
                               ),
                             ],
                           ),
+                          Column(
+                            children: [
+                              RoundedButton(
+                                padding: 14,
+                                height: iconHeight, //iconHeight,
+                                color: Colors.white,
+                                bgColor: iconBGColor,
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.grey.shade900,
+                                      shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(0.0)),
+                                  ),
+                                  builder: (BuildContext context) {
+                                  return Padding(
+                                  padding: EdgeInsets.only(
+                                  bottom: MediaQuery.of(context)
+                                      .viewInsets
+                                      .bottom),
+                                  child: ClipRRect(
+                                  borderRadius:
+                                  const BorderRadius.vertical(
+                                  top: Radius.circular(0.0)),
+                                  child: ArticleJamPage(
+                                  article:
+                                  widget.articleBand.article ??
+                                  Article(),
+                                  ),
+                                  ),
+                                  );
+                                  },);
+                                },
+                                assetPath: 'images/drumm_logo.png',
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              Text(
+                                "Drumms",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: fontSize, color: Colors.white),
+                              ),
+                            ],
+                          ),
+
+                          // if ((articles!.elementAt(index).likes ?? 0) > 0)
+
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 50,
-                    )
+                    const SizedBox(
+                      height: 32,
+                    ),
                   ],
                 ),
-                if(widget.index!=0)GestureDetector(
-                  onTap: widget.undo,
-                  child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade900.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(48),
-                      ),
-                      margin: EdgeInsets.all(10),
-                      padding: EdgeInsets.all(6),
-                      child: Icon(Icons.arrow_back_ios_new_rounded,size: 24,)),
-                )
+                if (widget.index != 0)
+                  GestureDetector(
+                    onTap: widget.undo,
+                    child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade900.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(48),
+                        ),
+                        margin: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(6),
+                        child: const Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          size: 24,
+                        )),
+                  )
               ],
             ),
           ),
@@ -425,36 +566,41 @@ class _HomeItemState extends State<HomeItem> {
       ),
     );
   }
+
   @override
   void initState() {
     // TODO: implement initState
     print("Setting article in view");
     super.initState();
-
   }
 
   void setband() async {
-   // band = null;
-    if(widget.bandId!=null){
-      Band fetchedBand = await FirebaseDBOperations.getBand(widget.bandId??"");
+    // band = null;
+    if (widget.bandId != null) {
+      Band fetchedBand =
+          await FirebaseDBOperations.getBand(widget.bandId ?? "");
       setState(() {
         band = fetchedBand;
-        FirebaseDBOperations.articleBand.putIfAbsent(widget.articleBand.article?.articleId??"", () => band?.bandId??"");
+        FirebaseDBOperations.articleBand.putIfAbsent(
+            widget.articleBand.article?.articleId ?? "",
+            () => band?.bandId ?? "");
       });
-    }else{
+    } else {
       List<Band> userBands = await FirebaseDBOperations.getBandByUser();
-      for(Band fetchedBand in userBands){
-        List bandHooks =fetchedBand.hooks??[];
+      for (Band fetchedBand in userBands) {
+        List bandHooks = fetchedBand.hooks ?? [];
 
-        if(bandHooks.contains(widget.articleBand.article?.category)){
-          print("BandHooks ${bandHooks} for bandName ${fetchedBand.name} and category ${widget.articleBand.article?.category}\n article ${widget.articleBand.article?.title}");
+        if (bandHooks.contains(widget.articleBand.article?.category)) {
+          print(
+              "BandHooks ${bandHooks} for bandName ${fetchedBand.name} and category ${widget.articleBand.article?.category}\n article ${widget.articleBand.article?.title}");
           setState(() {
             band = fetchedBand;
-            FirebaseDBOperations.articleBand.putIfAbsent(widget.articleBand.article?.articleId??"", () => band?.bandId??"");
+            FirebaseDBOperations.articleBand.putIfAbsent(
+                widget.articleBand.article?.articleId ?? "",
+                () => band?.bandId ?? "");
           });
           break;
         }
-
       }
     }
   }

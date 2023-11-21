@@ -8,6 +8,7 @@ class Article {
   String? url;
   String? imageUrl;
   Timestamp? publishedAt;
+  String? question;
   String? summary;
   String? content;
   String? articleId;
@@ -26,6 +27,7 @@ class Article {
       this.category,
         this.source,
       this.country,
+        this.question,
       this.title,
       this.description,
       this.url,
@@ -45,6 +47,7 @@ class Article {
     source = snapshot.data()['source'];
     category = snapshot.data()['category'];
     articleId = snapshot.data()['articleId'];
+    question = snapshot.data()['question'];
     country = snapshot.data()['country'];
     title = snapshot.data()['title'];
     jamId = snapshot.data()['jamId'];
@@ -63,6 +66,7 @@ class Article {
     summary = snapshot['summary'];
     source = snapshot['source'];
     category = snapshot['category'];
+    question = snapshot['question'];
     articleId = snapshot['articleId'];
     jamId = snapshot['jamId'];
     country = snapshot['country'];
@@ -84,6 +88,7 @@ class Article {
       title: this.title,
       category: this.category,
       country: this.country,
+      question: this.question,
       description: this.description,
       imageUrl: this.imageUrl,
       publishedAt: this.publishedAt,
@@ -108,6 +113,7 @@ class Article {
     data['imageUrl'] = this.imageUrl;
     data['publishedAt'] = this.publishedAt;
     data['content'] = this.content;
+    data['question'] = this.question;
     data['articleId'] = this.articleId;
     data['jamId'] = this.jamId;
     data['summary'] = this.summary;

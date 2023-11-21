@@ -766,6 +766,7 @@ class FirebaseDBOperations {
 
   static void subscribeToUserBands() async {
     List<Band> userBands = await FirebaseDBOperations.getBandByUser();
+    FirebaseDBOperations.subscribeToTopic("broadcast");
     for (Band band in userBands) {
       FirebaseDBOperations.subscribeToTopic(band.bandId ?? "");
     }

@@ -132,7 +132,7 @@ class NotificationWidgetState extends State<NotificationWidget>
                                   inactiveFgColor: Colors.white,
                                   initialLabelIndex: notify ? 1:0,
                                   totalSwitches: 2,
-                                  labels: ['OFF', 'ON'],
+                                  labels: ['Off', 'On'],
                                   radiusStyle: true,
                                   customTextStyles: [
                                     TextStyle(
