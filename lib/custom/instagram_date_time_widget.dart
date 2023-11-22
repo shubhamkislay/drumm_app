@@ -14,7 +14,7 @@ class InstagramDateTimeWidget extends StatelessWidget {
       formattedDateTime,
       style: TextStyle(
         fontSize: 12,
-        color: Colors.white
+        color: Colors.white54
       ),
     );
   }
@@ -32,11 +32,11 @@ class InstagramDateTimeWidget extends StatelessWidget {
     final difference = now.difference(dateTime);
 
     if (difference.inDays >= 1) {
-      return '${difference.inDays}d ago';
+      return '${difference.inDays}d';
     } else if (difference.inHours >= 1) {
-      return '${difference.inHours}h ago';
+      return '${difference.inHours}h';
     } else if (difference.inMinutes >= 1) {
-      return '${difference.inMinutes}m ago';
+      return '${difference.inMinutes}m';
     } else {
       return 'Just now';
     }

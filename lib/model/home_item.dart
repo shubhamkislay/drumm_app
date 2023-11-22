@@ -73,6 +73,182 @@ class _HomeItemState extends State<HomeItem> {
                 Column(
                   children: [
                     GestureDetector(
+                      onTap: () {
+                        Vibrate.feedback(FeedbackType.impact);
+                        widget.openArticle(
+                            widget.articleBand.article ?? Article());
+
+                        ConnectToChannel.insights.viewedObjects(
+                          indexName: 'articles',
+                          eventName: 'Viewed Item',
+                          objectIDs: [
+                            widget.articleBand.article?.articleId ?? ""
+                          ],
+                        );
+
+                        print("Viewed Item article");
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Vibrate.feedback(FeedbackType.selection);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => BandDetailsPage(
+                                              band: widget.articleBand.band ??
+                                                  Band(),
+                                            )));
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  if (widget.index != 0)
+                                    GestureDetector(
+                                      onTap: widget.undo,
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade900.withOpacity(0.5),
+                                            borderRadius: BorderRadius.circular(48),
+                                          ),
+                                          margin: const EdgeInsets.only(right: 8),
+                                          padding: const EdgeInsets.all(6),
+                                          child: const Icon(
+                                            Icons.arrow_back_ios_new_rounded,
+                                            size: 24,
+                                          )),
+                                    ),
+                                  if (widget.articleBand.band != null)
+                                    Container(
+                                      padding:
+                                          const EdgeInsets.fromLTRB(3, 3, 3, 3),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                         if(false) SizedBox(
+                                            height: 28,
+                                            width: 28,
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(13),
+                                              child: CachedNetworkImage(
+                                                imageUrl: modifyImageUrl(
+                                                    widget.articleBand.band
+                                                            ?.url ??
+                                                        "",
+                                                    "100x100"),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 0,
+                                          ),
+                                        if(false)  Text(
+                                            "${widget.articleBand.band?.name}",
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12,
+                                                fontFamily: "alata"),
+                                          ),
+                                          const SizedBox(
+                                            width: 0,
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                8, 3, 8, 3),
+                                            decoration: BoxDecoration(
+                                              color: COLOR_PRIMARY_DARK,
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                            ),
+                                            child: Text(
+                                              "${widget.articleBand.article?.category}",
+                                              style: const TextStyle(
+                                                  color: Colors.white38,
+                                                  fontSize: 12,
+                                                  fontFamily: "alata"),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 0,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: Text("${widget.articleBand.article?.source}",
+                                      style: const TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                ),
+                                SizedBox(width: 4,),
+                                Text("•"),
+                                SizedBox(width: 4,),
+                                InstagramDateTimeWidget(
+                                    publishedAt: widget
+                                        .articleBand.article?.publishedAt
+                                        .toString() ??
+                                        ""),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 6,
+                            ),
+                            Wrap(
+                              children: [
+                                Container(
+                                  child: AutoSizeText(widget.articleBand.article?.title ??
+                                      "",
+                                    textAlign: TextAlign.start,
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.normal),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 6,
+                            ),
+                            ExpandableText(
+                              (widget.articleBand.article?.description != null)
+                                  ? "${widget.articleBand.article?.description}"
+                                  : (widget.articleBand.article?.content !=
+                                          null)
+                                      ? "${widget.articleBand.article?.content}"
+                                      : "",
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.white38),
+                              expandText: 'See more',
+                              collapseText: 'Hide',
+                              maxLines: 1,
+                              linkColor: Colors.white,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
                       onTap: (){
                         Vibrate.feedback(FeedbackType.impact);
                         widget.openArticle(
@@ -124,7 +300,7 @@ class _HomeItemState extends State<HomeItem> {
                             },
                             errorWidget: (context, url, error) {
                               return Container(
-                                height: 150,
+                                height: 0,
                                 width: double.infinity,
                                 padding: const EdgeInsets.all(32),
                                 decoration: BoxDecoration(
@@ -139,160 +315,6 @@ class _HomeItemState extends State<HomeItem> {
                             },
                             fit: BoxFit.fitWidth,
                           ),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Vibrate.feedback(FeedbackType.impact);
-                        widget.openArticle(
-                            widget.articleBand.article ?? Article());
-
-                        ConnectToChannel.insights.viewedObjects(
-                          indexName: 'articles',
-                          eventName: 'Viewed Item',
-                          objectIDs: [
-                            widget.articleBand.article?.articleId ?? ""
-                          ],
-                        );
-
-                        print("Tapped article");
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Vibrate.feedback(FeedbackType.selection);
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => BandDetailsPage(
-                                              band: widget.articleBand.band ??
-                                                  Band(),
-                                            )));
-                              },
-                              child: Row(
-                                children: [
-                                  if (widget.articleBand.band != null)
-                                    Container(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(3, 3, 3, 3),
-                                      decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          SizedBox(
-                                            height: 28,
-                                            width: 28,
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(13),
-                                              child: CachedNetworkImage(
-                                                imageUrl: modifyImageUrl(
-                                                    widget.articleBand.band
-                                                            ?.url ??
-                                                        "",
-                                                    "100x100"),
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 6,
-                                          ),
-                                          Text(
-                                            "${widget.articleBand.band?.name}",
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12,
-                                                fontFamily: "alata"),
-                                          ),
-                                          const SizedBox(
-                                            width: 2,
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                8, 3, 8, 3),
-                                            decoration: BoxDecoration(
-                                              color: COLOR_PRIMARY_DARK,
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                            ),
-                                            child: Text(
-                                              "${widget.articleBand.article?.category}",
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12,
-                                                  fontFamily: "alata"),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 2,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 12,
-                            ),
-                            Text("${widget.articleBand.article?.source}",
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                )),
-                            const SizedBox(
-                              height: 6,
-                            ),
-                            Wrap(
-                              children: [
-                                Container(
-                                  child: AutoSizeText(
-                                    RemoveDuplicate.removeTitleSource(
-                                        widget.articleBand.article?.title ??
-                                            ""),
-                                    textAlign: TextAlign.start,
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 6,
-                            ),
-                            InstagramDateTimeWidget(
-                                publishedAt: widget
-                                        .articleBand.article?.publishedAt
-                                        .toString() ??
-                                    ""),
-                            const SizedBox(
-                              height: 12,
-                            ),
-                            ExpandableText(
-                              (widget.articleBand.article?.description != null)
-                                  ? "${widget.articleBand.article?.description}"
-                                  : (widget.articleBand.article?.content !=
-                                          null)
-                                      ? "${widget.articleBand.article?.content}"
-                                      : "",
-                              textAlign: TextAlign.left,
-                              style: const TextStyle(
-                                  fontSize: 14, color: Colors.white38),
-                              expandText: 'See more',
-                              collapseText: 'Hide',
-                              maxLines: 1,
-                              linkColor: Colors.white,
-                            ),
-                          ],
                         ),
                       ),
                     ),
@@ -338,6 +360,7 @@ class _HomeItemState extends State<HomeItem> {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                               widget.articleBand.article?.question ?? "",
@@ -544,21 +567,7 @@ class _HomeItemState extends State<HomeItem> {
                     ),
                   ],
                 ),
-                if (widget.index != 0)
-                  GestureDetector(
-                    onTap: widget.undo,
-                    child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade900.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(48),
-                        ),
-                        margin: const EdgeInsets.all(10),
-                        padding: const EdgeInsets.all(6),
-                        child: const Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          size: 24,
-                        )),
-                  )
+
               ],
             ),
           ),

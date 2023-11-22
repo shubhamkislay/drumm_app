@@ -67,14 +67,23 @@ class FirebaseDBOperations {
 
   static Future<AlgoliaArticles> getArticlesFromAlgolia() async {
     List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
-    AlgoliaQuerySnapshot getArticles =
-    await algolia.instance.index('articles')
-        .setRemoveStopWords(true)
-    .setFacets(['meta'])
+    String userToken = await FirebaseAuth.instance.currentUser?.uid??"";
+    List<String> rmvPosts = [];
+    AlgoliaQuery algoliaQuery = algolia.instance.index('articles')
+        .setFacets(['meta'])
         .setHitsPerPage(1000)
-        .setUserToken(FirebaseAuth.instance.currentUser?.uid??"")
+        .setUserToken(userToken)
+        .setDistinct(value: true)
         .setPersonalizationImpact(value: 100)
-        .setEnablePersonalization(enabled: true).getObjects();
+        .setEnablePersonalization(enabled: true);
+    //
+    // for(String post in seenPosts){
+    //   algoliaQuery.setOptionalFilter("objectID:-${post}");
+    // }
+
+
+    AlgoliaQuerySnapshot getArticles =
+    await algoliaQuery.getObjects();
 
     print(
         "Getting Articles from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
@@ -83,9 +92,8 @@ class FirebaseDBOperations {
 
     List<Article> filteredList = [];
     for(Article farticle in result){
-      if(!seenPosts.contains(farticle.articleId)){
+      if(!seenPosts.contains(farticle.articleId))
         filteredList.add(farticle);
-      }
     }
 
     AlgoliaArticles algoliaArticles = AlgoliaArticles(articles: filteredList,queryID: getArticles.queryID);
@@ -96,13 +104,14 @@ class FirebaseDBOperations {
   static Future<AlgoliaArticles> getArticlesByBandHookFromAlgolia(List<dynamic> bandHook) async {
 
     List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
+    String userToken = await FirebaseAuth.instance.currentUser?.uid??"";
     
     AlgoliaQuerySnapshot getArticles =
     await algolia.instance.index('articles')
         .setRemoveStopWords(true)
         .setFacets(['meta'])
         .setHitsPerPage(1000)
-        .setUserToken(FirebaseAuth.instance.currentUser?.uid??"")
+        .setUserToken(userToken)
         .setPersonalizationImpact(value: 100)
         .setEnablePersonalization(enabled: true).getObjects();
 
