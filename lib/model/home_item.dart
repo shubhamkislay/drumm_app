@@ -61,7 +61,7 @@ class _HomeItemState extends State<HomeItem> {
       borderRadius: BorderRadius.circular(curve),
       child: Container(
         decoration: BoxDecoration(
-            color: COLOR_PRIMARY_DARK, //Color(0xff012036FF)
+            color: Colors.black,//COLOR_PRIMARY_DARK, //Color(0xff012036FF)
             borderRadius: BorderRadius.circular(curve),
             border: Border.all(color: Colors.grey.shade900, width: 1)),
         child: RefreshIndicator(
@@ -172,7 +172,7 @@ class _HomeItemState extends State<HomeItem> {
                                             child: Text(
                                               "${widget.articleBand.article?.category}",
                                               style: const TextStyle(
-                                                  color: Colors.white38,
+                                                  color: Colors.white,
                                                   fontSize: 12,
                                                   fontFamily: "alata"),
                                             ),
@@ -193,8 +193,8 @@ class _HomeItemState extends State<HomeItem> {
                               children: [
                                 Flexible(
                                   child: Text("${widget.articleBand.article?.source}",
-                                      style: const TextStyle(
-                                        color: Colors.white70,
+                                      style:  TextStyle(
+                                        color: Colors.white.withOpacity(0.95),
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                       )),
@@ -263,7 +263,7 @@ class _HomeItemState extends State<HomeItem> {
                         );
                       },
                       child: Container(
-                        padding: const EdgeInsets.all(6.0),
+                       // padding: const EdgeInsets.all(6.0),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(curve),
                             boxShadow: [
@@ -277,7 +277,7 @@ class _HomeItemState extends State<HomeItem> {
                               ),
                             ]),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(curve - 4),
+                         // borderRadius: BorderRadius.circular(curve - 4),
                           child: CachedNetworkImage(
                             imageUrl: widget.articleBand.article?.imageUrl ?? "",
                             filterQuality: FilterQuality.low,
@@ -287,10 +287,10 @@ class _HomeItemState extends State<HomeItem> {
                               return Container(
                                 height: 150,
                                 width: double.infinity,
-                                padding: const EdgeInsets.all(32),
+                               // padding: const EdgeInsets.all(32),
                                 decoration: BoxDecoration(
                                   color: Colors.transparent,
-                                  borderRadius: BorderRadius.circular(curve - 4),
+                                 // borderRadius: BorderRadius.circular(curve - 4),
                                 ),
                                 child: Image.asset(
                                   "images/logo_background_white.png",
@@ -322,15 +322,15 @@ class _HomeItemState extends State<HomeItem> {
                       height: 16,
                     ),
 
-                    Container(
+                   if( widget.articleBand.article?.question!=null) Container(
                       width: double.maxFinite,
                       padding: EdgeInsets.all(8),
                       margin: EdgeInsets.symmetric(horizontal: 12),
                       alignment: Alignment.centerLeft,
                       decoration: BoxDecoration(
-                          color: Colors.grey.shade900.withOpacity(0.5),
+                          color: COLOR_PRIMARY_DARK,//Colors.grey.shade900.withOpacity(0.75),
                           borderRadius: BorderRadius.circular(18),
-                          border: Border.all(color:  Colors.grey.shade900.withOpacity(0.5),)),
+                          border: Border.all(color:  Colors.grey.shade900.withOpacity(0.5),width: 2)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -342,7 +342,7 @@ class _HomeItemState extends State<HomeItem> {
                                 padding: 14,
                                 height: iconHeight, //iconHeight,
                                 color: Colors.white,
-                                bgColor: COLOR_PRIMARY_DARK,//iconBGColor,
+                                bgColor: Colors.black,//COLOR_PRIMARY_DARK,//iconBGColor,
                                 onPressed: () {
                                   widget.joinDrumm(widget.articleBand);
                                 },
@@ -358,7 +358,7 @@ class _HomeItemState extends State<HomeItem> {
                                     widget.joinDrumm(widget.articleBand);
                                   },
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.all(2.0),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -368,7 +368,7 @@ class _HomeItemState extends State<HomeItem> {
                                           style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 15,
-                                              fontWeight: FontWeight.bold),
+                                              fontWeight: FontWeight.normal),
                                         ),
                                         SizedBox(height: 4,),
                                         Container(
