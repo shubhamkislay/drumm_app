@@ -32,33 +32,36 @@ class FirebaseDBOperations {
   );
 
   static List<Article> exploreArticles = [];
-  static HashMap<String,String> articleBand = HashMap();
+  static HashMap<String, String> articleBand = HashMap();
 
   static DocumentSnapshot<Map<String, dynamic>>? lastDocument;
 
   static Future<List<Article>> searchArticles(String query) async {
-    AlgoliaQuerySnapshot getArticles =
-        await algolia.instance.index('articles').setFacets(['meta'])
-            .setUserToken(FirebaseAuth.instance.currentUser?.uid??"").query(query).setPersonalizationImpact(value: 100).setHitsPerPage(300).setEnablePersonalization(enabled: true).getObjects();
+    AlgoliaQuerySnapshot getArticles = await algolia.instance
+        .index('articles')
+        .setFacets(['meta'])
+        .setUserToken(FirebaseAuth.instance.currentUser?.uid ?? "")
+        .query(query)
+        .setPersonalizationImpact(value: 100)
+        .setHitsPerPage(300)
+        .setEnablePersonalization(enabled: true)
+        .getObjects();
 
     print(
         "Getting News Feed from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
     List<Article> filteredList = [];
     List<Article> result =
-    List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
-    if(query == ""){
+        List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
+    if (query == "") {
       List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
 
-
-
-      for(Article farticle in result){
-        if(!seenPosts.contains(farticle.articleId)){
+      for (Article farticle in result) {
+        if (!seenPosts.contains(farticle.articleId)) {
           filteredList.add(farticle);
         }
       }
       result = filteredList;
     }
-
 
     if (query.isEmpty) exploreArticles = result;
 
@@ -67,71 +70,81 @@ class FirebaseDBOperations {
 
   static Future<AlgoliaArticles> getArticlesFromAlgolia() async {
     List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
-    String userToken = await FirebaseAuth.instance.currentUser?.uid??"";
+    String userToken = await FirebaseAuth.instance.currentUser?.uid ?? "";
     List<String> rmvPosts = [];
-    AlgoliaQuery algoliaQuery = algolia.instance.index('articles')
+
+    List<Band> bandList = await FirebaseDBOperations.getBandByUser();
+    List hooks = [];
+    for (Band band in bandList) {
+      hooks.addAll(band.hooks ?? []);
+    }
+    AlgoliaQuery algoliaQuery = algolia.instance
+        .index('articles')
         .setFacets(['meta'])
         .setHitsPerPage(1000)
         .setUserToken(userToken)
         .setDistinct(value: true)
         .setPersonalizationImpact(value: 100)
         .setEnablePersonalization(enabled: true);
+
+    for (String hook in hooks) {
+      algoliaQuery.facetFilter("category:${hook}");
+    }
     //
     // for(String post in seenPosts){
     //   algoliaQuery.setOptionalFilter("objectID:-${post}");
     // }
 
-
-    AlgoliaQuerySnapshot getArticles =
-    await algoliaQuery.getObjects();
+    AlgoliaQuerySnapshot getArticles = await algoliaQuery.getObjects();
 
     print(
         "Getting Articles from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
     List<Article> result =
-    List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
+        List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
 
     List<Article> filteredList = [];
-    for(Article farticle in result){
-      if(!seenPosts.contains(farticle.articleId))
-        filteredList.add(farticle);
+    for (Article farticle in result) {
+      if (!seenPosts.contains(farticle.articleId)) filteredList.add(farticle);
     }
 
-    AlgoliaArticles algoliaArticles = AlgoliaArticles(articles: filteredList,queryID: getArticles.queryID);
+    AlgoliaArticles algoliaArticles =
+        AlgoliaArticles(articles: filteredList, queryID: getArticles.queryID);
 
     return algoliaArticles;
   }
 
-  static Future<AlgoliaArticles> getArticlesByBandHookFromAlgolia(List<dynamic> bandHook) async {
-
+  static Future<AlgoliaArticles> getArticlesByBandHookFromAlgolia(
+      List<dynamic> bandHook) async {
     List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
-    String userToken = await FirebaseAuth.instance.currentUser?.uid??"";
-    
-    AlgoliaQuerySnapshot getArticles =
-    await algolia.instance.index('articles')
+    String userToken = await FirebaseAuth.instance.currentUser?.uid ?? "";
+
+    AlgoliaQuerySnapshot getArticles = await algolia.instance
+        .index('articles')
         .setRemoveStopWords(true)
         .setFacets(['meta'])
         .setHitsPerPage(1000)
         .setUserToken(userToken)
         .setPersonalizationImpact(value: 100)
-        .setEnablePersonalization(enabled: true).getObjects();
+        .setEnablePersonalization(enabled: true)
+        .getObjects();
 
     print(
         "Getting Articles from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
     List<Article> result =
-    List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
+        List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
 
     List<Article> filteredList = [];
-    for(Article farticle in result){
-      if(!seenPosts.contains(farticle.articleId)){
+    for (Article farticle in result) {
+      if (!seenPosts.contains(farticle.articleId)) {
         filteredList.add(farticle);
       }
     }
 
-    AlgoliaArticles algoliaArticles = AlgoliaArticles(articles: filteredList,queryID: getArticles.queryID);
+    AlgoliaArticles algoliaArticles =
+        AlgoliaArticles(articles: filteredList, queryID: getArticles.queryID);
 
     return algoliaArticles;
   }
-
 
   static void updateArticle(
       String articleID, Article updatedArticle, UpdateCallback callback) {
@@ -173,15 +186,12 @@ class FirebaseDBOperations {
     }
   }
 
-  static Future<bool> updateCount(String? jamID,int count) async {
+  static Future<bool> updateCount(String? jamID, int count) async {
+    final DocumentReference jams =
+        FirebaseFirestore.instance.collection("jams").doc(jamID);
 
-    final DocumentReference jams = FirebaseFirestore.instance
-        .collection("jams")
-        .doc(jamID);
-
-    final DocumentReference openDrumms = FirebaseFirestore.instance
-        .collection("openDrumm")
-        .doc(jamID);
+    final DocumentReference openDrumms =
+        FirebaseFirestore.instance.collection("openDrumm").doc(jamID);
 
     jams.update({'count': count});
     openDrumms.update({'count': count});
@@ -370,9 +380,8 @@ class FirebaseDBOperations {
         .collection('jams')
         .where('bandId', whereIn: bandIDList)
         .where('broadcast', isEqualTo: false)
-        .where('count', isGreaterThan:0)
+        .where('count', isGreaterThan: 0)
         .get();
-
 
     // List<Jam> fetchedList =
     //     List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
@@ -404,7 +413,7 @@ class FirebaseDBOperations {
         .collection('openDrumm')
         .where('bandId', whereIn: bandIDList)
         .where('broadcast', isEqualTo: false)
-        .where('count', isGreaterThan:0)
+        .where('count', isGreaterThan: 0)
         .get();
     // List<Jam> fetchedList =
     //     List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
@@ -436,7 +445,8 @@ class FirebaseDBOperations {
         .where('articleId', isEqualTo: articleId)
         .get();
 
-    fetchedList = fetchedList + List.from(opendata.docs.map((e) => Jam.fromSnapshot(e)));
+    fetchedList =
+        fetchedList + List.from(opendata.docs.map((e) => Jam.fromSnapshot(e)));
     // List<Jam> filterList = [];
     // for (Jam jam in fetchedList) {
     //   int memLen = jam.membersID?.length ?? 0;
@@ -780,6 +790,7 @@ class FirebaseDBOperations {
       FirebaseDBOperations.subscribeToTopic(band.bandId ?? "");
     }
   }
+
   static void unSubscribeToUserBands() async {
     List<Band> userBands = await FirebaseDBOperations.getBandByUser();
     for (Band band in userBands) {
@@ -853,11 +864,11 @@ class FirebaseDBOperations {
     final body = jsonEncode({
       "to": "${toParams}",
       //if (!ring)
-        "notification": {
-          "body": "${jam.question}\n\n${jam.title}",
-          "title": subtitle,
-          "image": "${jam.imageUrl}"
-        },
+      "notification": {
+        "body": "${jam.question}\n\n${jam.title}",
+        "title": subtitle,
+        "image": "${jam.imageUrl}"
+      },
       "priority": "high",
       "content_available": true,
       "mutable_content": true,
@@ -957,7 +968,7 @@ class FirebaseDBOperations {
     return List.from(data.docs.map((e) => Drummer.fromSnapshot(e)));
   }
 
-  static Future<List<String>> getBandHooks() async{
+  static Future<List<String>> getBandHooks() async {
     var data = await FirebaseFirestore.instance
         .collection("hooks")
         .doc("tags")
@@ -968,7 +979,7 @@ class FirebaseDBOperations {
       return snapshot;
     });
     List<dynamic> bandHooks = [];
-    if (data.exists){
+    if (data.exists) {
       bandHooks = data.data()!['hooks'];
     }
 
@@ -1008,7 +1019,7 @@ class FirebaseDBOperations {
     List<Band> fetchedBands = await FirebaseDBOperations.getBandByUser();
     List<dynamic> bandCategoryList = [];
     for (Band band in fetchedBands) {
-      bandCategoryList += band.hooks??[];
+      bandCategoryList += band.hooks ?? [];
       print("Band name: ${band.name} Band hooks: ${band.hooks?.elementAt(0)}");
     }
     if (fetchedBands.length < 1) bandCategoryList.add("general");
@@ -1021,7 +1032,7 @@ class FirebaseDBOperations {
     Query<Map<String, dynamic>> query = FirebaseFirestore.instance
         .collection('articles')
         .where('category', whereIn: bandCategoryList)
-       // .where('country', isEqualTo: 'in')
+        // .where('country', isEqualTo: 'in')
         .where('source', isNotEqualTo: null)
         .orderBy("publishedAt", descending: true)
         .limit(50);
@@ -1029,22 +1040,20 @@ class FirebaseDBOperations {
     List<Article> filterArticle = [];
     bool checkedEverything = false;
 
-    while(filterArticle.length<1&&!checkedEverything) {
+    while (filterArticle.length < 1 && !checkedEverything) {
       if (lastDocument != null) {
         query = query.startAfterDocument(lastDocument!);
       }
       final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
-      if(snapshot.docs.isNotEmpty)
-        lastDocument = snapshot.docs.last;
+      if (snapshot.docs.isNotEmpty) lastDocument = snapshot.docs.last;
       List<Article> newArticles =
-      snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
-      if(newArticles.length<1) {
+          snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+      if (newArticles.length < 1) {
         checkedEverything = true;
       }
       for (Article article in newArticles) {
-        if (!seenPosts.contains(article.articleId)|| checkedEverything)
+        if (!seenPosts.contains(article.articleId) || checkedEverything)
           filterArticle.add(article);
-
       }
     }
 
@@ -1064,13 +1073,14 @@ class FirebaseDBOperations {
     return filterArticle;
   }
 
-  static Future<List<Article>> getArticlesByBandID(List<dynamic> bandHook) async {
+  static Future<List<Article>> getArticlesByBandID(
+      List<dynamic> bandHook) async {
     List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
 
     Query<Map<String, dynamic>> query = FirebaseFirestore.instance
         .collection('articles')
         .where('category', whereIn: bandHook)
-       // .where('articleId', whereNotIn: seenPosts)
+        // .where('articleId', whereNotIn: seenPosts)
         //.where('country', isEqualTo: 'in')
         .where('source', isNotEqualTo: null)
         .orderBy("publishedAt", descending: true)
@@ -1078,29 +1088,26 @@ class FirebaseDBOperations {
 
     List<Article> filterArticle = [];
     bool checkedEverything = false;
-    while(filterArticle.length<1&&!checkedEverything) {
+    while (filterArticle.length < 1 && !checkedEverything) {
+      if (lastDocument != null) {
+        query = query.startAfterDocument(lastDocument!);
+      }
 
-    if (lastDocument != null) {
-      query = query.startAfterDocument(lastDocument!);
+      final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+      if (snapshot.docs.isNotEmpty) lastDocument = snapshot.docs.last;
+
+      List<Article> newArticles =
+          snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+
+      if (newArticles.length < 1) checkedEverything = true;
+
+      for (Article article in newArticles) {
+        if (!seenPosts.contains(article.articleId) || checkedEverything)
+          filterArticle.add(article);
+      }
     }
 
-    final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
-    if(snapshot.docs.isNotEmpty)
-      lastDocument = snapshot.docs.last;
-
-    List<Article> newArticles =
-    snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
-
-    if(newArticles.length<1)
-      checkedEverything = true;
-
-    for (Article article in newArticles) {
-      if (!seenPosts.contains(article.articleId)||checkedEverything)
-        filterArticle.add(article);
-    }
-  }
-
-  ///Uncomment the below code if you want to replay the articles after you have seen everything
+    ///Uncomment the below code if you want to replay the articles after you have seen everything
     // if(filterArticle.length<1&&checkedEverything){
     //   Query<Map<String, dynamic>> query = FirebaseFirestore.instance
     //       .collection('articles')
