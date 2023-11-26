@@ -10,6 +10,7 @@ import 'package:drumm_app/theme/theme_constants.dart';
 
 import 'create_band.dart';
 import 'custom/helper/firebase_db_operations.dart';
+import 'explore_bands_page.dart';
 import 'model/band.dart';
 import 'model/jam.dart';
 
@@ -115,8 +116,8 @@ with AutomaticKeepAliveClientMixin<BandSearchPage>{
                             alignment: Alignment.center,
                             padding: EdgeInsets.all(32),
                             height: MediaQuery.of(context).size.height*0.7,
-                            child: Text("You are not part of any band. Create or join a band to start drumming."
-                                " Use the search tab to explore the bands.",textAlign: TextAlign.center,),
+                            child: Text("You are not part of any band.\n"
+                                "Tap the button at the bottom to explore the bands.",textAlign: TextAlign.center,),
                           ),
                         ),
                       SizedBox(
@@ -137,7 +138,7 @@ with AutomaticKeepAliveClientMixin<BandSearchPage>{
                       end: Alignment.bottomCenter,
                       colors: [Colors.transparent, Colors.black])),
             ),
-          if (loaded)
+          if (false)
             Container(
               margin: EdgeInsets.symmetric(vertical: 16,horizontal: 32),
               alignment: Alignment.bottomCenter,
@@ -155,6 +156,50 @@ with AutomaticKeepAliveClientMixin<BandSearchPage>{
                 },
               ),
             ),
+          if (loaded)
+          Container(
+            width: double.infinity,
+            alignment: /*jamImageCards.isNotEmpty ?*/
+            Alignment.bottomCenter, //:Alignment.center,
+            margin: EdgeInsets.symmetric(horizontal: 0, vertical: 32),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconLabelButton(
+                  label: 'Explore Bands',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ExploreBandsPage(),
+                      ),
+                    );
+                  },
+                  imageAsset: 'images/team_active.png',
+                  height: 40,
+                ),
+                SizedBox(width: 8),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CreateBand(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    child: Icon(Icons.add),
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(COLOR_PRIMARY_VAL)),
+                  ),
+                )
+              ],
+            ),
+          ),
         ],
       ),
     );

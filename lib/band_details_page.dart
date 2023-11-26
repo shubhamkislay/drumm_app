@@ -445,8 +445,6 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                       height: 40,
                     ),
                     SizedBox(width: 8),
-                    Text("or"),
-                    SizedBox(width: 8),
                     GestureDetector(
                       onTap: () {
                         print('Ask a question');
