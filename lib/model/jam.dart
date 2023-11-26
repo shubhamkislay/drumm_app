@@ -10,6 +10,7 @@ class Jam {
   bool? broadcast=false;
   String? creationTime;
   String? imageUrl;
+  String? question;
   List<dynamic>? membersID;
 
   Jam();
@@ -22,6 +23,7 @@ class Jam {
     'jamId': jamId,
     'articleId': articleId,
     'title': title,
+    'question': question,
     'membersID': membersID,
     'broadcast': broadcast,
     'imageUrl':imageUrl,
@@ -32,6 +34,7 @@ class Jam {
         bandId = json['bandId'],
         broadcast = json['broadcast'],
         count = json['count'],
+        question = json['question'],
         creationTime = json['creationTime'].toString(),
         jamId = json['jamId'],
         articleId = json['articleId'],
@@ -48,6 +51,7 @@ class Jam {
       : startedBy = snapshot.data()['startedBy'],
         bandId = snapshot.data()['bandId'],
         count = snapshot.data()['count'],
+        question = snapshot.data()['question'],
         creationTime = snapshot.data()['creationTime'].toString(),
         title = snapshot.data()['title'],
         broadcast = snapshot.data()['broadcast'],
@@ -60,6 +64,7 @@ class Jam {
       : startedBy = snapshot['startedBy'],
         bandId = snapshot['bandId'],
         count = snapshot['count'],
+        question = snapshot['question'],
         creationTime = snapshot['creationTime'].toString(),
         title = snapshot['title'],
         broadcast = snapshot['broadcast'],
@@ -71,6 +76,7 @@ class Jam {
       : startedBy = snapshot.get('startedBy'),
         bandId = snapshot.get('bandId'),
         count = snapshot.get('count'),
+        question = snapshot.get('question'),
         creationTime = snapshot.get('creationTime').toString(),
         title = snapshot.get('title'),
         broadcast = snapshot.get('broadcast'),

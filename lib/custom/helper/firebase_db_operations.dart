@@ -847,14 +847,14 @@ class FirebaseDBOperations {
 
     String type = "notification";
     String subtitle = (ring)
-        ? "${drummer.username} started a drumm"
-        : "${drummer.username} joined the drumm";
+        ? "${drummer.username} is drumming..."
+        : "${drummer.username} is drumming...";
     if (ring) type = "data";
     final body = jsonEncode({
       "to": "${toParams}",
       //if (!ring)
         "notification": {
-          "body": jam.title,
+          "body": "${jam.question}\n\n${jam.title}",
           "title": subtitle,
           "image": "${jam.imageUrl}"
         },

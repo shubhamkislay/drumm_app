@@ -14,6 +14,7 @@ import 'package:drumm_app/model/drummer_image_card.dart';
 import 'package:drumm_app/notification_widget.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
@@ -650,6 +651,7 @@ class _NewsFeedState extends State<NewsFeed>
     getCurrentDrummer();
     checkLiveDrumms();
     getNotifications();
+    requestPermissions();
   }
 
   void getNotifications() async {
@@ -1018,6 +1020,7 @@ class _NewsFeedState extends State<NewsFeed>
     jam.articleId = aBand.article?.articleId;
     jam.startedBy = aBand.article?.source;
     jam.imageUrl = aBand.article?.imageUrl;
+    jam.question = aBand.article?.question;
     jam.count = 0;
     jam.membersID = [];
     //FirebaseDBOperations.createOpenDrumm(jam);
@@ -1065,6 +1068,13 @@ class _NewsFeedState extends State<NewsFeed>
 
   void cleanCache() async {
     await DefaultCacheManager().emptyCache();
+  }
+
+  void requestPermissions() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings notificationSettings =
+    await messaging.requestPermission();
+    print(notificationSettings.authorizationStatus);
   }
 
   @override

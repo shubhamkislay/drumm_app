@@ -224,6 +224,7 @@ class _CreateJamState extends State<CreateJam> {
                             createJam.bandId = selectBandID;
                             createJam.count = jam.count;
                             createJam.jamId = jam.jamId;
+                            createJam.question = jam.question;
 
                             print("createJam ${createJam.jamId}");
 

@@ -128,7 +128,7 @@ class _NotificationItemState extends State<NotificationItem> {
                                     }
                                   },
                                   child: Text(
-                                    "${jam.title}",
+                                    "${jam.question}",
                                     textAlign: TextAlign.center,
                                     maxLines: 3,
                                     softWrap: true,

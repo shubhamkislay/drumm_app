@@ -218,6 +218,7 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                     jam.articleId=widget.article?.jamId;
                     jam.startedBy=widget.article?.source;
                     jam.imageUrl=widget.article?.imageUrl;
+                    jam.question = widget.article?.question;
                     jam.count=0;
                     jam.membersID = [];
                     //FirebaseDBOperations.createOpenDrumm(jam);
