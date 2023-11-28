@@ -87,18 +87,23 @@ class FirebaseDBOperations {
         .setPersonalizationImpact(value: 100)
         .setEnablePersonalization(enabled: true);
 
+    List<String> filterStr = [];
     for (String hook in hooks) {
-      algoliaQuery.facetFilter("category:${hook}");
+      filterStr.add("category:${hook}");
+      //algoliaQuery = algoliaQuery.facetFilter("'category:${hook}'");
     }
+    algoliaQuery = algoliaQuery.facetFilter(filterStr);
     //
     // for(String post in seenPosts){
     //   algoliaQuery.setOptionalFilter("objectID:-${post}");
     // }
 
+    print("AlgoliaQuery: ${algoliaQuery.parameters}");
+
     AlgoliaQuerySnapshot getArticles = await algoliaQuery.getObjects();
 
-    print(
-        "Getting Articles from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
+    // print(
+    //     "Getting Articles from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
     List<Article> result =
         List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
 
@@ -113,35 +118,45 @@ class FirebaseDBOperations {
     return algoliaArticles;
   }
 
-  static Future<AlgoliaArticles> getArticlesByBandHookFromAlgolia(
-      List<dynamic> bandHook) async {
+  static Future<AlgoliaArticles> getArticlesByBandHookFromAlgolia(Band selectedBand) async {
     List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
     String userToken = await FirebaseAuth.instance.currentUser?.uid ?? "";
+    List hooks = selectedBand.hooks??[];
 
-    AlgoliaQuerySnapshot getArticles = await algolia.instance
+    AlgoliaQuery algoliaQuery = algolia.instance
         .index('articles')
-        .setRemoveStopWords(true)
         .setFacets(['meta'])
         .setHitsPerPage(1000)
         .setUserToken(userToken)
+        .setDistinct(value: true)
         .setPersonalizationImpact(value: 100)
-        .setEnablePersonalization(enabled: true)
-        .getObjects();
+        .setEnablePersonalization(enabled: true);
+
+    List<String> filterStr = [];
+    for (String hook in hooks) {
+      filterStr.add("category:${hook}");
+      //algoliaQuery = algoliaQuery.facetFilter("'category:${hook}'");
+    }
+    algoliaQuery = algoliaQuery.facetFilter(filterStr);
+    //
+    // for(String post in seenPosts){
+    //   algoliaQuery.setOptionalFilter("objectID:-${post}");
+    // }
+
+    AlgoliaQuerySnapshot getArticles = await algoliaQuery.getObjects();
 
     print(
         "Getting Articles from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
     List<Article> result =
-        List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
+    List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
 
     List<Article> filteredList = [];
     for (Article farticle in result) {
-      if (!seenPosts.contains(farticle.articleId)) {
-        filteredList.add(farticle);
-      }
+      if (!seenPosts.contains(farticle.articleId)) filteredList.add(farticle);
     }
 
     AlgoliaArticles algoliaArticles =
-        AlgoliaArticles(articles: filteredList, queryID: getArticles.queryID);
+    AlgoliaArticles(articles: filteredList, queryID: getArticles.queryID);
 
     return algoliaArticles;
   }

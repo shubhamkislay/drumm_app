@@ -490,7 +490,7 @@ class _NewsFeedState extends State<NewsFeed>
                             if (selectedBandID == "For You")
                               getArticles();
                             else
-                              getArticlesForBand(selectedBand);
+                              getArticlesForBands(selectedBand);
                           },
                           threshold: 25,
                           onSwipe: _onSwipe,
@@ -814,7 +814,7 @@ class _NewsFeedState extends State<NewsFeed>
           if (selectedBandID == "For You")
             getArticles();
           else
-            getArticlesForBand(selectedBand);
+            getArticlesForBands(selectedBand);
         });
       },
       singleSelectedItem: true,
@@ -875,6 +875,44 @@ class _NewsFeedState extends State<NewsFeed>
         articles = articleFetched;
         articleBands = fetchedArticleBand;
         print("Article length ${articles.length}");
+      });
+    }
+  }
+
+  void getArticlesForBands(Band selectedBand) async {
+    setState(() {
+      articles.clear();
+      articleBands.clear();
+    });
+    controller = CardSwiperController();
+    algoliaArticles = await FirebaseDBOperations.getArticlesByBandHookFromAlgolia(selectedBand);
+    List<Article> articleFetched =
+        algoliaArticles?.articles??[];//await FirebaseDBOperations.getArticlesByBands();
+
+    List<ArticleBand> fetchedArticleBand = [];
+
+    if (articleFetched.length < 1) {
+      setState(() {
+        noArticlesPresent = true;
+        loadingAnimation = NO_FOUND_ASSET;
+        loadAnimation = true;
+      });
+    } else {
+      for(Article article in articleFetched){
+        ArticleBand articleBand = ArticleBand(article: article,band:selectedBand);
+        fetchedArticleBand.add(articleBand);
+      }
+
+
+
+      setState(() {
+        noArticlesPresent = false;
+        loadAnimation = false;
+        queryID = algoliaArticles?.queryID;
+        loadingAnimation = LOADING_ASSET;
+        articles = articleFetched;
+        articleBands = fetchedArticleBand;
+        print("getArticlesForBands length ${articles.length}");
       });
     }
   }
