@@ -64,6 +64,18 @@ class _JamRoomPageState extends State<JamRoomPage> {
       height: MediaQuery.of(context).size.height * 0.9,
       child: Stack(
         children: [
+          if (userJoined)
+          Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(8),
+            child: Lottie.asset('images/wave_drumm.json',height: MediaQuery.of(context).size.height/2,fit:BoxFit.contain),
+          ),
+          Container(
+            alignment: Alignment.center,
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height,
+            color: COLOR_PRIMARY_DARK.withOpacity(0.9),
+          ),
           SingleChildScrollView(
             child: Column(
               children: [
@@ -189,7 +201,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                       // color: (jamImageCards.isNotEmpty)
                       //     ? COLOR_PRIMARY_DARK
                       //     : Colors.black,
-                      color: COLOR_PRIMARY_DARK,
+                      color: Colors.transparent,//COLOR_PRIMARY_DARK,
                       border:  Border(
                         top: BorderSide(
                           color:  (drummer?.username != null)? Colors.white12:Colors.transparent,
@@ -250,6 +262,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
               ],
             ),
           ),
+
           Row(
             children: [
               Padding(
@@ -293,6 +306,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                 ),
             ],
           ),
+
           SafeArea(
             child: Container(
               width: double.infinity,

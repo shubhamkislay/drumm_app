@@ -39,9 +39,9 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
   Widget build(BuildContext context) {
 
     return Container(
-      color: COLOR_PRIMARY_DARK,
+      color: Colors.transparent,//COLOR_PRIMARY_DARK,
       child: Scaffold(
-        backgroundColor: COLOR_PRIMARY_DARK,
+        backgroundColor:  Colors.transparent,//COLOR_PRIMARY_DARK,
         body: StreamBuilder(
           stream: FirebaseFirestore.instance.collection('users').where('rid', isEqualTo: widget.drummerId).snapshots(),//.doc(widget.drummerId).snapshots(),
             builder: (context,snapshot){

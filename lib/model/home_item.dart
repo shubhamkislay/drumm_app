@@ -5,6 +5,7 @@ import 'package:drumm_app/model/band.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:lottie/lottie.dart';
 import '../article_jam_page.dart';
 import '../custom/ai_summary.dart';
 import '../custom/helper/connect_channel.dart';
@@ -338,7 +339,7 @@ class _HomeItemState extends State<HomeItem> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              RoundedButton(
+                             if(false) RoundedButton(
                                 padding: 14,
                                 height: iconHeight, //iconHeight,
                                 color: Colors.white,
@@ -347,6 +348,16 @@ class _HomeItemState extends State<HomeItem> {
                                   widget.joinDrumm(widget.articleBand);
                                 },
                                 assetPath: 'images/team_active.png',
+                              ),
+                              GestureDetector(
+                                onTap: (){
+                                  widget.joinDrumm(widget.articleBand);
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  padding: EdgeInsets.all(12),
+                                  child: Lottie.asset('images/wave_drumm.json',height: iconHeight,fit:BoxFit.contain),
+                                ),
                               ),
                               const SizedBox(
                                 width: 6,

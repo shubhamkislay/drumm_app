@@ -7,14 +7,14 @@ import 'dart:convert';
 import 'bottom_sheet.dart';
 
 class AISummary {
-  static Future<String> getNewsSummary(String? newsUrl) async {
+  static Future<String> getNewsSummary(String? newsArticle) async {
     final apiKey =
         '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'; // Replace with your ChatGPT API key
     final apiUrl = 'https://api.openai.com/v1/completions';
 
     final requestBody = {
       "model": "text-davinci-003",
-      'prompt': 'Summarize the news: $newsUrl',
+      'prompt': 'Summarize the news: $newsArticle',
       'max_tokens': 200, // Adjust the summary length as needed
       'temperature':
           0.7, // Adjust the temperature for generating diverse responses

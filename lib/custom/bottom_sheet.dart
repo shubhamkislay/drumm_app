@@ -39,7 +39,7 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
     if (currentSummary != null && currentSummary.length > 0)
       enableSheet(currentSummary);
     else
-      AISummary.getNewsSummary(widget.article.url).then((value) {
+      AISummary.getNewsSummary("${widget.article.url} \n ${widget.article.dump}").then((value) {
         enableSheet(value);
         FirebaseDBOperations.updateSummary(widget.article.articleId, value);
       });
