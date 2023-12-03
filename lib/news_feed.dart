@@ -47,7 +47,7 @@ class NewsFeed extends StatefulWidget {
 }
 
 class _NewsFeedState extends State<NewsFeed>
-    with AutomaticKeepAliveClientMixin<NewsFeed> {
+    with AutomaticKeepAliveClientMixin<NewsFeed>, WidgetsBindingObserver {
   List<Article> articles = [];
   List<ArticleBand> articleBands = [];
   late CardSwiperController? controller;
@@ -91,10 +91,16 @@ class _NewsFeedState extends State<NewsFeed>
   Band selectedBand = Band();
 
   AlgoliaArticles? algoliaArticles;
+  AlgoliaArticles? freshArticles;
+  List<Article> freshArticleFetched =[];
+  List<ArticleBand> fetchedArticleBand = [];
 
-  HashMap<String,Band> bandMap = HashMap();
+  HashMap<String, Band> bandMap = HashMap();
 
   String? queryID;
+  String articleTop = "";
+
+  bool newArticlesAvailable = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -308,27 +314,36 @@ class _NewsFeedState extends State<NewsFeed>
                               );
                             },
                             child: Container(
-                                padding: EdgeInsets.all(1.25),
+                              padding: EdgeInsets.all(1.5),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(24),
+                                  gradient: (liveDrummsExist)
+                                      ? LinearGradient(colors: [
+                                          Colors.white,
+                                          Colors.grey,
+                                        ])
+                                      : LinearGradient(colors: [
+                                          Colors.grey.shade900,
+                                          Colors.grey.shade900,
+                                        ])),
+                              child: Container(
+                                padding: EdgeInsets.all(4),
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(24),
-                                    gradient: (liveDrummsExist)
-                                        ? LinearGradient(colors: [
-                                            Colors.grey.shade700,
-                                            Colors.grey.shade700,
-                                          ])
-                                        : LinearGradient(colors: [
-                                            COLOR_PRIMARY_DARK,
-                                            COLOR_PRIMARY_DARK,
-                                          ])),
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(24),
-                                      color: Colors.black,
-                                    ),
-                                    child: Icon(
-                                      Icons.data_saver_off_rounded,
-                                      size: iconSize - 4,
-                                    ))), // data_saver_off_rounded Image.asset("images/hotspot.png",height: 24,fit: BoxFit.contain,color: Colors.white,))),
+                                  borderRadius: BorderRadius.circular(24),
+                                  color: Colors.black,
+                                ),
+                                // child: Icon(
+                                //   Icons.data_saver_off_rounded,
+                                //   size: iconSize - 4,
+                                // ),
+                                child: Image.asset(
+                                  "images/drumm_logo.png",
+                                  height: 18,
+                                  fit: BoxFit.contain,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ), // data_saver_off_rounded Image.asset("images/hotspot.png",height: 24,fit: BoxFit.contain,color: Colors.white,))),
                           ),
                           if (false)
                             SizedBox(
@@ -427,21 +442,23 @@ class _NewsFeedState extends State<NewsFeed>
                             width: double.maxFinite),
                       ),
                       //if (!loadAnimation)
-                        Center(
-                          child: Container(
-                              height: 275,
-                              width: 275,
-                              padding: EdgeInsets.all(28),
-                              decoration: BoxDecoration(
-                                color: Colors.black,//COLOR_PRIMARY_DARK,
-                                borderRadius: BorderRadius.circular(275),
-                              ),
-                              child: Image.asset(
-                                "images/logo_background_white.png",
-                                color: (!loadAnimation) ? Colors.white.withOpacity(1):Colors.white.withOpacity(0.05),
-                                fit: BoxFit.contain,
-                              )),
-                        ),
+                      Center(
+                        child: Container(
+                            height: 275,
+                            width: 275,
+                            padding: EdgeInsets.all(28),
+                            decoration: BoxDecoration(
+                              color: Colors.black, //COLOR_PRIMARY_DARK,
+                              borderRadius: BorderRadius.circular(275),
+                            ),
+                            child: Image.asset(
+                              "images/logo_background_white.png",
+                              color: (!loadAnimation)
+                                  ? Colors.white.withOpacity(1)
+                                  : Colors.white.withOpacity(0.05),
+                              fit: BoxFit.contain,
+                            )),
+                      ),
                       if (articles.length < 1 && loadAnimation)
                         Center(
                             child: Container(
@@ -464,78 +481,112 @@ class _NewsFeedState extends State<NewsFeed>
                 )),
               if (articleBands.length > 0)
                 Expanded(
-                  child: Builder(
-                    builder: (BuildContext context) {
-                      try {
-                        return CardSwiper(
-                          controller: controller,
-                          cardsCount:
-                              (articleBands.length > 0) ? articleBands.length : 0,
-                          duration: Duration(milliseconds: 200),
-                          maxAngle: 45,
-                          scale: 0.85,
-                          numberOfCardsDisplayed: (articleBands.length > 1)
-                              ? 2
-                              : (articleBands.length < 1)
-                                  ? 0
-                                  : 1,
-                          isVerticalSwipingEnabled: false,
-                          onEnd: () {
-                            print("Ended swipes");
-                            setState(() {
-                              //loadAnimation = true;
-                              //articles.clear();
-                            });
+                  child: Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      Builder(
+                        builder: (BuildContext context) {
+                          try {
+                            return CardSwiper(
+                              controller: controller,
+                              cardsCount: (articleBands.length > 0)
+                                  ? articleBands.length
+                                  : 0,
+                              duration: Duration(milliseconds: 200),
+                              maxAngle: 45,
+                              scale: 0.85,
+                              numberOfCardsDisplayed: (articleBands.length > 1)
+                                  ? 2
+                                  : (articleBands.length < 1)
+                                      ? 0
+                                      : 1,
+                              isVerticalSwipingEnabled: false,
+                              onEnd: () {
+                                print("Ended swipes");
+                                setState(() {
+                                  //loadAnimation = true;
+                                  //articles.clear();
+                                });
 
-                            if (selectedBandID == "For You")
-                              getArticles();
-                            else
-                              getArticlesForBands(selectedBand);
-                          },
-                          threshold: 25,
-                          onSwipe: _onSwipe,
-                          isLoop: false,
-                          onUndo: _onUndo,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: horizontalPadding),
-                          cardBuilder: (context, index) {
-                             print("Index of element $index ${articles.elementAt(index).title}");
-                            try {
-                              if (index >= 0)
-                                return HomeItem(
-                                  bandId: selectedBandID !="For You" ? selectedBandID:null,
-                                  articleBand: articleBands.elementAt(index),
-                                  queryID: queryID,
-                                  isContainerVisible: false,
-                                  openArticle: (article) {
-                                    openArticlePage(article, index);
-                                  },
-                                  updateList: (article) {},
-                                  undo: () {
-                                    // setState(() {
-                                    //   controller = CardSwiperController();
-                                    // });
+                                if (selectedBandID == "For You")
+                                  getArticles();
+                                else
+                                  getArticlesForBands(selectedBand);
+                              },
+                              threshold: 25,
+                              onSwipe: _onSwipe,
+                              isLoop: false,
+                              onUndo: _onUndo,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: horizontalPadding),
+                              cardBuilder: (context, index) {
+                                print(
+                                    "Index of element $index ${articles.elementAt(index).title}");
+                                try {
+                                  if (index >= 0)
+                                    return HomeItem(
+                                      bandId: selectedBandID != "For You"
+                                          ? selectedBandID
+                                          : null,
+                                      articleBand:
+                                          articleBands.elementAt(index),
+                                      queryID: queryID,
+                                      isContainerVisible: false,
+                                      openArticle: (article) {
+                                        openArticlePage(article, index);
+                                      },
+                                      updateList: (article) {},
+                                      undo: () {
+                                        // setState(() {
+                                        //   controller = CardSwiperController();
+                                        // });
 
-                                    controller?.undo();
-                                  },
-                                  onRefresh: () {
-                                    return _refreshData();
-                                  }, index: index,
-                                  joinDrumm: (articleBand) { startDrumming(articleBand); },
-                                );
-                              else
-                                return Container();
-                            } catch (e) {
-                              print(
-                                  "//////////////////////////ERROR/////////////////////");
-                              return Container();
-                            }
+                                        controller?.undo();
+                                      },
+                                      onRefresh: () {
+                                        return _refreshData();
+                                      },
+                                      index: index,
+                                      joinDrumm: (articleBand) {
+                                        startDrumming(articleBand);
+                                      },
+                                    );
+                                  else
+                                    return Container();
+                                } catch (e) {
+                                  print(
+                                      "//////////////////////////ERROR/////////////////////");
+                                  return Container();
+                                }
+                              },
+                            );
+                          } catch (e) {
+                            return Container();
+                          }
+                        },
+                      ),
+                      if (newArticlesAvailable)
+                        GestureDetector(
+                          onTap: (){
+                            loadFreshArticles();
                           },
-                        );
-                      } catch (e) {
-                        return Container();
-                      }
-                    },
+                          child: Container(
+                            width: 200,
+                            height: 36,
+                            alignment: Alignment.topCenter,
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade900,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: Colors.white38),
+                            ),
+                            child: Text(
+                              "News articles available",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               SizedBox(
@@ -563,7 +614,7 @@ class _NewsFeedState extends State<NewsFeed>
     //getNews();
   }
 
-  startDrumming(ArticleBand articleBand){
+  startDrumming(ArticleBand articleBand) {
     if (ConnectToChannel.channelID == null ||
         ConnectToChannel.channelID == "") {
       Vibrate.feedback(FeedbackType.heavy);
@@ -634,6 +685,7 @@ class _NewsFeedState extends State<NewsFeed>
   @override
   void dispose() {
     if (controller != null) controller?.dispose();
+    WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
   }
 
@@ -642,8 +694,10 @@ class _NewsFeedState extends State<NewsFeed>
     // TODO: implement initState
     loadingAnimation = LOADING_ASSET;
     controller = CardSwiperController();
+    WidgetsBinding.instance?.addObserver(this);
     super.initState();
-    ConnectToChannel.insights.userToken = FirebaseAuth.instance.currentUser?.uid??"";
+    ConnectToChannel.insights.userToken =
+        FirebaseAuth.instance.currentUser?.uid ?? "";
     _lastRefreshTime = DateTime.now();
     _checkAndScheduleRefresh();
     FirebaseDBOperations.lastDocument = null;
@@ -652,6 +706,85 @@ class _NewsFeedState extends State<NewsFeed>
     checkLiveDrumms();
     getNotifications();
     requestPermissions();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print("App state: ${state}");
+    if (state == AppLifecycleState.resumed) {
+      //do your stuff
+      print("Fetching latest news");
+      fetchFreshArticles();
+    }
+  }
+
+  void fetchFreshArticles() async {
+    freshArticles =
+        await FirebaseDBOperations.getArticlesFromAlgolia();
+
+    freshArticleFetched = freshArticles?.articles ?? [];
+
+    if (freshArticleFetched.length < 1) {
+      setState(() {
+        noArticlesPresent = true;
+        loadingAnimation = NO_FOUND_ASSET;
+        loadAnimation = true;
+      });
+    } else {
+      for (Article article in freshArticleFetched) {
+        for (Band band in bandList) {
+          List hooks = band.hooks ?? [];
+          if (hooks.contains(article.category)) {
+            ArticleBand articleBand = ArticleBand(article: article, band: band);
+            fetchedArticleBand.add(articleBand);
+            break;
+          }
+        }
+      }
+
+      if (articleTop !=
+          fetchedArticleBand.elementAt(0).article?.articleId) {
+
+
+        print("New articles available\nOld Article: ${articleTop}"
+            "\nNew Article: ${fetchedArticleBand.elementAt(0).article?.articleId}");
+        setState(() {
+          newArticlesAvailable = true;
+        });
+      } else {
+       // print("No news articles");
+        print("No news articles\nOld Article: ${articleTop}"
+            "\nNew Article: ${fetchedArticleBand.elementAt(0).article?.articleId}");
+        setState(() {
+          newArticlesAvailable = false;
+        });
+      }
+
+      // setState(() {
+      //   noArticlesPresent = false;
+      //   loadAnimation = false;
+      //   queryID = algoliaArticles?.queryID;
+      //   loadingAnimation = LOADING_ASSET;
+      //   articles = articleFetched;
+      //   articleBands = fetchedArticleBand;
+      //   print("Article length ${articles.length}");
+      // });
+    }
+  }
+
+  void loadFreshArticles() async {
+
+    setState(() {
+         noArticlesPresent = false;
+         loadAnimation = false;
+         queryID = freshArticles?.queryID;
+         loadingAnimation = LOADING_ASSET;
+         articles = freshArticleFetched;
+         articleBands = fetchedArticleBand;
+         newArticlesAvailable = false;
+      //   print("Article length ${articles.length}");
+       });
+
   }
 
   void getNotifications() async {
@@ -670,8 +803,8 @@ class _NewsFeedState extends State<NewsFeed>
   void getBandsCards() async {
     mulList.clear();
     bandList = await FirebaseDBOperations.getBandByUser();
-    for(Band band in bandList){
-      bandMap.putIfAbsent(band.bandId??"", () => band);
+    for (Band band in bandList) {
+      bandMap.putIfAbsent(band.bandId ?? "", () => band);
     }
     getArticles();
     Band allBands = Band();
@@ -844,8 +977,8 @@ class _NewsFeedState extends State<NewsFeed>
     });
     controller = CardSwiperController();
     algoliaArticles = await FirebaseDBOperations.getArticlesFromAlgolia();
-    List<Article> articleFetched =
-        algoliaArticles?.articles??[];//await FirebaseDBOperations.getArticlesByBands();
+    List<Article> articleFetched = algoliaArticles?.articles ??
+        []; //await FirebaseDBOperations.getArticlesByBands();
     if (articleFetched.length < 1) {
       setState(() {
         noArticlesPresent = true;
@@ -854,18 +987,16 @@ class _NewsFeedState extends State<NewsFeed>
       });
     } else {
       List<ArticleBand> fetchedArticleBand = [];
-      for(Article article in articleFetched) {
+      for (Article article in articleFetched) {
         for (Band band in bandList) {
-          List hooks = band.hooks??[];
-          if (hooks.contains(article.category)){
-            ArticleBand articleBand = ArticleBand(article: article,band:band);
+          List hooks = band.hooks ?? [];
+          if (hooks.contains(article.category)) {
+            ArticleBand articleBand = ArticleBand(article: article, band: band);
             fetchedArticleBand.add(articleBand);
             break;
           }
         }
       }
-
-
 
       setState(() {
         noArticlesPresent = false;
@@ -874,6 +1005,9 @@ class _NewsFeedState extends State<NewsFeed>
         loadingAnimation = LOADING_ASSET;
         articles = articleFetched;
         articleBands = fetchedArticleBand;
+        if(articleTop == "") {
+          articleTop = articleBands.elementAt(0).article?.articleId??"";
+        }
         print("Article length ${articles.length}");
       });
     }
@@ -885,9 +1019,11 @@ class _NewsFeedState extends State<NewsFeed>
       articleBands.clear();
     });
     controller = CardSwiperController();
-    algoliaArticles = await FirebaseDBOperations.getArticlesByBandHookFromAlgolia(selectedBand);
-    List<Article> articleFetched =
-        algoliaArticles?.articles??[];//await FirebaseDBOperations.getArticlesByBands();
+    algoliaArticles =
+        await FirebaseDBOperations.getArticlesByBandHookFromAlgolia(
+            selectedBand);
+    List<Article> articleFetched = algoliaArticles?.articles ??
+        []; //await FirebaseDBOperations.getArticlesByBands();
 
     List<ArticleBand> fetchedArticleBand = [];
 
@@ -898,12 +1034,11 @@ class _NewsFeedState extends State<NewsFeed>
         loadAnimation = true;
       });
     } else {
-      for(Article article in articleFetched){
-        ArticleBand articleBand = ArticleBand(article: article,band:selectedBand);
+      for (Article article in articleFetched) {
+        ArticleBand articleBand =
+            ArticleBand(article: article, band: selectedBand);
         fetchedArticleBand.add(articleBand);
       }
-
-
 
       setState(() {
         noArticlesPresent = false;
@@ -923,6 +1058,9 @@ class _NewsFeedState extends State<NewsFeed>
     CardSwiperDirection direction,
   ) {
     cleanCache();
+
+    articleTop = articleBands.elementAt(currentIndex??0).article?.articleId??"";
+
     if (direction == CardSwiperDirection.left) {
       Vibrate.feedback(FeedbackType.selection);
       try {
@@ -964,7 +1102,8 @@ class _NewsFeedState extends State<NewsFeed>
                         onTap: () {
                           Navigator.pop(context);
                           try {
-                            joinOpenDrumm(articleBands.elementAt(previousIndex));
+                            joinOpenDrumm(
+                                articleBands.elementAt(previousIndex));
                           } catch (e) {}
                         },
                         child: Text(
@@ -1022,11 +1161,10 @@ class _NewsFeedState extends State<NewsFeed>
     });
     controller = CardSwiperController();
     List<Article> fetchcedArticle =
-        await FirebaseDBOperations.getArticlesByBandID(bandSelected.hooks??[]);
+        await FirebaseDBOperations.getArticlesByBandID(
+            bandSelected.hooks ?? []);
 
     List<ArticleBand> fetchedArticleBand = [];
-
-
 
     if (fetchcedArticle.length < 1) {
       setState(() {
@@ -1035,8 +1173,9 @@ class _NewsFeedState extends State<NewsFeed>
         loadAnimation = true;
       });
     } else {
-      for(Article article in fetchcedArticle){
-        ArticleBand articleBand = ArticleBand(article: article,band:bandSelected);
+      for (Article article in fetchcedArticle) {
+        ArticleBand articleBand =
+            ArticleBand(article: article, band: bandSelected);
         fetchedArticleBand.add(articleBand);
       }
       setState(() {
@@ -1111,7 +1250,7 @@ class _NewsFeedState extends State<NewsFeed>
   void requestPermissions() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     NotificationSettings notificationSettings =
-    await messaging.requestPermission();
+        await messaging.requestPermission();
     print(notificationSettings.authorizationStatus);
   }
 
@@ -1160,4 +1299,5 @@ class _NewsFeedState extends State<NewsFeed>
     });
     await prefs.setBool('isTutorialDone', true);
   }
+
 }

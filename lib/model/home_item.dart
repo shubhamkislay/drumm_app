@@ -221,8 +221,8 @@ class _HomeItemState extends State<HomeItem> {
                                     textAlign: TextAlign.start,
                                     style: const TextStyle(
                                         color: Colors.white,
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.normal),
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ],
@@ -239,7 +239,7 @@ class _HomeItemState extends State<HomeItem> {
                                       : "",
                               textAlign: TextAlign.left,
                               style: const TextStyle(
-                                  fontSize: 14, color: Colors.white38),
+                                  fontSize: 14, color: Colors.white70),
                               expandText: 'See more',
                               collapseText: 'Hide',
                               maxLines: 1,
@@ -320,18 +320,30 @@ class _HomeItemState extends State<HomeItem> {
                       ),
                     ),
                     const SizedBox(
-                      height: 16,
+                      height: 4,
                     ),
 
                    if( widget.articleBand.article?.question!=null) Container(
                       width: double.maxFinite,
                       padding: EdgeInsets.all(8),
-                      margin: EdgeInsets.symmetric(horizontal: 12),
+                      margin: EdgeInsets.symmetric(horizontal: 0),
                       alignment: Alignment.centerLeft,
                       decoration: BoxDecoration(
-                          color: COLOR_PRIMARY_DARK,//Colors.grey.shade900.withOpacity(0.75),
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(color:  Colors.grey.shade900.withOpacity(0.5),width: 2)),
+                          //color: COLOR_PRIMARY_DARK,//Colors.grey.shade900.withOpacity(0.75),
+                          borderRadius: BorderRadius.circular(0),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.blue,
+                              Colors.grey.shade900,
+                             //Colors.transparent
+                             // COLOR_PRIMARY_DARK,
+
+                            ]
+                          ),
+                         // border: Border.all(color:  Colors.grey.shade900.withOpacity(0.0),width: 2),
+                      ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -356,7 +368,7 @@ class _HomeItemState extends State<HomeItem> {
                                 child: Container(
                                   alignment: Alignment.center,
                                   padding: EdgeInsets.all(12),
-                                  child: Lottie.asset('images/wave_drumm.json',height: iconHeight,fit:BoxFit.contain),
+                                  child: Lottie.asset('images/wave_drumm.json',height: iconHeight+24,fit:BoxFit.contain),
                                 ),
                               ),
                               const SizedBox(
@@ -369,7 +381,7 @@ class _HomeItemState extends State<HomeItem> {
                                     widget.joinDrumm(widget.articleBand);
                                   },
                                   child: Padding(
-                                    padding: const EdgeInsets.all(2.0),
+                                    padding: const EdgeInsets.all(8.0),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -378,10 +390,11 @@ class _HomeItemState extends State<HomeItem> {
                                           textAlign: TextAlign.start,
                                           style: const TextStyle(
                                               color: Colors.white,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.normal),
+                                              fontSize: 14,
+                                              fontFamily: "alata",
+                                              fontWeight: FontWeight.bold),
                                         ),
-                                        SizedBox(height: 4,),
+                                        SizedBox(height: 12,),
                                         Container(
                                           width: double.infinity,
                                           alignment: Alignment.centerLeft,
@@ -392,7 +405,7 @@ class _HomeItemState extends State<HomeItem> {
                                           child: Text("Generated by Drumm AI",
                                             textAlign: TextAlign.start,
                                             style: const TextStyle(
-                                                color: Colors.white38,
+                                                color: Colors.white70,
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.normal),
                                           ),
@@ -410,7 +423,7 @@ class _HomeItemState extends State<HomeItem> {
                       ),
                     ),
                     const SizedBox(
-                      height: 32,
+                      height: 24,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
