@@ -1,5 +1,6 @@
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -220,6 +221,7 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                     jam.imageUrl=widget.article?.imageUrl;
                     jam.question = widget.article?.question;
                     jam.count=0;
+                    jam.lastActive = Timestamp.now();
                     jam.membersID = [];
                     //FirebaseDBOperations.createOpenDrumm(jam);
                     FirebaseDBOperations.addMemberToJam

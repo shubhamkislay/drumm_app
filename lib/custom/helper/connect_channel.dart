@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:algolia_insights/algolia_insights.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
@@ -48,6 +50,7 @@ class ConnectToChannel {
   static bool openJam = false;
 
   static late RtcEngineEventHandler rtcEngineEventHandler;
+  static Timer? _updateLastActiveTimer;
 
   static void setChannelID(String id) {
     channelID = id;
@@ -60,6 +63,7 @@ class ConnectToChannel {
     jam.title = article.title;
     jam.bandId = article.category;
     jam.jamId = article.articleId;
+    jam.lastActive = Timestamp.now();
     jam.articleId = article.articleId;
     jam.startedBy = article.source;
     jam.imageUrl = article.imageUrl;
@@ -105,6 +109,7 @@ class ConnectToChannel {
       print("Error unregisterEventHandler rtcEngineEventHandler");
     }
     jam = _jam;
+
     initializeEngine(_jam.jamId, (joined, id) {
       joinCallback(joined, id);
     }, (val) {
@@ -190,12 +195,25 @@ class ConnectToChannel {
           print("Local user uid:${connection.localUid} joined the channel");
 
           _isJoined = true;
+          // Start the timer to call updateLastActive every 10 seconds
+
           // FirebaseDBOperations.addMemberToJam(jam?.jamId ?? "",
           //     FirebaseAuth.instance.currentUser?.uid ?? "", openJam);
           ConnectionListener.updateConnectionDetails(
               _isJoined, ConnectToChannel.jam, openJam);
           joinCallback(_isJoined, connection.localUid ?? uid);
         }
+        _updateLastActiveTimer = Timer.periodic(Duration(seconds: 10), (timer) {
+          if (_isJoined) {
+            FirebaseDBOperations.updateLastActive(_channelID!); // Call the updateLastActive function
+          }
+        });
+
+        // Call the updateLastActive function immediately after joining
+        if (_isJoined) {
+          FirebaseDBOperations.updateLastActive(_channelID!);
+        }
+
       },
       onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
         userJoined(remoteUid);
@@ -230,6 +248,7 @@ class ConnectToChannel {
           // FirebaseDBOperations.removeMemberFromJam(jam?.jamId ?? "",
           //     FirebaseAuth.instance.currentUser?.uid ?? "", openJam);
         }
+        _updateLastActiveTimer?.cancel();
         try {
           FirebaseDBOperations.stopListening();
         } catch (e) {
@@ -263,6 +282,7 @@ class ConnectToChannel {
               speaking = true;
             }
             FirebaseDBOperations.updateDrummerSpeaking(speaking);
+            FirebaseDBOperations.updateLastActive(_channelID!);
           } else {
             FirebaseDBOperations.updateDrummerSpeaking(false);
           }

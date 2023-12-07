@@ -379,6 +379,23 @@ class FirebaseDBOperations {
     return filterList;
   }
 
+
+  static bool isTimestampWithin1Minute(Timestamp firebaseTimestamp) {
+    // Get the current timestamp
+    Timestamp currentTimestamp = Timestamp.now();
+
+    // Calculate the difference in milliseconds
+    int differenceMilliseconds = currentTimestamp.millisecondsSinceEpoch -
+        firebaseTimestamp.millisecondsSinceEpoch;
+
+    // Check if the difference is greater than 2 minutes (120,000 milliseconds)
+    if (differenceMilliseconds > 60000) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   static Future<List<Jam>> getDrummsFromBands() async {
     print("getDrummsFromBands triggered");
 
@@ -423,7 +440,10 @@ class FirebaseDBOperations {
     for (Band band in bandsList) {
       bandIDList.add(band.bandId ?? "");
     }
-    if (bandIDList.isEmpty) return [];
+    if (bandIDList.isEmpty) {
+      print("BandIDList is empty");
+      return [];
+    }
     var data = await FirebaseFirestore.instance
         .collection('openDrumm')
         .where('bandId', whereIn: bandIDList)
@@ -441,8 +461,36 @@ class FirebaseDBOperations {
     //   }
     // }
 
-    return List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+    List<Jam> fetchedJams = List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+    List<Jam> filteredJams = [];
+    for(Jam liveJam in fetchedJams){
+      if(isTimestampWithin1Minute(liveJam.lastActive??Timestamp.now())) {
+        filteredJams.add(liveJam);
+      }
+    }
+    return filteredJams;
   }
+
+  // Function to update the "lastActive" field of a document in the "bands" collection
+  static Future<void> updateLastActive(String bandId) async {
+    try {
+      final CollectionReference bandsCollection =
+      FirebaseFirestore.instance.collection('openDrumm');
+
+      // Get the current timestamp
+      final Timestamp currentTime = Timestamp.now();
+
+      // Update the document with the new "lastActive" timestamp
+      await bandsCollection.doc(bandId).update({
+        'lastActive': currentTime,
+      });
+
+      print('Document updated successfully');
+    } catch (error) {
+      print('Error updating document: $error');
+    }
+  }
+
 
   static Future<List<Jam>> getJamsFromArticle(String articleId) async {
     print("getJamsFromArticle triggered");
@@ -1013,7 +1061,7 @@ class FirebaseDBOperations {
     List<String> list = List.from(bandsData.docs.map((e) {
       return (e.data() as Map)!["bandId"].toString();
     }));
-    print(list.toString());
+    print("The user bands are ${list.toString()}");
 
     CollectionReference bandsCollectionRef =
         FirebaseFirestore.instance.collection("bands");
@@ -1022,12 +1070,21 @@ class FirebaseDBOperations {
 
     // Construct the query
     print("getBandByUser triggered");
-    if (list.isEmpty) return [];
-    var data = await bandsCollectionRef.where("bandId", whereIn: list).get();
-    print(data.docs.toString());
+    if (list.isEmpty){
+      print("bandsData list is null");
+      return [];
+    }
+    try {
+      var data = await bandsCollectionRef.where("bandId", whereIn: list).get();
+      print("Band fetched result ${data}");
+      print(data.docs.toString());
 
-    // Execute the query
-    return List.from(data.docs.map((e) => Band.fromSnapshot(e)));
+      // Execute the query
+      return List.from(data.docs.map((e) => Band.fromSnapshot(e)));
+    }catch(e){
+      print("Unable to fetch bands because ${e.toString()}");
+      return [];
+    }
   }
 
   static Future<List<Article>> getArticlesByBands() async {

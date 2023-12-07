@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class Jam {
@@ -11,6 +12,7 @@ class Jam {
   String? creationTime;
   String? imageUrl;
   String? question;
+  Timestamp? lastActive;
   List<dynamic>? membersID;
 
   Jam();
@@ -27,6 +29,7 @@ class Jam {
     'membersID': membersID,
     'broadcast': broadcast,
     'imageUrl':imageUrl,
+    'lastActive':lastActive,
   };
 
   Jam.fromJson(Map<String, dynamic> json)
@@ -40,6 +43,7 @@ class Jam {
         articleId = json['articleId'],
         title = json['title'],
         imageUrl = json['imageUrl'],
+        lastActive = json['lastActive'],
         membersID = List<dynamic>.from(json['membersID']);
 
   factory Jam.fromRealtimeSnapshot(DataSnapshot snapshot) {
@@ -58,6 +62,7 @@ class Jam {
         membersID = snapshot.data()['membersID'],
         articleId = snapshot.data()['articleId'],
         imageUrl = snapshot.data()['imageUrl'],
+        lastActive = snapshot.data()['lastActive'],
         jamId = snapshot.data()['jamId'];
 
   Jam.fromDataSnapshot(snapshot)
@@ -70,6 +75,7 @@ class Jam {
         broadcast = snapshot['broadcast'],
         membersID = snapshot['membersID'],
         imageUrl = snapshot['imageUrl'],
+        lastActive = snapshot['lastActive'],
         jamId = snapshot['jamId'];
 
   Jam.fromDocListenSnapshot(snapshot)
@@ -82,5 +88,6 @@ class Jam {
         broadcast = snapshot.get('broadcast'),
         membersID = snapshot.get('membersID'),
         imageUrl = snapshot.get('imageUrl'),
+        lastActive = snapshot.get('lastActive'),
         jamId = snapshot.get('jamId');
 }

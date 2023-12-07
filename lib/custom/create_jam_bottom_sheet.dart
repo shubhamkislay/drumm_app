@@ -49,6 +49,7 @@ class _CreateJamState extends State<CreateJam> {
     jam.articleId = this.widget.articleId;
     jam.imageUrl = this.widget.imageUrl;
     jam.title = widget.title == null ? null : '${widget.title}';
+    jam.lastActive = Timestamp.now();
     //jam.bandId = this.widget.bandId;
     jam.count = 0;
     jam.startedBy = FirebaseAuth.instance.currentUser?.uid;
@@ -215,6 +216,7 @@ class _CreateJamState extends State<CreateJam> {
                             print("Jam Finale Title:    ${jamTitle}");
                             Jam createJam = Jam();
                             createJam.title = jamTitle;
+                            createJam.lastActive = Timestamp.now();
                             createJam.broadcast = jam.broadcast;
                             createJam.startedBy = jam.startedBy;
                             String url = jam.imageUrl??"";

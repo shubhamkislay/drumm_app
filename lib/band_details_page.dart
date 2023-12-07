@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/custom/helper/image_uploader.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -398,6 +399,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                         jam.bandId = widget.band?.bandId;
                         jam.jamId = widget.band?.bandId;
                         jam.articleId = widget.band?.bandId;
+                        jam.lastActive = Timestamp.now();
                         jam.startedBy = "";
                         jam.imageUrl = widget.band?.url;
                         jam.count = 0;

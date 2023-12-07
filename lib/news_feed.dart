@@ -92,7 +92,7 @@ class _NewsFeedState extends State<NewsFeed>
 
   AlgoliaArticles? algoliaArticles;
   AlgoliaArticles? freshArticles;
-  List<Article> freshArticleFetched =[];
+  List<Article> freshArticleFetched = [];
   List<ArticleBand> fetchedArticleBand = [];
 
   HashMap<String, Band> bandMap = HashMap();
@@ -101,6 +101,8 @@ class _NewsFeedState extends State<NewsFeed>
   String articleTop = "";
 
   bool newArticlesAvailable = false;
+
+  double multiSelectRadius = 10;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -319,15 +321,15 @@ class _NewsFeedState extends State<NewsFeed>
                                   borderRadius: BorderRadius.circular(24),
                                   gradient: (liveDrummsExist)
                                       ? LinearGradient(colors: [
-                                          Colors.white,
-                                          Colors.grey,
+                                          Colors.blue,
+                                          Colors.blueAccent,
                                         ])
                                       : LinearGradient(colors: [
-                                          Colors.grey.shade900,
-                                          Colors.grey.shade900,
+                                          Colors.grey.shade700,
+                                          Colors.grey.shade700,
                                         ])),
                               child: Container(
-                                padding: EdgeInsets.all(4),
+                                padding: EdgeInsets.all(3),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(24),
                                   color: Colors.black,
@@ -336,11 +338,10 @@ class _NewsFeedState extends State<NewsFeed>
                                 //   Icons.data_saver_off_rounded,
                                 //   size: iconSize - 4,
                                 // ),
-                                child: Image.asset(
-                                  "images/drumm_logo.png",
-                                  height: 18,
+                                child: Lottie.asset(
+                                  'images/wave_drumm.json',
+                                  height: 20,
                                   fit: BoxFit.contain,
-                                  color: Colors.white,
                                 ),
                               ),
                             ), // data_saver_off_rounded Image.asset("images/hotspot.png",height: 24,fit: BoxFit.contain,color: Colors.white,))),
@@ -567,8 +568,9 @@ class _NewsFeedState extends State<NewsFeed>
                       ),
                       if (newArticlesAvailable)
                         GestureDetector(
-                          onTap: (){
+                          onTap: () {
                             loadFreshArticles();
+                            //getArticles();
                           },
                           child: Container(
                             width: 200,
@@ -719,8 +721,7 @@ class _NewsFeedState extends State<NewsFeed>
   }
 
   void fetchFreshArticles() async {
-    freshArticles =
-        await FirebaseDBOperations.getArticlesFromAlgolia();
+    freshArticles = await FirebaseDBOperations.getArticlesFromAlgolia();
 
     freshArticleFetched = freshArticles?.articles ?? [];
 
@@ -742,17 +743,14 @@ class _NewsFeedState extends State<NewsFeed>
         }
       }
 
-      if (articleTop !=
-          fetchedArticleBand.elementAt(0).article?.articleId) {
-
-
+      if (articleTop != fetchedArticleBand.elementAt(0).article?.articleId) {
         print("New articles available\nOld Article: ${articleTop}"
             "\nNew Article: ${fetchedArticleBand.elementAt(0).article?.articleId}");
         setState(() {
           newArticlesAvailable = true;
         });
       } else {
-       // print("No news articles");
+        // print("No news articles");
         print("No news articles\nOld Article: ${articleTop}"
             "\nNew Article: ${fetchedArticleBand.elementAt(0).article?.articleId}");
         setState(() {
@@ -773,18 +771,28 @@ class _NewsFeedState extends State<NewsFeed>
   }
 
   void loadFreshArticles() async {
-
     setState(() {
-         noArticlesPresent = false;
-         loadAnimation = false;
-         queryID = freshArticles?.queryID;
-         loadingAnimation = LOADING_ASSET;
-         articles = freshArticleFetched;
-         articleBands = fetchedArticleBand;
-         newArticlesAvailable = false;
-      //   print("Article length ${articles.length}");
-       });
+      articles.clear();
+      articleBands.clear();
+    });
 
+    controller = CardSwiperController();
+
+    Future.delayed(
+      Duration(milliseconds: 500),
+      () {
+        setState(() {
+          noArticlesPresent = false;
+          loadAnimation = false;
+          queryID = freshArticles?.queryID;
+          loadingAnimation = LOADING_ASSET;
+          articles = freshArticleFetched;
+          articleBands = fetchedArticleBand;
+          newArticlesAvailable = false;
+          //   print("Article length ${articles.length}");
+        });
+      },
+    );
   }
 
   void getNotifications() async {
@@ -839,7 +847,7 @@ class _NewsFeedState extends State<NewsFeed>
                   height: 28,
                   width: 28,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(13),
+                    borderRadius: BorderRadius.circular(multiSelectRadius),
                     child: CachedNetworkImage(
                       imageUrl: imageUrl,
                       fit: BoxFit.cover,
@@ -915,24 +923,24 @@ class _NewsFeedState extends State<NewsFeed>
             color: COLOR_PRIMARY_DARK, //Colors.grey.shade900,
             border:
                 Border.all(color: Colors.grey.shade900), //Color(0xff2f2f2f)),
-            borderRadius: BorderRadius.circular(18)),
+            borderRadius: BorderRadius.circular(multiSelectRadius)),
         selectedDecoration: BoxDecoration(
             gradient: LinearGradient(colors: [
               Colors.white, //Colors.blue.shade600,
               Colors.white, //Colors.blue.shade800, //Colors.cyan,
             ]),
-            borderRadius: BorderRadius.circular(18)),
+            borderRadius: BorderRadius.circular(multiSelectRadius)),
       ),
       items: bandsCards,
       textStyles: MultiSelectTextStyles(
         selectedTextStyle: TextStyle(
-          color: Colors.black,
-          fontFamily: 'alata',
-        ),
+            color: Colors.black,
+            fontWeight: FontWeight.w700,
+            fontFamily: "alata"),
         textStyle: TextStyle(
-          color: Colors.white,
-          fontFamily: 'alata',
-        ),
+            color: Colors.white,
+            fontWeight: FontWeight.w700,
+            fontFamily: "alata"),
       ),
       onChange: (allSelectedItems, selectedItem) {
         Vibrate.feedback(FeedbackType.selection);
@@ -1005,8 +1013,8 @@ class _NewsFeedState extends State<NewsFeed>
         loadingAnimation = LOADING_ASSET;
         articles = articleFetched;
         articleBands = fetchedArticleBand;
-        if(articleTop == "") {
-          articleTop = articleBands.elementAt(0).article?.articleId??"";
+        if (articleTop == "") {
+          articleTop = articleBands.elementAt(0).article?.articleId ?? "";
         }
         print("Article length ${articles.length}");
       });
@@ -1059,14 +1067,16 @@ class _NewsFeedState extends State<NewsFeed>
   ) {
     cleanCache();
 
-    articleTop = articleBands.elementAt(currentIndex??0).article?.articleId??"";
+    articleTop =
+        articleBands.elementAt(currentIndex ?? 0).article?.articleId ?? "";
+    try {
+      FirebaseDBOperations.updateSeen(
+          articleBands.elementAt(previousIndex).article?.articleId);
+    } catch (e) {}
 
     if (direction == CardSwiperDirection.left) {
       Vibrate.feedback(FeedbackType.selection);
-      try {
-        FirebaseDBOperations.updateSeen(
-            articleBands.elementAt(previousIndex).article?.articleId);
-      } catch (e) {}
+
       return true;
     }
 
@@ -1198,6 +1208,7 @@ class _NewsFeedState extends State<NewsFeed>
     jam.startedBy = aBand.article?.source;
     jam.imageUrl = aBand.article?.imageUrl;
     jam.question = aBand.article?.question;
+    jam.lastActive = Timestamp.now();
     jam.count = 0;
     jam.membersID = [];
     //FirebaseDBOperations.createOpenDrumm(jam);
@@ -1299,5 +1310,4 @@ class _NewsFeedState extends State<NewsFeed>
     });
     await prefs.setBool('isTutorialDone', true);
   }
-
 }
