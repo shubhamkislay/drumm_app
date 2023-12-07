@@ -86,10 +86,10 @@ class _JamImageCardState extends State<JamImageCard> {
               child: Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Wrap(
+                   if(false) Wrap(
                       children: [
                         Container(
                           margin: const EdgeInsets.all(8.0),

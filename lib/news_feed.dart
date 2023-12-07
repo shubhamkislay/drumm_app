@@ -935,12 +935,14 @@ class _NewsFeedState extends State<NewsFeed>
       textStyles: MultiSelectTextStyles(
         selectedTextStyle: TextStyle(
             color: Colors.black,
-            fontWeight: FontWeight.w700,
-            fontFamily: "alata"),
+            fontWeight:FontWeight.bold,// FontWeight.w700,
+            //fontFamily: "alata",
+        ),
         textStyle: TextStyle(
             color: Colors.white,
-            fontWeight: FontWeight.w700,
-            fontFamily: "alata"),
+          fontWeight:FontWeight.bold,// FontWeight.w700,
+            //fontFamily: "alata",
+        ),
       ),
       onChange: (allSelectedItems, selectedItem) {
         Vibrate.feedback(FeedbackType.selection);
@@ -1213,7 +1215,7 @@ class _NewsFeedState extends State<NewsFeed>
     jam.membersID = [];
     //FirebaseDBOperations.createOpenDrumm(jam);
     FirebaseDBOperations.addMemberToJam(
-            jam.jamId ?? "", FirebaseAuth.instance.currentUser?.uid ?? "", true)
+        aBand.article?.jamId ?? "", FirebaseAuth.instance.currentUser?.uid ?? "", true)
         .then((value) {
       print("Added the member ${value}");
       if (!value) {

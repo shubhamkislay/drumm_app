@@ -230,10 +230,11 @@ class LiveDrummsState extends State<LiveDrumms>
       );
     }).toList();
 
-  //  setState(() {
+    setState(() {
       drummCards = drummCards + userDrummCards;
-      getOpenDrumms();
-    //});
+      loaded = true;
+      //getOpenDrumms();
+    });
   }
 
   Future<void> getOpenDrumms() async {

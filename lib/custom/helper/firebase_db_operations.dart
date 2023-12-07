@@ -202,13 +202,13 @@ class FirebaseDBOperations {
   }
 
   static Future<bool> updateCount(String? jamID, int count) async {
-    final DocumentReference jams =
-        FirebaseFirestore.instance.collection("jams").doc(jamID);
+    // final DocumentReference jams =
+    //     FirebaseFirestore.instance.collection("openDrumm").doc(jamID);
 
     final DocumentReference openDrumms =
         FirebaseFirestore.instance.collection("openDrumm").doc(jamID);
 
-    jams.update({'count': count});
+   // jams.update({'count': count});
     openDrumms.update({'count': count});
     return true;
   }
@@ -363,15 +363,15 @@ class FirebaseDBOperations {
     print("getJamsFromBand triggered");
     final uid = FirebaseAuth.instance.currentUser?.uid;
     var data = await FirebaseFirestore.instance
-        .collection('jams')
+        .collection('openDrumm')
         .where('bandId', isEqualTo: bandId)
         .get();
     List<Jam> fetchedList =
         List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
     List<Jam> filterList = [];
     for (Jam jam in fetchedList) {
-      int memLen = jam.membersID?.length ?? 0;
-      if (memLen > 0) {
+     // int memLen = jam.membersID?.length ?? 0;
+      if (isTimestampWithin1Minute(jam.lastActive??Timestamp.now())) {
         filterList.add(jam);
       }
     }
@@ -409,24 +409,22 @@ class FirebaseDBOperations {
     }
     if (bandIDList.isEmpty) return [];
     var data = await FirebaseFirestore.instance
-        .collection('jams')
+        .collection('openDrumm')
         .where('bandId', whereIn: bandIDList)
         .where('broadcast', isEqualTo: false)
-        .where('count', isGreaterThan: 0)
+       // .where('count', isGreaterThan: 0)
         .get();
 
-    // List<Jam> fetchedList =
-    //     List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
-    // List<Jam> filterList = [];
-    // for (Jam jam in fetchedList) {
-    //   int memLen = jam.membersID?.length ?? 0;
-    //   bool isBroadcast = jam.broadcast ?? false;
-    //   if (memLen > 0 && !isBroadcast) {
-    //     filterList.add(jam);
-    //   }
-    // }
+    List<Jam> fetchedList =
+        List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+    List<Jam> filterList = [];
+    for (Jam jam in fetchedList) {
+      if (isTimestampWithin1Minute(jam.lastActive??Timestamp.now())) {
+        filterList.add(jam);
+      }
+    }
 
-    return List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+    return filterList;
   }
 
   static Future<List<Jam>> getOpenDrummsFromBands() async {
@@ -496,36 +494,38 @@ class FirebaseDBOperations {
     print("getJamsFromArticle triggered");
     final uid = FirebaseAuth.instance.currentUser?.uid;
     var data = await FirebaseFirestore.instance
-        .collection('jams')
+        .collection('openDrumm')
         .where('articleId', isEqualTo: articleId)
         .get();
 
     List<Jam> fetchedList =
         List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
 
-    var opendata = await FirebaseFirestore.instance
-        .collection('openDrumm')
-        .where('articleId', isEqualTo: articleId)
-        .get();
 
-    fetchedList =
-        fetchedList + List.from(opendata.docs.map((e) => Jam.fromSnapshot(e)));
-    // List<Jam> filterList = [];
-    // for (Jam jam in fetchedList) {
-    //   int memLen = jam.membersID?.length ?? 0;
-    //   if (memLen > 0) {
-    //     filterList.add(jam);
-    //   }
-    // }
+
+    // var opendata = await FirebaseFirestore.instance
+    //     .collection('openDrumm')
+    //     .where('articleId', isEqualTo: articleId)
+    //     .get();
+    //
+    // fetchedList =
+    //     fetchedList + List.from(opendata.docs.map((e) => Jam.fromSnapshot(e)));
+    List<Jam> filterList = [];
+    for (Jam jam in fetchedList) {
+      //int memLen = jam.membersID?.length ?? 0;
+      if (isTimestampWithin1Minute(jam.lastActive??Timestamp.now())) {
+        filterList.add(jam);
+      }
+    }
     print("fetchedList size: ${fetchedList.length}");
 
-    return fetchedList;
+    return filterList;
   }
 
   static Future<List<Jam>> getBroadcastJams() async {
     print("getBroadcastJams triggered");
     var data = await FirebaseFirestore.instance
-        .collection('jams')
+        .collection('openDrumm')
         .where('broadcast', isEqualTo: true)
         .get();
 
@@ -924,6 +924,8 @@ class FirebaseDBOperations {
         ? "${drummer.username} is drumming..."
         : "${drummer.username} is drumming...";
     if (ring) type = "data";
+    //Due to conversion error, setting the timestamo for lastActive as null
+    jam.lastActive = null;
     final body = jsonEncode({
       "to": "${toParams}",
       //if (!ring)
@@ -935,7 +937,7 @@ class FirebaseDBOperations {
       "priority": "high",
       "content_available": true,
       "mutable_content": true,
-      "data": {"jam": jam, "ring": ring, "drummerID": uid, "open": open}
+      "data": {"jam": jam, "ring": ring, "drummerID": uid, "open": true}
     });
     var response = await http.post(url, headers: header, body: body);
 
@@ -1234,7 +1236,7 @@ class FirebaseDBOperations {
     if (open)
       path = "openDrumm";
     else
-      path = "jams";
+      path = "openDrumm";
 
     CollectionReference jamCollection =
         FirebaseFirestore.instance.collection(path);
@@ -1262,7 +1264,7 @@ class FirebaseDBOperations {
 
   static void createJamData(Jam jam) {
     CollectionReference jamCollection =
-        FirebaseFirestore.instance.collection('jams');
+        FirebaseFirestore.instance.collection('openDrumm');
     jamCollection.doc(jam.jamId ?? "").set(jam.toJson()).then((_) {
       print('Jam data stored successfully in Realtime Database and Firestore.');
     }).catchError((error) {
@@ -1292,9 +1294,9 @@ class FirebaseDBOperations {
 
   static void addMemberToRoom(String jamId, String memberId) async {
     DocumentReference memberRef =
-        FirebaseFirestore.instance.collection("jams").doc(jamId);
+        FirebaseFirestore.instance.collection("openDrumm").doc(jamId);
 
-    final sfDocRef = FirebaseFirestore.instance.collection("jams").doc(jamId);
+    final sfDocRef = FirebaseFirestore.instance.collection("openDrumm").doc(jamId);
     FirebaseFirestore.instance.runTransaction((transaction) async {
       final snapshot = await transaction.get(memberRef);
       // Note: this could be done without a transaction
@@ -1321,7 +1323,7 @@ class FirebaseDBOperations {
       if (open)
         path = "openDrumm";
       else
-        path = "jams";
+        path = "openDrumm";
       DocumentReference memberRef =
           FirebaseFirestore.instance.collection(path).doc(jamId);
 
@@ -1339,7 +1341,7 @@ class FirebaseDBOperations {
 
     return result;
 
-    // final sfDocRef = FirebaseFirestore.instance.collection("jams").doc(jamId);
+    // final sfDocRef = FirebaseFirestore.instance.collection("openDrumm").doc(jamId);
     // FirebaseFirestore.instance.runTransaction((transaction) async {
     //   final snapshot = await transaction.get(memberRef);
     //   // Note: this could be done without a transaction
@@ -1366,7 +1368,7 @@ class FirebaseDBOperations {
       if (open)
         path = "openDrumm";
       else
-        path = "jams";
+        path = "openDrumm";
       try {
         DocumentReference memberRef =
             FirebaseFirestore.instance.collection(path).doc(jamId);
@@ -1386,9 +1388,9 @@ class FirebaseDBOperations {
 
   static void removeMemberFromRoom(String jamId, String memberId) async {
     DocumentReference memberRef =
-        FirebaseFirestore.instance.collection("jams").doc(jamId);
+        FirebaseFirestore.instance.collection("openDrumm").doc(jamId);
 
-    final sfDocRef = FirebaseFirestore.instance.collection("jams").doc(jamId);
+    final sfDocRef = FirebaseFirestore.instance.collection("openDrumm").doc(jamId);
     FirebaseFirestore.instance.runTransaction((transaction) async {
       final snapshot = await transaction.get(memberRef);
       // Note: this could be done without a transaction

@@ -192,7 +192,21 @@ flutter:
     - family: monoton
       fonts:
         - asset: fonts/Monoton-Regular.ttf
-
+    - family: newsreaderbold
+      fonts:
+        - asset: fonts/Newsreader_9pt-Bold.ttf
+    - family: newsreaderextrabold
+      fonts:
+        - asset: fonts/Newsreader_9pt-ExtraBold.ttf
+    - family: newsreadermedium
+      fonts:
+        - asset: fonts/Newsreader_9pt-Medium.ttf
+    - family: newsreaderregular
+      fonts:
+        - asset: fonts/Newsreader_9pt-Regular.ttf
+    - family: newsreaderlight
+      fonts:
+        - asset: fonts/Newsreader_14pt-Light.ttf
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

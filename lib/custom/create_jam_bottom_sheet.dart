@@ -40,7 +40,7 @@ class _CreateJamState extends State<CreateJam> {
   @override
   Widget build(BuildContext context) {
     DocumentReference jamRef =
-        FirebaseFirestore.instance.collection("jams").doc();
+        FirebaseFirestore.instance.collection("openDrumm").doc();
     String pushId = jamRef.id;
     print("pushId is $pushId");
 
@@ -231,7 +231,7 @@ class _CreateJamState extends State<CreateJam> {
                             print("createJam ${createJam.jamId}");
 
                             FirebaseDBOperations.createJamData(createJam);
-                            FirebaseDBOperations.sendNotificationToTopic(createJam,false,false);
+                            FirebaseDBOperations.sendNotificationToTopic(createJam,false,true);
                             Navigator.pop(context);
                             showModalBottomSheet(
                               context: context,
