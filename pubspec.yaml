@@ -186,6 +186,7 @@ flutter:
     - images/wave_blue.json
     - images/google-earth.png
     - images/undo.png
+    - images/globe_anim.json
   #   - images/a_dot_ham.jpeg
 
   fonts:

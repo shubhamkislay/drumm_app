@@ -108,7 +108,7 @@ class _NewsFeedState extends State<NewsFeed>
 
   bool likedArticle = false;
   double fontSize = 10;
-  Color iconBGColor = Colors.grey.shade900;//.withOpacity(0.95); //COLOR_PRIMARY_DARK;
+  Color iconBGColor = Colors.white;//Colors.grey.shade900;//.withOpacity(0.95); //COLOR_PRIMARY_DARK;
   double iconHeight = 58;
   double sizedBoxedHeight = 12;
   double curve = 20;
@@ -507,7 +507,7 @@ class _NewsFeedState extends State<NewsFeed>
                                     : 0,
                                 duration: Duration(milliseconds: 200),
                                 maxAngle: 45,
-                                scale: 0.85,
+                                scale: 0.5,
                                 numberOfCardsDisplayed: (articleBands.length > 1)
                                     ? 2
                                     : (articleBands.length < 1)
@@ -603,18 +603,36 @@ class _NewsFeedState extends State<NewsFeed>
                             SizedBox(
                               width: 4,
                             ),
-                            RoundedButton(
-                              padding: 16,
-                              height: iconHeight+8,
-                              shadowColor: Colors.grey.shade800.withOpacity(0.75),
-                              color:  Colors.white,
-                              bgColor: Colors.red,
-                              hoverColor: Colors.blue,
-                              onPressed: () {
+                            GestureDetector(
+                              onTap: (){
                                 Vibrate.feedback(FeedbackType.selection);
                                 controller?.swipeLeft();
                               },
-                              assetPath:  'images/google-earth.png',
+                              child: Container(
+                                padding: EdgeInsets.all(0),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(36),
+                                    boxShadow: [
+                                      BoxShadow(color: Colors.grey.shade800.withOpacity(0.75),spreadRadius: 2,blurRadius: 4),
+                                    ],
+                                    // color: Color(COLOR_PRIMARY_VAL),//.withOpacity(0.95),
+                                    gradient: LinearGradient(
+                                        colors: [
+                                          Colors.orange,
+                                          Colors.red,
+                                        ]
+                                    )
+                                ),
+                                // child: Icon(
+                                //   Icons.data_saver_off_rounded,
+                                //   size: iconSize - 4,
+                                // ),
+                                child: Lottie.asset(
+                                  'images/globe_anim.json',
+                                  height: 68,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
                             ),
                             SizedBox(
                               width: 4,
@@ -623,7 +641,7 @@ class _NewsFeedState extends State<NewsFeed>
                               padding: 14,
                               height: iconHeight-12, //iconHeight,
                               color: Colors.white,
-                              bgColor: iconBGColor,//.withOpacity(0.75),
+                              bgColor: Colors.grey.shade900,//iconBGColor,//.withOpacity(0.75),
                               onPressed: () {
                                 Vibrate.feedback(FeedbackType.selection);
                                 showModalBottomSheet(
@@ -673,8 +691,11 @@ class _NewsFeedState extends State<NewsFeed>
                                  // color: Color(COLOR_PRIMARY_VAL),//.withOpacity(0.95),
                                   gradient: LinearGradient(
                                     colors: [
+                                      Colors.blue,
                                       Colors.indigoAccent,
-                                      Colors.blueAccent,
+                                      Colors.indigo,
+
+
                                     ]
                                   )
                                 ),

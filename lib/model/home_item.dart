@@ -268,10 +268,11 @@ class _HomeItemState extends State<HomeItem> {
                             end: Alignment.bottomRight,
                             colors: [
                              // Colors.blue,
-                              Colors.indigoAccent,
+                              //Colors.indigoAccent,
                               Colors.blueAccent,
                               //Colors.transparent
-                              //COLOR_PRIMARY_DARK,
+                              Colors.grey.shade900,
+                              //sCOLOR_PRIMARY_DARK,
 
                             ]
                         ),
@@ -432,7 +433,7 @@ class _HomeItemState extends State<HomeItem> {
                     ),
 
                   if(false)  const SizedBox(
-                      height: 150,
+                      height: 250,
                     ),
                     if(false)   Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
