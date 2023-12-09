@@ -113,7 +113,7 @@ class NotificationWidgetState extends State<NotificationWidget>
                               SizedBox(width: 0,),
                               Expanded(
                                 child: AutoSizeText(
-                                  "Notifications",
+                                  "Notify Drumms",
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontSize: 22.0,

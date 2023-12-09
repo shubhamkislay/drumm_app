@@ -25,6 +25,7 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'article_jam_page.dart';
 import 'custom/create_jam_bottom_sheet.dart';
 import 'custom/helper/image_uploader.dart';
 import 'custom/rounded_button.dart';
@@ -99,10 +100,18 @@ class _NewsFeedState extends State<NewsFeed>
 
   String? queryID;
   String articleTop = "";
+  late Article articleOnScreen;
 
   bool newArticlesAvailable = false;
 
-  double multiSelectRadius = 10;
+  double multiSelectRadius = 14;
+
+  bool likedArticle = false;
+  double fontSize = 10;
+  Color iconBGColor = Colors.grey.shade900;//.withOpacity(0.95); //COLOR_PRIMARY_DARK;
+  double iconHeight = 58;
+  double sizedBoxedHeight = 12;
+  double curve = 20;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -483,88 +492,263 @@ class _NewsFeedState extends State<NewsFeed>
               if (articleBands.length > 0)
                 Expanded(
                   child: Stack(
-                    alignment: Alignment.topCenter,
+                    alignment: Alignment.bottomCenter,
+                    fit: StackFit.loose,
                     children: [
-                      Builder(
-                        builder: (BuildContext context) {
-                          try {
-                            return CardSwiper(
-                              controller: controller,
-                              cardsCount: (articleBands.length > 0)
-                                  ? articleBands.length
-                                  : 0,
-                              duration: Duration(milliseconds: 200),
-                              maxAngle: 45,
-                              scale: 0.85,
-                              numberOfCardsDisplayed: (articleBands.length > 1)
-                                  ? 2
-                                  : (articleBands.length < 1)
-                                      ? 0
-                                      : 1,
-                              isVerticalSwipingEnabled: false,
-                              onEnd: () {
-                                print("Ended swipes");
-                                setState(() {
-                                  //loadAnimation = true;
-                                  //articles.clear();
-                                });
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 36),
+                        child: Builder(
+                          builder: (BuildContext context) {
+                            try {
+                              return CardSwiper(
+                                controller: controller,
+                                cardsCount: (articleBands.length > 0)
+                                    ? articleBands.length
+                                    : 0,
+                                duration: Duration(milliseconds: 200),
+                                maxAngle: 45,
+                                scale: 0.85,
+                                numberOfCardsDisplayed: (articleBands.length > 1)
+                                    ? 2
+                                    : (articleBands.length < 1)
+                                        ? 0
+                                        : 1,
+                                isVerticalSwipingEnabled: false,
+                                onEnd: () {
+                                  print("Ended swipes");
+                                  setState(() {
+                                    //loadAnimation = true;
+                                    //articles.clear();
+                                  });
 
-                                if (selectedBandID == "For You")
-                                  getArticles();
-                                else
-                                  getArticlesForBands(selectedBand);
-                              },
-                              threshold: 25,
-                              onSwipe: _onSwipe,
-                              isLoop: false,
-                              onUndo: _onUndo,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: horizontalPadding),
-                              cardBuilder: (context, index) {
-                                print(
-                                    "Index of element $index ${articles.elementAt(index).title}");
-                                try {
-                                  if (index >= 0)
-                                    return HomeItem(
-                                      bandId: selectedBandID != "For You"
-                                          ? selectedBandID
-                                          : null,
-                                      articleBand:
-                                          articleBands.elementAt(index),
-                                      queryID: queryID,
-                                      isContainerVisible: false,
-                                      openArticle: (article) {
-                                        openArticlePage(article, index);
-                                      },
-                                      updateList: (article) {},
-                                      undo: () {
-                                        // setState(() {
-                                        //   controller = CardSwiperController();
-                                        // });
-
-                                        controller?.undo();
-                                      },
-                                      onRefresh: () {
-                                        return _refreshData();
-                                      },
-                                      index: index,
-                                      joinDrumm: (articleBand) {
-                                        startDrumming(articleBand);
-                                      },
-                                    );
+                                  if (selectedBandID == "For You")
+                                    getArticles();
                                   else
-                                    return Container();
-                                } catch (e) {
+                                    getArticlesForBands(selectedBand);
+                                },
+                                threshold: 25,
+                                onSwipe: _onSwipe,
+                                isLoop: false,
+                                onUndo: _onUndo,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: horizontalPadding),
+                                cardBuilder: (context, index) {
                                   print(
-                                      "//////////////////////////ERROR/////////////////////");
-                                  return Container();
-                                }
+                                      "Index of element $index ${articles.elementAt(index).title}");
+                                  try {
+                                    if (index >= 0)
+                                      return HomeItem(
+                                        bandId: selectedBandID != "For You"
+                                            ? selectedBandID
+                                            : null,
+                                        articleBand:
+                                            articleBands.elementAt(index),
+                                        queryID: queryID,
+                                        isContainerVisible: false,
+                                        openArticle: (article) {
+                                          openArticlePage(article, index);
+                                        },
+                                        updateList: (article) {},
+                                        undo: () {
+                                          // setState(() {
+                                          //   controller = CardSwiperController();
+                                          // });
+
+                                          controller?.undo();
+                                        },
+                                        onRefresh: () {
+                                          return _refreshData();
+                                        },
+                                        index: index,
+                                        joinDrumm: (articleBand) {
+                                          startDrumming(articleBand);
+                                        },
+                                      );
+                                    else
+                                      return Container();
+                                  } catch (e) {
+                                    print(
+                                        "//////////////////////////ERROR/////////////////////");
+                                    return Container();
+                                  }
+                                },
+                              );
+                            } catch (e) {
+                              return Container();
+                            }
+                          },
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.bottomCenter,
+                        height: double.maxFinite,
+                        padding: const EdgeInsets.only(
+                            left: 0, right: 0, top: 12, bottom: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+
+                            RoundedButton(
+                              padding: 14,
+                              height: iconHeight-12, //iconHeight,
+                              color: Colors.deepOrange,
+                              bgColor: iconBGColor,//.withOpacity(0.75),
+                              onPressed: () {
+                                Vibrate.feedback(FeedbackType.warning);
+                                controller?.undo();
                               },
-                            );
-                          } catch (e) {
-                            return Container();
-                          }
-                        },
+                              assetPath: 'images/undo.png',
+                            ),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            RoundedButton(
+                              padding: 16,
+                              height: iconHeight+8,
+                              shadowColor: Colors.grey.shade800.withOpacity(0.75),
+                              color:  Colors.white,
+                              bgColor: Colors.red,
+                              hoverColor: Colors.blue,
+                              onPressed: () {
+                                Vibrate.feedback(FeedbackType.selection);
+                                controller?.swipeLeft();
+                              },
+                              assetPath:  'images/google-earth.png',
+                            ),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            RoundedButton(
+                              padding: 14,
+                              height: iconHeight-12, //iconHeight,
+                              color: Colors.white,
+                              bgColor: iconBGColor,//.withOpacity(0.75),
+                              onPressed: () {
+                                Vibrate.feedback(FeedbackType.selection);
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.grey.shade900,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(0.0)),
+                                  ),
+                                  builder: (BuildContext context) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom),
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            const BorderRadius.vertical(
+                                                top: Radius.circular(0.0)),
+                                        child: ArticleJamPage(
+                                          article:
+                                              articleOnScreen,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              assetPath: 'images/drumm_logo.png',
+                            ),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            GestureDetector(
+                              onTap: (){
+                                Vibrate.feedback(FeedbackType.impact);
+                                controller?.swipeRight();
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(36),
+                                  boxShadow: [
+                                    BoxShadow(color: Colors.grey.shade800.withOpacity(0.75),spreadRadius: 2,blurRadius: 4),
+                                  ],
+                                 // color: Color(COLOR_PRIMARY_VAL),//.withOpacity(0.95),
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.indigoAccent,
+                                      Colors.blueAccent,
+                                    ]
+                                  )
+                                ),
+                                // child: Icon(
+                                //   Icons.data_saver_off_rounded,
+                                //   size: iconSize - 4,
+                                // ),
+                                child: Lottie.asset(
+                                  'images/wave_drumm.json',
+                                  height: 44,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            RoundedButton(
+                              padding: 14,
+                              height: iconHeight-12, //iconHeight,
+                              //shadowColor: Colors.grey.shade800.withOpacity(0.75),
+                              color: articleOnScreen.liked ?? false
+                                  ? Colors.red
+                                  : Colors.red,
+                              bgColor: iconBGColor,
+                              hoverColor: Colors.redAccent,
+                              onPressed: () {
+                                setState(() {
+                                  if (articleOnScreen.liked ??
+                                      false) {
+                                    FirebaseDBOperations.removeLike(articleOnScreen.articleId);
+                                    articleOnScreen.liked = false;
+                                    int currentLikes =
+                                        articleOnScreen.likes ??
+                                            1;
+                                    currentLikes -= 1;
+                                    articleOnScreen.likes =
+                                        currentLikes;
+                                    //  _articlesController.add(articles);
+                                  } else {
+                                    FirebaseDBOperations.updateLike(articleOnScreen.articleId);
+
+                                    ConnectToChannel.insights
+                                        .convertedObjectsAfterSearch(
+                                      indexName: 'articles',
+                                      eventName: 'Liked article',
+                                      queryID: queryID ?? 'query id',
+                                      objectIDs: [
+                                        articleOnScreen.articleId ??
+                                            ""
+                                      ],
+                                    );
+
+                                    articleOnScreen.liked = true;
+                                    int currentLikes =
+                                        articleOnScreen.likes ??
+                                            0;
+                                    currentLikes += 1;
+                                    articleOnScreen.likes =
+                                        currentLikes;
+                                    //_articlesController.add(articles);
+
+                                    Vibrate.feedback(FeedbackType.success);
+                                  }
+                                });
+                              },
+                              assetPath: articleOnScreen.liked ?? false
+                                  ? 'images/liked.png'
+                                  : 'images/heart.png',
+                            ),
+
+                            // if ((articles!.elementAt(index).likes ?? 0) > 0)
+                          ],
+                        ),
                       ),
                       if (newArticlesAvailable)
                         GestureDetector(
@@ -788,6 +972,7 @@ class _NewsFeedState extends State<NewsFeed>
           loadingAnimation = LOADING_ASSET;
           articles = freshArticleFetched;
           articleBands = fetchedArticleBand;
+          articleOnScreen = articleBands.elementAt(0).article??Article();
           newArticlesAvailable = false;
           //   print("Article length ${articles.length}");
         });
@@ -934,14 +1119,14 @@ class _NewsFeedState extends State<NewsFeed>
       items: bandsCards,
       textStyles: MultiSelectTextStyles(
         selectedTextStyle: TextStyle(
-            color: Colors.black,
-            fontWeight:FontWeight.bold,// FontWeight.w700,
-            //fontFamily: "alata",
+          color: Colors.black,
+          fontWeight: FontWeight.bold, // FontWeight.w700,
+          fontFamily: "alata",
         ),
         textStyle: TextStyle(
-            color: Colors.white,
-          fontWeight:FontWeight.bold,// FontWeight.w700,
-            //fontFamily: "alata",
+          color: Colors.white,
+          fontWeight: FontWeight.bold, // FontWeight.w700,
+          fontFamily: "alata",
         ),
       ),
       onChange: (allSelectedItems, selectedItem) {
@@ -1015,6 +1200,7 @@ class _NewsFeedState extends State<NewsFeed>
         loadingAnimation = LOADING_ASSET;
         articles = articleFetched;
         articleBands = fetchedArticleBand;
+        articleOnScreen = articleBands.elementAt(0).article??Article();
         if (articleTop == "") {
           articleTop = articleBands.elementAt(0).article?.articleId ?? "";
         }
@@ -1057,6 +1243,7 @@ class _NewsFeedState extends State<NewsFeed>
         loadingAnimation = LOADING_ASSET;
         articles = articleFetched;
         articleBands = fetchedArticleBand;
+        articleOnScreen = articleBands.elementAt(0).article??Article();
         print("getArticlesForBands length ${articles.length}");
       });
     }
@@ -1071,6 +1258,10 @@ class _NewsFeedState extends State<NewsFeed>
 
     articleTop =
         articleBands.elementAt(currentIndex ?? 0).article?.articleId ?? "";
+    setState(() {
+      articleOnScreen = articleBands.elementAt(currentIndex??0).article??Article();
+    });
+
     try {
       FirebaseDBOperations.updateSeen(
           articleBands.elementAt(previousIndex).article?.articleId);
@@ -1160,6 +1351,11 @@ class _NewsFeedState extends State<NewsFeed>
     int currentIndex,
     CardSwiperDirection direction,
   ) {
+    articleTop =
+        articleBands.elementAt(currentIndex ?? 0).article?.articleId ?? "";
+    setState(() {
+      articleOnScreen = articleBands.elementAt(currentIndex??0).article??Article();
+    });
     debugPrint(
       'The card $currentIndex was undod from the ${direction.name}',
     );
@@ -1195,6 +1391,7 @@ class _NewsFeedState extends State<NewsFeed>
         loadAnimation = false;
         articles = fetchcedArticle;
         articleBands = fetchedArticleBand;
+        articleOnScreen = articleBands.elementAt(0).article??Article();
         loadingAnimation = LOADING_ASSET;
       });
     }
@@ -1214,8 +1411,8 @@ class _NewsFeedState extends State<NewsFeed>
     jam.count = 0;
     jam.membersID = [];
     //FirebaseDBOperations.createOpenDrumm(jam);
-    FirebaseDBOperations.addMemberToJam(
-        aBand.article?.jamId ?? "", FirebaseAuth.instance.currentUser?.uid ?? "", true)
+    FirebaseDBOperations.addMemberToJam(aBand.article?.jamId ?? "",
+            FirebaseAuth.instance.currentUser?.uid ?? "", true)
         .then((value) {
       print("Added the member ${value}");
       if (!value) {

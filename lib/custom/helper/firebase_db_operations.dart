@@ -42,7 +42,7 @@ class FirebaseDBOperations {
         .setFacets(['meta'])
         .setUserToken(FirebaseAuth.instance.currentUser?.uid ?? "")
         .query(query)
-        .setPersonalizationImpact(value: 100)
+        .setPersonalizationImpact(value: 75)
         .setHitsPerPage(300)
         .setEnablePersonalization(enabled: true)
         .getObjects();
@@ -84,7 +84,7 @@ class FirebaseDBOperations {
         .setHitsPerPage(1000)
         .setUserToken(userToken)
         .setDistinct(value: true)
-        .setPersonalizationImpact(value: 100)
+        .setPersonalizationImpact(value: 75)
         .setEnablePersonalization(enabled: true);
 
     List<String> filterStr = [];
@@ -129,7 +129,7 @@ class FirebaseDBOperations {
         .setHitsPerPage(1000)
         .setUserToken(userToken)
         .setDistinct(value: true)
-        .setPersonalizationImpact(value: 100)
+        .setPersonalizationImpact(value: 75)
         .setEnablePersonalization(enabled: true);
 
     List<String> filterStr = [];

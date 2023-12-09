@@ -5,6 +5,7 @@ class RoundedButton extends StatelessWidget {
   final VoidCallback onPressed;
   Color? color;
   final Color bgColor;
+  Color? shadowColor;
   Color? hoverColor = Colors.blueGrey;
   double? height = 60;
   double? padding = 8;
@@ -15,14 +16,22 @@ class RoundedButton extends StatelessWidget {
     required this.bgColor,
     required this.onPressed,
      this.hoverColor,
+     this.shadowColor,
      this.padding,
      this.height,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Color shadow = shadowColor??Colors.transparent;
     return Container(
       height: height,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(32),
+        boxShadow: [
+          BoxShadow(color: shadow,spreadRadius: 2,blurRadius: 4),
+        ],
+      ),
       child: Center(
         child: SizedBox(
           child: ElevatedButton(

@@ -183,6 +183,9 @@ flutter:
     - images/wave_drumm.json
     - images/drumm_band.json
     - images/loading_live.json
+    - images/wave_blue.json
+    - images/google-earth.png
+    - images/undo.png
   #   - images/a_dot_ham.jpeg
 
   fonts:

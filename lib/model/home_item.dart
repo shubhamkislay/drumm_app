@@ -108,7 +108,7 @@ class _HomeItemState extends State<HomeItem> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  if (widget.index != 0)
+                                  if (widget.index != 0 && false)
                                     GestureDetector(
                                       onTap: widget.undo,
                                       child: Container(
@@ -252,6 +252,114 @@ class _HomeItemState extends State<HomeItem> {
                         ),
                       ),
                     ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    if( widget.articleBand.article?.question!=null) Container(
+                      width: double.maxFinite,
+                      padding: EdgeInsets.all(8),
+                      margin: EdgeInsets.symmetric(horizontal: 0),
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(
+                        //color: COLOR_PRIMARY_DARK,//Colors.grey.shade900.withOpacity(0.75),
+                        borderRadius: BorderRadius.circular(0),
+                        gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                             // Colors.blue,
+                              Colors.indigoAccent,
+                              Colors.blueAccent,
+                              //Colors.transparent
+                              //COLOR_PRIMARY_DARK,
+
+                            ]
+                        ),
+                        // border: Border.all(color:  Colors.grey.shade900.withOpacity(0.0),width: 2),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              if(false) RoundedButton(
+                                padding: 14,
+                                height: iconHeight, //iconHeight,
+                                color: Colors.white,
+                                bgColor: Colors.black,//COLOR_PRIMARY_DARK,//iconBGColor,
+                                onPressed: () {
+                                  widget.joinDrumm(widget.articleBand);
+                                },
+                                assetPath: 'images/team_active.png',
+                              ),
+                              GestureDetector(
+                                onTap: (){
+                                  widget.joinDrumm(widget.articleBand);
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  padding: EdgeInsets.all(4),
+                                  child: Lottie.asset('images/wave_drumm.json',height: iconHeight+16,fit:BoxFit.contain),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 6,
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: (){
+                                    print("Join Drumm");
+                                    widget.joinDrumm(widget.articleBand);
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "\"${widget.articleBand.article?.question}\"" ?? "",
+                                          textAlign: TextAlign.start,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            //fontStyle: FontStyle.italic,
+                                            //fontFamily: "alata",
+                                            //fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 8,),
+                                        Container(
+                                          width: double.infinity,
+                                          alignment: Alignment.centerLeft,
+                                          padding: const EdgeInsets.all(0.0),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Text("Generated by Drumm AI",
+                                            textAlign: TextAlign.left,
+                                            style: const TextStyle(
+                                                color: Colors.white54,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.normal),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
                     GestureDetector(
                       onTap: (){
                         Vibrate.feedback(FeedbackType.impact);
@@ -281,7 +389,7 @@ class _HomeItemState extends State<HomeItem> {
                               ),
                             ]),
                         child: ClipRRect(
-                         // borderRadius: BorderRadius.circular(curve - 4),
+                          //borderRadius: BorderRadius.only(bottomRight: Radius.circular(16),bottomLeft: Radius.circular(16)),
                           child: CachedNetworkImage(
                             imageUrl: widget.articleBand.article?.imageUrl ?? "",
                             filterQuality: FilterQuality.low,
@@ -322,115 +430,11 @@ class _HomeItemState extends State<HomeItem> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 4,
+
+                  if(false)  const SizedBox(
+                      height: 150,
                     ),
-
-                   if( widget.articleBand.article?.question!=null) Container(
-                      width: double.maxFinite,
-                      padding: EdgeInsets.all(8),
-                      margin: EdgeInsets.symmetric(horizontal: 0),
-                      alignment: Alignment.centerLeft,
-                      decoration: BoxDecoration(
-                          //color: COLOR_PRIMARY_DARK,//Colors.grey.shade900.withOpacity(0.75),
-                          borderRadius: BorderRadius.circular(0),
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.blue,
-                              Colors.grey.shade900,
-                             //Colors.transparent
-                             // COLOR_PRIMARY_DARK,
-
-                            ]
-                          ),
-                         // border: Border.all(color:  Colors.grey.shade900.withOpacity(0.0),width: 2),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                             if(false) RoundedButton(
-                                padding: 14,
-                                height: iconHeight, //iconHeight,
-                                color: Colors.white,
-                                bgColor: Colors.black,//COLOR_PRIMARY_DARK,//iconBGColor,
-                                onPressed: () {
-                                  widget.joinDrumm(widget.articleBand);
-                                },
-                                assetPath: 'images/team_active.png',
-                              ),
-                              GestureDetector(
-                                onTap: (){
-                                  widget.joinDrumm(widget.articleBand);
-                                },
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  padding: EdgeInsets.all(4),
-                                  child: Lottie.asset('images/wave_drumm.json',height: iconHeight+16,fit:BoxFit.contain),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 6,
-                              ),
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: (){
-                                    print("Join Drumm");
-                                    widget.joinDrumm(widget.articleBand);
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                              "\"${widget.articleBand.article?.question}\"" ?? "",
-                                          textAlign: TextAlign.start,
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontStyle: FontStyle.italic,
-                                              //fontFamily: "alata",
-                                              fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 8,),
-                                        Container(
-                                          width: double.infinity,
-                                          alignment: Alignment.centerLeft,
-                                          padding: const EdgeInsets.all(0.0),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                          child: Text("Generated by Drumm AI",
-                                            textAlign: TextAlign.left,
-                                            style: const TextStyle(
-                                                color: Colors.white54,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.normal),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 24,
-                    ),
-                    Padding(
+                    if(false)   Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -591,7 +595,7 @@ class _HomeItemState extends State<HomeItem> {
                         ],
                       ),
                     ),
-                    const SizedBox(
+                    if(false)  const SizedBox(
                       height: 32,
                     ),
                   ],
