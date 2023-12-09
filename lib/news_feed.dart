@@ -643,8 +643,8 @@ class _NewsFeedState extends State<NewsFeed>
                               width: 4,
                             ),
                             RoundedButton(
-                              padding: 14,
-                              height: iconHeight - 12, //iconHeight,
+                              padding: 10,
+                              height: iconHeight - 16, //iconHeight,
                               color: Colors.white,
                               bgColor: Colors.grey
                                   .shade900, //iconBGColor,//.withOpacity(0.75),
