@@ -267,11 +267,11 @@ class _HomeItemState extends State<HomeItem> {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                             // Colors.blue,
-                              //Colors.indigoAccent,
+                              //Colors.blue,
+                              Colors.indigoAccent,
                               Colors.blueAccent,
                               //Colors.transparent
-                              Colors.grey.shade900,
+                              //Colors.grey.shade900,
                               //sCOLOR_PRIMARY_DARK,
 
                             ]

@@ -108,10 +108,13 @@ class _NewsFeedState extends State<NewsFeed>
 
   bool likedArticle = false;
   double fontSize = 10;
-  Color iconBGColor = Colors.white;//Colors.grey.shade900;//.withOpacity(0.95); //COLOR_PRIMARY_DARK;
+  Color iconBGColor = Colors
+      .white; //Colors.grey.shade900;//.withOpacity(0.95); //COLOR_PRIMARY_DARK;
   double iconHeight = 58;
   double sizedBoxedHeight = 12;
   double curve = 20;
+
+  int undoIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -508,11 +511,12 @@ class _NewsFeedState extends State<NewsFeed>
                                 duration: Duration(milliseconds: 200),
                                 maxAngle: 45,
                                 scale: 0.5,
-                                numberOfCardsDisplayed: (articleBands.length > 1)
-                                    ? 2
-                                    : (articleBands.length < 1)
-                                        ? 0
-                                        : 1,
+                                numberOfCardsDisplayed:
+                                    (articleBands.length > 1)
+                                        ? 2
+                                        : (articleBands.length < 1)
+                                            ? 0
+                                            : 1,
                                 isVerticalSwipingEnabled: false,
                                 onEnd: () {
                                   print("Ended swipes");
@@ -588,12 +592,12 @@ class _NewsFeedState extends State<NewsFeed>
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-
                             RoundedButton(
                               padding: 14,
-                              height: iconHeight-12, //iconHeight,
-                              color: Colors.deepOrange,
-                              bgColor: iconBGColor,//.withOpacity(0.75),
+                              height: iconHeight - 12, //iconHeight,
+                              color: (undoIndex == 0 ) ? Colors.grey:Colors.deepOrangeAccent,
+                              shadowColor: Colors.grey.shade800.withOpacity(0.2),
+                              bgColor: iconBGColor, //.withOpacity(0.75),
                               onPressed: () {
                                 Vibrate.feedback(FeedbackType.warning);
                                 controller?.undo();
@@ -604,7 +608,7 @@ class _NewsFeedState extends State<NewsFeed>
                               width: 4,
                             ),
                             GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 Vibrate.feedback(FeedbackType.selection);
                                 controller?.swipeLeft();
                               },
@@ -613,16 +617,17 @@ class _NewsFeedState extends State<NewsFeed>
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(36),
                                     boxShadow: [
-                                      BoxShadow(color: Colors.grey.shade800.withOpacity(0.75),spreadRadius: 2,blurRadius: 4),
+                                      BoxShadow(
+                                          color: Colors.grey.shade800
+                                              .withOpacity(0.75),
+                                          spreadRadius: 2,
+                                          blurRadius: 4),
                                     ],
                                     // color: Color(COLOR_PRIMARY_VAL),//.withOpacity(0.95),
-                                    gradient: LinearGradient(
-                                        colors: [
-                                          Colors.orange,
-                                          Colors.red,
-                                        ]
-                                    )
-                                ),
+                                    gradient: LinearGradient(colors: [
+                                      Colors.orange,
+                                      Colors.red,
+                                    ])),
                                 // child: Icon(
                                 //   Icons.data_saver_off_rounded,
                                 //   size: iconSize - 4,
@@ -639,9 +644,10 @@ class _NewsFeedState extends State<NewsFeed>
                             ),
                             RoundedButton(
                               padding: 14,
-                              height: iconHeight-12, //iconHeight,
+                              height: iconHeight - 12, //iconHeight,
                               color: Colors.white,
-                              bgColor: Colors.grey.shade900,//iconBGColor,//.withOpacity(0.75),
+                              bgColor: Colors.grey
+                                  .shade900, //iconBGColor,//.withOpacity(0.75),
                               onPressed: () {
                                 Vibrate.feedback(FeedbackType.selection);
                                 showModalBottomSheet(
@@ -663,8 +669,7 @@ class _NewsFeedState extends State<NewsFeed>
                                             const BorderRadius.vertical(
                                                 top: Radius.circular(0.0)),
                                         child: ArticleJamPage(
-                                          article:
-                                              articleOnScreen,
+                                          article: articleOnScreen,
                                         ),
                                       ),
                                     );
@@ -677,28 +682,26 @@ class _NewsFeedState extends State<NewsFeed>
                               width: 4,
                             ),
                             GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 Vibrate.feedback(FeedbackType.impact);
                                 controller?.swipeRight();
                               },
                               child: Container(
                                 padding: EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(36),
-                                  boxShadow: [
-                                    BoxShadow(color: Colors.grey.shade800.withOpacity(0.75),spreadRadius: 2,blurRadius: 4),
-                                  ],
-                                 // color: Color(COLOR_PRIMARY_VAL),//.withOpacity(0.95),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.blue,
+                                    borderRadius: BorderRadius.circular(36),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.grey.shade800
+                                              .withOpacity(0.75),
+                                          spreadRadius: 2,
+                                          blurRadius: 4),
+                                    ],
+                                    // color: Color(COLOR_PRIMARY_VAL),//.withOpacity(0.95),
+                                    gradient: LinearGradient(colors: [
                                       Colors.indigoAccent,
-                                      Colors.indigo,
-
-
-                                    ]
-                                  )
-                                ),
+                                      Colors.blue,
+                                    ])),
                                 // child: Icon(
                                 //   Icons.data_saver_off_rounded,
                                 //   size: iconSize - 4,
@@ -714,29 +717,28 @@ class _NewsFeedState extends State<NewsFeed>
                               width: 4,
                             ),
                             RoundedButton(
-                              padding: 14,
-                              height: iconHeight-12, //iconHeight,
+                              padding: 12,
+                              height: iconHeight - 12, //iconHeight,
                               //shadowColor: Colors.grey.shade800.withOpacity(0.75),
                               color: articleOnScreen.liked ?? false
                                   ? Colors.red
-                                  : Colors.red,
+                                  : Colors.grey.shade500,
                               bgColor: iconBGColor,
                               hoverColor: Colors.redAccent,
                               onPressed: () {
                                 setState(() {
-                                  if (articleOnScreen.liked ??
-                                      false) {
-                                    FirebaseDBOperations.removeLike(articleOnScreen.articleId);
+                                  if (articleOnScreen.liked ?? false) {
+                                    FirebaseDBOperations.removeLike(
+                                        articleOnScreen.articleId);
                                     articleOnScreen.liked = false;
                                     int currentLikes =
-                                        articleOnScreen.likes ??
-                                            1;
+                                        articleOnScreen.likes ?? 1;
                                     currentLikes -= 1;
-                                    articleOnScreen.likes =
-                                        currentLikes;
+                                    articleOnScreen.likes = currentLikes;
                                     //  _articlesController.add(articles);
                                   } else {
-                                    FirebaseDBOperations.updateLike(articleOnScreen.articleId);
+                                    FirebaseDBOperations.updateLike(
+                                        articleOnScreen.articleId);
 
                                     ConnectToChannel.insights
                                         .convertedObjectsAfterSearch(
@@ -744,18 +746,15 @@ class _NewsFeedState extends State<NewsFeed>
                                       eventName: 'Liked article',
                                       queryID: queryID ?? 'query id',
                                       objectIDs: [
-                                        articleOnScreen.articleId ??
-                                            ""
+                                        articleOnScreen.articleId ?? ""
                                       ],
                                     );
 
                                     articleOnScreen.liked = true;
                                     int currentLikes =
-                                        articleOnScreen.likes ??
-                                            0;
+                                        articleOnScreen.likes ?? 0;
                                     currentLikes += 1;
-                                    articleOnScreen.likes =
-                                        currentLikes;
+                                    articleOnScreen.likes = currentLikes;
                                     //_articlesController.add(articles);
 
                                     Vibrate.feedback(FeedbackType.success);
@@ -764,7 +763,7 @@ class _NewsFeedState extends State<NewsFeed>
                               },
                               assetPath: articleOnScreen.liked ?? false
                                   ? 'images/liked.png'
-                                  : 'images/heart.png',
+                                  : 'images/like_btn.png',
                             ),
 
                             // if ((articles!.elementAt(index).likes ?? 0) > 0)
@@ -993,7 +992,8 @@ class _NewsFeedState extends State<NewsFeed>
           loadingAnimation = LOADING_ASSET;
           articles = freshArticleFetched;
           articleBands = fetchedArticleBand;
-          articleOnScreen = articleBands.elementAt(0).article??Article();
+          undoIndex = 0;
+          articleOnScreen = articleBands.elementAt(0).article ?? Article();
           newArticlesAvailable = false;
           //   print("Article length ${articles.length}");
         });
@@ -1221,7 +1221,8 @@ class _NewsFeedState extends State<NewsFeed>
         loadingAnimation = LOADING_ASSET;
         articles = articleFetched;
         articleBands = fetchedArticleBand;
-        articleOnScreen = articleBands.elementAt(0).article??Article();
+        undoIndex = 0;
+        articleOnScreen = articleBands.elementAt(0).article ?? Article();
         if (articleTop == "") {
           articleTop = articleBands.elementAt(0).article?.articleId ?? "";
         }
@@ -1264,7 +1265,8 @@ class _NewsFeedState extends State<NewsFeed>
         loadingAnimation = LOADING_ASSET;
         articles = articleFetched;
         articleBands = fetchedArticleBand;
-        articleOnScreen = articleBands.elementAt(0).article??Article();
+        undoIndex = 0;
+        articleOnScreen = articleBands.elementAt(0).article ?? Article();
         print("getArticlesForBands length ${articles.length}");
       });
     }
@@ -1280,7 +1282,9 @@ class _NewsFeedState extends State<NewsFeed>
     articleTop =
         articleBands.elementAt(currentIndex ?? 0).article?.articleId ?? "";
     setState(() {
-      articleOnScreen = articleBands.elementAt(currentIndex??0).article??Article();
+      undoIndex = currentIndex??0;
+      articleOnScreen =
+          articleBands.elementAt(currentIndex ?? 0).article ?? Article();
     });
 
     try {
@@ -1375,7 +1379,9 @@ class _NewsFeedState extends State<NewsFeed>
     articleTop =
         articleBands.elementAt(currentIndex ?? 0).article?.articleId ?? "";
     setState(() {
-      articleOnScreen = articleBands.elementAt(currentIndex??0).article??Article();
+      undoIndex = currentIndex;
+      articleOnScreen =
+          articleBands.elementAt(currentIndex ?? 0).article ?? Article();
     });
     debugPrint(
       'The card $currentIndex was undod from the ${direction.name}',
@@ -1412,7 +1418,8 @@ class _NewsFeedState extends State<NewsFeed>
         loadAnimation = false;
         articles = fetchcedArticle;
         articleBands = fetchedArticleBand;
-        articleOnScreen = articleBands.elementAt(0).article??Article();
+        undoIndex = 0;
+        articleOnScreen = articleBands.elementAt(0).article ?? Article();
         loadingAnimation = LOADING_ASSET;
       });
     }

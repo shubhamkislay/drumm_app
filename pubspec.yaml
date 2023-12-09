@@ -187,6 +187,7 @@ flutter:
     - images/google-earth.png
     - images/undo.png
     - images/globe_anim.json
+    - images/like_btn.png
   #   - images/a_dot_ham.jpeg
 
   fonts:

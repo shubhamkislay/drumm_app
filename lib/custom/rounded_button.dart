@@ -26,19 +26,13 @@ class RoundedButton extends StatelessWidget {
     Color shadow = shadowColor??Colors.transparent;
     return Container(
       height: height,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(32),
-        boxShadow: [
-          BoxShadow(color: shadow,spreadRadius: 2,blurRadius: 4),
-        ],
-      ),
       child: Center(
         child: SizedBox(
           child: ElevatedButton(
             onPressed: onPressed,
             style: ElevatedButton.styleFrom(
               foregroundColor: hoverColor,
-              shadowColor: Colors.transparent,
+              shadowColor: shadow,
               padding: EdgeInsets.all(padding??8),
               shape: const CircleBorder(),
               backgroundColor: bgColor,//Colors.grey.shade900
