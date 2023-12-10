@@ -59,10 +59,11 @@ class _HomeItemState extends State<HomeItem> {
   Widget build(BuildContext context) {
     //setband();
     return Container(
-      height: double.maxFinite,
+      height: double.infinity,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(curve),
         child: Container(
+          height: double.infinity,
           decoration: BoxDecoration(
               color: COLOR_PRIMARY_DARK, //Color(0xff012036FF)
               borderRadius: BorderRadius.circular(curve),
@@ -73,11 +74,12 @@ class _HomeItemState extends State<HomeItem> {
             onRefresh: widget.onRefresh,
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
+              physics: AlwaysScrollableScrollPhysics(),
               child: Stack(
                 children: [
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       GestureDetector(
                         onTap: () {
@@ -330,7 +332,7 @@ class _HomeItemState extends State<HomeItem> {
                                             textAlign: TextAlign.start,
                                             style: const TextStyle(
                                               color: Colors.white,
-                                              fontSize: 12,
+                                              fontSize: 14,
                                               //fontStyle: FontStyle.italic,
                                               //fontFamily: "alata",
                                               //fontWeight: FontWeight.bold,

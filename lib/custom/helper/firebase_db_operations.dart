@@ -78,42 +78,49 @@ class FirebaseDBOperations {
     for (Band band in bandList) {
       hooks.addAll(band.hooks ?? []);
     }
-    AlgoliaQuery algoliaQuery = algolia.instance
-        .index('articles')
-        .setFacets(['meta'])
-        .setHitsPerPage(1000)
-        .setUserToken(userToken)
-        .setDistinct(value: true)
-        .setPersonalizationImpact(value: 75)
-        .setEnablePersonalization(enabled: true);
-
     List<String> filterStr = [];
     for (String hook in hooks) {
       filterStr.add("category:${hook}");
       //algoliaQuery = algoliaQuery.facetFilter("'category:${hook}'");
     }
-    algoliaQuery = algoliaQuery.facetFilter(filterStr);
-    //
-    // for(String post in seenPosts){
-    //   algoliaQuery.setOptionalFilter("objectID:-${post}");
-    // }
 
-    print("AlgoliaQuery: ${algoliaQuery.parameters}");
+    AlgoliaArticles algoliaArticles = AlgoliaArticles();
+    int arLen = algoliaArticles.articles?.length ??0 ;
+    int page = 0;
 
-    AlgoliaQuerySnapshot getArticles = await algoliaQuery.getObjects();
+    while(arLen<1 && page<=2) {
+      AlgoliaQuery algoliaQuery = algolia.instance
+          .index('articles')
+          .setFacets(['meta'])
+          .setHitsPerPage(1000)
+          .setPage(page)
+          .setUserToken(userToken)
+          .setDistinct(value: true)
+          .setPersonalizationImpact(value: 75)
+          .setEnablePersonalization(enabled: true);
 
-    // print(
-    //     "Getting Articles from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
-    List<Article> result =
-        List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
 
-    List<Article> filteredList = [];
-    for (Article farticle in result) {
-      if (!seenPosts.contains(farticle.articleId)) filteredList.add(farticle);
+      algoliaQuery = algoliaQuery.facetFilter(filterStr);
+
+      AlgoliaQuerySnapshot getArticles = await algoliaQuery.getObjects();
+      List<Article> result =
+      List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
+
+      List<Article> filteredList = [];
+      for (Article farticle in result) {
+        if (!seenPosts.contains(farticle.articleId)) filteredList.add(farticle);
+      }
+
+      algoliaArticles =
+          AlgoliaArticles(articles: filteredList, queryID: getArticles.queryID);
+
+      arLen = algoliaArticles.articles?.length ?? 0;
+
+      if (arLen < 1) {
+        print("You have seen all articles");
+        page = page+1;
+      }
     }
-
-    AlgoliaArticles algoliaArticles =
-        AlgoliaArticles(articles: filteredList, queryID: getArticles.queryID);
 
     return algoliaArticles;
   }
@@ -145,8 +152,7 @@ class FirebaseDBOperations {
 
     AlgoliaQuerySnapshot getArticles = await algoliaQuery.getObjects();
 
-    print(
-        "Getting Articles from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
+
     List<Article> result =
     List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
 

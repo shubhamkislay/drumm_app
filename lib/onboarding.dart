@@ -3,6 +3,7 @@ import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/main.dart';
+import 'package:drumm_app/policy_text.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -259,8 +260,9 @@ class _OnBoardingState extends State<OnBoarding> {
                     ],
                   ),
                 ),
+                PolicyTextWidget(),
                 SizedBox(
-                  height: 100,
+                  height: 80,
                 ),
               ],
             ),

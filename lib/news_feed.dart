@@ -508,9 +508,9 @@ class _NewsFeedState extends State<NewsFeed>
                                 cardsCount: (articleBands.length > 0)
                                     ? articleBands.length
                                     : 0,
-                                duration: Duration(milliseconds: 200),
+                                duration: Duration(milliseconds: 250),
                                 maxAngle: 45,
-                                scale: 0.5,
+                                scale: 0.85,
                                 numberOfCardsDisplayed:
                                     (articleBands.length > 1)
                                         ? 2
@@ -625,7 +625,7 @@ class _NewsFeedState extends State<NewsFeed>
                                     ],
                                     // color: Color(COLOR_PRIMARY_VAL),//.withOpacity(0.95),
                                     gradient: LinearGradient(colors: [
-                                      Colors.orange,
+                                      Colors.pinkAccent,
                                       Colors.red,
                                     ])),
                                 // child: Icon(
@@ -700,7 +700,8 @@ class _NewsFeedState extends State<NewsFeed>
                                     // color: Color(COLOR_PRIMARY_VAL),//.withOpacity(0.95),
                                     gradient: LinearGradient(colors: [
                                       Colors.blue.shade800,
-                                      Colors.lightBlueAccent,
+                                      Colors.lightBlue,
+
                                     ])),
                                 // child: Icon(
                                 //   Icons.data_saver_off_rounded,
@@ -770,7 +771,7 @@ class _NewsFeedState extends State<NewsFeed>
                           ],
                         ),
                       ),
-                      if (newArticlesAvailable)
+                      if (newArticlesAvailable&&false)
                         GestureDetector(
                           onTap: () {
                             loadFreshArticles();
@@ -812,10 +813,15 @@ class _NewsFeedState extends State<NewsFeed>
     _checkAndScheduleRefresh();
     FirebaseDBOperations.lastDocument = null;
     //controller = CardSwiperController();
-    getBandsCards();
     getCurrentDrummer();
     checkLiveDrumms();
     getNotifications();
+    if(selectedBandID != "For You"){
+      getArticlesForBands(selectedBand);
+      return;
+    }
+    getBandsCards();
+
     // Refresh your data
     //getNews();
   }
@@ -1020,7 +1026,9 @@ class _NewsFeedState extends State<NewsFeed>
     for (Band band in bandList) {
       bandMap.putIfAbsent(band.bandId ?? "", () => band);
     }
-    getArticles();
+      getArticles();
+
+
     Band allBands = Band();
     allBands.name = "For You";
     allBands.bandId = "For You";
