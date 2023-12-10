@@ -1,5 +1,6 @@
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drumm_app/SettingsPage.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -104,22 +105,18 @@ class _UserProfilePageState extends State<UserProfilePage>
                                   SafeArea(
                                       child: GestureDetector(
                                     onTap: () {
-                                      if(ConnectToChannel.engineInitialized)
-                                        ConnectToChannel.disposeEngine();
-                                      removedPreferences();
-                                      FirebaseAuth.instance.signOut().then(
-                                          (value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MyApp()), (_) => false));
+
+                                      openSettingsPage();
+                                      // if(ConnectToChannel.engineInitialized)
+                                      //   ConnectToChannel.disposeEngine();
+                                      // removedPreferences();
+                                      // FirebaseAuth.instance.signOut().then(
+                                      //     (value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MyApp()), (_) => false));
                                     },
                                     child: Container(
                                         alignment: Alignment.topCenter,
-                                        child: Text(
-                                          "Logout",
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                              color: Colors.redAccent,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal),
-                                        )),
+                                        padding: EdgeInsets.all(8),
+                                        child: Icon(Icons.settings_outlined,size: 32,)),
                                   )),
                               ],
                             ),
@@ -498,5 +495,10 @@ class _UserProfilePageState extends State<UserProfilePage>
     setState(() {
       followed = status;
     });
+  }
+
+  void openSettingsPage() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+
   }
 }

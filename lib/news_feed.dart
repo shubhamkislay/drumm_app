@@ -699,8 +699,8 @@ class _NewsFeedState extends State<NewsFeed>
                                     ],
                                     // color: Color(COLOR_PRIMARY_VAL),//.withOpacity(0.95),
                                     gradient: LinearGradient(colors: [
-                                      Colors.indigoAccent,
-                                      Colors.blue,
+                                      Colors.blue.shade800,
+                                      Colors.lightBlueAccent,
                                     ])),
                                 // child: Icon(
                                 //   Icons.data_saver_off_rounded,
