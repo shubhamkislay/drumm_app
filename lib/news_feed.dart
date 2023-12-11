@@ -498,8 +498,8 @@ class _NewsFeedState extends State<NewsFeed>
                     alignment: Alignment.bottomCenter,
                     fit: StackFit.loose,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 36),
+                      Container(
+                        //padding: const EdgeInsets.only(bottom: 0),
                         child: Builder(
                           builder: (BuildContext context) {
                             try {
@@ -587,7 +587,7 @@ class _NewsFeedState extends State<NewsFeed>
                         alignment: Alignment.bottomCenter,
                         height: double.maxFinite,
                         padding: const EdgeInsets.only(
-                            left: 0, right: 0, top: 12, bottom: 4),
+                            left: 0, right: 0, top: 12, bottom: 16),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -640,14 +640,14 @@ class _NewsFeedState extends State<NewsFeed>
                               ),
                             ),
                             SizedBox(
-                              width: 4,
+                              width: 1,
                             ),
                             RoundedButton(
                               padding: 10,
-                              height: iconHeight - 16, //iconHeight,
+                              height: iconHeight - 12, //iconHeight,
                               color: Colors.white,
-                              bgColor: Colors.grey
-                                  .shade900, //iconBGColor,//.withOpacity(0.75),
+                              bgColor: Colors.transparent,//Colors.grey
+                                  //.shade900, //iconBGColor,//.withOpacity(0.75),
                               onPressed: () {
                                 Vibrate.feedback(FeedbackType.selection);
                                 showModalBottomSheet(
@@ -679,7 +679,7 @@ class _NewsFeedState extends State<NewsFeed>
                               assetPath: 'images/drumm_logo.png',
                             ),
                             SizedBox(
-                              width: 4,
+                              width: 1,
                             ),
                             GestureDetector(
                               onTap: () {
@@ -1134,7 +1134,7 @@ class _NewsFeedState extends State<NewsFeed>
       ),
       itemsDecoration: MultiSelectDecorations(
         decoration: BoxDecoration(
-            color: COLOR_PRIMARY_DARK, //Colors.grey.shade900,
+            color: Colors.black,//COLOR_PRIMARY_DARK, //Colors.grey.shade900,
             border:
                 Border.all(color: Colors.grey.shade900), //Color(0xff2f2f2f)),
             borderRadius: BorderRadius.circular(multiSelectRadius)),
@@ -1442,7 +1442,10 @@ class _NewsFeedState extends State<NewsFeed>
     jam.articleId = aBand.article?.articleId;
     jam.startedBy = aBand.article?.source;
     jam.imageUrl = aBand.article?.imageUrl;
-    jam.question = aBand.article?.question;
+    if(aBand.article?.question != null)
+      jam.question = aBand.article?.question;
+    else
+      jam.question = aBand.article?.title;
     jam.lastActive = Timestamp.now();
     jam.count = 0;
     jam.membersID = [];
