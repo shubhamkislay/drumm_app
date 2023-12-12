@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/custom/helper/image_uploader.dart';
 import 'package:drumm_app/model/Drummer.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
@@ -14,35 +15,35 @@ import 'model/jam.dart';
 
 class NotificationItem extends StatefulWidget {
   String message;
-  NotificationItem({Key? key,required this.message}) : super(key: key);
+  NotificationItem({Key? key, required this.message}) : super(key: key);
 
   @override
   State<NotificationItem> createState() => _NotificationItemState();
 }
 
 class _NotificationItemState extends State<NotificationItem> {
-  String drummerImage="";
-  String drummerUsername ="";
+  String drummerImage = "";
+  String drummerUsername = "";
+  Jam remoteJam = Jam();
   Drummer? drummer;
   @override
   Widget build(BuildContext context) {
-
     final Map<String, dynamic> jsonMessage = jsonDecode(widget.message);
     final Map<String, dynamic> dataJson = jsonMessage['data'] ?? {};
     String drummerID = dataJson["drummerID"].toString();
     bool open = jsonDecode(dataJson["open"]);
     Map<String, dynamic> json = jsonDecode(dataJson["jam"]);
     Jam jam = Jam.fromJson(json);
+    getRemoteDrumm(jam);
     getDrummer(drummerID);
     return Wrap(
       children: [
         Container(
           padding: EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: Colors.grey.shade900,width: 1)
-          ),
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: Colors.grey.shade900, width: 1)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -57,41 +58,42 @@ class _NotificationItemState extends State<NotificationItem> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if(drummerImage.length>1)
-                    ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: CachedNetworkImage(
-                          imageUrl: drummerImage,
-                          fit: BoxFit.cover,
-                          width: 20,
-                          height: 20,
-                        )),
+                    if (drummerImage.length > 1)
+                      ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: CachedNetworkImage(
+                            imageUrl: drummerImage,
+                            fit: BoxFit.cover,
+                            width: 20,
+                            height: 20,
+                          )),
                     SizedBox(
                       width: 4,
                     ),
-                    if(drummerUsername.length>1)
-                    GestureDetector(
-                      onTap: () {
-                        if (jam.jamId != ConnectToChannel.channelID) {
-                          joinRoom(jam, open, false);
-                          FirebaseDBOperations.sendNotificationToTopic(jam,false,open);
-                        }
-                      },
-                      child: Text(
-                        "${drummerUsername} joined the drumm",
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        softWrap: true,
-                        overflow: TextOverflow.ellipsis,
+                    if (drummerUsername.length > 1)
+                      GestureDetector(
+                        onTap: () {
+                          if (jam.jamId != ConnectToChannel.channelID) {
+                            joinRoom(jam, open, false);
+                          }
+                        },
+                        child: Text(
+                          "${drummerUsername} joined the drumm",
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
                     SizedBox(
                       width: 4,
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 8,),
+              SizedBox(
+                height: 8,
+              ),
               Row(
                 children: [
                   Expanded(
@@ -102,43 +104,43 @@ class _NotificationItemState extends State<NotificationItem> {
                         Row(
                           children: [
                             ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: CachedNetworkImage(
-                                  imageUrl: jam.imageUrl??"",
-                                  fit: BoxFit.cover,
+                              borderRadius: BorderRadius.circular(16),
+                              child: CachedNetworkImage(
+                                imageUrl: jam.imageUrl ?? "",
+                                fit: BoxFit.cover,
+                                width: 72,
+                                height: 72,
+                                errorWidget: (context, url, error) => Container(
                                   width: 72,
                                   height: 72,
-                                  errorWidget: (context,url,error) => Container(width: 72,
-                                    height: 72,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
                                     color: COLOR_PRIMARY_DARK,
-                                  ),),
+                                  ),
                                 ),
+                              ),
                             ),
                             SizedBox(
                               width: 4,
                             ),
                             Expanded(
                                 child: GestureDetector(
-                                  onTap: () {
-                                    if (jam.jamId != ConnectToChannel.channelID) {
-                                      joinRoom(jam, open, false);
-                                      FirebaseDBOperations.sendNotificationToTopic(jam,false,open);
-                                    }
-                                  },
-                                  child: Text(
-                                    "${jam.question}",
-                                    textAlign: TextAlign.center,
-                                    maxLines: 3,
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                )),
+                              onTap: () {
+                                if (jam.jamId != ConnectToChannel.channelID) {
+                                  joinRoom(jam, open, false);
+                                }
+                              },
+                              child: Text(
+                                "${jam.question}",
+                                textAlign: TextAlign.center,
+                                maxLines: 3,
+                                softWrap: true,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            )),
                             SizedBox(
                               width: 4,
                             ),
-
                           ],
                         ),
                       ],
@@ -148,7 +150,6 @@ class _NotificationItemState extends State<NotificationItem> {
                     onTap: () {
                       if (jam.jamId != ConnectToChannel.channelID) {
                         joinRoom(jam, open, false);
-                        FirebaseDBOperations.sendNotificationToTopic(jam,false,open);
                       }
                     },
                     child: Padding(
@@ -156,8 +157,7 @@ class _NotificationItemState extends State<NotificationItem> {
                       child: Text(
                         "Drop in",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
+                            fontWeight: FontWeight.bold, color: Colors.white),
                       ),
                     ),
                   )
@@ -169,7 +169,45 @@ class _NotificationItemState extends State<NotificationItem> {
       ],
     );
   }
-  void joinRoom(Jam jam, bool open,bool ring) {
+
+  void joinRoom(Jam jam, bool open, bool ring) async {
+    Jam rJam = await FirebaseDBOperations.getDrummsFromJamId(jam);
+    if (!FirebaseDBOperations.isTimestampWithin1Minute(
+        rJam.lastActive ?? Timestamp.now())) {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.grey.shade900,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: ClipRRect(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+              child: Container(
+                height: 200,
+                padding: EdgeInsets.all(36),
+                color: Colors.grey.shade900,
+                child: Center(
+                  child: Text(
+                    "This drumm has ended.",
+                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22,
+                    color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+
+      return;
+    }
+
+    FirebaseDBOperations.sendNotificationToTopic(jam, false, open);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -180,13 +218,13 @@ class _NotificationItemState extends State<NotificationItem> {
       builder: (BuildContext context) {
         return Padding(
           padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: ClipRRect(
             borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
             child: JamRoomPage(
               jam: jam,
               open: open,
-              ring:ring,
+              ring: ring,
             ),
           ),
         );
@@ -194,12 +232,19 @@ class _NotificationItemState extends State<NotificationItem> {
     );
   }
 
-  void getDrummer(String drummerID) async{
+  void getDrummer(String drummerID) async {
     drummer = await FirebaseDBOperations.getDrummer(drummerID);
     setState(() {
       drummerImage = modifyImageUrl(drummer?.imageUrl ?? "", "100x100");
       drummerUsername = drummer?.username ?? "";
     });
+  }
 
+  void getRemoteDrumm(Jam jam) async {
+    Jam fetchedJam = await FirebaseDBOperations.getDrummsFromJamId(jam);
+
+    setState(() {
+      remoteJam = fetchedJam;
+    });
   }
 }

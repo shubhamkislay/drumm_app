@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/custom/helper/remove_duplicate.dart';
@@ -53,31 +54,8 @@ class _DrummCardState extends State<DrummCard> {
             if(widget.jamCallback!=null)
               widget.jamCallback!(widget.jam);
 
-            bool isOpen = false;
+            joinDrumm();
 
-            if(widget.open!=null)
-              isOpen = widget.open??false;
-
-            FirebaseDBOperations.sendNotificationToTopic(widget.jam,false,widget.open??false);
-
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.grey.shade900,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
-              ),
-              builder: (BuildContext context) {
-                return Padding(
-                  padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
-                    child: JamRoomPage(jam: widget.jam, open: isOpen,),
-                  ),
-                );
-              },
-            );
           },
           child: Container(
             padding: EdgeInsets.all(4),
@@ -165,6 +143,70 @@ class _DrummCardState extends State<DrummCard> {
           ),
         ),
       ),
+    );
+  }
+
+  void joinDrumm() async {
+
+    Jam rJam = await FirebaseDBOperations.getDrummsFromJamId(widget.jam);
+    if (!FirebaseDBOperations.isTimestampWithin1Minute(
+        rJam.lastActive ?? Timestamp.now())) {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.grey.shade900,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: ClipRRect(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+              child: Container(
+                height: 200,
+                padding: EdgeInsets.all(36),
+                color: Colors.grey.shade900,
+                child: Center(
+                  child: Text(
+                    "This drumm has ended.",
+                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22,
+                        color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+
+      return;
+    }
+
+    bool isOpen = false;
+
+    if(widget.open!=null)
+      isOpen = widget.open??false;
+    FirebaseDBOperations.sendNotificationToTopic(widget.jam,false,widget.open??false);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.grey.shade900,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: ClipRRect(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+            child: JamRoomPage(jam: widget.jam, open: isOpen,),
+          ),
+        );
+      },
     );
   }
 }

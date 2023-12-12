@@ -433,6 +433,18 @@ class FirebaseDBOperations {
     return filterList;
   }
 
+  static Future<Jam> getDrummsFromJamId(Jam jam) async {
+    var data = await FirebaseFirestore.instance
+        .collection('openDrumm')
+    .doc(jam.jamId)
+        .get();
+
+    Jam fetchedJam = Jam.fromSnapshot(data);
+
+
+    return fetchedJam;
+  }
+
   static Future<List<Jam>> getOpenDrummsFromBands() async {
     print("getJamsFromBand triggered");
 

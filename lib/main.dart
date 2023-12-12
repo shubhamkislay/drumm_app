@@ -147,8 +147,12 @@ class _MyAppState extends State<MyApp>
     Jam jam = Jam.fromJson(json);
     print("Handling a background message title: ${jam.title}");
     bool ring = jsonDecode(message.data["ring"]);
+    String drummerID = message.data["drummerID"].toString();
 
-    addToNotification(message);
+    if (FirebaseAuth.instance.currentUser?.uid == drummerID)
+      addToNotification(message);
+
+    print("Drummer ID: ${drummerID}\nUID: ${FirebaseAuth.instance.currentUser?.uid}" );
 
     //Map userMap = jsonDecode(shared_User.getString('user'));
     //
@@ -262,6 +266,33 @@ class _MyAppState extends State<MyApp>
           ConnectToChannel.leaveChannel();
           FlutterCallkitIncoming.endAllCalls();
           break;
+        case Event.actionDidUpdateDevicePushTokenVoip:
+          // TODO: Handle this case.
+          break;
+        case Event.actionCallTimeout:
+          // TODO: Handle this case.
+          break;
+        case Event.actionCallCallback:
+          // TODO: Handle this case.
+          break;
+        case Event.actionCallToggleHold:
+          // TODO: Handle this case.
+          break;
+        case Event.actionCallToggleMute:
+          // TODO: Handle this case.
+          break;
+        case Event.actionCallToggleDmtf:
+          // TODO: Handle this case.
+          break;
+        case Event.actionCallToggleGroup:
+          // TODO: Handle this case.
+          break;
+        case Event.actionCallToggleAudioSession:
+          // TODO: Handle this case.
+          break;
+        case Event.actionCallCustom:
+          // TODO: Handle this case.
+          break;
       }
     });
   }
@@ -361,9 +392,10 @@ class _MyAppState extends State<MyApp>
     Map<String, dynamic> json = jsonDecode(message.data["jam"]);
     Jam jam = Jam.fromJson(json);
 
-    addToNotification(message);
-    if (drummerID != FirebaseAuth.instance.currentUser?.uid) {
+    print("Drummer ID: ${drummerID}\nUID: ${FirebaseAuth.instance.currentUser?.uid}" );
 
+    if (drummerID != FirebaseAuth.instance.currentUser?.uid) {
+      addToNotification(message);
       Drummer drummer = await FirebaseDBOperations.getDrummer(drummerID);
       String drummerImage = drummer.imageUrl ?? "";
 
