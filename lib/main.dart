@@ -149,7 +149,7 @@ class _MyAppState extends State<MyApp>
     bool ring = jsonDecode(message.data["ring"]);
     String drummerID = message.data["drummerID"].toString();
 
-    if (FirebaseAuth.instance.currentUser?.uid == drummerID)
+    if (FirebaseAuth.instance.currentUser?.uid != drummerID)
       addToNotification(message);
 
     print("Drummer ID: ${drummerID}\nUID: ${FirebaseAuth.instance.currentUser?.uid}" );

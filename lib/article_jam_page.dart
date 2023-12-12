@@ -31,7 +31,7 @@ class ArticleJamPageState extends State<ArticleJamPage> {
   String profileImageUrl = "";
   Article? article = Article();
 
-  double curve = 32;
+  double curve = 24;
 
   @override
   Widget build(BuildContext context) {
@@ -60,9 +60,10 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                       height: 110,
                       margin: EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(curve),
-                        color:  COLOR_PRIMARY_DARK,
-                        border: Border.all(color: Colors.grey.shade900, width: 1),
+                        borderRadius: BorderRadius.circular(curve),
+                        color: COLOR_PRIMARY_DARK,
+                        border:
+                            Border.all(color: Colors.grey.shade900, width: 1),
                       ),
                       child: Row(
                         children: [
@@ -72,7 +73,7 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                           Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(curve-4),
+                              borderRadius: BorderRadius.circular(curve - 4),
                               child: CachedNetworkImage(
                                 height: double.infinity,
                                 width: 100,
@@ -80,7 +81,8 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                                     "", //widget.article?.imageUrl ?? "",
                                 fit: BoxFit.cover,
                                 alignment: Alignment.topCenter,
-                                placeholder: (context,url) => Container(color: COLOR_PRIMARY_DARK),
+                                placeholder: (context, url) =>
+                                    Container(color: COLOR_PRIMARY_DARK),
                                 errorWidget: (context, url, error) {
                                   return Container(color: COLOR_PRIMARY_DARK);
                                 },
@@ -111,8 +113,24 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                       ),
                     ),
                   ),
+                SizedBox(
+                  width: 4,
+                ),
+                if (article?.question != null)
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: ExpandableText(
+                      article?.question ?? "",
+                      expandText: 'by Drumm AI',
+                      collapseText: 'by Drumm AI',
+                      maxLines: 4,
+                      style: TextStyle(fontSize: 18),
+                      linkColor: Colors.blue,
+                    ),
+                  ),
                 const SizedBox(
-                  height: 4,
+                  height: 24,
                 ),
                 Container(
                     alignment: Alignment.center,
@@ -182,15 +200,17 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                               crossAxisSpacing: 3,
                               children: jamImageCards),
                         ),
-                     if(true) if (jamImageCards.isEmpty)
-                        Container(
-                          height: 350,
-                          color: COLOR_PRIMARY_DARK,
-                          width: MediaQuery.of(context).size.width,
-                          child: Center(
-                            child: Text("There are currently no active drumms"),
+                      if (true)
+                        if (jamImageCards.isEmpty)
+                          Container(
+                            height: 350,
+                            color: COLOR_PRIMARY_DARK,
+                            width: MediaQuery.of(context).size.width,
+                            child: Center(
+                              child:
+                                  Text("There are currently no active drumms"),
+                            ),
                           ),
-                        ),
                       const SizedBox(
                         height: 100,
                       ),
@@ -202,7 +222,8 @@ class ArticleJamPageState extends State<ArticleJamPage> {
           ),
           Container(
             width: double.infinity,
-            alignment: /*jamImageCards.isNotEmpty ?*/ Alignment.bottomCenter,//:Alignment.center,
+            alignment: /*jamImageCards.isNotEmpty ?*/
+                Alignment.bottomCenter, //:Alignment.center,
             margin: EdgeInsets.symmetric(horizontal: 0, vertical: 32),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -212,27 +233,31 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                   label: 'Join Open Drumm',
                   onPressed: () {
                     Jam jam = Jam();
-                    jam.broadcast=false;
-                    jam.title=widget.article?.title;
-                    jam.bandId=widget.article?.category;
-                    jam.jamId=widget.article?.jamId;
-                    jam.articleId=widget.article?.jamId;
-                    jam.startedBy=widget.article?.source;
-                    jam.imageUrl=widget.article?.imageUrl;
-                    jam.question = widget.article?.question;
-                    jam.count=0;
-                    jam.lastActive = Timestamp.now();
+                    jam.broadcast = false;
+                    jam.title = widget.article?.title;
+                    jam.bandId = widget.article?.category;
+                    jam.jamId = widget.article?.jamId;
+                    jam.articleId = widget.article?.articleId;
+                    jam.startedBy = widget.article?.source;
+                    jam.imageUrl = widget.article?.imageUrl;
+                    if (widget.article?.question != null)
+                      jam.question = widget.article?.question;
+                    else
+                      jam.question = widget.article?.title;
+                    jam.count = 1;
                     jam.membersID = [];
+                    jam.lastActive = Timestamp.now();
+
                     //FirebaseDBOperations.createOpenDrumm(jam);
-                    FirebaseDBOperations.addMemberToJam
-                      (jam.jamId??"",FirebaseAuth.instance.currentUser?.uid??"",true).then((value) {
-                          print("Added the member ${value}");
-                          if(!value){
-                            FirebaseDBOperations.createOpenDrumm(jam);
-
-                          }
-
-                          FirebaseDBOperations.sendNotificationToTopic(jam,false,true);
+                    FirebaseDBOperations.addMemberToJam(jam.jamId ?? "",
+                            FirebaseAuth.instance.currentUser?.uid ?? "", true)
+                        .then((value) {
+                      print("Added the member ${value}");
+                      if (!value) {
+                        FirebaseDBOperations.createOpenDrumm(jam);
+                        FirebaseDBOperations.sendNotificationToTopic(
+                            jam, false, true);
+                      }
                     });
 
                     Navigator.pop(context);
@@ -241,15 +266,13 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                       isScrollControlled: true,
                       backgroundColor: COLOR_PRIMARY_DARK,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(0.0)),
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(0.0)),
                       ),
                       builder: (BuildContext context) {
                         return Padding(
                           padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context)
-                                  .viewInsets
-                                  .bottom),
+                              bottom: MediaQuery.of(context).viewInsets.bottom),
                           child: ClipRRect(
                             borderRadius: BorderRadius.vertical(
                                 top: Radius.circular(0.0)),
@@ -279,17 +302,17 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                       backgroundColor: COLOR_PRIMARY_DARK,
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(0.0)),
+                            BorderRadius.vertical(top: Radius.circular(0.0)),
                       ),
                       builder: (BuildContext context) {
                         return Padding(
                           padding: EdgeInsets.only(
                               bottom: MediaQuery.of(context).viewInsets.bottom),
                           child: ClipRRect(
-                            borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(0.0)),
+                            borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(0.0)),
                             child: CreateJam(
-                              jamId: widget.article?.jamId,
+                                jamId: widget.article?.jamId,
                                 title: widget.article?.title,
                                 articleId: widget.article?.articleId,
                                 imageUrl: widget.article?.imageUrl),
@@ -301,7 +324,10 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                   child: Container(
                     child: Icon(Icons.add),
                     padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(shape: BoxShape.circle,color: Color(COLOR_PRIMARY_VAL)),),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(COLOR_PRIMARY_VAL)),
+                  ),
                 )
               ],
             ),
@@ -310,13 +336,9 @@ class ArticleJamPageState extends State<ArticleJamPage> {
             height: 50,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  COLOR_PRIMARY_DARK,
-                  Colors.transparent
-                ]
-              ),
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [COLOR_PRIMARY_DARK, Colors.transparent]),
             ),
           ),
           Row(
@@ -334,21 +356,19 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                   ),
                 ),
               ),
-              Expanded(child: Container(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 6),
-                child: ExpandableText(
-                  article?.source ?? "",
-                  expandText: 'show more',
-                  collapseText: 'show less',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: ExpandableText(
+                    article?.source ?? "",
+                    expandText: 'show more',
+                    collapseText: 'show less',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    maxLines: 3,
+                    linkColor: Colors.blue,
                   ),
-                  maxLines: 3,
-                  linkColor: Colors.blue,
                 ),
-              ),),
+              ),
             ],
           ),
         ],

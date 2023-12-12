@@ -40,6 +40,8 @@ class BandDetailsPageState extends State<BandDetailsPage> {
   Drummer drummer = Drummer();
 
   bool joined = false;
+  List<JamImageCard> jamImageCards = [];
+  List<Jam> jams = [];
 
   @override
   Widget build(BuildContext context) {
@@ -509,8 +511,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
     );
   }
 
-  List<JamImageCard> jamImageCards = [];
-  List<Jam> jams = [];
+
 
   @override
   void initState() {
@@ -522,12 +523,12 @@ class BandDetailsPageState extends State<BandDetailsPage> {
     });
     print("Band hooks ${band?.hooks?.elementAt(0)}");
     checkIfUserisMember();
-    getBands(widget.band?.bandId);
+    getJams(widget.band?.bandId);
     getDrummer(widget.band?.foundedBy ?? "");
     getMembers();
   }
 
-  void getBands(String? uid) async {
+  void getJams(String? uid) async {
     List<Jam> fetchedJam =
         await FirebaseDBOperations.getJamsFromBand(uid ?? ""); //getUserBands();
     jams = fetchedJam;
