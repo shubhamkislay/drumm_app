@@ -188,6 +188,7 @@ flutter:
     - images/undo.png
     - images/globe_anim.json
     - images/like_btn.png
+    - images/turn-back.png
   #   - images/a_dot_ham.jpeg
 
   fonts:

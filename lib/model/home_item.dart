@@ -69,7 +69,7 @@ class _HomeItemState extends State<HomeItem> {
           decoration: BoxDecoration(
             color: Colors.black, //COLOR_PRIMARY_DARK, //Color(0xff012036FF)
             borderRadius: BorderRadius.circular(curve),
-            border: Border.all(color: Colors.grey.shade900, width: 1.5),
+            //border: Border.all(color: Colors.grey.shade900, width: 1.5),
           ),
           child: Stack(
             children: [
@@ -77,6 +77,11 @@ class _HomeItemState extends State<HomeItem> {
                 borderRadius: BorderRadius.circular(curve),
                 child: Container(
                   margin: EdgeInsets.only(bottom: 1),
+                  decoration: BoxDecoration(
+                    color: Colors.black, //COLOR_PRIMARY_DARK, //Color(0xff012036FF)
+                    borderRadius: BorderRadius.circular(curve),
+                    border: Border.all(color: Colors.grey.shade900, width: 2.5),
+                  ),
                   child: RefreshIndicator(
                     onRefresh: widget.onRefresh,
                     child: SingleChildScrollView(
@@ -112,31 +117,34 @@ class _HomeItemState extends State<HomeItem> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Row(
-                                        children: [
-                                          Flexible(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                  "${widget.articleBand.article?.source}",
-                                                  style: TextStyle(
-                                                    color: Colors.white
-                                                        .withOpacity(0.95),
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.bold,
-                                                  )),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8),
+                                        child: Row(
+                                          children: [
+                                            Flexible(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(2.0),
+                                                child: Text(
+                                                    "${widget.articleBand.article?.source}",
+                                                    style: TextStyle(
+                                                      color: Colors.white
+                                                          .withOpacity(0.95),
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.bold,
+                                                    )),
+                                              ),
                                             ),
-                                          ),
-                                          Text("•"),
-                                          SizedBox(
-                                            width: 4,
-                                          ),
-                                          InstagramDateTimeWidget(
-                                              publishedAt: widget.articleBand
-                                                      .article?.publishedAt
-                                                      .toString() ??
-                                                  ""),
-                                        ],
+                                            Text("•"),
+                                            SizedBox(
+                                              width: 4,
+                                            ),
+                                            InstagramDateTimeWidget(
+                                                publishedAt: widget.articleBand
+                                                        .article?.publishedAt
+                                                        .toString() ??
+                                                    ""),
+                                          ],
+                                        ),
                                       ),
                                       const SizedBox(
                                         height: 6,
@@ -246,7 +254,7 @@ class _HomeItemState extends State<HomeItem> {
                                       },
                                       errorWidget: (context, url, error) {
                                         return Container(
-                                          height: 150,
+                                          height: 0,
                                           width: double.infinity,
                                           //padding: const EdgeInsets.all(32),
                                           decoration: BoxDecoration(

@@ -508,7 +508,7 @@ class _NewsFeedState extends State<NewsFeed>
                                 cardsCount: (articleBands.length > 0)
                                     ? articleBands.length
                                     : 0,
-                                duration: Duration(milliseconds: 250),
+                                duration: Duration(milliseconds: 200),
                                 maxAngle: 45,
                                 scale: 0.75,
                                 numberOfCardsDisplayed:
@@ -602,7 +602,7 @@ class _NewsFeedState extends State<NewsFeed>
                                 Vibrate.feedback(FeedbackType.warning);
                                 controller?.undo();
                               },
-                              assetPath: 'images/undo.png',
+                              assetPath: 'images/turn-back.png',
                             ),
                             SizedBox(
                               width: 4,
