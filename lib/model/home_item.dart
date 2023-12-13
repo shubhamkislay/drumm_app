@@ -65,7 +65,7 @@ class _HomeItemState extends State<HomeItem> {
         child: Container(
           height: double.infinity,
           //padding: EdgeInsets.only(bottom: 0),
-          margin: EdgeInsets.only(bottom: 90),
+          margin: EdgeInsets.only(bottom: 100),
           decoration: BoxDecoration(
             color: Colors.black, //COLOR_PRIMARY_DARK, //Color(0xff012036FF)
             borderRadius: BorderRadius.circular(curve),
@@ -78,7 +78,8 @@ class _HomeItemState extends State<HomeItem> {
                 child: Container(
                   margin: EdgeInsets.only(bottom: 1),
                   decoration: BoxDecoration(
-                    color: Colors.black, //COLOR_PRIMARY_DARK, //Color(0xff012036FF)
+                    color: Colors
+                        .black, //COLOR_PRIMARY_DARK, //Color(0xff012036FF)
                     borderRadius: BorderRadius.circular(curve),
                     border: Border.all(color: Colors.grey.shade900, width: 2.5),
                   ),
@@ -123,14 +124,16 @@ class _HomeItemState extends State<HomeItem> {
                                           children: [
                                             Flexible(
                                               child: Padding(
-                                                padding: const EdgeInsets.all(2.0),
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
                                                 child: Text(
                                                     "${widget.articleBand.article?.source}",
                                                     style: TextStyle(
                                                       color: Colors.white
                                                           .withOpacity(0.95),
                                                       fontSize: 14,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     )),
                                               ),
                                             ),
@@ -167,27 +170,24 @@ class _HomeItemState extends State<HomeItem> {
                                           ),
                                         ],
                                       ),
-
                                     ],
                                   ),
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 2),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 2),
                                 child: ExpandableText(
-                                  (widget.articleBand.article
-                                      ?.description !=
-                                      null)
+                                  (widget.articleBand.article?.description !=
+                                          null)
                                       ? "${widget.articleBand.article?.description}"
-                                      : (widget.articleBand.article
-                                      ?.content !=
-                                      null)
-                                      ? "${widget.articleBand.article?.content}"
-                                      : "",
+                                      : (widget.articleBand.article?.content !=
+                                              null)
+                                          ? "${widget.articleBand.article?.content}"
+                                          : "",
                                   textAlign: TextAlign.left,
                                   style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white70),
+                                      fontSize: 14, color: Colors.white70),
                                   expandText: 'See more',
                                   collapseText: 'Hide',
                                   maxLines: 1,
@@ -283,11 +283,14 @@ class _HomeItemState extends State<HomeItem> {
                                   padding: EdgeInsets.all(12),
                                   alignment: Alignment.centerLeft,
                                   decoration: BoxDecoration(
-                                    //color: COLOR_PRIMARY_DARK,//Colors.grey.shade900.withOpacity(0.75),
-                                    borderRadius: BorderRadius.circular(0),
-                                    color:Colors.grey.shade900,
-                                    // border: Border.all(color:  Colors.grey.shade900.withOpacity(0.0),width: 2),
-                                  ),
+                                      //color: COLOR_PRIMARY_DARK,//Colors.grey.shade900.withOpacity(0.75),
+                                      borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(curve),
+                                        bottomLeft: Radius.circular(curve),
+                                      ),
+                                      color:COLOR_PRIMARY_DARK,
+                                      // border: Border.all(color:  Colors.grey.shade900.withOpacity(0.0),width: 2),
+                                      ),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:

@@ -104,12 +104,11 @@ class _NewsFeedState extends State<NewsFeed>
 
   bool newArticlesAvailable = false;
 
-  double multiSelectRadius = 14;
+  double multiSelectRadius = 18;
 
   bool likedArticle = false;
   double fontSize = 10;
-  Color iconBGColor = Colors
-      .white; //Colors.grey.shade900;//.withOpacity(0.95); //COLOR_PRIMARY_DARK;
+  Color iconBGColor = Colors.grey.shade900;//COLOR_PRIMARY_DARK;
   double iconHeight = 58;
   double sizedBoxedHeight = 12;
   double curve = 20;
@@ -328,7 +327,7 @@ class _NewsFeedState extends State<NewsFeed>
                               );
                             },
                             child: Container(
-                              padding: EdgeInsets.all(1.5),
+                              padding: EdgeInsets.all(2),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(24),
                                   gradient: (liveDrummsExist)
@@ -350,9 +349,10 @@ class _NewsFeedState extends State<NewsFeed>
                                 //   Icons.data_saver_off_rounded,
                                 //   size: iconSize - 4,
                                 // ),
-                                child: Lottie.asset(
-                                  'images/wave_drumm.json',
+                                child: Image.asset(
+                                  'images/drumm_logo.png',
                                   height: 20,
+                                  color: Colors.white,
                                   fit: BoxFit.contain,
                                 ),
                               ),
@@ -595,7 +595,7 @@ class _NewsFeedState extends State<NewsFeed>
                             RoundedButton(
                               padding: 14,
                               height: iconHeight - 12, //iconHeight,
-                              color: (undoIndex == 0 ) ? Colors.grey:Colors.deepOrangeAccent,
+                              color: (undoIndex == 0 ) ? Colors.white:Colors.red,
                               shadowColor: Colors.grey.shade800.withOpacity(0.2),
                               bgColor: iconBGColor, //.withOpacity(0.75),
                               onPressed: () {
@@ -605,46 +605,56 @@ class _NewsFeedState extends State<NewsFeed>
                               assetPath: 'images/turn-back.png',
                             ),
                             SizedBox(
-                              width: 4,
+                              width: 2,
                             ),
                             GestureDetector(
                               onTap: () {
-                                Vibrate.feedback(FeedbackType.selection);
+                                Vibrate.feedback(FeedbackType.impact);
                                 controller?.swipeLeft();
                               },
                               child: Container(
-                                padding: EdgeInsets.all(0),
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(36),
+                                    borderRadius: BorderRadius.circular(42),
+                                    border: Border.all(color: Colors.deepOrange,width: 2)),
+                                child: Container(
+                                  padding: EdgeInsets.all(0),
+                                  margin: EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(42),
                                     boxShadow: [
                                       BoxShadow(
-                                          color: Colors.grey.shade800
-                                              .withOpacity(0.75),
+                                          color: Colors.grey.shade900,
                                           spreadRadius: 2,
                                           blurRadius: 4),
                                     ],
                                     // color: Color(COLOR_PRIMARY_VAL),//.withOpacity(0.95),
                                     gradient: LinearGradient(colors: [
-                                      Colors.pinkAccent,
+                                      Colors.orange,
                                       Colors.red,
-                                    ])),
-                                // child: Icon(
-                                //   Icons.data_saver_off_rounded,
-                                //   size: iconSize - 4,
-                                // ),
-                                child: Lottie.asset(
-                                  'images/globe_anim.json',
-                                  height: 68,
-                                  fit: BoxFit.contain,
+                                      Colors.pinkAccent,
+                                      // Colors.grey.shade900,
+                                      // Colors.grey.shade900,
+
+                                    ]),
+                                  ),
+                                  // child: Icon(
+                                  //   Icons.data_saver_off_rounded,
+                                  //   size: iconSize - 4,
+                                  // ),
+                                  child: Lottie.asset(
+                                    'images/globe_anim.json',
+                                    height: 68,
+                                    fit: BoxFit.contain,
+                                  ),
                                 ),
                               ),
                             ),
                             SizedBox(
-                              width: 1,
+                              width: 2,
                             ),
                             RoundedButton(
                               padding: 10,
-                              height: iconHeight - 12, //iconHeight,
+                              height: iconHeight - 6, //iconHeight,
                               color: Colors.white,
                               bgColor: Colors.transparent,//Colors.grey
                                   //.shade900, //iconBGColor,//.withOpacity(0.75),
@@ -679,7 +689,7 @@ class _NewsFeedState extends State<NewsFeed>
                               assetPath: 'images/drumm_logo.png',
                             ),
                             SizedBox(
-                              width: 1,
+                              width: 2,
                             ),
                             GestureDetector(
                               onTap: () {
@@ -687,35 +697,42 @@ class _NewsFeedState extends State<NewsFeed>
                                 controller?.swipeRight();
                               },
                               child: Container(
-                                padding: EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(36),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.grey.shade800
-                                              .withOpacity(0.75),
-                                          spreadRadius: 2,
-                                          blurRadius: 4),
-                                    ],
-                                    // color: Color(COLOR_PRIMARY_VAL),//.withOpacity(0.95),
-                                    gradient: LinearGradient(colors: [
-                                      Colors.blue.shade800,
-                                      Colors.lightBlue,
+                                    borderRadius: BorderRadius.circular(42),
+                                    border: Border.all(color: Colors.blue,width: 2)),
+                                child: Container(
+                                  padding: EdgeInsets.all(12),
+                                  margin: EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(42),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.grey.shade900,
+                                            spreadRadius: 2,
+                                            blurRadius: 4),
+                                      ],
+                                      // color: Color(COLOR_PRIMARY_VAL),//.withOpacity(0.95),
+                                      gradient: LinearGradient(colors: [
+                                        Colors.indigo,
+                                        Colors.blue.shade700,
+                                        Colors.lightBlue,
 
-                                    ])),
-                                // child: Icon(
-                                //   Icons.data_saver_off_rounded,
-                                //   size: iconSize - 4,
-                                // ),
-                                child: Lottie.asset(
-                                  'images/wave_drumm.json',
-                                  height: 44,
-                                  fit: BoxFit.contain,
+                                      ]),
+                                  ),
+                                  // child: Icon(
+                                  //   Icons.data_saver_off_rounded,
+                                  //   size: iconSize - 4,
+                                  // ),
+                                  child: Lottie.asset(
+                                    'images/wave_drumm.json',
+                                    height: 44,
+                                    fit: BoxFit.contain,
+                                  ),
                                 ),
                               ),
                             ),
                             SizedBox(
-                              width: 4,
+                              width: 2,
                             ),
                             RoundedButton(
                               padding: 12,
@@ -723,7 +740,7 @@ class _NewsFeedState extends State<NewsFeed>
                               //shadowColor: Colors.grey.shade800.withOpacity(0.75),
                               color: articleOnScreen.liked ?? false
                                   ? Colors.red
-                                  : Colors.grey.shade500,
+                                  : Colors.white,
                               bgColor: iconBGColor,
                               hoverColor: Colors.redAccent,
                               onPressed: () {
@@ -1136,7 +1153,7 @@ class _NewsFeedState extends State<NewsFeed>
         decoration: BoxDecoration(
             color: Colors.black,//COLOR_PRIMARY_DARK, //Colors.grey.shade900,
             border:
-                Border.all(color: Colors.grey.shade900), //Color(0xff2f2f2f)),
+                Border.all(color: Colors.grey.shade900,width: 2.5), //Color(0xff2f2f2f)),
             borderRadius: BorderRadius.circular(multiSelectRadius)),
         selectedDecoration: BoxDecoration(
             gradient: LinearGradient(colors: [
