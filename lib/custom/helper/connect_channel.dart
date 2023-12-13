@@ -93,6 +93,14 @@ class ConnectToChannel {
     if (!listenOnlyMode) await [Permission.microphone].request();
 
     try {
+      //if (_updateLastActiveTimer!.isActive) {
+        _updateLastActiveTimer!.cancel();
+     // }
+    }catch(e){
+
+    }
+
+    try {
       int chanLen = channelID?.length ?? 0;
       if (chanLen > 0) {
         FirebaseDBOperations.removeMemberFromJam(channelID ?? "",
@@ -205,13 +213,13 @@ class ConnectToChannel {
         }
         _updateLastActiveTimer = Timer.periodic(Duration(seconds: 10), (timer) {
           if (_isJoined) {
-            FirebaseDBOperations.updateLastActive(_channelID!); // Call the updateLastActive function
+            FirebaseDBOperations.updateLastActive(channelID!); // Call the updateLastActive function
           }
         });
 
         // Call the updateLastActive function immediately after joining
         if (_isJoined) {
-          FirebaseDBOperations.updateLastActive(_channelID!);
+          FirebaseDBOperations.updateLastActive(channelID!);
         }
 
       },
@@ -249,6 +257,9 @@ class ConnectToChannel {
           //     FirebaseAuth.instance.currentUser?.uid ?? "", openJam);
         }
         _updateLastActiveTimer?.cancel();
+
+        print("User has left the channel ${_channelID}");
+
         try {
           FirebaseDBOperations.stopListening();
         } catch (e) {
@@ -282,7 +293,7 @@ class ConnectToChannel {
               speaking = true;
             }
             FirebaseDBOperations.updateDrummerSpeaking(speaking);
-            FirebaseDBOperations.updateLastActive(_channelID!);
+            //FirebaseDBOperations.updateLastActive(channelID!);
           } else {
             FirebaseDBOperations.updateDrummerSpeaking(false);
           }

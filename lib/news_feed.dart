@@ -510,7 +510,7 @@ class _NewsFeedState extends State<NewsFeed>
                                     : 0,
                                 duration: Duration(milliseconds: 250),
                                 maxAngle: 45,
-                                scale: 0.85,
+                                scale: 0.75,
                                 numberOfCardsDisplayed:
                                     (articleBands.length > 1)
                                         ? 2
@@ -587,7 +587,7 @@ class _NewsFeedState extends State<NewsFeed>
                         alignment: Alignment.bottomCenter,
                         height: double.maxFinite,
                         padding: const EdgeInsets.only(
-                            left: 0, right: 0, top: 12, bottom: 16),
+                            left: 0, right: 0, top: 4, bottom: 4),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
