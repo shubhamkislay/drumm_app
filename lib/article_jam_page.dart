@@ -113,22 +113,6 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                       ),
                     ),
                   ),
-                SizedBox(
-                  width: 4,
-                ),
-                if (article?.question != null)
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: ExpandableText(
-                      article?.question ?? "",
-                      expandText: 'by Drumm AI',
-                      collapseText: 'by Drumm AI',
-                      maxLines: 4,
-                      style: TextStyle(fontSize: 18),
-                      linkColor: Colors.blue,
-                    ),
-                  ),
                 const SizedBox(
                   height: 24,
                 ),

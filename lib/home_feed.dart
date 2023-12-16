@@ -1268,7 +1268,11 @@ class HomeFeedPageState extends State<HomeFeedPage>
   void requestPermissions() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     NotificationSettings notificationSettings =
-        await messaging.requestPermission();
+        await messaging.requestPermission(
+          announcement: true,
+          carPlay: true,
+          criticalAlert: true,
+        );
     print(notificationSettings.authorizationStatus);
   }
 

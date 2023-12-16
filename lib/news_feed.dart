@@ -510,7 +510,7 @@ class _NewsFeedState extends State<NewsFeed>
                                     : 0,
                                 duration: Duration(milliseconds: 250),
                                 maxAngle: 60,
-                                scale: 0.8,
+                                scale: 1,
                                 numberOfCardsDisplayed:
                                     (articleBands.length > 1)
                                         ? 2
@@ -537,8 +537,6 @@ class _NewsFeedState extends State<NewsFeed>
                                 padding: EdgeInsets.symmetric(
                                     horizontal: horizontalPadding),
                                 cardBuilder: (context, index) {
-                                  print(
-                                      "Index of element $index ${articles.elementAt(index).title}");
                                   try {
                                     if (index >= 0)
                                       return HomeItem(
@@ -572,7 +570,7 @@ class _NewsFeedState extends State<NewsFeed>
                                       return Container();
                                   } catch (e) {
                                     print(
-                                        "//////////////////////////ERROR/////////////////////");
+                                        "//////////////////////////ERROR/////////////////////${e.toString()}");
                                     return Container();
                                   }
                                 },
@@ -1501,7 +1499,11 @@ class _NewsFeedState extends State<NewsFeed>
   void requestPermissions() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     NotificationSettings notificationSettings =
-        await messaging.requestPermission();
+        await messaging.requestPermission(
+          announcement: true,
+          carPlay: true,
+          criticalAlert: true,
+        );
     print(notificationSettings.authorizationStatus);
   }
 

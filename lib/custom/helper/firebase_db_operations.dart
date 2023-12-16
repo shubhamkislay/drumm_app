@@ -125,6 +125,33 @@ class FirebaseDBOperations {
     return algoliaArticles;
   }
 
+  static Future<AlgoliaArticles> getArticleFromAlgoliaForPersonalisedNotificaiton() async {
+    String userToken = await FirebaseAuth.instance.currentUser?.uid ?? "";
+    AlgoliaArticles algoliaArticles = AlgoliaArticles();
+
+      AlgoliaQuery algoliaQuery = algolia.instance
+          .index('articles')
+          .setFacets(['meta'])
+          .setHitsPerPage(1)
+          .setUserToken(userToken)
+          .setDistinct(value: true)
+          .setPersonalizationImpact(value: 75)
+          .setEnablePersonalization(enabled: true);
+
+
+      AlgoliaQuerySnapshot getArticles = await algoliaQuery.getObjects();
+      List<Article> result =
+      List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
+
+
+      algoliaArticles =
+          AlgoliaArticles(articles: result, queryID: getArticles.queryID);
+
+
+
+    return algoliaArticles;
+  }
+
   static Future<AlgoliaArticles> getArticlesByBandHookFromAlgolia(Band selectedBand) async {
     List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
     String userToken = await FirebaseAuth.instance.currentUser?.uid ?? "";
@@ -923,6 +950,53 @@ class FirebaseDBOperations {
     }
   }
 
+  static Future<void> sendNotificationToDeviceToken(
+      Jam jam) async {
+    print("Sending notification");
+    var url = Uri.https('fcm.googleapis.com', '/fcm/send');
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    Drummer drummer = await FirebaseDBOperations.getDrummer(uid ?? "");
+    String deviceToken = drummer.token??"";
+    print("Device Token is: ${deviceToken}");
+
+    Map<String, String> header = {
+      'Content-Type': 'application/json',
+      'Authorization':
+      'key=AAAA8pEyjik:APA91bFjoRwCsioHAgDsWYHhcmy63BQuxL3iUBBaYnE9s2SHMnJtl0oyD39Mdp0KphI53ldusblYoiCCvxNaKJEFVQbGVTrwMcqDu9w_Rpx_Vsjx_9TdE3xI54vqj0lNOPDqAb5GPwOp'
+    };
+
+    String subtitle = "Hey ${drummer.username}! Did you know?";
+    //Due to conversion error, setting the timestamo for lastActive as null
+    jam.lastActive = null;
+    final body = jsonEncode({
+      "to": deviceToken,
+      "notification": {
+        "body": (jam.question!=null) ? "${jam.title}\n\n${jam.question}":"${jam.title}",
+        "title": subtitle,
+        "image": "${jam.imageUrl}"
+      },
+      "priority": "high",
+      "content_available": true,
+      "mutable_content": true,
+      "data": {"jam": jam, "ring": false, "drummerID": uid, "open": true}
+    });
+    var response = await http.post(url, headers: header, body: body);
+
+    if (response.statusCode == 200) {
+      // If the server returns an OK response, then parse the JSON.
+      print("Sent Notification to device Token");
+      Map<String, dynamic> json = jsonDecode(response.body);
+      /*List<dynamic> list = json['choices'];
+    String searchResult = list[0]["text”];*/
+    } else {
+      // If the server did not return an OK response,
+      // then throw an exception.
+      print("Failed to send deviceToken notification ${response.statusCode}");
+      throw Exception(
+          'Failed to send deviceToken notification ${response.statusCode}');
+    }
+  }
+
   static Future<void> sendNotificationToTopic(
       Jam jam, bool ring, bool open) async {
     print("Sending notification");
@@ -1309,6 +1383,19 @@ class FirebaseDBOperations {
 
     drummerSpeaking.update({"speaking": talking});
   }
+
+  static void updateDrummerToken(String token) {
+    try {
+      DocumentReference drummerSpeaking =
+      FirebaseFirestore.instance.collection('users').doc(getCurrentUserID());
+
+      drummerSpeaking.update({"token": token});
+    }catch(e){
+      print("Unable to update device token${e}");
+    }
+  }
+
+
 
   static void addMemberToRoom(String jamId, String memberId) async {
     DocumentReference memberRef =

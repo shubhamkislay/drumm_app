@@ -89,6 +89,7 @@ dependencies:
   algolia_insights: ^0.1.2
   animated_toggle_switch: ^0.8.0
   toggle_switch: ^2.1.0
+  flutter_local_notifications: ^16.2.0
 
 dev_dependencies:
   flutter_test:

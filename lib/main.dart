@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drumm_app/model/algolia_article.dart';
 import 'package:drumm_app/register_user.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,6 +18,7 @@ import 'package:flutter_callkit_incoming/entities/call_event.dart';
 import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
 import 'package:flutter_callkit_incoming/entities/ios_params.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:drumm_app/AppleWatchMenu.dart';
 import 'package:drumm_app/InterestPage.dart';
@@ -46,6 +48,7 @@ import 'package:http/http.dart' as http;
 
 import 'custom/helper/connect_channel.dart';
 import 'firebase_options.dart';
+import 'model/article.dart';
 
 Future<String> triggerCloudFunction() async {
   final triggerUrl =
@@ -113,6 +116,18 @@ class _MyAppState extends State<MyApp>
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     setupForegroundNotification();
 
+    try {
+      FirebaseMessaging.instance.getToken().then((token) {
+        print('Device Token FCM: $token');
+        if (token != null) {
+          if(FirebaseAuth.instance.currentUser!=null)
+            FirebaseDBOperations.updateDrummerToken(token);
+        }
+      });
+    }catch(e){
+
+    }
+
     super.initState();
   }
 
@@ -126,15 +141,17 @@ class _MyAppState extends State<MyApp>
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print("/// // onMessageReceived Foreground // ///:  ${message}");
+      try {
+        bool broadcast = jsonDecode(message.data["broadcast"]);
 
-      Map<String, dynamic> json = jsonDecode(message.data["jam"]);
-      Jam jam = Jam.fromJson(json);
-      bool ring = jsonDecode(message.data["ring"]);
-        if (ring) {
-          if (FirebaseAuth.instance.currentUser?.uid != jam.startedBy)
-              startCallingNotification(message);
+        if (broadcast) {
+          setupPersonalisedNotification();
+          return;
+        }else{
+          showForegroundNotification(message);
         }
-      else {
+      }catch(e){
+        print("It's not a broadcast message because ${e.toString()}");
         showForegroundNotification(message);
       }
     });
@@ -143,6 +160,18 @@ class _MyAppState extends State<MyApp>
   @pragma('vm:entry-point')
   Future<void> _firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
+
+    try {
+      bool broadcast = jsonDecode(message.data["broadcast"]);
+
+      if (broadcast) {
+        setupPersonalisedNotification();
+        return;
+      }
+    }catch(e){
+      print("It's not a broadcast message because ${e.toString()}");
+    }
+
     Map<String, dynamic> json = jsonDecode(message.data["jam"]);
     Jam jam = Jam.fromJson(json);
     print("Handling a background message title: ${jam.title}");
@@ -613,6 +642,30 @@ class _MyAppState extends State<MyApp>
     return jsonEncode(jsonMessage);
   }
 
+}
+
+void setupPersonalisedNotification() async {
+  print("///Calling algolia personalised");
+  AlgoliaArticles algoliaArticles = await FirebaseDBOperations.getArticleFromAlgoliaForPersonalisedNotificaiton();
+  Article? personalisedArticle =  algoliaArticles.articles?.elementAt(0);
+  if(personalisedArticle!=null){
+
+    Jam jam = Jam();
+    jam.startedBy = "Drumm";
+    jam.bandId = "dCMkdrzofMhepCfXk9bM";
+    jam.count = 0;
+    jam.jamId = personalisedArticle.jamId;
+    jam.articleId = personalisedArticle.articleId;
+    jam.title = personalisedArticle.title;
+    jam.question = personalisedArticle.question;
+    jam.membersID = [];
+    jam.broadcast = false;
+    jam.imageUrl = personalisedArticle.imageUrl;
+
+
+    FirebaseDBOperations.sendNotificationToDeviceToken(jam);
+
+  }
 }
 
 

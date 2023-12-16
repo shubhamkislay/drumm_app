@@ -59,10 +59,10 @@ class _HomeItemState extends State<HomeItem> {
   Widget build(BuildContext context) {
     //setband();
     return Scaffold(
-      //height: double.infinity,
-      backgroundColor:  Colors.black.withOpacity(0.9),
+      backgroundColor:  Colors.black,
       body: Container(
-        //height: double.infinity,
+        //alignment: Alignment.center,
+        //height: double.minPositive,
         //padding: EdgeInsets.only(bottom: 0),
 
 

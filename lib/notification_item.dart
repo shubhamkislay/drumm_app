@@ -241,7 +241,12 @@ class _NotificationItemState extends State<NotificationItem> {
   }
 
   void getRemoteDrumm(Jam jam) async {
-    Jam fetchedJam = await FirebaseDBOperations.getDrummsFromJamId(jam);
+    Jam fetchedJam = Jam();
+    try {
+      fetchedJam = await FirebaseDBOperations.getDrummsFromJamId(jam);
+    }catch(e){
+      return;
+    }
 
     setState(() {
       remoteJam = fetchedJam;
