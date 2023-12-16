@@ -53,25 +53,27 @@ class _HomeItemState extends State<HomeItem> {
       Colors.grey.shade900.withOpacity(0.5); //COLOR_PRIMARY_DARK;
   double iconHeight = 70;
   double sizedBoxedHeight = 12;
-  double curve = 24;
+  double curve = 28;
   Band? band;
   @override
   Widget build(BuildContext context) {
     //setband();
-    return Container(
-      height: double.infinity,
-      //padding: EdgeInsets.only(bottom: 0),
-      color: Colors.black.withOpacity(0.9),
-      margin: EdgeInsets.only(bottom: 100),
-      child: Container(
-        alignment: Alignment.center,
-        margin: EdgeInsets.only(bottom: 1),
+    return Scaffold(
+      //height: double.infinity,
+      backgroundColor:  Colors.black.withOpacity(0.9),
+      body: Container(
+        //height: double.infinity,
+        //padding: EdgeInsets.only(bottom: 0),
+
+
         decoration: BoxDecoration(
-          color: Colors
-              .black, //COLOR_PRIMARY_DARK, //Color(0xff012036FF)
+          // color: Colors
+          //     .black, //COLOR_PRIMARY_DARK, //Color(0xff012036FF)
+          color: Colors.black.withOpacity(0.9),
           borderRadius: BorderRadius.circular(curve),
           border: Border.all(color: Colors.grey.shade900, width: 2.5),
         ),
+        margin: EdgeInsets.only(bottom: 100),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(curve),
           child: RefreshIndicator(
@@ -259,10 +261,10 @@ class _HomeItemState extends State<HomeItem> {
                       alignment: Alignment.centerLeft,
                       decoration: BoxDecoration(
                           //color: COLOR_PRIMARY_DARK,//Colors.grey.shade900.withOpacity(0.75),
-                          borderRadius: BorderRadius.only(
-                            bottomRight: Radius.circular(curve),
-                            bottomLeft: Radius.circular(curve),
-                          ),
+                          // borderRadius: BorderRadius.only(
+                          //   bottomRight: Radius.circular(curve),
+                          //   bottomLeft: Radius.circular(curve),
+                          // ),
                           color:COLOR_PRIMARY_DARK,
                           // border: Border.all(color:  Colors.grey.shade900.withOpacity(0.0),width: 2),
                           ),
