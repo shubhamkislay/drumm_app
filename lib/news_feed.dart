@@ -48,7 +48,7 @@ class NewsFeed extends StatefulWidget {
 }
 
 class _NewsFeedState extends State<NewsFeed>
-    with AutomaticKeepAliveClientMixin<NewsFeed>, WidgetsBindingObserver {
+    with AutomaticKeepAliveClientMixin<NewsFeed> {
   List<Article> articles = [];
   List<ArticleBand> articleBands = [];
   late CardSwiperController? controller;
@@ -508,9 +508,9 @@ class _NewsFeedState extends State<NewsFeed>
                                 cardsCount: (articleBands.length > 0)
                                     ? articleBands.length
                                     : 0,
-                                duration: Duration(milliseconds: 200),
-                                maxAngle: 45,
-                                scale: 0.75,
+                                duration: Duration(milliseconds: 250),
+                                maxAngle: 60,
+                                scale: 0.8,
                                 numberOfCardsDisplayed:
                                     (articleBands.length > 1)
                                         ? 2
@@ -595,7 +595,7 @@ class _NewsFeedState extends State<NewsFeed>
                             RoundedButton(
                               padding: 14,
                               height: iconHeight - 12, //iconHeight,
-                              color: (undoIndex == 0 ) ? Colors.white:Colors.red,
+                              color: (undoIndex == 0 ) ? Colors.grey.shade600:Colors.deepOrange,
                               shadowColor: Colors.grey.shade800.withOpacity(0.2),
                               bgColor: iconBGColor, //.withOpacity(0.75),
                               onPressed: () {
@@ -603,9 +603,6 @@ class _NewsFeedState extends State<NewsFeed>
                                 controller?.undo();
                               },
                               assetPath: 'images/turn-back.png',
-                            ),
-                            SizedBox(
-                              width: 2,
                             ),
                             GestureDetector(
                               onTap: () {
@@ -615,10 +612,10 @@ class _NewsFeedState extends State<NewsFeed>
                               child: Container(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(42),
-                                    border: Border.all(color: Colors.deepOrange,width: 2)),
+                                    border: Border.all(color: Colors.grey.shade800,width: 2.5)),
                                 child: Container(
                                   padding: EdgeInsets.all(0),
-                                  margin: EdgeInsets.all(4),
+                                  margin: EdgeInsets.all(2),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(42),
                                     boxShadow: [
@@ -643,14 +640,14 @@ class _NewsFeedState extends State<NewsFeed>
                                   // ),
                                   child: Lottie.asset(
                                     'images/globe_anim.json',
-                                    height: 68,
+                                    height: 76,
                                     fit: BoxFit.contain,
                                   ),
                                 ),
                               ),
                             ),
                             SizedBox(
-                              width: 2,
+                              width: 4,
                             ),
                             RoundedButton(
                               padding: 10,
@@ -689,7 +686,7 @@ class _NewsFeedState extends State<NewsFeed>
                               assetPath: 'images/drumm_logo.png',
                             ),
                             SizedBox(
-                              width: 2,
+                              width: 4,
                             ),
                             GestureDetector(
                               onTap: () {
@@ -699,10 +696,10 @@ class _NewsFeedState extends State<NewsFeed>
                               child: Container(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(42),
-                                    border: Border.all(color: Colors.blue,width: 2)),
+                                    border: Border.all(color: Colors.grey.shade800,width: 2.5)),
                                 child: Container(
                                   padding: EdgeInsets.all(12),
-                                  margin: EdgeInsets.all(4),
+                                  margin: EdgeInsets.all(2),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(42),
                                       boxShadow: [
@@ -725,14 +722,11 @@ class _NewsFeedState extends State<NewsFeed>
                                   // ),
                                   child: Lottie.asset(
                                     'images/wave_drumm.json',
-                                    height: 44,
+                                    height: 52,
                                     fit: BoxFit.contain,
                                   ),
                                 ),
                               ),
-                            ),
-                            SizedBox(
-                              width: 2,
                             ),
                             RoundedButton(
                               padding: 12,
@@ -740,7 +734,7 @@ class _NewsFeedState extends State<NewsFeed>
                               //shadowColor: Colors.grey.shade800.withOpacity(0.75),
                               color: articleOnScreen.liked ?? false
                                   ? Colors.red
-                                  : Colors.white,
+                                  : Colors.grey.shade600,
                               bgColor: iconBGColor,
                               hoverColor: Colors.redAccent,
                               onPressed: () {
@@ -914,7 +908,7 @@ class _NewsFeedState extends State<NewsFeed>
   @override
   void dispose() {
     if (controller != null) controller?.dispose();
-    WidgetsBinding.instance?.removeObserver(this);
+    //WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
   }
 
@@ -923,7 +917,7 @@ class _NewsFeedState extends State<NewsFeed>
     // TODO: implement initState
     loadingAnimation = LOADING_ASSET;
     controller = CardSwiperController();
-    WidgetsBinding.instance?.addObserver(this);
+    //WidgetsBinding.instance?.addObserver(this);
     super.initState();
     ConnectToChannel.insights.userToken =
         FirebaseAuth.instance.currentUser?.uid ?? "";
@@ -937,15 +931,6 @@ class _NewsFeedState extends State<NewsFeed>
     requestPermissions();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    print("App state: ${state}");
-    if (state == AppLifecycleState.resumed) {
-      //do your stuff
-      print("Fetching latest news");
-      fetchFreshArticles();
-    }
-  }
 
   void fetchFreshArticles() async {
     freshArticles = await FirebaseDBOperations.getArticlesFromAlgolia();
@@ -1151,9 +1136,9 @@ class _NewsFeedState extends State<NewsFeed>
       ),
       itemsDecoration: MultiSelectDecorations(
         decoration: BoxDecoration(
-            color: Colors.black,//COLOR_PRIMARY_DARK, //Colors.grey.shade900,
+            color: COLOR_PRIMARY_DARK, //Colors.grey.shade900,
             border:
-                Border.all(color: Colors.grey.shade900,width: 2.5), //Color(0xff2f2f2f)),
+                Border.all(color: Colors.grey.shade900,width: 2), //Color(0xff2f2f2f)),
             borderRadius: BorderRadius.circular(multiSelectRadius)),
         selectedDecoration: BoxDecoration(
             gradient: LinearGradient(colors: [
