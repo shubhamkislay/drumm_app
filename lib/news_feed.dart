@@ -104,7 +104,7 @@ class _NewsFeedState extends State<NewsFeed>
 
   bool newArticlesAvailable = false;
 
-  double multiSelectRadius = 18;
+  double multiSelectRadius = 24;
 
   bool likedArticle = false;
   double fontSize = 10;
@@ -340,7 +340,7 @@ class _NewsFeedState extends State<NewsFeed>
                                           Colors.grey.shade700,
                                         ])),
                               child: Container(
-                                padding: EdgeInsets.all(3),
+                                padding: EdgeInsets.all(6),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(24),
                                   color: Colors.black,
@@ -351,7 +351,7 @@ class _NewsFeedState extends State<NewsFeed>
                                 // ),
                                 child: Image.asset(
                                   'images/drumm_logo.png',
-                                  height: 20,
+                                  height: 14,
                                   color: Colors.white,
                                   fit: BoxFit.contain,
                                 ),
@@ -509,7 +509,7 @@ class _NewsFeedState extends State<NewsFeed>
                                     ? articleBands.length
                                     : 0,
                                 duration: Duration(milliseconds: 250),
-                                maxAngle: 60,
+                                maxAngle: 45,
                                 scale: 1,
                                 numberOfCardsDisplayed:
                                     (articleBands.length > 1)
@@ -593,7 +593,7 @@ class _NewsFeedState extends State<NewsFeed>
                             RoundedButton(
                               padding: 14,
                               height: iconHeight - 12, //iconHeight,
-                              color: (undoIndex == 0 ) ? Colors.grey.shade600:Colors.deepOrange,
+                              color: (undoIndex == 0 ) ? Colors.grey.shade600:Colors.white,
                               shadowColor: Colors.grey.shade800.withOpacity(0.2),
                               bgColor: iconBGColor, //.withOpacity(0.75),
                               onPressed: () {
@@ -612,7 +612,7 @@ class _NewsFeedState extends State<NewsFeed>
                                     borderRadius: BorderRadius.circular(42),
                                     border: Border.all(color: Colors.grey.shade800,width: 2.5)),
                                 child: Container(
-                                  padding: EdgeInsets.all(0),
+                                  padding: EdgeInsets.all(16),
                                   margin: EdgeInsets.all(2),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(42),
@@ -636,11 +636,18 @@ class _NewsFeedState extends State<NewsFeed>
                                   //   Icons.data_saver_off_rounded,
                                   //   size: iconSize - 4,
                                   // ),
-                                  child: Lottie.asset(
-                                    'images/globe_anim.json',
-                                    height: 76,
+                                  // child: Lottie.asset(
+                                  //   'images/globe_anim.json',
+                                  //   height: 76,
+                                  //   fit: BoxFit.contain,
+                                  // ),
+                                  child: Image.asset(
+                                    'images/google-earth.png',
+                                    height: 42,
+                                    color: Colors.white,
                                     fit: BoxFit.contain,
                                   ),
+
                                 ),
                               ),
                             ),
@@ -696,7 +703,7 @@ class _NewsFeedState extends State<NewsFeed>
                                     borderRadius: BorderRadius.circular(42),
                                     border: Border.all(color: Colors.grey.shade800,width: 2.5)),
                                 child: Container(
-                                  padding: EdgeInsets.all(12),
+                                  padding: EdgeInsets.all(16),
                                   margin: EdgeInsets.all(2),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(42),
@@ -718,9 +725,10 @@ class _NewsFeedState extends State<NewsFeed>
                                   //   Icons.data_saver_off_rounded,
                                   //   size: iconSize - 4,
                                   // ),
-                                  child: Lottie.asset(
-                                    'images/wave_drumm.json',
-                                    height: 52,
+                                  child: Image.asset(
+                                    'images/team_active.png',
+                                    height: 42,
+                                    color: Colors.white,
                                     fit: BoxFit.contain,
                                   ),
                                 ),
