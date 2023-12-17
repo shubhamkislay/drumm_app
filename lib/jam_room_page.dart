@@ -143,11 +143,11 @@ class _JamRoomPageState extends State<JamRoomPage> {
                       ),
                     ),
                   ),
-                if (article?.question != null)
+                if (widget.jam?.question != null)
                 const SizedBox(
                   height: 4,
                 ),
-                if (article?.question != null)
+                if (widget.jam?.question != null)
                   Container(
                     alignment: Alignment.centerLeft,
                     padding: const EdgeInsets.only(top: 16.0, left: 16),

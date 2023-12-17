@@ -39,6 +39,7 @@ with AutomaticKeepAliveClientMixin<BandSearchPage>{
             RefreshIndicator(
               onRefresh: _refreshData,
               child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
                 child: SafeArea(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

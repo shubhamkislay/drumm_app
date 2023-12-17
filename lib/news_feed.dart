@@ -336,8 +336,8 @@ class _NewsFeedState extends State<NewsFeed>
                                           Colors.blueAccent,
                                         ])
                                       : LinearGradient(colors: [
-                                          Colors.grey.shade700,
-                                          Colors.grey.shade700,
+                                          Colors.grey.shade900,
+                                          Colors.grey.shade900,
                                         ])),
                               child: Container(
                                 padding: EdgeInsets.all(6),
@@ -740,7 +740,7 @@ class _NewsFeedState extends State<NewsFeed>
                               //shadowColor: Colors.grey.shade800.withOpacity(0.75),
                               color: articleOnScreen.liked ?? false
                                   ? Colors.red
-                                  : Colors.grey.shade600,
+                                  : Colors.white,
                               bgColor: iconBGColor,
                               hoverColor: Colors.redAccent,
                               onPressed: () {

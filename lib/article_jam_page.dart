@@ -269,7 +269,7 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                       },
                     );
                   },
-                  imageAsset: 'images/drumm_logo.png',
+                  imageAsset: 'images/team_active.png',
                   height: 40,
                 ),
                 SizedBox(width: 8),
@@ -296,6 +296,7 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                             borderRadius: BorderRadius.vertical(
                                 top: Radius.circular(0.0)),
                             child: CreateJam(
+                              question: widget.article?.question,
                                 jamId: widget.article?.jamId,
                                 title: widget.article?.title,
                                 articleId: widget.article?.articleId,

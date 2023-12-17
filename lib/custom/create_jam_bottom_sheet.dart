@@ -19,8 +19,9 @@ class CreateJam extends StatefulWidget {
   String? bandId;
   String? title;
   String? imageUrl;
+  String? question;
 
-  CreateJam({Key? key, this.bandId, this.articleId, this.title, this.imageUrl, this.jamId})
+  CreateJam({Key? key, this.bandId, this.articleId, this.title, this.imageUrl, this.jamId, this.question})
       : super(key: key);
 
   @override
@@ -52,6 +53,7 @@ class _CreateJamState extends State<CreateJam> {
     jam.lastActive = Timestamp.now();
     //jam.bandId = this.widget.bandId;
     jam.count = 0;
+    jam.question = (this.widget.question!=null)?this.widget.question:null;
     jam.startedBy = FirebaseAuth.instance.currentUser?.uid;
     jam.membersID = [];
 
@@ -226,7 +228,7 @@ class _CreateJamState extends State<CreateJam> {
                             createJam.bandId = selectBandID;
                             createJam.count = jam.count;
                             createJam.jamId = jam.jamId;
-                            createJam.question = jam.question;
+                            createJam.question = null;//jam.question;
 
                             print("createJam ${createJam.jamId}");
 
