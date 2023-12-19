@@ -163,6 +163,7 @@ flutter:
     - images/plus-button.png
     - images/plus.png
     - images/edit.png
+    - images/plus_btn.png
     - images/lottie_loading.json
     - images/lottie_ripple.json
     - images/pulse.json
@@ -190,6 +191,7 @@ flutter:
     - images/globe_anim.json
     - images/like_btn.png
     - images/turn-back.png
+    - images/audio-waves.png
   #   - images/a_dot_ham.jpeg
 
   fonts:

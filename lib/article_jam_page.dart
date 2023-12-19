@@ -269,7 +269,7 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                       },
                     );
                   },
-                  imageAsset: 'images/team_active.png',
+                  imageAsset: 'images/audio-waves.png',
                   height: 40,
                 ),
                 SizedBox(width: 8),

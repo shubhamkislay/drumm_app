@@ -1,7 +1,9 @@
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/custom/transparent_slider.dart';
+import 'package:drumm_app/model/Drummer.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:floating_frosted_bottom_bar/floating_frosted_bottom_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +32,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'InterestPage.dart';
 import 'ask_page.dart';
 import 'custom/bottom_sheet.dart';
+import 'custom/create_jam_bottom_sheet.dart';
 import 'custom/helper/circular_reveal_clipper.dart';
+import 'custom/helper/image_uploader.dart';
 import 'custom/listener/connection_listener.dart';
 import 'custom/rounded_button.dart';
 import 'jam_room_page.dart';
@@ -66,8 +70,7 @@ class _LauncherPageState extends State<LauncherPage>
   late AnimationController _animationController;
   Color disableColor = Colors.grey.shade800;//Color(0xff4d4d4d); //Colors.grey.shade800;
 
-  double tabsWidthDivision = 4; //Value will be 10 for Wave mode
-  late AnimationController rotationAnimcontroller;
+  double tabsWidthDivision = 8; //Value will be 10 for Wave mode
 
   bool userConnected = false;
   bool micMute = false;
@@ -75,6 +78,8 @@ class _LauncherPageState extends State<LauncherPage>
   late Jam currentJam = Jam();
   bool openDrumm = false;
   bool isTutorialDone = true;
+
+  Drummer drummer = Drummer();
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +131,7 @@ class _LauncherPageState extends State<LauncherPage>
                            *  Container(),
                            */
 
-                          //SwipePage(),
+                          SwipePage(),
                           BandSearchPage(),
                           if (false)
                             InterestsPage(
@@ -134,7 +139,7 @@ class _LauncherPageState extends State<LauncherPage>
                               analytics: widget.analytics,
                               themeManager: widget.themeManager,
                             ),
-                         if(false) UserProfilePage()
+                         if(true) UserProfilePage()
                           // SwipePage(),
                         ],
                         controller: tabController,
@@ -296,50 +301,20 @@ class _LauncherPageState extends State<LauncherPage>
                           fit: BoxFit.contain,
                         ),
                       ),
-                      if (false)
+                      if (true)
                         Container(
-                          width: MediaQuery.of(context).size.width / 5,
-                          padding: const EdgeInsets.all(2.0),
+                          width: MediaQuery.of(context).size.width / tabsWidthDivision,
+                          padding: const EdgeInsets.all(0.0),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.transparent,
                           ),
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            padding: EdgeInsets.all(11),
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              // gradient: LinearGradient(colors: [
-                              //   Colors.white,//Colors.blue.shade300,
-                              //   Colors.blue.shade500,
-                              //   Colors.blue.shade800
-                              // ]),
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.transparent, //.withOpacity(0.75),
-                                  spreadRadius: 8,
-                                  blurRadius: 8,
-                                  blurStyle: BlurStyle.outer,
-                                  offset: Offset(
-                                      1, -1), // changes the position of the shadow
-                                ),
-                              ],
-                            ),
-                            child: RotationTransition(
-                              turns: Tween(
-                                      begin: 0.0,
-                                      end: 0.05) //Tween(begin: 0.0, end: 1.0)
-                                  .animate(rotationAnimcontroller),
-                              child: Image.asset(
-                                  //color: currentPage == 1 ?  Color(COLOR_PRIMARY_VAL): widget.themeManager.themeMode == ThemeMode.dark ?Colors.white38: Colors.black.withOpacity(0.25),
-                                  color: disableColor,
-                                  width: 28,
-                                  "images/wave.png",
-                                  height: 28),
-                            ),
-                          ),
+                          child: Image.asset(
+                              //color: currentPage == 1 ?  Color(COLOR_PRIMARY_VAL): widget.themeManager.themeMode == ThemeMode.dark ?Colors.white38: Colors.black.withOpacity(0.25),
+                              color: disableColor,
+                              width: 34,
+                              "images/plus_btn.png",
+                              height: 34),
                         ),
                       /*
                       Wave Mode icon
@@ -352,26 +327,6 @@ class _LauncherPageState extends State<LauncherPage>
                         //     vertical: iconPadding, horizontal: iconPadding),
                         child: Image.asset(
                             alignment: Alignment.bottomCenter,
-                            color: currentPage == 2
-                                ? widget.themeManager.themeMode == ThemeMode.dark
-                                    ? Colors.white
-                                    : Colors.black
-                                : widget.themeManager.themeMode == ThemeMode.dark
-                                    ? disableColor
-                                    : Colors.black.withOpacity(0.25),
-                            width: 40,
-                            currentPage == 2
-                                ? "images/team_active.png"
-                                : "images/team_inactive.png",
-                            height: 40),
-                      ),
-                     if(false) Container(
-                        height: 26,
-                        width: MediaQuery.of(context).size.width / tabsWidthDivision,
-                        child: Transform(
-                          alignment: Alignment.center,
-                          transform: Matrix4.identity()..scale(-1.0, 1.0, 1.0),
-                          child: Image.asset(
                             color: currentPage == 3
                                 ? widget.themeManager.themeMode == ThemeMode.dark
                                     ? Colors.white
@@ -379,21 +334,42 @@ class _LauncherPageState extends State<LauncherPage>
                                 : widget.themeManager.themeMode == ThemeMode.dark
                                     ? disableColor
                                     : Colors.black.withOpacity(0.25),
-                            width: 12,
+                            width: 40,
                             currentPage == 3
-                                ? "images/user_profile_active.png"
-                                : "images/user_profile_inactive.png",
-                            height: 12,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
+                                ? "images/team_active.png"
+                                : "images/team_inactive.png",
+                            height: 40),
                       ),
+                     (drummer.imageUrl != null)
+                         ? Container(
+                       padding: EdgeInsets.all(0),
+                       decoration: BoxDecoration(
+                           borderRadius: BorderRadius.circular(19),
+                           color: Colors.black),
+                       child: ClipRRect(
+                         borderRadius: BorderRadius.circular(17),
+                         clipBehavior: Clip.hardEdge,
+                         child: CachedNetworkImage(
+                             width: 26,
+                             height: 26,
+                             imageUrl: modifyImageUrl(
+                                 drummer.imageUrl ?? "", "100x100"),
+                             fit: BoxFit.cover),
+                       ),
+                     )
+                         : RoundedButton(
+                         height: 26,
+                         assetPath: "images/user_profile_active.png",
+                         color: Colors.white,
+                         bgColor: Colors.black,
+                         onPressed: () {}),
                     ],
                     onTap: (index) {
                       Vibrate.feedback(FeedbackType.selection);
                       if (index !=
-                              4 //2 This should be 2 for Wave Mode. Currently it's commented
+                              2 //2 This should be 2 for Wave Mode. Currently it's commented
                           ) {
+
                         setState(() {
                           if (currentPage == 0 && index == 0) {
                             print("Calling refresh $currentPage");
@@ -419,12 +395,30 @@ class _LauncherPageState extends State<LauncherPage>
                         //     );
                         //   },
                         // );
-                        Vibrate.feedback(FeedbackType.impact);
-                        Navigator.of(context).push(PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (context, animation, _) {
-                              return SwipePage();
-                            }));
+                        Vibrate.feedback(FeedbackType.selection);
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: COLOR_PRIMARY_DARK,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(0.0)),
+                          ),
+                          builder: (BuildContext context) {
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                  bottom: MediaQuery.of(context)
+                                      .viewInsets
+                                      .bottom),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(0.0)),
+                                child: CreateJam(
+                                    title: "", bandId: "", imageUrl: ""),
+                              ),
+                            );
+                          },
+                        );
                       }
                     },
                     isScrollable: true,
@@ -630,6 +624,14 @@ class _LauncherPageState extends State<LauncherPage>
     );
   }
 
+  void getCurrentDrummer() async {
+    Drummer curDrummer = await FirebaseDBOperations.getDrummer(
+        FirebaseAuth.instance.currentUser?.uid ?? "");
+    setState(() {
+      drummer = curDrummer;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -642,16 +644,13 @@ class _LauncherPageState extends State<LauncherPage>
     setOnboarded();
     currentPage = 0;
     tabController = TabController(
-        length: 3, vsync: this, animationDuration: Duration(milliseconds: 0));
+        length: 5, vsync: this, animationDuration: Duration(milliseconds: 0));
 
     FirebaseDBOperations.searchArticles("");
 
-    rotationAnimcontroller = AnimationController(
-      duration: Duration(milliseconds: 800),
-      vsync: this,
-    )..repeat(reverse: true);
 
     listenToJamState();
+    getCurrentDrummer();
   }
 
   void setOnboarded() async {
@@ -691,7 +690,6 @@ class _LauncherPageState extends State<LauncherPage>
     // TODO: implement dispose
 
     tabController.dispose();
-    rotationAnimcontroller.dispose();
     super.dispose();
     ConnectionListener.onConnectionChanged = null;
   }
