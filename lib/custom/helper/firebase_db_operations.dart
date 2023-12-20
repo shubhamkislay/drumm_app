@@ -339,6 +339,7 @@ class FirebaseDBOperations {
           .collection("userActivity")
           .doc(currentUserID)
           .collection("seen")
+          //.limit(100)
           .get();
 
       // Extract the list of seen articles from the snapshot

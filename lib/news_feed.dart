@@ -1,8 +1,14 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
 
+//import 'package:audioplayers/audioplayers.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:aws_polly/aws_polly.dart';
 import 'package:blur/blur.dart';
+import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/custom/helper/connect_channel.dart';
@@ -22,7 +28,10 @@ import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
+import 'package:ogg_opus_player/ogg_opus_player.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'article_jam_page.dart';
@@ -81,6 +90,7 @@ class _NewsFeedState extends State<NewsFeed>
   late List<Band> bandList;
 
   var keepAlive = true;
+  String audioUrl = "";
 
   double iconSize = 30;
 
@@ -90,6 +100,12 @@ class _NewsFeedState extends State<NewsFeed>
   bool showNotification = false;
 
   Band selectedBand = Band();
+  //final player = AudioPlayer();
+  late OggOpusPlayer player;
+
+  AudioPlayer audioPlayer = AudioPlayer();
+  //AudioCache audioCache = AudioCache();
+  String audioFilePath = '';
 
   AlgoliaArticles? algoliaArticles;
   AlgoliaArticles? freshArticles;
@@ -417,7 +433,19 @@ class _NewsFeedState extends State<NewsFeed>
                                         index: index,
                                         joinDrumm: (articleBand) {
                                           startDrumming(articleBand);
-                                        },
+                                        }, playPause: (article , listen ) {
+
+                                          try{
+                                            player.pause();
+                                            player.dispose();
+                                          }catch(e){
+
+                                          }
+
+                                          if(listen)
+                                            convertTextToSpeech(getSpeechText(article)??"",article.articleId??"");
+
+                                      }, play: false,
                                       );
                                     else
                                       return Container();
@@ -1159,6 +1187,12 @@ class _NewsFeedState extends State<NewsFeed>
 
         print("Article length ${articles.length}");
       });
+
+     //  Article articleForSpeech = articleBands.elementAt(0).article?? Article();
+     // // if(articleOnScreen.aiVoiceUrl==null)
+     //    convertTextToSpeech(getSpeechText(articleForSpeech)??"No audio here",articleForSpeech.articleId??"");
+     // else
+       // speakNews(articleForSpeech.aiVoiceUrl);
     }
   }
 
@@ -1210,8 +1244,23 @@ class _NewsFeedState extends State<NewsFeed>
   ) {
     cleanCache();
 
+
+
     articleTop =
         articleBands.elementAt(currentIndex ?? 0).article?.articleId ?? "";
+
+    Article articleForSpeech = articleBands.elementAt(currentIndex ?? 0).article?? Article();
+    try{
+      //player.stop();
+      player.dispose();
+    }catch(e){
+
+    }
+    //convertTextToSpeech(getSpeechText(articleForSpeech)??"Just say hello world!");
+    //if(articleOnScreen.aiVoiceUrl==null)
+    //  convertTextToSpeech(getSpeechText(articleForSpeech)??"No audio here",articleForSpeech.articleId??"");
+    //else
+      //speakNews(articleForSpeech.aiVoiceUrl);
     setState(() {
       undoIndex = currentIndex??0;
       articleOnScreen =
@@ -1300,6 +1349,15 @@ class _NewsFeedState extends State<NewsFeed>
       'The card $previousIndex was swiped to the ${direction.name}. Now the card $currentIndex is on top',
     );
     return true;
+  }
+
+  String? getSpeechText(Article articleForSpeech){
+    //return articleForSpeech.question;
+    String? text = (articleForSpeech.description == null)?articleForSpeech.title: "${articleForSpeech.description}";
+    if(articleForSpeech.question!=null)
+      text = "${text}\n${articleForSpeech.question}\nStart a drumm to check what the community thinks!";
+    return text;
+
   }
 
   bool _onUndo(
@@ -1475,4 +1533,79 @@ class _NewsFeedState extends State<NewsFeed>
     });
     await prefs.setBool('isTutorialDone', true);
   }
+
+
+  Future speakNews(String? url) async {
+
+
+    // await player.setUrl(url!).catchError((Onerr) {
+    //   print("Error setting url : $Onerr");
+    // });
+    // player.play().catchError((Onerr) {
+    //   print("Error playing : $Onerr");
+    // });
+
+    try {
+      //await audioPlayer.play(UrlSource(url??""));
+    }catch(e){
+      print("Error playing : $e");
+    }
+  }
+
+  Future<void> convertTextToSpeech(String text,String id) async {
+
+    try{
+      player.pause();
+      player.dispose();
+    }catch(e){
+
+    }
+    final apiKey = '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';
+    final endpoint = 'https://api.openai.com/v1/audio/speech';
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $apiKey',
+    };
+
+    // Define a list of voices
+    final voices = ['alloy',  'fable','echo', 'onyx', 'nova', 'shimmer'];//'echo', 'onyx', 'nova', 'shimmer'
+
+    // Randomly select a voice from the list
+    final random = Random();
+    final selectedVoice = voices[random.nextInt(voices.length)];
+
+    // Set the selected voice in the data
+    final data = {
+      'input': text,
+      'model': 'tts-1',
+      'voice': selectedVoice,
+      'response_format': 'opus',
+    };
+
+    final response = await http.post(
+      Uri.parse(endpoint),
+      headers: headers,
+      body: jsonEncode(data),
+    );
+
+
+    if (response.statusCode == 200) {
+      print("The response is successful");
+     //  //await audioPlayer.play(BytesSource(response.bodyBytes));
+      final audioBytes = response.bodyBytes;
+      final appDir = await getApplicationDocumentsDirectory();
+      final audioFile = File('${appDir.path}/${id}.opus');
+      await audioFile.writeAsBytes(audioBytes);
+      if(articleTop==id) {
+        player = OggOpusPlayer(audioFile.path);
+        player.play();
+      }
+    } else {
+      // Handle API error
+      print('Error: ${response.statusCode}');
+      print('Response: ${response.body}');
+    }
+  }
 }
+

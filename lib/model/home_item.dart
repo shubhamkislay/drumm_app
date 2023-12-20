@@ -23,14 +23,18 @@ class HomeItem extends StatefulWidget {
   int index;
   String? bandId;
   String? queryID;
+  bool play;
   bool isContainerVisible = false;
   VoidCallback undo;
   Function(ArticleBand) joinDrumm;
   Function(Article) updateList;
   Function(Article) openArticle;
+  Function(Article,bool) playPause;
+
   Future<void> Function() onRefresh;
   HomeItem(
       {Key? key,
+        required this.play,
       required this.index,
       required this.articleBand,
       required this.joinDrumm,
@@ -38,6 +42,7 @@ class HomeItem extends StatefulWidget {
       required this.undo,
       required this.isContainerVisible,
       required this.updateList,
+        required this.playPause,
       this.bandId,
       this.queryID,
       required this.openArticle})
@@ -55,6 +60,7 @@ class _HomeItemState extends State<HomeItem> {
   double sizedBoxedHeight = 12;
   double curve = 28;
   Band? band;
+  bool playing = false;
   @override
   Widget build(BuildContext context) {
     //setband();
@@ -322,6 +328,55 @@ class _HomeItemState extends State<HomeItem> {
                 ),
               ),
             ),
+            GestureDetector(
+              onTap: (){
+                if(!widget.play) {
+                  setState(() {
+                    widget.play=true;
+                  });
+
+                  widget.playPause(
+                      widget.articleBand.article ?? Article(), widget.play);
+                }
+                else {
+                  setState(() {
+                    widget.play=false;
+                  });
+                  widget.playPause(
+                      widget.articleBand.article ?? Article(), widget.play);
+                }
+                },
+              child: Container(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(2.5),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          gradient:  LinearGradient(colors: [
+                            Colors.grey.shade900,
+                            Colors.grey.shade900,
+                          ])),
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          color: Colors.black,
+                        ),
+                        child: Image.asset(
+                          (widget.play)?'images/volume.png':'images/mute.png',
+                          height: 16,
+                          color: Colors.white,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             IgnorePointer(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -355,8 +410,14 @@ class _HomeItemState extends State<HomeItem> {
   void initState() {
     // TODO: implement initState
     print("Setting article in view");
+    setState(() {
+      playing = widget.play;
+    });
     super.initState();
+
   }
+
+
 
   void setband() async {
     // band = null;

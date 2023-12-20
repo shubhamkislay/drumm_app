@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/model/algolia_article.dart';
 import 'package:drumm_app/register_user.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -110,7 +111,9 @@ class _MyAppState extends State<MyApp>
   void initState() {
     initNotification();
     WidgetsBinding.instance.addObserver(this);
-    FirebaseDatabase.instance.setPersistenceEnabled(true);
+    //FirebaseDatabase.instance.setPersistenceEnabled(true);
+    FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
+
     _themeManager.addListener(themeListener);
     _themeManager.darkTheme(true);
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);

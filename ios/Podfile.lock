@@ -39,6 +39,29 @@ PODS:
   - AppAuth/Core (1.6.2)
   - AppAuth/ExternalUserAgent (1.6.2):
     - AppAuth/Core
+  - audio_session (0.0.1):
+    - Flutter
+  - audioplayers_darwin (0.0.1):
+    - Flutter
+  - aws_polly (0.0.1):
+    - AWSMobileClient
+    - AWSPolly
+    - Flutter
+  - AWSAuthCore (2.33.4):
+    - AWSCore (= 2.33.4)
+  - AWSCognitoIdentityProvider (2.33.4):
+    - AWSCognitoIdentityProviderASF (= 2.33.4)
+    - AWSCore (= 2.33.4)
+  - AWSCognitoIdentityProviderASF (2.33.4):
+    - AWSCore (= 2.33.4)
+  - AWSCore (2.33.4)
+  - AWSMobileClient (2.33.4):
+    - AWSAuthCore (= 2.33.4)
+    - AWSCognitoIdentityProvider (= 2.33.4)
+    - AWSCognitoIdentityProviderASF (= 2.33.4)
+    - AWSCore (= 2.33.4)
+  - AWSPolly (2.33.4):
+    - AWSCore (= 2.33.4)
   - cloud_firestore (4.9.1):
     - Firebase/Firestore (= 10.12.0)
     - firebase_core
@@ -270,6 +293,8 @@ PODS:
     - Flutter
   - iris_method_channel (0.0.1):
     - Flutter
+  - just_audio (0.0.1):
+    - Flutter
   - leveldb-library (1.22.2)
   - magnifying_glass (0.0.1):
     - Flutter
@@ -278,6 +303,8 @@ PODS:
     - nanopb/encode (= 2.30909.0)
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
+  - ogg_opus_player (0.0.1):
+    - Flutter
   - OrderedSet (5.0.0)
   - path_provider_foundation (0.0.1):
     - Flutter
@@ -303,6 +330,9 @@ PODS:
 
 DEPENDENCIES:
   - agora_rtc_engine (from `.symlinks/plugins/agora_rtc_engine/ios`)
+  - audio_session (from `.symlinks/plugins/audio_session/ios`)
+  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
+  - aws_polly (from `.symlinks/plugins/aws_polly/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - Firebase/Messaging
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
@@ -324,7 +354,9 @@ DEPENDENCIES:
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - iris_method_channel (from `.symlinks/plugins/iris_method_channel/ios`)
+  - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - magnifying_glass (from `.symlinks/plugins/magnifying_glass/ios`)
+  - ogg_opus_player (from `.symlinks/plugins/ogg_opus_player/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - rive_common (from `.symlinks/plugins/rive_common/ios`)
@@ -338,6 +370,12 @@ SPEC REPOS:
     - AgoraIrisRTC_iOS
     - AgoraRtcEngine_iOS
     - AppAuth
+    - AWSAuthCore
+    - AWSCognitoIdentityProvider
+    - AWSCognitoIdentityProviderASF
+    - AWSCore
+    - AWSMobileClient
+    - AWSPolly
     - CryptoSwift
     - Firebase
     - FirebaseAnalytics
@@ -370,6 +408,12 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   agora_rtc_engine:
     :path: ".symlinks/plugins/agora_rtc_engine/ios"
+  audio_session:
+    :path: ".symlinks/plugins/audio_session/ios"
+  audioplayers_darwin:
+    :path: ".symlinks/plugins/audioplayers_darwin/ios"
+  aws_polly:
+    :path: ".symlinks/plugins/aws_polly/ios"
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   firebase_analytics:
@@ -409,8 +453,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   iris_method_channel:
     :path: ".symlinks/plugins/iris_method_channel/ios"
+  just_audio:
+    :path: ".symlinks/plugins/just_audio/ios"
   magnifying_glass:
     :path: ".symlinks/plugins/magnifying_glass/ios"
+  ogg_opus_player:
+    :path: ".symlinks/plugins/ogg_opus_player/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/ios"
   permission_handler_apple:
@@ -436,6 +484,15 @@ SPEC CHECKSUMS:
   AgoraIrisRTC_iOS: 7e71322c06db6c29ceaf89a964fb8b2700a75001
   AgoraRtcEngine_iOS: c510de329cd905daff3f01fa4c872ea6d5eaee23
   AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
+  audio_session: 4f3e461722055d21515cf3261b64c973c062f345
+  audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
+  aws_polly: 9f95d0e3ee34be8f2f3df76ef39865d561f1a636
+  AWSAuthCore: 0584cee14bd5a692b8daa1c43b06df9524533692
+  AWSCognitoIdentityProvider: 74464aeebddb8546586f979c8ed055180a4b1855
+  AWSCognitoIdentityProviderASF: 28c6a2916512c08ded36b1aab4d92a1b5805d868
+  AWSCore: 83e3416d2224ba98b61d8eadcfcb1f90f48fab82
+  AWSMobileClient: ff115272d8b29f05443f82f5800036c498c5ca8b
+  AWSPolly: b72504cb494522292df0428bc537489f52e1bae7
   cloud_firestore: 85d66b543b25130c45258412a39e851e230186e7
   CryptoSwift: 52aaf3fce7337552863b1d952e408085f0e65030
   Firebase: 07150e75d142fb9399f6777fa56a187b17f833a0
@@ -477,9 +534,11 @@ SPEC CHECKSUMS:
   image_cropper: a3291c624a953049bc6a02e1f8c8ceb162a24b25
   image_picker_ios: 4a8aadfbb6dc30ad5141a2ce3832af9214a705b5
   iris_method_channel: 0617c689164d8154c020c50f63ca79f92b8a7b9d
+  just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   leveldb-library: f03246171cce0484482ec291f88b6d563699ee06
   magnifying_glass: 17aa5f2da7dd364096cb47f4fa13f69b40c96f9b
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
+  ogg_opus_player: 01dc6eaa63d1e061f0065f41845a0a9ea76b9396
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6

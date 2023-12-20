@@ -100,5 +100,11 @@
 		</array>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		<key>NSMicrophoneUsageDescription</key>
+        <string>Microphone permission is required for audio playback.</string>
+        <key>UIBackgroundModes</key>
+        <array>
+            <string>audio</string>
+        </array>
 	</dict>
 </plist>

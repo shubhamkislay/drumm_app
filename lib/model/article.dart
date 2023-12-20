@@ -19,6 +19,7 @@ class Article {
   int? likes = 0;
   int? reads = 0;
   String? uid;
+  String? aiVoiceUrl;
 
 
   Article(
@@ -39,6 +40,7 @@ class Article {
         this.jamId,
         this.reads,
         this.uid,
+        this.aiVoiceUrl,
       this.content});
 
   Article.fromJson(snapshot) {
@@ -60,6 +62,7 @@ class Article {
     publishedAt = snapshot.data()['publishedAt'];
     content = snapshot.data()['content'];
     uid = snapshot.data()['uid'];
+    aiVoiceUrl = snapshot.data()['aiVoiceUrl'];
   }
 
   Article.fromSnapshot(snapshot) {
@@ -81,6 +84,7 @@ class Article {
     publishedAt = Timestamp.fromMillisecondsSinceEpoch(snapshot['publishedAt']);
     content = snapshot['content'];
     uid = snapshot['uid'];
+    aiVoiceUrl = snapshot['aiVoiceUrl'];
   }
 
   Article copyWith({String? summary}) {
@@ -100,6 +104,7 @@ class Article {
       articleId: this.articleId,
       jamId: this.jamId,
       content: this.content,
+      aiVoiceUrl: this.aiVoiceUrl,
       liked: this.liked,
       likes: this.likes,
       uid: this.uid,
@@ -125,6 +130,7 @@ class Article {
     data['summary'] = this.summary;
     data['likes'] = this.likes;
     data['uid'] = this.uid;
+    data['aiVoiceUrl'] = this.aiVoiceUrl;
     return data;
   }
 }

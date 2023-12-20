@@ -90,6 +90,11 @@ dependencies:
   animated_toggle_switch: ^0.8.0
   toggle_switch: ^2.1.0
   flutter_local_notifications: ^16.2.0
+  aws_polly: ^2.1.1
+  just_audio: ^0.9.36
+  audioplayers: ^4.1.0
+  path_provider: ^2.1.1
+  ogg_opus_player: ^0.7.0
 
 dev_dependencies:
   flutter_test:
@@ -192,6 +197,8 @@ flutter:
     - images/like_btn.png
     - images/turn-back.png
     - images/audio-waves.png
+    - images/mute.png
+    - images/volume.png
   #   - images/a_dot_ham.jpeg
 
   fonts:

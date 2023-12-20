@@ -70,7 +70,7 @@ class _LauncherPageState extends State<LauncherPage>
   late AnimationController _animationController;
   Color disableColor = Colors.grey.shade800;//Color(0xff4d4d4d); //Colors.grey.shade800;
 
-  double tabsWidthDivision = 8; //Value will be 10 for Wave mode
+  double tabsWidthDivision = 8.5; //Value will be 10 for Wave mode
 
   bool userConnected = false;
   bool micMute = false;
@@ -285,7 +285,7 @@ class _LauncherPageState extends State<LauncherPage>
                             height: 26),
                       ),
                       Container(
-                        height: 26,
+                        //height: 26,
                         width: MediaQuery.of(context).size.width / tabsWidthDivision,
                         child: Image.asset(
                           color: currentPage == 1
@@ -295,9 +295,9 @@ class _LauncherPageState extends State<LauncherPage>
                               : widget.themeManager.themeMode == ThemeMode.dark
                                   ? disableColor
                                   : Colors.black.withOpacity(0.25),
-                          width: 13,
+                          width: 26,
                           "images/search_btn.png",
-                          height: 13,
+                          height: 26,
                           fit: BoxFit.contain,
                         ),
                       ),
@@ -312,9 +312,9 @@ class _LauncherPageState extends State<LauncherPage>
                           child: Image.asset(
                               //color: currentPage == 1 ?  Color(COLOR_PRIMARY_VAL): widget.themeManager.themeMode == ThemeMode.dark ?Colors.white38: Colors.black.withOpacity(0.25),
                               color: disableColor,
-                              width: 34,
+                              width: 30,
                               "images/plus_btn.png",
-                              height: 34),
+                              height: 30),
                         ),
                       /*
                       Wave Mode icon
@@ -334,11 +334,11 @@ class _LauncherPageState extends State<LauncherPage>
                                 : widget.themeManager.themeMode == ThemeMode.dark
                                     ? disableColor
                                     : Colors.black.withOpacity(0.25),
-                            width: 40,
+                            width: 36,
                             currentPage == 3
                                 ? "images/team_active.png"
                                 : "images/team_inactive.png",
-                            height: 40),
+                            height: 36),
                       ),
                      (drummer.imageUrl != null)
                          ? Container(
@@ -350,8 +350,8 @@ class _LauncherPageState extends State<LauncherPage>
                          borderRadius: BorderRadius.circular(17),
                          clipBehavior: Clip.hardEdge,
                          child: CachedNetworkImage(
-                             width: 26,
-                             height: 26,
+                             width: 30,
+                             height: 30,
                              imageUrl: modifyImageUrl(
                                  drummer.imageUrl ?? "", "100x100"),
                              fit: BoxFit.cover),
