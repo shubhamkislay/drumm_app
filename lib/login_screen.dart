@@ -8,6 +8,7 @@ import 'package:drumm_app/launcher.dart';
 import 'package:drumm_app/register_user.dart';
 import 'package:drumm_app/theme/theme_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class LoginScreen extends StatefulWidget {
   final ThemeManager themeManager;
@@ -79,13 +80,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         (states) => Color(0xff008cff)),
                   ),
                   onPressed: () {
-                    Future<UserCredential> signin = signInWithGoogle();
+                    Future<UserCredential> signin = signInWithApple();//signInWithGoogle();
                     signin.then((value) => {checkIfUserExists(value)});
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 36.0, top: 24),
                     child: Text(
-                      "Continue with Google",
+                      "Continue with Apple",
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
                   ),
@@ -128,13 +129,27 @@ class _LoginScreenState extends State<LoginScreen> {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
+  Future<UserCredential> signInWithApple() async {
+
+    // final credential = await SignInWithApple.getAppleIDCredential(
+    //   scopes: [
+    //     AppleIDAuthorizationScopes.email,
+    //     AppleIDAuthorizationScopes.fullName,
+    //   ],
+    // );
+
+    final appleProvider = AppleAuthProvider()
+      ..addScope('email')
+      ..addScope('name');
+
+    return await FirebaseAuth.instance.signInWithProvider(appleProvider);
+  }
+
   void checkIfUserExists(UserCredential userCredential) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     String? uid = auth.currentUser?.uid;
-    final data = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .get();
+    final data =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
     try {
       String uname = data['username'].toString();
@@ -176,20 +191,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (_isOnboarded) {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LauncherPage(
-        themeManager: widget.themeManager,
-        analytics: widget.analytics,
-        observer: widget.observer,
-      )));
-
+          context,
+          MaterialPageRoute(
+              builder: (context) => LauncherPage(
+                    themeManager: widget.themeManager,
+                    analytics: widget.analytics,
+                    observer: widget.observer,
+                  )));
     } else {
-    Navigator.pushReplacement(
-    context, MaterialPageRoute(builder: (context) => InterestsPage(
-    themeManager: widget.themeManager,
-    analytics: widget.analytics,
-    observer: widget.observer,
-    )));
-
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => InterestsPage(
+                    themeManager: widget.themeManager,
+                    analytics: widget.analytics,
+                    observer: widget.observer,
+                  )));
     }
   }
 }

@@ -95,6 +95,8 @@ dependencies:
   audioplayers: ^4.1.0
   path_provider: ^2.1.1
   ogg_opus_player: ^0.7.0
+  sign_in_with_apple: ^4.3.0
+  crypto: ^3.0.3
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,11 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
 import 'package:drumm_app/main.dart';
 import 'package:drumm_app/policy_text.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -18,6 +22,7 @@ import 'package:drumm_app/launcher.dart';
 import 'package:drumm_app/register_user.dart';
 import 'package:drumm_app/theme/theme_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import 'custom/transparent_slider.dart';
 import 'model/band.dart';
@@ -61,6 +66,7 @@ class _OnBoardingState extends State<OnBoarding> {
               actionState = "Signing in...";
             });
             signInWithGoogle();
+            //signInWithApple();
           }
          // signin.then((value) => {checkIfUserExists(value)});
         },
@@ -309,6 +315,61 @@ class _OnBoardingState extends State<OnBoarding> {
 
     // Once signed in, return the UserCredential
    // return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  void signInWithApple() async {
+    // To prevent replay attacks with the credential returned from Apple, we
+    // include a nonce in the credential request. When signing in with
+    // Firebase, the nonce in the id token returned by Apple, is expected to
+    // match the sha256 hash of `rawNonce`.
+    final rawNonce = generateNonce();
+    final nonce = sha256ofString(rawNonce);
+
+    // Request credential for the currently signed in Apple account.
+    final appleCredential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+      nonce: nonce,
+    );
+
+    // Create an `OAuthCredential` from the credential returned by Apple.
+    final oauthCredential = OAuthProvider("apple.com").credential(
+      idToken: appleCredential.identityToken,
+      rawNonce: rawNonce,
+    );
+
+    FirebaseAuth.instance.signInWithCredential(oauthCredential).then((value) {
+      if(value.credential!=null)
+        checkIfUserExists(value);
+      else
+        setState(() {
+          actionState = "Continue";
+        });
+    });
+    // signin.then((value) => {checkIfUserExists(value)});
+
+
+    // Once signed in, return the UserCredential
+    // return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  /// Generates a cryptographically secure random nonce, to be included in a
+  /// credential request.
+  String generateNonce([int length = 32]) {
+    final charset =
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = Random.secure();
+    return List.generate(length, (_) => charset[random.nextInt(charset.length)])
+        .join();
+  }
+
+  /// Returns the sha256 hash of [input] in hex notation.
+  String sha256ofString(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
   }
 
   void checkIfUserExists(UserCredential userCredential) async {
