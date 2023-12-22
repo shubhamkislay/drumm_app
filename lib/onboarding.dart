@@ -6,6 +6,8 @@ import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
+import 'package:drumm_app/LoginPage.dart';
+import 'package:drumm_app/login_screen.dart';
 import 'package:drumm_app/main.dart';
 import 'package:drumm_app/policy_text.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -58,61 +60,77 @@ class _OnBoardingState extends State<OnBoarding> {
         finishButtonText: actionState,
         pageBackgroundColor: Colors.black,
         centerBackground: true,
-        onFinish: (){
-         // Future<UserCredential> signin =
-
-          if(actionState == "Continue") {
-            setState(() {
-              actionState = "Signing in...";
-            });
-            signInWithGoogle();
-            //signInWithApple();
-          }
-         // signin.then((value) => {checkIfUserExists(value)});
+        onFinish: () {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LoginPage(
+                    themeManager: widget.themeManager,
+                    analytics: widget.analytics,
+                    observer: widget.observer,
+                  )),
+                  (_) => false);
         },
         finishButtonStyle: FinishButtonStyle(
-          backgroundColor: (actionState == "Continue") ? Colors.white:Colors.grey.shade900,
+          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(50.0),
             ),
           ),
         ),
-        finishButtonTextStyle: TextStyle(color: actionState == "Continue" ?Colors.black:Colors.white,fontFamily: "alata",fontWeight: FontWeight.bold,fontSize: 16),
-        skipTextButton: Text('Skip',style: TextStyle(color: Colors.white),),
+        finishButtonTextStyle: TextStyle(
+            color: Colors.black,
+            fontFamily: "alata",
+            fontWeight: FontWeight.bold,
+            fontSize: 16),
+        skipTextButton: Text(
+          'Skip',
+          style: TextStyle(color: Colors.white),
+        ),
         background: [
           Container(
-            height: MediaQuery.of(context).size.height/1.75,
+            height: MediaQuery.of(context).size.height / 1.75,
             child: Container(
               alignment: Alignment.center,
-              child: ClipRRect(child: Lottie.asset('images/breaking_news.json',height: MediaQuery.of(context).size.height,fit:BoxFit.cover,)),
+              child: ClipRRect(
+                  child: Lottie.asset(
+                'images/breaking_news.json',
+                height: MediaQuery.of(context).size.height,
+                fit: BoxFit.cover,
+              )),
             ),
           ),
           Container(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height/1.75,
+            height: MediaQuery.of(context).size.height / 1.75,
             child: Container(
               alignment: Alignment.center,
-              child: Lottie.asset('images/wave_drumm.json',height: MediaQuery.of(context).size.height,fit:BoxFit.contain),
+              child: Lottie.asset('images/wave_drumm.json',
+                  height: MediaQuery.of(context).size.height,
+                  fit: BoxFit.contain),
             ),
           ),
-
           Container(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height/1.75,
-
+            height: MediaQuery.of(context).size.height / 1.75,
             child: Container(
               alignment: Alignment.centerLeft,
               width: MediaQuery.of(context).size.width,
               child: Container(
                 alignment: Alignment.centerLeft,
-                child: ClipRRect(child: Lottie.asset('images/drumm_band.json',height: MediaQuery.of(context).size.height,fit:BoxFit.cover,width: MediaQuery.of(context).size.width,alignment: Alignment(1, -1) )),
+                child: ClipRRect(
+                    child: Lottie.asset('images/drumm_band.json',
+                        height: MediaQuery.of(context).size.height,
+                        fit: BoxFit.cover,
+                        width: MediaQuery.of(context).size.width,
+                        alignment: Alignment(1, -1))),
               ),
             ),
           ),
           Container(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height/1.75,
+            height: MediaQuery.of(context).size.height / 1.75,
             child: Container(
               alignment: Alignment.center,
               child: Image.asset(
@@ -145,7 +163,6 @@ class _OnBoardingState extends State<OnBoarding> {
                       TextSpan(
                         text: 'Breaking ',
                         style: TextStyle(
-
                             fontFamily: "sans",
                             color: offText,
                             fontWeight: FontWeight.normal,
@@ -183,15 +200,14 @@ class _OnBoardingState extends State<OnBoarding> {
                         fontSize: textSize),
                     children: <TextSpan>[
                       TextSpan(
-                        text: ' with the community',
-                        style: TextStyle(
-                          color: offText,
-                          fontWeight: FontWeight.normal,
-                          fontSize:textSize,
-                          fontFamily: "sans",
-                          fontStyle: FontStyle.normal,
-                        )
-                      ),
+                          text: ' with the community',
+                          style: TextStyle(
+                            color: offText,
+                            fontWeight: FontWeight.normal,
+                            fontSize: textSize,
+                            fontFamily: "sans",
+                            fontStyle: FontStyle.normal,
+                          )),
                     ],
                   ),
                 ),
@@ -207,13 +223,10 @@ class _OnBoardingState extends State<OnBoarding> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 RichText(
-
                   text: TextSpan(
                     text: 'Join ',
                     style: TextStyle(
-                        fontFamily: "sans",
-                        color: offText,
-                        fontSize: textSize),
+                        fontFamily: "sans", color: offText, fontSize: textSize),
                     children: <TextSpan>[
                       TextSpan(
                           text: 'Bands',
@@ -222,15 +235,13 @@ class _OnBoardingState extends State<OnBoarding> {
                             fontSize: textSize,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                          )
-                      ),
+                          )),
                       TextSpan(
                           text: ' of Shared Passions',
                           style: TextStyle(
                             color: offText,
                             fontFamily: "sans",
-                          )
-                      ),
+                          )),
                     ],
                   ),
                 ),
@@ -250,23 +261,20 @@ class _OnBoardingState extends State<OnBoarding> {
                   text: TextSpan(
                     text: 'Let\'s ',
                     style: TextStyle(
-                      color: offText,
-                        fontFamily: "sans",
-                        fontSize: textSize),
+                        color: offText, fontFamily: "sans", fontSize: textSize),
                     children: <TextSpan>[
                       TextSpan(
                           text: 'Drumm!',
                           style: TextStyle(
                             color: Colors.white,
-                              fontFamily: "alata",
+                            fontFamily: "alata",
                             fontWeight: FontWeight.bold,
-                              fontSize: textSize,
-                          )
-                      ),
+                            fontSize: textSize,
+                          )),
                     ],
                   ),
                 ),
-                PolicyTextWidget(),
+                //PolicyTextWidget(),
                 SizedBox(
                   height: 80,
                 ),
@@ -276,172 +284,5 @@ class _OnBoardingState extends State<OnBoarding> {
         ],
       ),
     );
-  }
-
-  //Future<UserCredential>
-  void signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-    await googleUser?.authentication;
-
-    // Create a new credential
-    var credential;
-    try {
-      credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
-    }catch(e){
-      print("Exception returned ${e.toString()}");
-      setState(() {
-        actionState = "Continue";
-      });
-      return;
-    }
-
-    FirebaseAuth.instance.signInWithCredential(credential).then((value) {
-      if(value.credential!=null)
-        checkIfUserExists(value);
-      else
-        setState(() {
-          actionState = "Continue";
-        });
-    });
-   // signin.then((value) => {checkIfUserExists(value)});
-
-
-    // Once signed in, return the UserCredential
-   // return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
-
-  void signInWithApple() async {
-    // To prevent replay attacks with the credential returned from Apple, we
-    // include a nonce in the credential request. When signing in with
-    // Firebase, the nonce in the id token returned by Apple, is expected to
-    // match the sha256 hash of `rawNonce`.
-    final rawNonce = generateNonce();
-    final nonce = sha256ofString(rawNonce);
-
-    // Request credential for the currently signed in Apple account.
-    final appleCredential = await SignInWithApple.getAppleIDCredential(
-      scopes: [
-        AppleIDAuthorizationScopes.email,
-        AppleIDAuthorizationScopes.fullName,
-      ],
-      nonce: nonce,
-    );
-
-    // Create an `OAuthCredential` from the credential returned by Apple.
-    final oauthCredential = OAuthProvider("apple.com").credential(
-      idToken: appleCredential.identityToken,
-      rawNonce: rawNonce,
-    );
-
-    FirebaseAuth.instance.signInWithCredential(oauthCredential).then((value) {
-      if(value.credential!=null)
-        checkIfUserExists(value);
-      else
-        setState(() {
-          actionState = "Continue";
-        });
-    });
-    // signin.then((value) => {checkIfUserExists(value)});
-
-
-    // Once signed in, return the UserCredential
-    // return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
-
-  /// Generates a cryptographically secure random nonce, to be included in a
-  /// credential request.
-  String generateNonce([int length = 32]) {
-    final charset =
-        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
-    final random = Random.secure();
-    return List.generate(length, (_) => charset[random.nextInt(charset.length)])
-        .join();
-  }
-
-  /// Returns the sha256 hash of [input] in hex notation.
-  String sha256ofString(String input) {
-    final bytes = utf8.encode(input);
-    final digest = sha256.convert(bytes);
-    return digest.toString();
-  }
-
-  void checkIfUserExists(UserCredential userCredential) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    String? uid = auth.currentUser?.uid;
-    final data = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .get();
-
-    try {
-      String uname = data['username'].toString();
-
-      if (uname.isNotEmpty) {
-        _checkOnboardingStatus(uname);
-      } else {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => RegisterUser(
-                    themeManager: widget.themeManager,
-                    analytics: widget.analytics,
-                    observer: widget.observer,
-                    name: userCredential.user?.displayName,
-                    email: userCredential.user?.email)));
-      }
-    } catch (e) {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => RegisterUser(
-                  themeManager: widget.themeManager,
-                  analytics: widget.analytics,
-                  observer: widget.observer,
-                  name: userCredential.user?.displayName,
-                  email: userCredential.user?.email)));
-    }
-  }
-
-  void _checkOnboardingStatus(String uname) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("username", uname);
-    //prefs.remove('isOnboarded');
-    List<Band> bandList = await FirebaseDBOperations.getBandByUser();
-
-    bool isOnboarded = prefs.getBool('isOnboarded') ?? false;
-    if(bandList.length>0) {
-      isOnboarded = true;
-      await prefs.setBool('isOnboarded', true);
-      _isOnboarded = isOnboarded;
-    }
-    setState(() {
-      _isOnboarded = isOnboarded;
-    });
-
-    if((FirebaseAuth.instance.currentUser != null))
-      FirebaseDBOperations.subscribeToUserBands();
-
-    if (_isOnboarded) {
-      print("Calling launcer Page from onboarding page");
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => MyApp()));
-
-    } else {
-      print("Calling interest Page from onboarding page");
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => InterestsPage(
-        themeManager: widget.themeManager,
-        analytics: widget.analytics,
-        observer: widget.observer,
-      )));
-
-    }
   }
 }

@@ -96,12 +96,43 @@ class _RegisterUserState extends State<RegisterUser> {
                   padding: EdgeInsets.symmetric(vertical: 16),
                   margin: EdgeInsets.symmetric(horizontal: 32),
                   child: Text(
-                    "Hey ${widget.name?.split(" ")[0]}! Please enter your details",
+                    "Please enter your details",
                     style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
                         fontFamily: 'alata',
                         fontWeight: FontWeight.normal),
+                  ),
+                ),
+                if(widget.name==null)
+                  Container(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  margin: EdgeInsets.symmetric(horizontal: 24),
+                  child: TextField(
+                    decoration: InputDecoration(
+                        hintText: "Type your full name",
+                        labelText: "Full Name",
+                        hoverColor: Color(0xff008cff),
+                        hintStyle: TextStyle(
+                          color: Colors.white38,
+                          fontFamily: 'alata',
+                        )),
+                    style: TextStyle(
+                      fontSize: inputTextSize,
+                      fontFamily: 'alata',
+                      color: Colors.white,
+                    ),
+                    textInputAction: TextInputAction.done,
+                    // onSubmitted: (value) {
+                    //   setState(() {
+                    //     nameError = "";
+                    //   });
+                    //   FocusManager.instance.primaryFocus?.unfocus();
+                    //   if (isValidDrummUsername(value)) usernameCheck(value.toLowerCase());
+                    // },
+                    onChanged: (value){
+                      drummer.name = value;
+                    },
                   ),
                 ),
                 Container(
@@ -249,6 +280,13 @@ class _RegisterUserState extends State<RegisterUser> {
     );
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
+
   void usernameCheck(String username) async {
     final result = await FirebaseFirestore.instance
         .collectionGroup("users")
@@ -343,8 +381,18 @@ class _RegisterUserState extends State<RegisterUser> {
     FirebaseAuth auth = FirebaseAuth.instance;
     String? uid = auth.currentUser?.uid;
 
+    if(drummer.name==null&&widget.name==null){
+      AnimatedSnackBar.material(
+        'Fill in your name',
+        type: AnimatedSnackBarType.error,
+      ).show(context);
+      return;
+    }
+     
 
-    drummer.name = widget.name;
+    if(widget.name!=null) {
+      drummer.name = widget.name;
+    }
     drummer.email = widget.email;
     drummer.uid = uid;
     drummer.rid = DateTime.now().millisecondsSinceEpoch ~/ 1000;
