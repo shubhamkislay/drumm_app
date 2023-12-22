@@ -54,6 +54,7 @@ class _RegisterUserState extends State<RegisterUser> {
       child: SafeArea(
         top: false,
         child: Scaffold(
+          backgroundColor: Colors.black,
           body: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -254,7 +255,7 @@ class _RegisterUserState extends State<RegisterUser> {
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.white
                     ),
-                    child:  Text((uploadProgress == 0 || uploadProgress == 1)? "Continue":"Uploading Profile Pic...",style: TextStyle(color: Colors.black),),
+                    child:  Text((uploadProgress == 0 || uploadProgress == 1)? "Continue":"Uploading Profile Pic...",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontFamily: "alata"),),
                   ),
                   onTap: (){
                     if(uploadProgress == 0 || uploadProgress == 1) {
@@ -388,7 +389,7 @@ class _RegisterUserState extends State<RegisterUser> {
       ).show(context);
       return;
     }
-     
+
 
     if(widget.name!=null) {
       drummer.name = widget.name;

@@ -209,19 +209,6 @@ class _NewsFeedState extends State<NewsFeed>
                               ),
                             ), // data_saver_off_rounded Image.asset("images/hotspot.png",height: 24,fit: BoxFit.contain,color: Colors.white,))),
                           ),
-                          if (false)
-                            SizedBox(
-                              height: 2,
-                            ),
-                          if (false)
-                            Flexible(
-                                child: AutoSizeText(
-                                  "Live",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.red),
-                                )),
                         ],
                       ),
                     ),

@@ -171,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
 
     FirebaseAuth.instance.signInWithCredential(credential).then((value) {
       if (value.credential != null)
-        checkIfUserExists(value);
+        checkIfUserExists(value,"google");
       else{
         setState(() {
           signingIn = false;
@@ -223,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
 
     FirebaseAuth.instance.signInWithCredential(oauthCredential).then((value) {
       if (value.credential != null)
-        checkIfUserExists(value);
+        checkIfUserExists(value,"apple");
       else
         setState(() {
           signingIn = false;
@@ -254,7 +254,10 @@ class _LoginPageState extends State<LoginPage> {
     return digest.toString();
   }
 
-  void checkIfUserExists(UserCredential userCredential) async {
+  void checkIfUserExists(UserCredential userCredential,String authProvider) async {
+    SharedPreferences authPref = await SharedPreferences.getInstance();
+    authPref.setString("authProvider", authProvider);
+    authPref.commit();
     FirebaseAuth auth = FirebaseAuth.instance;
     String? uid = auth.currentUser?.uid;
     final data =
