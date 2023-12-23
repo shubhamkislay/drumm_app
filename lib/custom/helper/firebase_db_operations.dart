@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
 
+import '../../model/AiVoice.dart';
 import '../../model/algolia_article.dart';
 import '../../model/band.dart';
 
@@ -123,6 +124,22 @@ class FirebaseDBOperations {
     }
 
     return algoliaArticles;
+  }
+
+  static Future<AiVoice> getAiVoice(String doc) async{
+
+    var data = await FirebaseFirestore.instance
+        .collection('aivoice')
+        .doc(doc)
+        .get()
+        .onError((error, stackTrace) {
+      var data;
+      DocumentSnapshot<Map<String, dynamic>> snapshot = data;
+      return snapshot;
+    });
+
+    return AiVoice.fromSnapshot(data);
+
   }
 
   static Future<AlgoliaArticles> getArticleFromAlgoliaForPersonalisedNotificaiton() async {

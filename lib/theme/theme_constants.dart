@@ -36,12 +36,12 @@ ThemeData lightTheme = ThemeData(
     displayMedium: TextStyle(fontWeight: FontWeight.bold),
   ),
   inputDecorationTheme: InputDecorationTheme(
-      contentPadding: EdgeInsets.symmetric(vertical: 20,horizontal: 24),
+      contentPadding: EdgeInsets.symmetric(vertical: 16,horizontal: 24),
       border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20), borderSide: BorderSide.none),
+          borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
       filled: true,
 
-      fillColor: Colors.grey.withOpacity(0.2)),
+      fillColor: Colors.grey.shade900.withOpacity(0.75)),
 );
 
 ThemeData darkTheme = ThemeData(
@@ -63,9 +63,9 @@ ThemeData darkTheme = ThemeData(
     displayMedium: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
   ),
   inputDecorationTheme: InputDecorationTheme(
-    contentPadding: EdgeInsets.symmetric(vertical: 20,horizontal: 24),
+    contentPadding: EdgeInsets.symmetric(vertical: 12,horizontal: 24),
       border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20), borderSide: BorderSide.none),
+          borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
       filled: true,
-      fillColor: Colors.grey.withOpacity(0.2)),
+      fillColor: Colors.grey.shade900.withOpacity(0.75)),
 );

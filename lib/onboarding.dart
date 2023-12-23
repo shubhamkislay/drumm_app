@@ -45,7 +45,7 @@ class OnBoarding extends StatefulWidget {
 
 class _OnBoardingState extends State<OnBoarding> {
   bool _isOnboarded = false;
-  String actionState = "Continue";
+  String actionState = "Let\'s Drumm!";
   @override
   Widget build(BuildContext context) {
     double textSize = 28;
@@ -256,7 +256,7 @@ class _OnBoardingState extends State<OnBoarding> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                RichText(
+               if(false) RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
                     text: 'Let\'s ',

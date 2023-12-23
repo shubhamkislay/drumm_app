@@ -1,6 +1,7 @@
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/custom/transparent_slider.dart';
+import 'package:drumm_app/model/AiVoice.dart';
 import 'package:drumm_app/model/Drummer.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_onboarding_slider/background_final_button.dart';
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:magnifying_glass/magnifying_glass.dart';
 import 'package:drumm_app/bands_page.dart';
@@ -457,6 +459,22 @@ class _LauncherPageState extends State<LauncherPage>
                         height: MediaQuery.of(context).size.height/1.75,
                         child: Container(
                           alignment: Alignment.center,
+                          margin: EdgeInsets.all(8),
+                          child: Text("Welcome to Drumm!",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                            color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "alata",
+                          fontSize: 32),),
+                        ),
+                      ),
+                      Container(
+                        color: Colors.transparent,
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height/1.75,
+                        child: Container(
+                          alignment: Alignment.center,
                           child: Lottie.asset('images/swipe_left.json',
                               height: 300,
                               fit: BoxFit.contain,
@@ -481,17 +499,55 @@ class _LauncherPageState extends State<LauncherPage>
                         height: MediaQuery.of(context).size.height/1.75,
                         child: Container(
                           alignment: Alignment.center,
-                          child: Icon(
-                            Icons.data_saver_off_rounded,
-                            size: 200,
-                            color: Colors.white,
-                          ),
+                          child: Image.asset("images/drumm_logo.png",color: Colors.white,height: 200,width: MediaQuery.of(context).size.width,),
                         ),
                       ),
                     ],
-                    totalPage: 3,
+                    totalPage: 4,
                     speed: 1.8,
                     pageBodies: [
+                      Container(
+                        color: Colors.transparent,
+                        padding: EdgeInsets.symmetric(horizontal: 40),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            if(false)Center(
+                              child: RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  text: 'Swipe',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "alata",
+                                      fontSize: textSize),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: ' Left',
+                                      style: TextStyle(
+                                          color: Colors.redAccent,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: "alata",
+                                          fontSize: textSize),
+                                    ),
+                                    TextSpan(
+                                      text:
+                                      '\nto discover and explore the news cards',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.normal,
+                                          fontStyle: FontStyle.normal,
+                                          fontFamily: "alata",
+                                          fontSize: textSize - 10),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 32,),
+                          ],
+                        ),
+                      ),
                       Container(
                         color: Colors.transparent,
                         padding: EdgeInsets.symmetric(horizontal: 40),
@@ -658,6 +714,9 @@ class _LauncherPageState extends State<LauncherPage>
     bool checkTutorial = await prefs.getBool('isTutorialDone') ?? false;
     setState(() {
       isTutorialDone = checkTutorial;
+      if(!isTutorialDone){
+        playWelcomeAudio();
+      }
     });
 
     await prefs.setBool('isOnboarded', true);
@@ -696,5 +755,12 @@ class _LauncherPageState extends State<LauncherPage>
 
   void refreshHomePage() {
     homeFeedKey.currentState?.getToTop();
+  }
+
+  void playWelcomeAudio() async {
+    AudioPlayer audioPlayer = AudioPlayer();
+    AiVoice aiVoice = await FirebaseDBOperations.getAiVoice("welcome");
+    audioPlayer.setUrl(aiVoice.aiVoiceUrl??"");
+    audioPlayer.play();
   }
 }

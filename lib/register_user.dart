@@ -60,9 +60,21 @@ class _RegisterUserState extends State<RegisterUser> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 SizedBox(height: 60,),
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  margin: EdgeInsets.symmetric(horizontal: 32),
+                  child: Text(
+                    "Account Creation",
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontFamily: 'alata',
+                        fontWeight: FontWeight.normal),
+                  ),
+                ),
                 if (pickedImage == null)
                   Padding(
-                    padding: const EdgeInsets.all(24.0),
+                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 4),
                     child: RoundedButton(
                       assetPath: "images/add-image.png",
                       height: 100,
@@ -73,6 +85,7 @@ class _RegisterUserState extends State<RegisterUser> {
                       },
                     ),
                   ),
+
                 if (pickedImage != null)
                   GestureDetector(
                     onTap: () {
@@ -86,6 +99,15 @@ class _RegisterUserState extends State<RegisterUser> {
                           alignment: Alignment.center,
                         )),
                   ),
+                if (pickedImage == null)
+                Text(
+                  "Add a profile picture",
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white70,
+                      fontFamily: 'alata',
+                      fontWeight: FontWeight.normal),
+                ),
                 if (uploadProgress > 0 && uploadProgress < 1.0)
                   Padding(
                     padding: const EdgeInsets.all(12.0),
@@ -93,29 +115,18 @@ class _RegisterUserState extends State<RegisterUser> {
                       value: uploadProgress,
                     ),
                   ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  margin: EdgeInsets.symmetric(horizontal: 32),
-                  child: Text(
-                    "Please enter your details",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontFamily: 'alata',
-                        fontWeight: FontWeight.normal),
-                  ),
-                ),
+                SizedBox(height: 12,),
                 if(widget.name==null)
                   Container(
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: EdgeInsets.symmetric(vertical: 12),
                   margin: EdgeInsets.symmetric(horizontal: 24),
                   child: TextField(
                     decoration: InputDecoration(
                         hintText: "Type your full name",
                         labelText: "Full Name",
-                        hoverColor: Color(0xff008cff),
+                        hoverColor: Colors.white,
                         hintStyle: TextStyle(
-                          color: Colors.white38,
+                          color: Colors.white24,
                           fontFamily: 'alata',
                         )),
                     style: TextStyle(
@@ -137,15 +148,15 @@ class _RegisterUserState extends State<RegisterUser> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: EdgeInsets.symmetric(vertical: 12),
                   margin: EdgeInsets.symmetric(horizontal: 24),
                   child: TextField(
                     decoration: InputDecoration(
                         hintText: "Type a unique username",
                         labelText: "Username",
-                        hoverColor: Color(0xff008cff),
+                        hoverColor: Colors.white,
                         hintStyle: TextStyle(
-                          color: Colors.white38,
+                          color: Colors.white24,
                           fontFamily: 'alata',
                         )),
                     style: TextStyle(
@@ -177,15 +188,15 @@ class _RegisterUserState extends State<RegisterUser> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: EdgeInsets.symmetric(vertical: 12),
                   margin: EdgeInsets.symmetric(horizontal: 24),
                   child: TextField(
                     decoration: InputDecoration(
                         hintText: "Write something about yourself...",
                         labelText: "Bio",
-                        hoverColor: Color(0xff008cff),
+                        hoverColor: Colors.white,
                         hintStyle: TextStyle(
-                          color: Colors.white38,
+                          color: Colors.white24,
                           fontFamily: 'alata',
                         )),
                     style: TextStyle(
@@ -200,15 +211,15 @@ class _RegisterUserState extends State<RegisterUser> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: EdgeInsets.symmetric(vertical: 12),
                   margin: EdgeInsets.symmetric(horizontal: 24),
                   child: TextField(
                     decoration: InputDecoration(
                         hintText: "What do you do?",
                         labelText: "Profession",
-                        hoverColor: Color(0xff008cff),
+                        hoverColor: Colors.white,
                         hintStyle: TextStyle(
-                          color: Colors.white38,
+                          color: Colors.white24,
                           fontFamily: 'alata',
                         )),
                     style: TextStyle(
@@ -224,15 +235,15 @@ class _RegisterUserState extends State<RegisterUser> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: EdgeInsets.symmetric(vertical: 12),
                   margin: EdgeInsets.symmetric(horizontal: 24),
                   child: TextField(
                     decoration: InputDecoration(
                         hintText: "Where do you work?",
                         labelText: "Organisation",
-                        hoverColor: Color(0xff008cff),
+                        hoverColor: Colors.white,
                         hintStyle: TextStyle(
-                          color: Colors.white38,
+                          color: Colors.white24,
                           fontFamily: 'alata',
                         )),
                     style: TextStyle(
@@ -249,10 +260,10 @@ class _RegisterUserState extends State<RegisterUser> {
                 GestureDetector(
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 16),
-                    margin: EdgeInsets.symmetric(horizontal: 24),
+                    margin: EdgeInsets.symmetric(horizontal: 24,vertical: 12),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(12),
                       color: Colors.white
                     ),
                     child:  Text((uploadProgress == 0 || uploadProgress == 1)? "Continue":"Uploading Profile Pic...",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontFamily: "alata"),),
@@ -266,7 +277,7 @@ class _RegisterUserState extends State<RegisterUser> {
                       }
                       else{
                         AnimatedSnackBar.material(
-                          'Please Upload the image',
+                          'Please add a profile picture to continue',
                           type: AnimatedSnackBarType.error,
                         ).show(context);
                       }
