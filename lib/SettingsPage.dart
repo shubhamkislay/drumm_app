@@ -25,8 +25,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
     FirebaseAuth.instance.signOut().then((value) {
       removedPreferences();
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (context) => MyApp()), (_) => false);});
+      Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (context) => MyApp()), (_) => false);
+    });
     print('Logged out'); // You can replace this with your actual logout logic
   }
 
@@ -35,23 +36,21 @@ class _SettingsPageState extends State<SettingsPage> {
       if (ConnectToChannel.engineInitialized) ConnectToChannel.disposeEngine();
     } catch (e) {}
 
-    try {
-      FirebaseAuth.instance.currentUser?.delete().then((value) {
-        removedPreferences();
-        try {
-          FirebaseAuth.instance.signOut().then((value) =>
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyApp()),
-                      (_) => false));
-        } catch (e) {
-          Navigator.pushAndRemoveUntil(context,
-              MaterialPageRoute(builder: (context) => MyApp()), (_) => false);
-        }
+    FirebaseAuth.instance.currentUser?.delete().then((value) {
+      removedPreferences();
+      FirebaseAuth.instance
+          .signOut()
+          .then((value) => Navigator.pushAndRemoveUntil(context,
+              MaterialPageRoute(builder: (context) => MyApp()), (_) => false))
+          .onError((error, stackTrace) {
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => MyApp()), (_) => false);
       });
-    }catch(e){
+    }).onError((error, stackTrace) {
+      print("The user cannot be deleted because ${error}");
+      print("Reauthenticating");
       reauthenticate();
-    }
+    });
   }
 
   // Function to open a web page
@@ -152,30 +151,40 @@ class _SettingsPageState extends State<SettingsPage> {
                             "Are you sure you want to delete your account?"),
                         actions: [
                           GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               deleteUser();
                               Navigator.pop(context);
                             },
                             child: Container(
                               padding: EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(12)
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(12)),
+                              child: Text(
+                                "Confirm",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                                textAlign: TextAlign.center,
                               ),
-                              child: Text("Confirm",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),textAlign: TextAlign.center,),
                             ),
                           ),
                           GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               Navigator.pop(context);
                             },
                             child: Container(
                               padding: EdgeInsets.all(12),
                               decoration: BoxDecoration(
                                   color: Colors.grey.shade900,
-                                  borderRadius: BorderRadius.circular(12)
+                                  borderRadius: BorderRadius.circular(12)),
+                              child: Text(
+                                "Cancel",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                                textAlign: TextAlign.center,
                               ),
-                              child: Text("Cancel",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),textAlign: TextAlign.center,),
                             ),
                           ),
                         ],
@@ -220,14 +229,69 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  void reauthenticate() async{
+  void reauthenticate() async {
     SharedPreferences authPref = await SharedPreferences.getInstance();
-    String authProvider = authPref.getString("authProvider")??"apple";
+    String authProvider = authPref.getString("authProvider") ?? "apple";
 
-    if(authProvider=="apple")
+    if (authProvider == "apple")
       signInWithApple();
-    else
+    else if (authProvider == "google")
       signInWithGoogle();
+    else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(12),
+            child: ClipRRect(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+              child: AlertDialog(
+                backgroundColor: Colors.grey.shade900,
+                title: Text("Please sign in again to continue with account deletion. Select one of the following to continue"),
+                actions: [
+                  GestureDetector(
+                    onTap: () {
+                      signInWithGoogle();
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Text(
+                        "Google",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      signInWithApple();
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Text(
+                        "Apple",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
   }
 
   void signInWithApple() async {
@@ -248,9 +312,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
         nonce: nonce,
       );
-    } catch (e) {
-
-    }
+    } catch (e) {}
 
     // Create an `OAuthCredential` from the credential returned by Apple.
     final oauthCredential = OAuthProvider("apple.com").credential(
@@ -258,7 +320,9 @@ class _SettingsPageState extends State<SettingsPage> {
       rawNonce: rawNonce,
     );
 
-    FirebaseAuth.instance.currentUser?.reauthenticateWithCredential(oauthCredential).then((value) {
+    FirebaseAuth.instance.currentUser
+        ?.reauthenticateWithCredential(oauthCredential)
+        .then((value) {
       deleteUser();
     });
     // signin.then((value) => {checkIfUserExists(value)});
@@ -290,7 +354,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     // Obtain the auth details from the request
     final GoogleSignInAuthentication? googleAuth =
-    await googleUser?.authentication;
+        await googleUser?.authentication;
 
     // Create a new credential
     var credential;
@@ -304,7 +368,9 @@ class _SettingsPageState extends State<SettingsPage> {
       return;
     }
 
-    FirebaseAuth.instance.currentUser?.reauthenticateWithCredential(credential).then((value) {
+    FirebaseAuth.instance.currentUser
+        ?.reauthenticateWithCredential(credential)
+        .then((value) {
       deleteUser();
     });
     // signin.then((value) => {checkIfUserExists(value)});
