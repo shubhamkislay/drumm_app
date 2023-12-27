@@ -118,7 +118,6 @@ class _NewsFeedState extends State<NewsFeed>
   String articleTop = "";
   late Article articleOnScreen;
 
-  bool newArticlesAvailable = false;
 
   double multiSelectRadius = 24;
 
@@ -308,7 +307,7 @@ class _NewsFeedState extends State<NewsFeed>
                         child: Lottie.asset(
                             "images/pulse_white.json", //loadingAnimation,
                             fit: BoxFit.contain,
-                            width: double.maxFinite),
+                            width: double.maxFinite,repeat: false),
                       ),
                       //if (!loadAnimation)
                       Center(
@@ -380,7 +379,6 @@ class _NewsFeedState extends State<NewsFeed>
                                     //loadAnimation = true;
                                     //articles.clear();
                                   });
-
                                   if (selectedBandID == "For You")
                                     getArticles();
                                   else
@@ -647,7 +645,6 @@ class _NewsFeedState extends State<NewsFeed>
                                   } else {
                                     FirebaseDBOperations.updateLike(
                                         articleOnScreen.articleId);
-
                                     ConnectToChannel.insights
                                         .convertedObjectsAfterSearch(
                                       indexName: 'articles',
@@ -657,7 +654,6 @@ class _NewsFeedState extends State<NewsFeed>
                                         articleOnScreen.articleId ?? ""
                                       ],
                                     );
-
                                     articleOnScreen.liked = true;
                                     int currentLikes =
                                         articleOnScreen.likes ?? 0;
@@ -709,28 +705,6 @@ class _NewsFeedState extends State<NewsFeed>
                           ],
                         ),
                       ),
-                      if (newArticlesAvailable&&false)
-                        GestureDetector(
-                          onTap: () {
-                            loadFreshArticles();
-                            //getArticles();
-                          },
-                          child: Container(
-                            width: 200,
-                            height: 36,
-                            alignment: Alignment.topCenter,
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade900,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: Colors.white38),
-                            ),
-                            child: Text(
-                              "News articles available",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
                     ],
                   ),
                 ),
@@ -859,56 +833,6 @@ class _NewsFeedState extends State<NewsFeed>
   }
 
 
-  void fetchFreshArticles() async {
-    freshArticles = await FirebaseDBOperations.getArticlesFromAlgolia();
-
-    freshArticleFetched = freshArticles?.articles ?? [];
-
-    if (freshArticleFetched.length < 1) {
-      setState(() {
-        noArticlesPresent = true;
-        loadingAnimation = NO_FOUND_ASSET;
-        loadAnimation = true;
-      });
-    } else {
-      for (Article article in freshArticleFetched) {
-        for (Band band in bandList) {
-          List hooks = band.hooks ?? [];
-          if (hooks.contains(article.category)) {
-            ArticleBand articleBand = ArticleBand(article: article, band: band);
-            fetchedArticleBand.add(articleBand);
-            break;
-          }
-        }
-      }
-
-      if (articleTop != fetchedArticleBand.elementAt(0).article?.articleId) {
-        print("New articles available\nOld Article: ${articleTop}"
-            "\nNew Article: ${fetchedArticleBand.elementAt(0).article?.articleId}");
-        setState(() {
-          newArticlesAvailable = true;
-        });
-      } else {
-        // print("No news articles");
-        print("No news articles\nOld Article: ${articleTop}"
-            "\nNew Article: ${fetchedArticleBand.elementAt(0).article?.articleId}");
-        setState(() {
-          newArticlesAvailable = false;
-        });
-      }
-
-      // setState(() {
-      //   noArticlesPresent = false;
-      //   loadAnimation = false;
-      //   queryID = algoliaArticles?.queryID;
-      //   loadingAnimation = LOADING_ASSET;
-      //   articles = articleFetched;
-      //   articleBands = fetchedArticleBand;
-      //   print("Article length ${articles.length}");
-      // });
-    }
-  }
-
   void loadFreshArticles() async {
     setState(() {
       articles.clear();
@@ -929,7 +853,6 @@ class _NewsFeedState extends State<NewsFeed>
           articleBands = fetchedArticleBand;
           undoIndex = 0;
           articleOnScreen = articleBands.elementAt(0).article ?? Article();
-          newArticlesAvailable = false;
           //   print("Article length ${articles.length}");
         });
       },

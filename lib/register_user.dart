@@ -116,7 +116,16 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                   ),
                 SizedBox(height: 12,),
-                if(widget.name==null)
+                if(widget.name!=null&&!widget.name!.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 24),
+                    child: Text("Hey ${widget.name}, please enter the following details!",style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontFamily: 'alata',
+                        fontWeight: FontWeight.normal),),
+                  ),
+                if(widget.name==null || widget.name!=null&&widget.name!.isEmpty)
                   Container(
                   padding: EdgeInsets.symmetric(vertical: 12),
                   margin: EdgeInsets.symmetric(horizontal: 24),

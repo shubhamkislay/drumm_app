@@ -201,7 +201,7 @@ class _LoginPageState extends State<LoginPage> {
       appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
+          //AppleIDAuthorizationScopes.fullName,
         ],
         nonce: nonce,
       );
@@ -216,14 +216,26 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     // Create an `OAuthCredential` from the credential returned by Apple.
-    final oauthCredential = OAuthProvider("apple.com").credential(
+    final appleOauthProvider = OAuthProvider(
+      "apple.com",
+    );
+
+    // appleOauthProvider.setScopes([
+    //   'email',
+    //   'name',
+    // ]);
+
+    // Create an `OAuthCredential` from the credential returned by Apple.
+    final oauthCredential = appleOauthProvider.credential(
       idToken: appleCredential.identityToken,
+      accessToken: appleCredential.authorizationCode,
       rawNonce: rawNonce,
     );
 
     FirebaseAuth.instance.signInWithCredential(oauthCredential).then((value) {
-      if (value.credential != null)
-        checkIfUserExists(value,"apple");
+      if (value.credential != null) {
+        checkIfUserExistsApple(value, "apple",appleCredential);
+      }
       else
         setState(() {
           signingIn = false;
@@ -263,6 +275,9 @@ class _LoginPageState extends State<LoginPage> {
     final data =
     await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
+
+
+
     try {
       String uname = data['username'].toString();
 
@@ -288,6 +303,83 @@ class _LoginPageState extends State<LoginPage> {
                   analytics: widget.analytics,
                   observer: widget.observer,
                   name: userCredential.user?.displayName,
+                  email: userCredential.user?.email)));
+    }
+  }
+
+  void checkIfUserExistsApple(UserCredential userCredential,String authProvider, dynamic appleCredential) async {
+    SharedPreferences authPref = await SharedPreferences.getInstance();
+    authPref.setString("authProvider", authProvider);
+    authPref.commit();
+    FirebaseAuth auth = FirebaseAuth.instance;
+    String? uid = auth.currentUser?.uid;
+    final data =
+    await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+    // if (userCredential.user?.displayName == null ||
+    //     (userCredential.user?.displayName != null && userCredential.user!.displayName!.isEmpty)) {
+    //
+    //
+    //   final fixDisplayNameFromApple = [
+    //     appleCredential.givenName ?? '',
+    //     appleCredential.familyName ?? '',
+    //   ].join(' ').trim();
+    //   print("fixDisplayNameFromApple : ${fixDisplayNameFromApple}");
+    //   if (FirebaseAuth.instance.currentUser?.displayName == null ||
+    //       (FirebaseAuth.instance.currentUser?.displayName != null && FirebaseAuth.instance.currentUser!.displayName!.isEmpty)) {
+    //     await userCredential.user?.updateDisplayName(fixDisplayNameFromApple);
+    //     await userCredential.user?.reload();
+    //   }
+    //
+    // }
+    // if (userCredential.user?.email == null ||
+    //     (userCredential.user?.email != null && userCredential.user!.email!.isEmpty)) {
+    //   await userCredential.user?.updateEmail(appleCredential.email ?? '');
+    // }
+
+    //print("additionalUserInfo User name is : ${userCredential.additionalUserInfo?.username}");
+
+     User? latestUser = FirebaseAuth.instance.currentUser;
+    // print('Latest user is: ${latestUser?.displayName}');
+    // print("userCredential User name is : ${userCredential.user?.displayName}");
+    //print("providerData User name is : ${userCredential.user?.providerData.elementAt(0).displayName}");
+
+    var fixDisplayNameFromApple = "";
+
+    try {
+      fixDisplayNameFromApple = [
+        appleCredential.givenName ?? '',
+        appleCredential.familyName ?? '',
+      ].join(' ').trim();
+    }catch(e){
+      print("fixDisplayNameFromApple is null");
+    }
+
+    try {
+      String uname = data['username'].toString();
+
+      if (uname.isNotEmpty) {
+        _checkOnboardingStatus(uname);
+      } else {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => RegisterUser(
+                    themeManager: widget.themeManager,
+                    analytics: widget.analytics,
+                    observer: widget.observer,
+                    name: fixDisplayNameFromApple,
+                    email: userCredential.user?.email)));
+      }
+    } catch (e) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => RegisterUser(
+                  themeManager: widget.themeManager,
+                  analytics: widget.analytics,
+                  observer: widget.observer,
+                  name: latestUser?.displayName,
                   email: userCredential.user?.email)));
     }
   }

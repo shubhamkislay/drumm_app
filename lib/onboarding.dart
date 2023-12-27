@@ -1,55 +1,29 @@
-import 'dart:convert';
-import 'dart:math';
-
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:blur/blur.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:crypto/crypto.dart';
 import 'package:drumm_app/LoginPage.dart';
-import 'package:drumm_app/login_screen.dart';
-import 'package:drumm_app/main.dart';
-import 'package:drumm_app/policy_text.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:highlight_text/highlight_text.dart';
 import 'package:lottie/lottie.dart';
-import 'package:drumm_app/InterestPage.dart';
-import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
-import 'package:drumm_app/launcher.dart';
-import 'package:drumm_app/register_user.dart';
 import 'package:drumm_app/theme/theme_manager.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-
 import 'custom/transparent_slider.dart';
-import 'model/band.dart';
 
-class OnBoarding extends StatefulWidget {
+class OnBoarding extends StatelessWidget {
   final ThemeManager themeManager;
   final FirebaseAnalyticsObserver observer;
   final FirebaseAnalytics analytics;
-  const OnBoarding({
+   OnBoarding({
     Key? key,
     required this.themeManager,
     required this.observer,
     required this.analytics,
   }) : super(key: key);
-  @override
-  State<OnBoarding> createState() => _OnBoardingState();
-}
-
-class _OnBoardingState extends State<OnBoarding> {
   bool _isOnboarded = false;
+
   String actionState = "Let\'s Drumm!";
+
   @override
   Widget build(BuildContext context) {
     double textSize = 28;
-    double marginHeight = 200;
     Color offText = Colors.white.withOpacity(0.6);
 
     return Scaffold(
@@ -65,9 +39,9 @@ class _OnBoardingState extends State<OnBoarding> {
               context,
               MaterialPageRoute(
                   builder: (context) => LoginPage(
-                    themeManager: widget.themeManager,
-                    analytics: widget.analytics,
-                    observer: widget.observer,
+                    themeManager: themeManager,
+                    analytics: analytics,
+                    observer: observer,
                   )),
                   (_) => false);
         },
@@ -256,25 +230,6 @@ class _OnBoardingState extends State<OnBoarding> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-               if(false) RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    text: 'Let\'s ',
-                    style: TextStyle(
-                        color: offText, fontFamily: "sans", fontSize: textSize),
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: 'Drumm!',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: "alata",
-                            fontWeight: FontWeight.bold,
-                            fontSize: textSize,
-                          )),
-                    ],
-                  ),
-                ),
-                //PolicyTextWidget(),
                 SizedBox(
                   height: 80,
                 ),

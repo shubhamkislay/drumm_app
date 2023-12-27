@@ -31,7 +31,11 @@ import 'package:drumm_app/swipe_page.dart';
 import 'package:drumm_app/user_profile_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'BottomJamWindow.dart';
+import 'BottomTabBar.dart';
 import 'InterestPage.dart';
+import 'TutorialScreen.dart';
+import 'UserProfileIcon.dart';
 import 'ask_page.dart';
 import 'custom/bottom_sheet.dart';
 import 'custom/create_jam_bottom_sheet.dart';
@@ -64,18 +68,17 @@ class _LauncherPageState extends State<LauncherPage>
     with TickerProviderStateMixin {
   GlobalKey<HomeFeedPageState> homeFeedKey = GlobalKey<HomeFeedPageState>();
 
-  late int currentPage;
   late TabController tabController;
   double iconPadding = 6;
   double textSize = 28;
   double marginHeight = 200;
   late AnimationController _animationController;
-  Color disableColor = Colors.grey.shade800;//Color(0xff4d4d4d); //Colors.grey.shade800;
+  Color disableColor =
+      Colors.grey.shade800; //Color(0xff4d4d4d); //Colors.grey.shade800;
 
   double tabsWidthDivision = 8.5; //Value will be 10 for Wave mode
 
   bool userConnected = false;
-  bool micMute = false;
 
   late Jam currentJam = Jam();
   bool openDrumm = false;
@@ -85,10 +88,21 @@ class _LauncherPageState extends State<LauncherPage>
 
   @override
   Widget build(BuildContext context) {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 1250),
+      upperBound: 1.0,
+    );
+    _animationController.forward();
+    tabController = TabController(
+        length: 5, vsync: this, animationDuration: Duration(milliseconds: 0));
+    FirebaseDBOperations.searchArticles("");
     return AnimatedBuilder(
       builder: (BuildContext context, Widget? child) {
         return ClipPath(
-          clipper: CircleRevealClipper(fraction: _animationController.value,),
+          clipper: CircleRevealClipper(
+            fraction: _animationController.value,
+          ),
           child: child,
         );
       },
@@ -105,621 +119,90 @@ class _LauncherPageState extends State<LauncherPage>
               hideOnScroll: false,
               //currentPage == 0 ? true:false,
               width: MediaQuery.of(context).size.width,
-              bottomBarColor: Colors.black,//Color(0xff101010),
+              bottomBarColor: Colors.black, //Color(0xff101010),
 
               body: (context, controller) => Column(
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(bottom: 0,),
+                      padding: const EdgeInsets.only(
+                        bottom: 0,
+                      ),
                       child: TabBarView(
                         dragStartBehavior: DragStartBehavior.down,
                         physics:
                             NeverScrollableScrollPhysics(), //const BouncingScrollPhysics(),
                         children: [
-                          // HomeFeedPage(
-                          //   key: homeFeedKey,
-                          //   userConnected: userConnected,
-                          //   title: "Drumm",
-                          //   themeManager: widget.themeManager,
-                          //   scrollController: controller,
-                          //   analytics: widget.analytics,
-                          //   observer: widget.observer, tag: 'Drumm',
-                          // ),
                           NewsFeed(),
                           ExplorePage(),
-                          /**
-                           * Wave Mode
-                           *  Container(),
-                           */
-
                           SwipePage(),
                           BandSearchPage(),
-                          if (false)
-                            InterestsPage(
-                              observer: widget.observer,
-                              analytics: widget.analytics,
-                              themeManager: widget.themeManager,
-                            ),
-                         if(true) UserProfilePage()
-                          // SwipePage(),
+                          UserProfilePage(),
                         ],
                         controller: tabController,
                       ),
                     ),
                   ),
-                  if (userConnected)
-                    GestureDetector(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.grey.shade900,
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.vertical(top: Radius.circular(0.0)),
-                          ),
-                          builder: (BuildContext context) {
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                  bottom: MediaQuery.of(context).viewInsets.bottom),
-                              child: ClipRRect(
-                                borderRadius:
-                                    BorderRadius.vertical(top: Radius.circular(0.0)),
-                                child: JamRoomPage(
-                                  jam: currentJam,
-                                  open: openDrumm,
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      child: Container(
-                        height: 60,
-                        padding: EdgeInsets.symmetric(horizontal: 0,),
-                        margin: EdgeInsets.symmetric(horizontal: 6,vertical: 4),
-                        decoration: BoxDecoration(
-                            color: COLOR_PRIMARY_DARK,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.grey.shade900, width: 1)),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(18),
-                                child: CachedNetworkImage(
-                                  imageUrl: currentJam.imageUrl ?? "",
-                                  fit: BoxFit.cover,
-                                  height: 50,
-                                  width: 50,
-                                  errorWidget: (context,url,error) => Container(color:COLOR_PRIMARY_DARK),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                                child: Container(
-                              alignment: Alignment.centerLeft,
-                              padding:
-                                  EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                              child: Text(
-                                "${currentJam.title}",
-                                style: TextStyle(
-                                    overflow: TextOverflow.ellipsis,
-                                    color: Colors.white,
-                                    fontSize: 14),
-                              ),
-                            )),
-                           if(false) RoundedButton(
-                              height: 46,
-                              padding: 12,
-                              assetPath: micMute ? "images/mic_off.png":"images/mic_on.png",
-                              color: Colors.white,
-                              bgColor: Colors.white12,
-                              onPressed: () {
-                                setState(() {
-                                  if(micMute)
-                                    micMute = false;
-                                  else
-                                    micMute = true;
-
-                                  ConnectToChannel.setMute(micMute);
-                                });
-                              },
-                            ),
-                            GestureDetector(
-                              onTap: (){
-                                ConnectToChannel.leaveChannel();
-                                FlutterCallkitIncoming.endAllCalls();
-                              },
-                              child: Container(
-                                margin: EdgeInsets.all(5),
-                                padding: EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                    color: Colors.grey.shade900,
-                                    borderRadius: BorderRadius.circular(18),),
-                              //  child: Transform.rotate(angle: 180 * 3.1415927 / 180,
-                                child: Image.asset("images/leave.png",fit: BoxFit.contain,color: Colors.white,),
-                              //  ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                  BottomJamWindow(),
                   SizedBox(height: 80), //Wave Mode it was 88
                 ],
               ),
-              child: SafeArea(
-                top: false,
-                child: Container(
-                  color: Colors.black,//COLOR_PRIMARY_DARK,
-                  child: TabBar(
-                    enableFeedback: true,
-                    padding: EdgeInsets.only(bottom: 0, top: 8),
-                    overlayColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                        return Colors.transparent;
-                      },
-                    ),
-                    controller: tabController,
-                    indicator: const UnderlineTabIndicator(
-                      borderSide: BorderSide(color: Colors.transparent, width: 8),
-                      //insets: EdgeInsets.fromLTRB(16, 0, 16, 8),
-                    ),
-                    tabs: [
-                      Container(
-                        width: MediaQuery.of(context).size.width / tabsWidthDivision,
-                        padding: EdgeInsets.only(top: 0, left: 0),
-                        child: Image.asset(
-                            color: currentPage == 0
-                                ? widget.themeManager.themeMode == ThemeMode.dark
-                                    ? Colors.white
-                                    : Colors.black
-                                : widget.themeManager.themeMode == ThemeMode.dark
-                                    ? disableColor
-                                    : Colors.black.withOpacity(0.25),
-                            width: 26,
-                            currentPage == 0
-                                ? "images/hut_btn_active.png"
-                                : "images/hut_btn.png",
-                            height: 26),
-                      ),
-                      Container(
-                        //height: 26,
-                        width: MediaQuery.of(context).size.width / tabsWidthDivision,
-                        child: Image.asset(
-                          color: currentPage == 1
-                              ? widget.themeManager.themeMode == ThemeMode.dark
-                                  ? Colors.white
-                                  : Colors.black
-                              : widget.themeManager.themeMode == ThemeMode.dark
-                                  ? disableColor
-                                  : Colors.black.withOpacity(0.25),
-                          width: 26,
-                          "images/search_btn.png",
-                          height: 26,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      if (true)
-                        Container(
-                          width: MediaQuery.of(context).size.width / tabsWidthDivision,
-                          padding: const EdgeInsets.all(0.0),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.transparent,
-                          ),
-                          child: Image.asset(
-                              //color: currentPage == 1 ?  Color(COLOR_PRIMARY_VAL): widget.themeManager.themeMode == ThemeMode.dark ?Colors.white38: Colors.black.withOpacity(0.25),
-                              color: disableColor,
-                              width: 30,
-                              "images/plus_btn.png",
-                              height: 30),
-                        ),
-                      /*
-                      Wave Mode icon
-                      */
-                      Container(
-                        width: MediaQuery.of(context).size.width / tabsWidthDivision,
-                        padding: EdgeInsets.only(top: 0, right: 0),
-                        alignment: Alignment.bottomCenter,
-                        // padding: EdgeInsets.symmetric(
-                        //     vertical: iconPadding, horizontal: iconPadding),
-                        child: Image.asset(
-                            alignment: Alignment.bottomCenter,
-                            color: currentPage == 3
-                                ? widget.themeManager.themeMode == ThemeMode.dark
-                                    ? Colors.white
-                                    : Colors.black
-                                : widget.themeManager.themeMode == ThemeMode.dark
-                                    ? disableColor
-                                    : Colors.black.withOpacity(0.25),
-                            width: 36,
-                            currentPage == 3
-                                ? "images/team_active.png"
-                                : "images/team_inactive.png",
-                            height: 36),
-                      ),
-                     (drummer.imageUrl != null)
-                         ? Container(
-                       padding: EdgeInsets.all(0),
-                       decoration: BoxDecoration(
-                           borderRadius: BorderRadius.circular(19),
-                           color: Colors.black),
-                       child: ClipRRect(
-                         borderRadius: BorderRadius.circular(17),
-                         clipBehavior: Clip.hardEdge,
-                         child: CachedNetworkImage(
-                             width: 30,
-                             height: 30,
-                             imageUrl: modifyImageUrl(
-                                 drummer.imageUrl ?? "", "100x100"),
-                             fit: BoxFit.cover),
-                       ),
-                     )
-                         : RoundedButton(
-                         height: 26,
-                         assetPath: "images/user_profile_active.png",
-                         color: Colors.white,
-                         bgColor: Colors.black,
-                         onPressed: () {}),
-                    ],
-                    onTap: (index) {
-                      Vibrate.feedback(FeedbackType.selection);
-                      if (index !=
-                              2 //2 This should be 2 for Wave Mode. Currently it's commented
-                          ) {
-
-                        setState(() {
-                          if (currentPage == 0 && index == 0) {
-                            print("Calling refresh $currentPage");
-                            refreshHomePage();
-                          }
-                          currentPage = index;
-                          print("CurrentPage $currentPage");
-                        });
-                      } else {
-                        tabController.animateTo(currentPage);
-                        // showModalBottomSheet(
-                        //   backgroundColor: Colors.transparent,
-                        //   context: context,
-                        //   shape: RoundedRectangleBorder(
-                        //     borderRadius:
-                        //         BorderRadius.vertical(top: Radius.circular(20.0)),
-                        //   ),
-                        //   builder: (BuildContext context) {
-                        //     return ClipRRect(
-                        //       borderRadius:
-                        //           BorderRadius.vertical(top: Radius.circular(20.0)),
-                        //       child: CreateBottomSheet(),
-                        //     );
-                        //   },
-                        // );
-                        Vibrate.feedback(FeedbackType.selection);
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: COLOR_PRIMARY_DARK,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(0.0)),
-                          ),
-                          builder: (BuildContext context) {
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                  bottom: MediaQuery.of(context)
-                                      .viewInsets
-                                      .bottom),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(0.0)),
-                                child: CreateJam(
-                                    title: "", bandId: "", imageUrl: ""),
-                              ),
-                            );
-                          },
-                        );
-                      }
-                    },
-                    isScrollable: true,
-                  ),
-                ),
-              ),
+              child: BottomTabBar(tabController: tabController,),
             ),
-            if (!isTutorialDone)
-              Container(
-                  color: Colors.transparent,
-                  child: TransparentSlider(
-                    headerBackgroundColor: Colors.transparent,
-
-                    pageBackgroundColor: Colors.transparent,
-                    controllerColor: Colors.white,
-                    finishButtonText: "End tutorial",
-                    finishButtonTextStyle: TextStyle(color: Colors.black,fontFamily: "alata",fontWeight: FontWeight.bold),
-                    onFinish: () {
-                      setState(() {
-                        finishedTutorial();
-                      });
-                    },
-                    finishButtonStyle: FinishButtonStyle(
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(64.0),
-                        ),
-                      ),
-                    ),
-                    skipTextButton: Text('Skip',style: TextStyle(color: Colors.white),),
-                    background: [
-                      Container(
-                        color: Colors.transparent,
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height/1.75,
-                        child: Container(
-                          alignment: Alignment.center,
-                          margin: EdgeInsets.all(8),
-                          child: Text("Welcome to Drumm!",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                            color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "alata",
-                          fontSize: 32),),
-                        ),
-                      ),
-                      Container(
-                        color: Colors.transparent,
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height/1.75,
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: Lottie.asset('images/swipe_left.json',
-                              height: 300,
-                              fit: BoxFit.contain,
-                              width: double.maxFinite),
-                        ),
-                      ),
-                      Container(
-                        color: Colors.transparent,
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height/1.75,
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: Lottie.asset('images/swipe_right.json',
-                              height: 300,
-                              fit: BoxFit.contain,
-                              width: double.maxFinite),
-                        ),
-                      ),
-                      Container(
-                        color: Colors.transparent,
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height/1.75,
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: Image.asset("images/drumm_logo.png",color: Colors.white,height: 200,width: MediaQuery.of(context).size.width,),
-                        ),
-                      ),
-                    ],
-                    totalPage: 4,
-                    speed: 1.8,
-                    pageBodies: [
-                      Container(
-                        color: Colors.transparent,
-                        padding: EdgeInsets.symmetric(horizontal: 40),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            if(false)Center(
-                              child: RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  text: 'Swipe',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "alata",
-                                      fontSize: textSize),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: ' Left',
-                                      style: TextStyle(
-                                          color: Colors.redAccent,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "alata",
-                                          fontSize: textSize),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                      '\nto discover and explore the news cards',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.normal,
-                                          fontStyle: FontStyle.normal,
-                                          fontFamily: "alata",
-                                          fontSize: textSize - 10),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 32,),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        color: Colors.transparent,
-                        padding: EdgeInsets.symmetric(horizontal: 40),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            Center(
-                              child: RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  text: 'Swipe',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "alata",
-                                      fontSize: textSize),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: ' Left',
-                                      style: TextStyle(
-                                          color: Colors.redAccent,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "alata",
-                                          fontSize: textSize),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                      '\nto discover and explore the news cards',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.normal,
-                                          fontStyle: FontStyle.normal,
-                                          fontFamily: "alata",
-                                          fontSize: textSize - 10),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 32,),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        color: Colors.transparent,
-                        padding: EdgeInsets.symmetric(horizontal: 40),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                text: 'Swipe',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "alata",
-                                    fontSize: textSize),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: ' Right',
-                                    style: TextStyle(
-                                        color: Colors.blue,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: "alata",
-                                        fontSize: textSize),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                    '\non the news card to start drumming',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: "alata",
-                                        fontWeight: FontWeight.normal,
-                                        fontStyle: FontStyle.normal,
-                                        fontSize: textSize - 10),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 32,),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        color: Colors.transparent,
-                        padding: EdgeInsets.symmetric(horizontal: 40),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            Center(
-                              child: RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  text: 'Tap the',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "alata",
-                                      fontSize: textSize),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: ' icon',
-                                      style: TextStyle(
-                                          color: Colors.blue,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "alata",
-                                          fontSize: textSize),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                      '\nto checkout the live drumms',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.normal,
-                                          fontStyle: FontStyle.normal,
-                                          fontFamily: "alata",
-                                          fontSize: textSize - 10),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 100,),
-                          ],
-                        ),
-                      ),
-                    ],
-                  )).frosted(blur: 10, frostColor: Colors.black.withOpacity(0.75)),
+            TutotrialManager(),
           ],
         ),
       ),
     );
   }
 
-  void getCurrentDrummer() async {
-    Drummer curDrummer = await FirebaseDBOperations.getDrummer(
-        FirebaseAuth.instance.currentUser?.uid ?? "");
-    setState(() {
-      drummer = curDrummer;
-    });
+
+
+
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    tabController.dispose();
+    super.dispose();
+    ConnectionListener.onConnectionChanged = null;
   }
+
+  void refreshHomePage() {
+    homeFeedKey.currentState?.getToTop();
+  }
+}
+
+
+
+class TutotrialManager extends StatefulWidget {
+
+  TutotrialManager({ super.key});
+
+  @override
+  State<TutotrialManager> createState() => _TutotrialManagerState();
+}
+
+class _TutotrialManagerState extends State<TutotrialManager> {
+  bool isTutorialDone = true;
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 1250),
-      upperBound: 1.0,
-    );
-    _animationController.forward();
     setOnboarded();
-    currentPage = 0;
-    tabController = TabController(
-        length: 5, vsync: this, animationDuration: Duration(milliseconds: 0));
-
-    FirebaseDBOperations.searchArticles("");
-
-
-    listenToJamState();
-    getCurrentDrummer();
   }
 
-  void setOnboarded() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool checkTutorial = await prefs.getBool('isTutorialDone') ?? false;
-    setState(() {
-      isTutorialDone = checkTutorial;
-      if(!isTutorialDone){
-        playWelcomeAudio();
-      }
-    });
-
-    await prefs.setBool('isOnboarded', true);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: (!isTutorialDone)?
+        Expanded(
+          child: TutorialScreen(finishTutorial: () {
+            finishedTutorial();
+          },),
+        ):Container(height: 0,width: 0,),
+    );
   }
 
   void finishedTutorial() async {
@@ -730,37 +213,23 @@ class _LauncherPageState extends State<LauncherPage>
     await prefs.setBool('isTutorialDone', true);
   }
 
-  void listenToJamState() {
-    ConnectionListener.onConnectionChanged = (connected, jam,open) {
-      // Handle the channelID change here
-     // print("onConnectionChanged called in Launcher");
-      setState(() {
-        // Update the UI with the new channelID
-        openDrumm = open;
-        currentJam = jam;
-        userConnected = connected;
-        micMute = ConnectToChannel.getMuteState();
-      });
-    };
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-
-    tabController.dispose();
-    super.dispose();
-    ConnectionListener.onConnectionChanged = null;
-  }
-
-  void refreshHomePage() {
-    homeFeedKey.currentState?.getToTop();
+  void setOnboarded() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool checkTutorial = await prefs.getBool('isTutorialDone') ?? false;
+    setState(() {
+      isTutorialDone = checkTutorial;
+      if (!isTutorialDone) {
+        playWelcomeAudio();
+      }
+    });
+    await prefs.setBool('isOnboarded', true);
   }
 
   void playWelcomeAudio() async {
     AudioPlayer audioPlayer = AudioPlayer();
     AiVoice aiVoice = await FirebaseDBOperations.getAiVoice("welcome");
-    audioPlayer.setUrl(aiVoice.aiVoiceUrl??"");
+    audioPlayer.setUrl(aiVoice.aiVoiceUrl ?? "");
     audioPlayer.play();
   }
 }
+
