@@ -14,7 +14,6 @@ import 'package:flutter_onboarding_slider/background_final_button.dart';
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:lottie/lottie.dart';
 import 'package:magnifying_glass/magnifying_glass.dart';
 import 'package:drumm_app/bands_page.dart';
 import 'package:drumm_app/custom/ai_summary.dart';
@@ -197,11 +196,9 @@ class _TutotrialManagerState extends State<TutotrialManager> {
   Widget build(BuildContext context) {
     return Container(
       child: (!isTutorialDone)?
-        Expanded(
-          child: TutorialScreen(finishTutorial: () {
-            finishedTutorial();
-          },),
-        ):Container(height: 0,width: 0,),
+        TutorialScreen(finishTutorial: () {
+          finishedTutorial();
+        },):Container(height: 0,width: 0,),
     );
   }
 

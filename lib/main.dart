@@ -826,7 +826,7 @@ class _SplashScreenState extends State<SplashScreen> {
               style: TextStyle(
                 fontSize: 54,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'alata',
+                fontFamily: 'poppinsextrabold',
               ),
             ),
           ],

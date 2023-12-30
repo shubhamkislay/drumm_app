@@ -34,6 +34,9 @@ import 'package:ogg_opus_player/ogg_opus_player.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'LikeBtn.dart';
+import 'LiveIconWidget.dart';
+import 'NotificationIconWidget.dart';
 import 'article_jam_page.dart';
 import 'custom/create_jam_bottom_sheet.dart';
 import 'custom/helper/image_uploader.dart';
@@ -80,8 +83,6 @@ class _NewsFeedState extends State<NewsFeed>
 
   String selectedBandID = "For You";
 
-  bool noArticlesPresent = false;
-  bool liveDrummsExist = false;
 
   double drummLogoSize = 30;
   double iconSpaces = 20;
@@ -96,8 +97,6 @@ class _NewsFeedState extends State<NewsFeed>
 
   bool isOnboarded = false;
   bool isTutorialDone = false;
-
-  bool showNotification = false;
 
   Band selectedBand = Band();
   //final player = AudioPlayer();
@@ -118,17 +117,17 @@ class _NewsFeedState extends State<NewsFeed>
   String articleTop = "";
   late Article articleOnScreen;
 
-
   double multiSelectRadius = 24;
 
   bool likedArticle = false;
   double fontSize = 10;
-  Color iconBGColor = Colors.grey.shade900;//COLOR_PRIMARY_DARK;
+  Color iconBGColor = Colors.grey.shade900; //COLOR_PRIMARY_DARK;
   double iconHeight = 58;
   double sizedBoxedHeight = 12;
   double curve = 20;
 
   int undoIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,174 +146,46 @@ class _NewsFeedState extends State<NewsFeed>
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      height: iconSize+9,
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Vibrate.feedback(FeedbackType.selection);
-                              setState(() {
-                                liveDrummsExist = false;
-                              });
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: COLOR_PRIMARY_DARK,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(0.0)),
-                                ),
-                                builder: (BuildContext context) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(0.0)),
-                                      child: LiveDrumms(),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(2.5),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(24),
-                                  gradient: (liveDrummsExist)
-                                      ? LinearGradient(colors: [
-                                    Colors.blue,
-                                    Colors.blueAccent,
-                                  ])
-                                      : LinearGradient(colors: [
-                                    Colors.grey.shade900,
-                                    Colors.grey.shade900,
-                                  ])),
-                              child: Container(
-                                padding: EdgeInsets.all(6),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(24),
-                                  color: Colors.black,
-                                ),
-                                child: Image.asset(
-                                  'images/drumm_logo.png',
-                                  height: 22,
-                                  color: Colors.white,
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ), // data_saver_off_rounded Image.asset("images/hotspot.png",height: 24,fit: BoxFit.contain,color: Colors.white,))),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
+                    const LiveIcon(),
+                    const SizedBox(
                       width: 4,
                     ),
-                    if (bandsCards.length == 0) SizedBox(
-                      width: 4,
-                    ),
-                    if (bandsCards.length == 0)
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: Text(
-                            "Drumm",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontSize: drummLogoSize,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'alata',
-                            ),
-                          ),
-                        ),
-                      ),
-                    if (bandsCards.length > 0)
+                    if (bandsCards.isNotEmpty)
                       Expanded(
                         child: Container(
                             alignment: Alignment.centerLeft,
                             padding: EdgeInsets.only(
-                              left: horizontalPadding-2,
+                              left: horizontalPadding - 2,
                               right: horizontalPadding + 2,
                             ),
                             height: 50,
                             child: multiSelectContainer),
                       ),
-                    SizedBox(
-                      height: iconSize,
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Vibrate.feedback(FeedbackType.selection);
-                              setState(() {
-                                liveDrummsExist = false;
-                                showNotification = false;
-                              });
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: COLOR_PRIMARY_DARK,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(0.0)),
-                                ),
-                                builder: (BuildContext context) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(0.0)),
-                                      child: NotificationWidget(),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            child: Container(
-                                padding: EdgeInsets.all(2),
-                                child: Image.asset(
-                                  showNotification
-                                      ? "images/notification_active.png"
-                                      : "images/notification_inactive.png",
-                                  height: iconSize - 4,
-                                  fit: BoxFit.contain,
-                                  color: Colors.white,
-                                )), //Icon(Icons.notifications_on_rounded,size: 32))),
-                          ),
-                        ],
-                      ),
-                    ),
-
+                    const NotificationIcon(),
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 2,
               ),
-              if (articleBands.length < 1 || loadAnimation)
+              if (articleBands.isEmpty || loadAnimation)
                 Expanded(
                     child: Center(
                   child: Stack(
                     children: [
                       Center(
                         child: Lottie.asset(
-                            "images/pulse_white.json", //loadingAnimation,
-                            fit: BoxFit.contain,
-                            width: double.maxFinite,repeat: false),
+                          "images/pulse_white.json", //loadingAnimation,
+                          fit: BoxFit.contain,
+                          width: double.maxFinite,
+                        ),
                       ),
                       //if (!loadAnimation)
                       Center(
                         child: Container(
                             height: 275,
                             width: 275,
-                            padding: EdgeInsets.all(28),
+                            padding: const EdgeInsets.all(28),
                             decoration: BoxDecoration(
                               color: Colors.black, //COLOR_PRIMARY_DARK,
                               borderRadius: BorderRadius.circular(275),
@@ -327,125 +198,117 @@ class _NewsFeedState extends State<NewsFeed>
                               fit: BoxFit.contain,
                             )),
                       ),
-                      if (articles.length < 1 && loadAnimation)
+                      if (articles.isEmpty && loadAnimation)
                         Center(
                             child: Container(
                                 alignment: Alignment.center,
                                 height: 250,
                                 width: 250,
-                                padding: EdgeInsets.all(4),
+                                padding: const EdgeInsets.all(4),
                                 decoration: BoxDecoration(
                                   //color: Colors.black,
                                   borderRadius: BorderRadius.circular(250),
                                   border: Border.all(
                                       color: Colors.transparent, width: 1),
                                 ),
-                                child: Text(
+                                child: const Text(
                                   "You're all caught up",
                                   textAlign: TextAlign.center,
                                 ))),
                     ],
                   ),
                 )),
-              if (articleBands.length > 0)
+              if (articleBands.isNotEmpty)
                 Expanded(
                   child: Stack(
                     alignment: Alignment.bottomCenter,
                     fit: StackFit.loose,
                     children: [
-                      Container(
-                        //padding: const EdgeInsets.only(bottom: 0),
-                        child: Builder(
-                          builder: (BuildContext context) {
-                            try {
-                              return CardSwiper(
-                                controller: controller,
-                                cardsCount: (articleBands.length > 0)
-                                    ? articleBands.length
-                                    : 0,
-                                duration: Duration(milliseconds: 250),
-                                maxAngle: 45,
-                                scale: 0.75,
-                                numberOfCardsDisplayed:
-                                    (articleBands.length > 1)
-                                        ? 2
-                                        : (articleBands.length < 1)
-                                            ? 0
-                                            : 1,
-                                isVerticalSwipingEnabled: false,
-                                onEnd: () {
-                                  print("Ended swipes");
-                                  setState(() {
-                                    //loadAnimation = true;
-                                    //articles.clear();
-                                  });
-                                  if (selectedBandID == "For You")
-                                    getArticles();
-                                  else
-                                    getArticlesForBands(selectedBand);
-                                },
-                                threshold: 25,
-                                onSwipe: _onSwipe,
-                                isLoop: false,
-                                onUndo: _onUndo,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: horizontalPadding),
-                                cardBuilder: (context, index) {
-                                  try {
-                                    if (index >= 0)
-                                      return HomeItem(
-                                        bandId: selectedBandID != "For You"
-                                            ? selectedBandID
-                                            : null,
-                                        articleBand:
-                                            articleBands.elementAt(index),
-                                        queryID: queryID,
-                                        isContainerVisible: false,
-                                        openArticle: (article) {
-                                          openArticlePage(article, index);
-                                        },
-                                        updateList: (article) {},
-                                        undo: () {
-                                          // setState(() {
-                                          //   controller = CardSwiperController();
-                                          // });
+                      Builder(
+                        builder: (BuildContext context) {
+                          try {
+                            return CardSwiper(
+                              controller: controller,
+                              cardsCount: (articleBands.isNotEmpty)
+                                  ? articleBands.length
+                                  : 0,
+                              duration: const Duration(milliseconds: 175),
+                              maxAngle: 45,
+                              scale: 0.75,
+                              numberOfCardsDisplayed:
+                                  (articleBands.length > 1)
+                                      ? 2
+                                      : (articleBands.isEmpty)
+                                          ? 0
+                                          : 1,
+                              isVerticalSwipingEnabled: false,
+                              onEnd: () {
+                                print("Ended swipes");
+                                if (selectedBandID == "For You") {
+                                  getArticles();
+                                } else {
+                                  getArticlesForBands(selectedBand);
+                                }
+                              },
+                              threshold: 25,
+                              onSwipe: _onSwipe,
+                              isLoop: false,
+                              onUndo: _onUndo,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: horizontalPadding),
+                              cardBuilder: (context, index) {
+                                try {
+                                  if (index >= 0) {
+                                    return HomeItem(
+                                      bandId: selectedBandID != "For You"
+                                          ? selectedBandID
+                                          : null,
+                                      articleBand:
+                                          articleBands.elementAt(index),
+                                      queryID: queryID,
+                                      isContainerVisible: false,
+                                      openArticle: (article) {
+                                        openArticlePage(article, index);
+                                      },
+                                      updateList: (article) {},
+                                      undo: () {
+                                        controller?.undo();
+                                      },
+                                      onRefresh: () {
+                                        return _refreshData();
+                                      },
+                                      index: index,
+                                      joinDrumm: (articleBand) {
+                                        startDrumming(articleBand);
+                                      },
+                                      playPause: (article, listen) {
+                                        try {
+                                          player.pause();
+                                          player.dispose();
+                                        } catch (e) {}
 
-                                          controller?.undo();
-                                        },
-                                        onRefresh: () {
-                                          return _refreshData();
-                                        },
-                                        index: index,
-                                        joinDrumm: (articleBand) {
-                                          startDrumming(articleBand);
-                                        }, playPause: (article , listen ) {
-
-                                          try{
-                                            player.pause();
-                                            player.dispose();
-                                          }catch(e){
-
-                                          }
-
-                                          if(listen)
-                                            convertTextToSpeech(getSpeechText(article)??"",article.articleId??"");
-
-                                      }, play: false,
-                                      );
-                                    else
-                                      return Container();
-                                  } catch (e) {
-                                    print(
-                                        "//////////////////////////ERROR/////////////////////${e.toString()}");
+                                        if (listen) {
+                                          convertTextToSpeech(
+                                              getSpeechText(article) ?? "",
+                                              article.articleId ?? "");
+                                        }
+                                      },
+                                      play: false,
+                                    );
+                                  } else {
                                     return Container();
                                   }
-                                },
-                              );
-                            } catch (e) {
-                              return Container();
-                            }
-                          },
-                        ),
+                                } catch (e) {
+                                  print(
+                                      "//////////////////////////ERROR/////////////////////${e.toString()}");
+                                  return Container();
+                                }
+                              },
+                            );
+                          } catch (e) {
+                            return Container();
+                          }
+                        },
                       ),
                       Container(
                         alignment: Alignment.bottomCenter,
@@ -464,35 +327,28 @@ class _NewsFeedState extends State<NewsFeed>
                               child: Container(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(42),
-                                    border: Border.all(color: Colors.grey.shade800,width: 2.25)),
+                                    border: Border.all(
+                                        color: Colors.grey.shade800,
+                                        width: 2.25)),
                                 child: Container(
-                                  padding: EdgeInsets.all(10),
-                                  margin: EdgeInsets.all(2),
+                                  padding: const EdgeInsets.all(10),
+                                  margin: const EdgeInsets.all(2),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(42),
-                                    // boxShadow: [
-                                    //   BoxShadow(
-                                    //       color: Colors.grey.shade900,
-                                    //       spreadRadius: 2,
-                                    //       blurRadius: 4),
-                                    // ],
                                     color: Colors.black.withOpacity(0.5),
-
                                   ),
-                                  // child: Icon(
-                                  //   Icons.data_saver_off_rounded,
-                                  //   size: iconSize - 4,
-                                  // ),
                                   child: Image.asset(
                                     'images/turn-back.png',
                                     height: 16,
-                                    color: (undoIndex == 0 ) ? Colors.grey.shade600:Colors.white,
+                                    color: (undoIndex == 0)
+                                        ? Colors.grey.shade600
+                                        : Colors.white,
                                     fit: BoxFit.contain,
                                   ),
                                 ),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 8,
                             ),
                             GestureDetector(
@@ -503,10 +359,12 @@ class _NewsFeedState extends State<NewsFeed>
                               child: Container(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(42),
-                                    border: Border.all(color: Colors.grey.shade800,width: 2.5)),
+                                    border: Border.all(
+                                        color: Colors.grey.shade800,
+                                        width: 2.5)),
                                 child: Container(
-                                  padding: EdgeInsets.all(16),
-                                  margin: EdgeInsets.all(2),
+                                  padding: const EdgeInsets.all(16),
+                                  margin: const EdgeInsets.all(2),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(42),
                                     boxShadow: [
@@ -515,44 +373,29 @@ class _NewsFeedState extends State<NewsFeed>
                                           spreadRadius: 2,
                                           blurRadius: 4),
                                     ],
-                                    // color: Color(COLOR_PRIMARY_VAL),//.withOpacity(0.95),
-                                    gradient: LinearGradient(colors: [
+                                    gradient: const LinearGradient(colors: [
                                       Colors.orange,
                                       Colors.red,
                                       Colors.pinkAccent,
-                                      // Colors.grey.shade900,
-                                      // Colors.grey.shade900,
-
                                     ]),
                                   ),
-                                  // child: Icon(
-                                  //   Icons.data_saver_off_rounded,
-                                  //   size: iconSize - 4,
-                                  // ),
-                                  // child: Lottie.asset(
-                                  //   'images/globe_anim.json',
-                                  //   height: 76,
-                                  //   fit: BoxFit.contain,
-                                  // ),
                                   child: Image.asset(
                                     'images/google-earth.png',
                                     height: 42,
                                     color: Colors.white,
                                     fit: BoxFit.contain,
                                   ),
-
                                 ),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 4,
                             ),
                             RoundedButton(
                               padding: 10,
-                              height: iconHeight - 6, //iconHeight,
+                              height: iconHeight - 6,
                               color: Colors.white,
-                              bgColor: Colors.transparent,//Colors.grey
-                                  //.shade900, //iconBGColor,//.withOpacity(0.75),
+                              bgColor: Colors.transparent,
                               onPressed: () {
                                 Vibrate.feedback(FeedbackType.selection);
                                 showModalBottomSheet(
@@ -583,7 +426,7 @@ class _NewsFeedState extends State<NewsFeed>
                               },
                               assetPath: 'images/drumm_logo.png',
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 4,
                             ),
                             GestureDetector(
@@ -594,30 +437,26 @@ class _NewsFeedState extends State<NewsFeed>
                               child: Container(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(42),
-                                    border: Border.all(color: Colors.grey.shade800,width: 2.5)),
+                                    border: Border.all(
+                                        color: Colors.grey.shade800,
+                                        width: 2.5)),
                                 child: Container(
-                                  padding: EdgeInsets.all(18),
-                                  margin: EdgeInsets.all(2),
+                                  padding: const EdgeInsets.all(18),
+                                  margin: const EdgeInsets.all(2),
                                   decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(42),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.grey.shade900,
-                                            spreadRadius: 2,
-                                            blurRadius: 4),
-                                      ],
-                                      // color: Color(COLOR_PRIMARY_VAL),//.withOpacity(0.95),
-                                      gradient: LinearGradient(colors: [
-                                        Colors.indigo,
-                                        Colors.blue.shade700,
-                                        Colors.lightBlue,
-
-                                      ]),
+                                    borderRadius: BorderRadius.circular(42),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.grey.shade900,
+                                          spreadRadius: 2,
+                                          blurRadius: 4),
+                                    ],
+                                    gradient: LinearGradient(colors: [
+                                      Colors.indigo,
+                                      Colors.blue.shade700,
+                                      Colors.lightBlue,
+                                    ]),
                                   ),
-                                  // child: Icon(
-                                  //   Icons.data_saver_off_rounded,
-                                  //   size: iconSize - 4,
-                                  // ),
                                   child: Image.asset(
                                     'images/audio-waves.png',
                                     height: 38,
@@ -627,88 +466,20 @@ class _NewsFeedState extends State<NewsFeed>
                                 ),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 8,
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  if (articleOnScreen.liked ?? false) {
-                                    FirebaseDBOperations.removeLike(
-                                        articleOnScreen.articleId);
-                                    articleOnScreen.liked = false;
-                                    int currentLikes =
-                                        articleOnScreen.likes ?? 1;
-                                    currentLikes -= 1;
-                                    articleOnScreen.likes = currentLikes;
-                                    //  _articlesController.add(articles);
-                                  } else {
-                                    FirebaseDBOperations.updateLike(
-                                        articleOnScreen.articleId);
-                                    ConnectToChannel.insights
-                                        .convertedObjectsAfterSearch(
-                                      indexName: 'articles',
-                                      eventName: 'Liked article',
-                                      queryID: queryID ?? 'query id',
-                                      objectIDs: [
-                                        articleOnScreen.articleId ?? ""
-                                      ],
-                                    );
-                                    articleOnScreen.liked = true;
-                                    int currentLikes =
-                                        articleOnScreen.likes ?? 0;
-                                    currentLikes += 1;
-                                    articleOnScreen.likes = currentLikes;
-                                    //_articlesController.add(articles);
-
-                                    Vibrate.feedback(FeedbackType.success);
-                                  }
-                                });
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(42),
-                                    border: Border.all(color: Colors.grey.shade800,width: 2.25)),
-                                child: Container(
-                                  padding: EdgeInsets.all(8),
-                                  margin: EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(42),
-                                    // boxShadow: [
-                                    //   BoxShadow(
-                                    //       color: Colors.grey.shade900,
-                                    //       spreadRadius: 2,
-                                    //       blurRadius: 4),
-                                    // ],
-                                     color: Colors.black.withOpacity(0.5),
-
-                                  ),
-                                  // child: Icon(
-                                  //   Icons.data_saver_off_rounded,
-                                  //   size: iconSize - 4,
-                                  // ),
-                                  child: Image.asset(
-                                    articleOnScreen.liked ?? false
-                                        ? 'images/liked.png'
-                                        : 'images/like_btn.png',
-                                    height: 20,
-                                    color: articleOnScreen.liked ?? false
-                                        ? Colors.red
-                                        : Colors.white,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              ),
+                            LikeBtn(
+                              article: articleOnScreen,
+                              queryID: queryID ?? "",
                             ),
-
-                            // if ((articles!.elementAt(index).likes ?? 0) > 0)
                           ],
                         ),
                       ),
                     ],
                   ),
                 ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
             ],
@@ -725,10 +496,7 @@ class _NewsFeedState extends State<NewsFeed>
     _checkAndScheduleRefresh();
     FirebaseDBOperations.lastDocument = null;
     //controller = CardSwiperController();
-    getCurrentDrummer();
-    checkLiveDrumms();
-    getNotifications();
-    if(selectedBandID != "For You"){
+    if (selectedBandID != "For You") {
       getArticlesForBands(selectedBand);
       return;
     }
@@ -753,15 +521,15 @@ class _NewsFeedState extends State<NewsFeed>
             return Container(
               height: 200,
               width: double.maxFinite,
-              padding: EdgeInsets.all(24),
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   color: Colors.grey.shade900),
               child: Column(
                 children: [
-                  Text(
+                  const Text(
                       "You are currently in a drumm already. Do you want to still join this drumm?"),
-                  SizedBox(
+                  const SizedBox(
                     height: 16,
                   ),
                   Row(
@@ -774,7 +542,7 @@ class _NewsFeedState extends State<NewsFeed>
                             joinOpenDrumm(articleBand);
                           } catch (e) {}
                         },
-                        child: Text(
+                        child: const Text(
                           "Yes",
                           style: TextStyle(
                             color: Colors.white,
@@ -787,7 +555,7 @@ class _NewsFeedState extends State<NewsFeed>
                         onTap: () {
                           Navigator.pop(context);
                         },
-                        child: Text(
+                        child: const Text(
                           "No",
                           style: TextStyle(
                             color: Colors.white,
@@ -809,7 +577,6 @@ class _NewsFeedState extends State<NewsFeed>
   @override
   void dispose() {
     if (controller != null) controller?.dispose();
-    //WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
   }
 
@@ -818,7 +585,7 @@ class _NewsFeedState extends State<NewsFeed>
     // TODO: implement initState
     loadingAnimation = LOADING_ASSET;
     controller = CardSwiperController();
-    //WidgetsBinding.instance?.addObserver(this);
+
     super.initState();
     ConnectToChannel.insights.userToken =
         FirebaseAuth.instance.currentUser?.uid ?? "";
@@ -826,50 +593,7 @@ class _NewsFeedState extends State<NewsFeed>
     _checkAndScheduleRefresh();
     FirebaseDBOperations.lastDocument = null;
     getBandsCards();
-    getCurrentDrummer();
-    checkLiveDrumms();
-    getNotifications();
     requestPermissions();
-  }
-
-
-  void loadFreshArticles() async {
-    setState(() {
-      articles.clear();
-      articleBands.clear();
-    });
-
-    controller = CardSwiperController();
-
-    Future.delayed(
-      Duration(milliseconds: 500),
-      () {
-        setState(() {
-          noArticlesPresent = false;
-          loadAnimation = false;
-          queryID = freshArticles?.queryID;
-          loadingAnimation = LOADING_ASSET;
-          articles = freshArticleFetched;
-          articleBands = fetchedArticleBand;
-          undoIndex = 0;
-          articleOnScreen = articleBands.elementAt(0).article ?? Article();
-          //   print("Article length ${articles.length}");
-        });
-      },
-    );
-  }
-
-  void getNotifications() async {
-    SharedPreferences notiPref = await SharedPreferences.getInstance();
-    List<String>? notifications = notiPref.getStringList("notifications");
-
-    int notifLen = notifications?.length ?? 0;
-
-    if (notifLen > 0) {
-      setState(() {
-        showNotification = true;
-      });
-    }
   }
 
   void getBandsCards() async {
@@ -878,8 +602,7 @@ class _NewsFeedState extends State<NewsFeed>
     for (Band band in bandList) {
       bandMap.putIfAbsent(band.bandId ?? "", () => band);
     }
-      getArticles();
-
+    getArticles();
 
     Band allBands = Band();
     allBands.name = "For You";
@@ -893,9 +616,9 @@ class _NewsFeedState extends State<NewsFeed>
             selected: true,
             child: Container(
                 alignment: Alignment.center,
-                padding: EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 height: 28,
-                child: Text(
+                child: const Text(
                   "For You",
                   textAlign: TextAlign.center,
                 )),
@@ -920,7 +643,7 @@ class _NewsFeedState extends State<NewsFeed>
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 8,
                 ),
                 Text("${element.name}")
@@ -936,30 +659,6 @@ class _NewsFeedState extends State<NewsFeed>
       multiSelectContainer = getMultiSelectWidget(context);
       print("bandsCards size ${bandsCards.length}");
     });
-  }
-
-
-
-  Future<void> checkLiveDrumms() async {
-    List<Jam> fetchedDrumms = await FirebaseDBOperations.getDrummsFromBands();
-    if (fetchedDrumms.length > 0) {
-      setState(() {
-        liveDrummsExist = true;
-      });
-      return;
-    }
-    List<Jam> broadcastJams = await FirebaseDBOperations.getBroadcastJams();
-    if (broadcastJams.length > 0) {
-      setState(() {
-        liveDrummsExist = true;
-      });
-    }
-    List<Jam> openDrumms = await FirebaseDBOperations.getOpenDrummsFromBands();
-    if (openDrumms.length > 0) {
-      setState(() {
-        liveDrummsExist = true;
-      });
-    }
   }
 
   MultiSelectContainer getMultiSelectWidget(BuildContext bContext) {
@@ -989,27 +688,29 @@ class _NewsFeedState extends State<NewsFeed>
       itemsDecoration: MultiSelectDecorations(
         decoration: BoxDecoration(
             color: COLOR_PRIMARY_DARK, //Colors.grey.shade900,
-            border:
-                Border.all(color: Colors.grey.shade900,width: 2), //Color(0xff2f2f2f)),
+            border: Border.all(
+                color: Colors.grey.shade900, width: 2), //Color(0xff2f2f2f)),
             borderRadius: BorderRadius.circular(multiSelectRadius)),
         selectedDecoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
+            gradient: const LinearGradient(colors: [
               Colors.white, //Colors.blue.shade600,
               Colors.white, //Colors.blue.shade800, //Colors.cyan,
             ]),
             borderRadius: BorderRadius.circular(multiSelectRadius)),
       ),
       items: bandsCards,
-      textStyles: MultiSelectTextStyles(
+      textStyles: const MultiSelectTextStyles(
         selectedTextStyle: TextStyle(
           color: Colors.black,
-          fontWeight: FontWeight.bold, // FontWeight.w700,
-          fontFamily: "alata",
+          fontWeight: FontWeight.w700,
+          fontSize: 16,
+          //fontFamily: "poppinsextrabold",
         ),
         textStyle: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold, // FontWeight.w700,
-          fontFamily: "alata",
+          color: Colors.white38,
+          fontSize: 12,
+          //fontWeight: FontWeight.bold, // FontWeight.w700,
+          //fontFamily: "poppinsbold",
         ),
       ),
       onChange: (allSelectedItems, selectedItem) {
@@ -1022,14 +723,15 @@ class _NewsFeedState extends State<NewsFeed>
           loadingAnimation = LOADING_ASSET;
           selectedBand = selectedItem;
           selectedBandID = selectedBand.bandId ?? "For You";
-          if (selectedBandID == "For You")
+          if (selectedBandID == "For You") {
             getArticles();
-          else
+          } else {
             getArticlesForBands(selectedBand);
+          }
         });
       },
       singleSelectedItem: true,
-      itemsPadding: EdgeInsets.all(0),
+      itemsPadding: const EdgeInsets.all(0),
     );
   }
 
@@ -1042,10 +744,6 @@ class _NewsFeedState extends State<NewsFeed>
         ),
       ),
     );
-    setState(() {
-      articles[index] = returnData!;
-    });
-    // print("Return Data ${returnData?.liked}");
   }
 
   void getArticles() async {
@@ -1059,7 +757,6 @@ class _NewsFeedState extends State<NewsFeed>
         []; //await FirebaseDBOperations.getArticlesByBands();
     if (articleFetched.length < 1) {
       setState(() {
-        noArticlesPresent = true;
         loadingAnimation = NO_FOUND_ASSET;
         loadAnimation = true;
       });
@@ -1077,7 +774,6 @@ class _NewsFeedState extends State<NewsFeed>
       }
 
       setState(() {
-        noArticlesPresent = false;
         loadAnimation = false;
         queryID = algoliaArticles?.queryID;
         loadingAnimation = LOADING_ASSET;
@@ -1085,24 +781,22 @@ class _NewsFeedState extends State<NewsFeed>
         articleBands = fetchedArticleBand;
         undoIndex = 0;
         try {
-          articleOnScreen = articleBands
-              .elementAt(0)
-              .article ?? Article();
+          articleOnScreen = articleBands.elementAt(0).article ?? Article();
           if (articleTop == "") {
             articleTop = articleBands.elementAt(0).article?.articleId ?? "";
           }
-        }catch(e){
+        } catch (e) {
           print("No elements present as ${e.toString()}");
         }
 
         print("Article length ${articles.length}");
       });
 
-     //  Article articleForSpeech = articleBands.elementAt(0).article?? Article();
-     // // if(articleOnScreen.aiVoiceUrl==null)
-     //    convertTextToSpeech(getSpeechText(articleForSpeech)??"No audio here",articleForSpeech.articleId??"");
-     // else
-       // speakNews(articleForSpeech.aiVoiceUrl);
+      //  Article articleForSpeech = articleBands.elementAt(0).article?? Article();
+      // // if(articleOnScreen.aiVoiceUrl==null)
+      //    convertTextToSpeech(getSpeechText(articleForSpeech)??"No audio here",articleForSpeech.articleId??"");
+      // else
+      // speakNews(articleForSpeech.aiVoiceUrl);
     }
   }
 
@@ -1122,7 +816,6 @@ class _NewsFeedState extends State<NewsFeed>
 
     if (articleFetched.length < 1) {
       setState(() {
-        noArticlesPresent = true;
         loadingAnimation = NO_FOUND_ASSET;
         loadAnimation = true;
       });
@@ -1134,7 +827,6 @@ class _NewsFeedState extends State<NewsFeed>
       }
 
       setState(() {
-        noArticlesPresent = false;
         loadAnimation = false;
         queryID = algoliaArticles?.queryID;
         loadingAnimation = LOADING_ASSET;
@@ -1152,27 +844,20 @@ class _NewsFeedState extends State<NewsFeed>
     int? currentIndex,
     CardSwiperDirection direction,
   ) {
+
+    //return true;
     cleanCache();
-
-
 
     articleTop =
         articleBands.elementAt(currentIndex ?? 0).article?.articleId ?? "";
 
-    Article articleForSpeech = articleBands.elementAt(currentIndex ?? 0).article?? Article();
-    try{
-      //player.stop();
+    Article articleForSpeech =
+        articleBands.elementAt(currentIndex ?? 0).article ?? Article();
+    try {
       player.dispose();
-    }catch(e){
-
-    }
-    //convertTextToSpeech(getSpeechText(articleForSpeech)??"Just say hello world!");
-    //if(articleOnScreen.aiVoiceUrl==null)
-    //  convertTextToSpeech(getSpeechText(articleForSpeech)??"No audio here",articleForSpeech.articleId??"");
-    //else
-      //speakNews(articleForSpeech.aiVoiceUrl);
+    } catch (e) {}
     setState(() {
-      undoIndex = currentIndex??0;
+      undoIndex = currentIndex ?? 0;
       articleOnScreen =
           articleBands.elementAt(currentIndex ?? 0).article ?? Article();
     });
@@ -1202,15 +887,15 @@ class _NewsFeedState extends State<NewsFeed>
             return Container(
               height: 200,
               width: double.maxFinite,
-              padding: EdgeInsets.all(24),
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   color: Colors.grey.shade900),
               child: Column(
                 children: [
-                  Text(
+                  const Text(
                       "You are currently in a drumm already. Do you want to still join this drumm?"),
-                  SizedBox(
+                  const SizedBox(
                     height: 16,
                   ),
                   Row(
@@ -1224,7 +909,7 @@ class _NewsFeedState extends State<NewsFeed>
                                 articleBands.elementAt(previousIndex));
                           } catch (e) {}
                         },
-                        child: Text(
+                        child: const Text(
                           "Yes",
                           style: TextStyle(
                             color: Colors.white,
@@ -1237,7 +922,7 @@ class _NewsFeedState extends State<NewsFeed>
                         onTap: () {
                           Navigator.pop(context);
                         },
-                        child: Text(
+                        child: const Text(
                           "No",
                           style: TextStyle(
                             color: Colors.white,
@@ -1261,13 +946,16 @@ class _NewsFeedState extends State<NewsFeed>
     return true;
   }
 
-  String? getSpeechText(Article articleForSpeech){
+  String? getSpeechText(Article articleForSpeech) {
     //return articleForSpeech.question;
-    String? text = (articleForSpeech.description == null)?articleForSpeech.title: "${articleForSpeech.description}";
-    if(articleForSpeech.question!=null)
-      text = "${text}\n${articleForSpeech.question}\nStart a drumm to check what the community thinks!";
+    String? text = (articleForSpeech.description == null)
+        ? articleForSpeech.title
+        : "${articleForSpeech.description}";
+    if (articleForSpeech.question != null) {
+      text =
+          "${text}\n${articleForSpeech.question}\nStart a drumm to check what the community thinks!";
+    }
     return text;
-
   }
 
   bool _onUndo(
@@ -1302,7 +990,6 @@ class _NewsFeedState extends State<NewsFeed>
 
     if (fetchcedArticle.length < 1) {
       setState(() {
-        noArticlesPresent = true;
         loadingAnimation = NO_FOUND_ASSET;
         loadAnimation = true;
       });
@@ -1313,7 +1000,6 @@ class _NewsFeedState extends State<NewsFeed>
         fetchedArticleBand.add(articleBand);
       }
       setState(() {
-        noArticlesPresent = false;
         loadAnimation = false;
         articles = fetchcedArticle;
         articleBands = fetchedArticleBand;
@@ -1333,10 +1019,11 @@ class _NewsFeedState extends State<NewsFeed>
     jam.articleId = aBand.article?.articleId;
     jam.startedBy = aBand.article?.source;
     jam.imageUrl = aBand.article?.imageUrl;
-    if(aBand.article?.question != null)
+    if (aBand.article?.question != null) {
       jam.question = aBand.article?.question;
-    else
+    } else {
       jam.question = aBand.article?.title;
+    }
     jam.lastActive = Timestamp.now();
     jam.count = 0;
     jam.membersID = [];
@@ -1356,7 +1043,7 @@ class _NewsFeedState extends State<NewsFeed>
       context: context,
       isScrollControlled: true,
       backgroundColor: COLOR_PRIMARY_DARK,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
       ),
       builder: (BuildContext context) {
@@ -1364,7 +1051,8 @@ class _NewsFeedState extends State<NewsFeed>
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(0.0)),
             child: JamRoomPage(
               jam: jam,
               open: true,
@@ -1375,13 +1063,7 @@ class _NewsFeedState extends State<NewsFeed>
     );
   }
 
-  void getCurrentDrummer() async {
-    Drummer curDrummer = await FirebaseDBOperations.getDrummer(
-        FirebaseAuth.instance.currentUser?.uid ?? "");
-    setState(() {
-      drummer = curDrummer;
-    });
-  }
+
 
   void cleanCache() async {
     await DefaultCacheManager().emptyCache();
@@ -1391,10 +1073,10 @@ class _NewsFeedState extends State<NewsFeed>
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     NotificationSettings notificationSettings =
         await messaging.requestPermission(
-          announcement: true,
-          carPlay: true,
-          criticalAlert: true,
-        );
+      announcement: true,
+      carPlay: true,
+      criticalAlert: true,
+    );
     print(notificationSettings.authorizationStatus);
   }
 
@@ -1436,18 +1118,8 @@ class _NewsFeedState extends State<NewsFeed>
     });
   }
 
-  void finishedTutorial() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isTutorialDone = true;
-    });
-    await prefs.setBool('isTutorialDone', true);
-  }
-
 
   Future speakNews(String? url) async {
-
-
     // await player.setUrl(url!).catchError((Onerr) {
     //   print("Error setting url : $Onerr");
     // });
@@ -1457,19 +1129,16 @@ class _NewsFeedState extends State<NewsFeed>
 
     try {
       //await audioPlayer.play(UrlSource(url??""));
-    }catch(e){
+    } catch (e) {
       print("Error playing : $e");
     }
   }
 
-  Future<void> convertTextToSpeech(String text,String id) async {
-
-    try{
+  Future<void> convertTextToSpeech(String text, String id) async {
+    try {
       player.pause();
       player.dispose();
-    }catch(e){
-
-    }
+    } catch (e) {}
     final apiKey = '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';
     final endpoint = 'https://api.openai.com/v1/audio/speech';
 
@@ -1479,7 +1148,14 @@ class _NewsFeedState extends State<NewsFeed>
     };
 
     // Define a list of voices
-    final voices = ['alloy',  'fable','echo', 'onyx', 'nova', 'shimmer'];//'echo', 'onyx', 'nova', 'shimmer'
+    final voices = [
+      'alloy',
+      'fable',
+      'echo',
+      'onyx',
+      'nova',
+      'shimmer'
+    ]; //'echo', 'onyx', 'nova', 'shimmer'
 
     // Randomly select a voice from the list
     final random = Random();
@@ -1499,15 +1175,14 @@ class _NewsFeedState extends State<NewsFeed>
       body: jsonEncode(data),
     );
 
-
     if (response.statusCode == 200) {
       print("The response is successful");
-     //  //await audioPlayer.play(BytesSource(response.bodyBytes));
+      //  //await audioPlayer.play(BytesSource(response.bodyBytes));
       final audioBytes = response.bodyBytes;
       final appDir = await getApplicationDocumentsDirectory();
       final audioFile = File('${appDir.path}/${id}.opus');
       await audioFile.writeAsBytes(audioBytes);
-      if(articleTop==id) {
+      if (articleTop == id) {
         player = OggOpusPlayer(audioFile.path);
         player.play();
       }
@@ -1518,4 +1193,3 @@ class _NewsFeedState extends State<NewsFeed>
     }
   }
 }
-

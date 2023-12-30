@@ -160,7 +160,8 @@ class HomeFeedData extends StatelessWidget {
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.5),
                           fontSize: 14,
-                          fontWeight: FontWeight.bold,
+                          //fontFamily: "alata",
+                          //fontWeight: FontWeight.bold,
                         )),
                     SizedBox(
                       width: 4,
@@ -174,7 +175,7 @@ class HomeFeedData extends StatelessWidget {
                 ),
               ),
               const SizedBox(
-                height: 12,
+                height: 4,
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 12, top: 2, right: 12),
@@ -196,9 +197,9 @@ class HomeFeedData extends StatelessWidget {
                         textAlign: TextAlign.start,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 24,
-                          //fontFamily: "alata",
-                          fontWeight: FontWeight.bold,
+                          fontSize: 28,
+                          //fontFamily: "poppinsregular",
+                          //fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
@@ -321,8 +322,8 @@ class HomeFeedData extends StatelessWidget {
                                     color: Colors.white,
                                     fontSize: 15,
                                     //fontStyle: FontStyle.italic,
-                                    //fontFamily: "alata",
-                                    //fontWeight: FontWeight.bold,
+                                    //fontFamily: "poppinsbold",
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 SizedBox(
@@ -341,7 +342,8 @@ class HomeFeedData extends StatelessWidget {
                                     style: const TextStyle(
                                         color: Colors.white54,
                                         fontSize: 12,
-                                        fontWeight: FontWeight.normal),
+                                        //fontFamily: "poppinsregular",
+                                      ),
                                   ),
                                 ),
                               ],
@@ -362,7 +364,9 @@ class HomeFeedData extends StatelessWidget {
                           ? "${article.content}"
                           : "",
                   textAlign: TextAlign.left,
-                  style: const TextStyle(fontSize: 14, color: Colors.white),
+                  style: const TextStyle(fontSize: 14, color: Colors.white54,
+                    //fontFamily: "poppinsregular",
+                  ),
                   //linkColor: Colors.white,
                 ),
               ),

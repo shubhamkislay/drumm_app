@@ -207,6 +207,15 @@ flutter:
     - family: alata
       fonts:
         - asset: fonts/Poppins-Medium.ttf
+    - family: poppinsregular
+      fonts:
+        - asset: fonts/Poppins-Regular.ttf
+    - family: poppinsbold
+      fonts:
+        - asset: fonts/Poppins-Bold.ttf
+    - family: poppinsextrabold
+      fonts:
+        - asset: fonts/Poppins-ExtraBold.ttf
     - family: monoton
       fonts:
         - asset: fonts/Monoton-Regular.ttf
@@ -225,6 +234,34 @@ flutter:
     - family: newsreaderlight
       fonts:
         - asset: fonts/Newsreader_14pt-Light.ttf
+    - family: rubik
+      fonts:
+        - asset: fonts/Rubik-Bold.ttf
+    - family: zilla
+      fonts:
+        - asset: fonts/ZillaSlab-Bold.ttf
+    - family: dmsans
+      fonts:
+        - asset: fonts/DMSans-Bold.ttf
+    - family: hanumanregular
+      fonts:
+        - asset: fonts/Hanuman-Regular.ttf
+    - family: robotoslab
+      fonts:
+        - asset: fonts/RobotoSlab-Light.ttf
+    - family: robotoscondensed
+      fonts:
+        - asset: fonts/RobotoCondensed-Light.ttf
+    - family: kanitlight
+      fonts:
+        - asset: fonts/Kanit-Light.ttf
+    - family: grotesk
+      fonts:
+        - asset: fonts/SchibstedGrotesk-Regular.ttf
+    - family: spacegrotesk
+      fonts:
+        - asset: fonts/SpaceGrotesk-Regular.ttf
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
