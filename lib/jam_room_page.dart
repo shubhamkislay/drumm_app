@@ -176,7 +176,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                   padding: const EdgeInsets.only(top: 16.0, left: 16),
                   child: Text(
                     widget.jam.title ?? "",
-                    style: TextStyle(fontSize: 22),
+                    style: TextStyle(fontSize: 22,fontFamily: APP_FONT_MEDIUM),
                   ),
                 ),
                 if (drummer?.username != null)

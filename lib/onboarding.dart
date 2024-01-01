@@ -138,7 +138,7 @@ class OnBoarding extends StatelessWidget {
                       TextSpan(
                         text: 'Breaking ',
                         style: TextStyle(
-                            fontFamily: "sans",
+                            fontFamily: APP_FONT_MEDIUM,
                             color: offText,
                             fontWeight: FontWeight.normal,
                             fontSize: textSize),
@@ -146,7 +146,7 @@ class OnBoarding extends StatelessWidget {
                       TextSpan(
                         text: 'News',
                         style: TextStyle(
-                            fontFamily: "sans",
+                            fontFamily: APP_FONT_MEDIUM,
                             color: offText,
                             fontWeight: FontWeight.normal,
                             fontSize: textSize),
@@ -180,7 +180,7 @@ class OnBoarding extends StatelessWidget {
                             color: offText,
                             fontWeight: FontWeight.normal,
                             fontSize: textSize,
-                            fontFamily: "sans",
+                            fontFamily: APP_FONT_MEDIUM,
                             fontStyle: FontStyle.normal,
                           )),
                     ],
@@ -201,7 +201,7 @@ class OnBoarding extends StatelessWidget {
                   text: TextSpan(
                     text: 'Join ',
                     style: TextStyle(
-                        fontFamily: "sans", color: offText, fontSize: textSize),
+                        fontFamily: APP_FONT_MEDIUM, color: offText, fontSize: textSize),
                     children: <TextSpan>[
                       TextSpan(
                           text: 'Bands',
@@ -215,7 +215,7 @@ class OnBoarding extends StatelessWidget {
                           text: ' of Shared Passions',
                           style: TextStyle(
                             color: offText,
-                            fontFamily: "sans",
+                            fontFamily: APP_FONT_MEDIUM,
                           )),
                     ],
                   ),
