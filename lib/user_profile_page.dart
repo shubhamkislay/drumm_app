@@ -152,12 +152,14 @@ class _UserProfilePageState extends State<UserProfilePage>
                                                 "@${drummer?.username}",
                                                 textAlign: TextAlign.center,
                                                 style: const TextStyle(
+                                                  fontFamily: APP_FONT_MEDIUM,
                                                     fontSize: 16,),
                                               )),
                                           Text(
                                             drummer?.name ?? "",
                                             style: const TextStyle(
                                                 fontSize: 24,
+                                                fontFamily: APP_FONT_BOLD,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           const SizedBox(
@@ -167,6 +169,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                                             "${drummer?.jobTitle} at ${drummer?.organisation}",
                                             textAlign: TextAlign.center,
                                             style: const TextStyle(
+                                                fontFamily: APP_FONT_MEDIUM,
                                                 color: Colors.white54),
                                           ),
                                           //Text("${widget.drummer?.badges}"),
@@ -221,6 +224,9 @@ class _UserProfilePageState extends State<UserProfilePage>
                       expandText: 'show more',
                       collapseText: 'show less',
                       maxLines: 2,
+                      style: TextStyle(
+                        fontFamily: APP_FONT_MEDIUM,
+                      ),
                       linkColor: Colors.blue,
                     ),
                   ),
@@ -274,6 +280,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                       child: Text(
                         "Edit Profile",
                         style: TextStyle(
+                            fontFamily: APP_FONT_BOLD,
                             color: Colors.black, fontWeight: FontWeight.bold),
                       ),
                     ),

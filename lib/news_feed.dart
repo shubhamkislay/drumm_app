@@ -702,15 +702,15 @@ class _NewsFeedState extends State<NewsFeed>
       textStyles: const MultiSelectTextStyles(
         selectedTextStyle: TextStyle(
           color: Colors.black,
-          fontWeight: FontWeight.w700,
-          fontSize: 16,
-          //fontFamily: "poppinsextrabold",
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+          fontFamily: APP_FONT_BOLD,
         ),
         textStyle: TextStyle(
-          color: Colors.white38,
+          color: Colors.white,
           fontSize: 12,
           //fontWeight: FontWeight.bold, // FontWeight.w700,
-          //fontFamily: "poppinsbold",
+          fontFamily: APP_FONT_BOLD,
         ),
       ),
       onChange: (allSelectedItems, selectedItem) {

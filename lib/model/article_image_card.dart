@@ -9,6 +9,8 @@ import 'package:drumm_app/model/article.dart';
 import 'package:drumm_app/model/question.dart';
 import 'package:drumm_app/open_article_page.dart';
 
+import '../theme/theme_constants.dart';
+
 class ArticleImageCard extends StatelessWidget {
   final Article article;
   List<Article>? articles;
@@ -78,10 +80,10 @@ class ArticleImageCard extends StatelessWidget {
                     ),
                     //RandomColorBackground.generateRandomVibrantColor().withOpacity(0.55),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Wrap(
+                       if(false) Wrap(
                           children: [
                             Container(
                               margin: const EdgeInsets.all(8.0),
@@ -93,6 +95,7 @@ class ArticleImageCard extends StatelessWidget {
                                 minFontSize: 8,
                                 style: TextStyle(
                                   fontSize: 8,
+                                  fontFamily: APP_FONT_MEDIUM,
                                   //fontWeight: FontWeight.bold,
                                     color: Colors.white),
                               ),
@@ -105,7 +108,7 @@ class ArticleImageCard extends StatelessWidget {
                             RemoveDuplicate.removeTitleSource(article.title??""),
                             textAlign: TextAlign.left,
                             overflow: TextOverflow.ellipsis,
-                            maxFontSize: 14,
+                            maxFontSize: 12,
                             maxLines: 3,
                             minFontSize: 8,
 
@@ -113,6 +116,7 @@ class ArticleImageCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
 
                               //fontWeight: FontWeight.bold,
+                                fontFamily: APP_FONT_MEDIUM,
                                 color: Colors.white),
                           ),
                         ),

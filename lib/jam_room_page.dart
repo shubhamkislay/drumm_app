@@ -132,6 +132,9 @@ class _JamRoomPageState extends State<JamRoomPage> {
                                 expandText: 'show more',
                                 collapseText: 'show less',
                                 maxLines: 3,
+                                style: TextStyle(
+                                  fontFamily: APP_FONT_MEDIUM,
+                                ),
                                 linkColor: Colors.blue,
                               ),
                             ),
@@ -153,7 +156,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                     padding: const EdgeInsets.only(top: 16.0, left: 16),
                     child: Text(
                       "\"${widget.jam.question}\"",
-                      style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold,fontFamily: APP_FONT_BOLD,),
                     ),
                   ),
                if(false) Container(
@@ -187,6 +190,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                           style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.normal,
+                              fontFamily: APP_FONT_MEDIUM,
                               color: Colors.white54),
                         ),
                         GestureDetector(
@@ -205,6 +209,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                             style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
+                                fontFamily: APP_FONT_MEDIUM,
                                 color: Colors.white),
                           ),
                         ),
@@ -252,6 +257,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                                   child: Text("Connecting...",style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.normal,
+                                      fontFamily: APP_FONT_MEDIUM,
                                     fontSize: 12
                                   ),),
                                 ),
@@ -317,7 +323,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                         expandText: 'show more',
                         collapseText: 'show less',
                         style: TextStyle(
-                            fontFamily: 'alata',
+                            fontFamily: APP_FONT_MEDIUM,
                             fontWeight: FontWeight.bold, fontSize: 16),
                         maxLines: 3,
                         linkColor: Colors.blue,
@@ -356,7 +362,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                         child: Text(
                           "Leave Drumm",
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'alata',),
+                          style: TextStyle(fontWeight: FontWeight.bold, fontFamily: APP_FONT_MEDIUM,),
                         ),
                       ),
                     ),

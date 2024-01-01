@@ -1,4 +1,5 @@
 import 'package:blur/blur.dart';
+import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,9 @@ class _OpenArticlePageState extends State<OpenArticlePage> with RouteAware {
       },
       child: Scaffold(
         appBar: AppBar(
-            title: Text("${widget.article.source}"),
+            title: Text("${widget.article.source}",style: TextStyle(
+              fontFamily: APP_FONT_BOLD,
+            ),),
             backgroundColor: Colors.black),
         body: Column(
           children: [

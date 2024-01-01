@@ -153,14 +153,14 @@ class HomeFeedData extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 12, top: 24),
+                padding: const EdgeInsets.only(left: 16, top: 24),
                 child: Row(
                   children: [
                     Text("${source}",
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.5),
+                          color: Colors.white.withOpacity(0.75),
                           fontSize: 14,
-                          //fontFamily: "alata",
+                          fontFamily: APP_FONT_MEDIUM,
                           //fontWeight: FontWeight.bold,
                         )),
                     SizedBox(
@@ -178,7 +178,7 @@ class HomeFeedData extends StatelessWidget {
                 height: 4,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 12, top: 2, right: 12),
+                padding: const EdgeInsets.only(left: 14, top: 8, right: 14,bottom: 4),
                 child: GestureDetector(
                   onTap: () {
                     Vibrate.feedback(FeedbackType.impact);
@@ -190,19 +190,15 @@ class HomeFeedData extends StatelessWidget {
                       objectIDs: [article.articleId ?? ""],
                     );
                   },
-                  child: Wrap(
-                    children: [
-                      AutoSizeText(
-                        article.title ?? "",
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          //fontFamily: "poppinsregular",
-                          //fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    article.title ?? "",
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontFamily: APP_FONT_MEDIUM,
+                      //fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -322,8 +318,8 @@ class HomeFeedData extends StatelessWidget {
                                     color: Colors.white,
                                     fontSize: 15,
                                     //fontStyle: FontStyle.italic,
-                                    //fontFamily: "poppinsbold",
-                                    fontWeight: FontWeight.bold,
+                                    fontFamily: APP_FONT_MEDIUM,
+                                    //fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 SizedBox(
@@ -342,7 +338,7 @@ class HomeFeedData extends StatelessWidget {
                                     style: const TextStyle(
                                         color: Colors.white54,
                                         fontSize: 12,
-                                        //fontFamily: "poppinsregular",
+                                        fontFamily: APP_FONT_LIGHT,
                                       ),
                                   ),
                                 ),
@@ -354,20 +350,32 @@ class HomeFeedData extends StatelessWidget {
                     ],
                   ),
                 ),
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.all(12),
-                child: Text(
-                  (article.description != null)
-                      ? "${article.description}"
-                      : (article.content != null)
-                          ? "${article.content}"
-                          : "",
-                  textAlign: TextAlign.left,
-                  style: const TextStyle(fontSize: 14, color: Colors.white54,
-                    //fontFamily: "poppinsregular",
+              GestureDetector(
+                onTap: (){
+                  Vibrate.feedback(FeedbackType.impact);
+                  openArticle(article);
+
+                  ConnectToChannel.insights.viewedObjects(
+                    indexName: 'articles',
+                    eventName: 'Viewed Item',
+                    objectIDs: [article.articleId ?? ""],
+                  );
+                },
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.all(14),
+                  child: Text(
+                    (article.description != null)
+                        ? "${article.description}"
+                        : (article.content != null)
+                            ? "${article.content}"
+                            : "",
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(fontSize: 14, color: Colors.white54,
+                      fontFamily: APP_FONT_MEDIUM,
+                    ),
+                    //linkColor: Colors.white,
                   ),
-                  //linkColor: Colors.white,
                 ),
               ),
               const SizedBox(height: 150),

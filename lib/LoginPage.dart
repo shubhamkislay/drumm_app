@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:drumm_app/policy_text.dart';
 import 'package:drumm_app/register_user.dart';
+import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/theme/theme_manager.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -89,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontFamily: "alata"
+                      fontFamily: APP_FONT_MEDIUM
                     ),
                   ),
                   Icon(Icons.navigate_next_rounded,color: Colors.white,)
@@ -125,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
-                        fontFamily: "alata",
+                        fontFamily: APP_FONT_MEDIUM,
                     ),
                   ),
                   Icon(Icons.navigate_next_rounded,color: Colors.black,)

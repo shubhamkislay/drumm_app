@@ -124,7 +124,7 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
                 ),
               ),
               SizedBox(height: 4,),
-              if(drummer.username!=null)Text("${drummer.username}",style: TextStyle(fontSize: 12,fontFamily: 'alata',),),
+              if(drummer.username!=null)Text("${drummer.username}",style: TextStyle(fontSize: 12,fontFamily: APP_FONT_MEDIUM,),),
             ],
           );
         }),

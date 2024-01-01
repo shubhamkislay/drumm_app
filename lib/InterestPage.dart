@@ -152,7 +152,7 @@ class _InterestsPageState extends State<InterestsPage> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
-                  fontFamily: "alata",
+                  fontFamily: APP_FONT_MEDIUM,
                   fontSize: 16,
                   fontWeight: FontWeight.normal,
                 ),
@@ -250,7 +250,7 @@ class _InterestsPageState extends State<InterestsPage> {
                                         ? Colors.white
                                         : Colors.grey.shade700,
                                     fontWeight: FontWeight.bold,
-                                    fontFamily: "alata",
+                                    fontFamily: APP_FONT_MEDIUM,
                                     fontSize: 14),
                               ),
                             ),

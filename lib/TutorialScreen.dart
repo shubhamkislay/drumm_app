@@ -1,4 +1,5 @@
 import 'package:blur/blur.dart';
+import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_onboarding_slider/background_final_button.dart';
 
@@ -20,7 +21,7 @@ class TutorialScreen extends StatelessWidget {
           finishButtonText: "End tutorial",
           finishButtonTextStyle: TextStyle(
               color: Colors.black,
-              fontFamily: "alata",
+              fontFamily: APP_FONT_MEDIUM,
               fontWeight: FontWeight.bold),
           onFinish: () {
             finishTutorial();
@@ -51,7 +52,7 @@ class TutorialScreen extends StatelessWidget {
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontFamily: "alata",
+                      fontFamily: APP_FONT_MEDIUM,
                       fontSize: 32),
                 ),
               ),
@@ -175,7 +176,7 @@ class TutorialScreen extends StatelessWidget {
                         text: 'Swipe',
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontFamily: "alata",
+                            fontFamily: APP_FONT_MEDIUM,
                             fontSize: textSize),
                         children: <TextSpan>[
                           TextSpan(
@@ -183,7 +184,7 @@ class TutorialScreen extends StatelessWidget {
                             style: TextStyle(
                                 color: Colors.redAccent,
                                 fontWeight: FontWeight.bold,
-                                fontFamily: "alata",
+                                fontFamily: APP_FONT_MEDIUM,
                                 fontSize: textSize),
                           ),
                           TextSpan(
@@ -193,7 +194,7 @@ class TutorialScreen extends StatelessWidget {
                                 color: Colors.white,
                                 fontWeight: FontWeight.normal,
                                 fontStyle: FontStyle.normal,
-                                fontFamily: "alata",
+                                fontFamily: APP_FONT_MEDIUM,
                                 fontSize: textSize - 10),
                           ),
                         ],
@@ -218,7 +219,7 @@ class TutorialScreen extends StatelessWidget {
                       text: 'Swipe',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontFamily: "alata",
+                          fontFamily: APP_FONT_MEDIUM,
                           fontSize: textSize),
                       children: <TextSpan>[
                         TextSpan(
@@ -226,7 +227,7 @@ class TutorialScreen extends StatelessWidget {
                           style: TextStyle(
                               color: Colors.blue,
                               fontWeight: FontWeight.bold,
-                              fontFamily: "alata",
+                              fontFamily: APP_FONT_MEDIUM,
                               fontSize: textSize),
                         ),
                         TextSpan(
@@ -234,7 +235,7 @@ class TutorialScreen extends StatelessWidget {
                           '\non the news card to start drumming',
                           style: TextStyle(
                               color: Colors.white,
-                              fontFamily: "alata",
+                              fontFamily: APP_FONT_MEDIUM,
                               fontWeight: FontWeight.normal,
                               fontStyle: FontStyle.normal,
                               fontSize: textSize - 10),
@@ -261,7 +262,7 @@ class TutorialScreen extends StatelessWidget {
                         text: 'Tap the',
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontFamily: "alata",
+                            fontFamily: APP_FONT_MEDIUM,
                             fontSize: textSize),
                         children: <TextSpan>[
                           TextSpan(
@@ -269,7 +270,7 @@ class TutorialScreen extends StatelessWidget {
                             style: TextStyle(
                                 color: Colors.blue,
                                 fontWeight: FontWeight.bold,
-                                fontFamily: "alata",
+                                fontFamily: APP_FONT_MEDIUM,
                                 fontSize: textSize),
                           ),
                           TextSpan(
@@ -278,7 +279,7 @@ class TutorialScreen extends StatelessWidget {
                                 color: Colors.white,
                                 fontWeight: FontWeight.normal,
                                 fontStyle: FontStyle.normal,
-                                fontFamily: "alata",
+                                fontFamily: APP_FONT_MEDIUM,
                                 fontSize: textSize - 10),
                           ),
                         ],

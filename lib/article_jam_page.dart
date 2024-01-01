@@ -102,6 +102,9 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                                 expandText: 'show more',
                                 collapseText: 'show less',
                                 maxLines: 3,
+                                style: TextStyle(
+                                  fontFamily: APP_FONT_MEDIUM,
+                                ),
                                 linkColor: Colors.blue,
                               ),
                             ),
@@ -192,7 +195,9 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                             width: MediaQuery.of(context).size.width,
                             child: Center(
                               child:
-                                  Text("There are currently no active drumms"),
+                                  Text("There are currently no active drumms", style: TextStyle(
+                                    fontFamily: APP_FONT_MEDIUM,
+                                  ),),
                             ),
                           ),
                       const SizedBox(
@@ -348,7 +353,7 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                     article?.source ?? "",
                     expandText: 'show more',
                     collapseText: 'show less',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,fontFamily: APP_FONT_MEDIUM,),
                     maxLines: 3,
                     linkColor: Colors.blue,
                   ),

@@ -1,4 +1,5 @@
 import 'package:drumm_app/LoginPage.dart';
+import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class OnBoarding extends StatelessWidget {
         ),
         finishButtonTextStyle: TextStyle(
             color: Colors.black,
-            fontFamily: "alata",
+            fontFamily: APP_FONT_MEDIUM,
             fontWeight: FontWeight.bold,
             fontSize: 16),
         skipTextButton: Text(
@@ -129,7 +130,7 @@ class OnBoarding extends StatelessWidget {
                   text: TextSpan(
                     text: 'Discover ',
                     style: TextStyle(
-                        fontFamily: "alata",
+                        fontFamily: APP_FONT_MEDIUM,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: textSize),
@@ -168,7 +169,7 @@ class OnBoarding extends StatelessWidget {
                   text: TextSpan(
                     text: 'Drumm',
                     style: TextStyle(
-                        fontFamily: "alata",
+                        fontFamily: APP_FONT_MEDIUM,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         fontSize: textSize),
@@ -205,7 +206,7 @@ class OnBoarding extends StatelessWidget {
                       TextSpan(
                           text: 'Bands',
                           style: TextStyle(
-                            fontFamily: "alata",
+                            fontFamily: APP_FONT_MEDIUM,
                             fontSize: textSize,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,

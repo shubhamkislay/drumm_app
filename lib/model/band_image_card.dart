@@ -118,7 +118,7 @@ class BandImageCardState extends State<BandImageCard> {
                             minFontSize: 8,
                             style: const TextStyle(
                                 overflow: TextOverflow.ellipsis,
-                                fontFamily: 'alata',
+                                fontFamily: APP_FONT_MEDIUM,
                                 //fontWeight: FontWeight.bold,
                                 color: Colors.white),
                           ),

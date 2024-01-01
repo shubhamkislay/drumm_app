@@ -34,7 +34,7 @@ class IconLabelButton extends StatelessWidget {
                   height: 24,
                 ),
                 SizedBox(width: 12,),
-                Text(label,style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),)
+                Text(label,style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontFamily: APP_FONT_BOLD),)
               ],
             ),
           ),

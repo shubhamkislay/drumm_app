@@ -123,7 +123,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                                         minFontSize: 24,
                                         style: const TextStyle(
                                             overflow: TextOverflow.ellipsis,
-                                            fontFamily: "alata",
+                                            fontFamily: APP_FONT_BOLD,
                                             fontWeight: FontWeight.bold),
                                         maxLines: 4,
                                       ),
@@ -149,7 +149,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                                                 "Founded by",
                                                 style: const TextStyle(
                                                     fontSize: 12,
-                                                    fontFamily: "alata",
+                                                    fontFamily: APP_FONT_MEDIUM,
                                                     fontWeight:
                                                         FontWeight.normal,
                                                     color: Colors.white54),
@@ -158,6 +158,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                                                 " @${drummer?.username}",
                                                 style: const TextStyle(
                                                     fontSize: 12,
+                                                    fontFamily: APP_FONT_MEDIUM,
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.white),
                                               ),
@@ -218,7 +219,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                               border: Border.all(color: Colors.grey.shade900,width: 1.25),
                               borderRadius: BorderRadius.circular(32),
                             ),
-                            child: Text(hook,style: TextStyle(color: Colors.white,fontFamily: "alata"),),
+                            child: Text(hook,style: TextStyle(color: Colors.white,fontFamily: APP_FONT_MEDIUM),),
                           ),
                     ).toList(),
                   ),
@@ -246,6 +247,9 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                       collapseText: 'show less',
                       maxLines: 2,
                       linkColor: Colors.blue,
+                      style: TextStyle(
+                        fontFamily: APP_FONT_MEDIUM,
+                      ),
                     ),
                   ),
                   const SizedBox(
@@ -370,7 +374,9 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                               width: MediaQuery.of(context).size.width,
                               child: Center(
                                 child: Text(
-                                    "There are currently no active drumms"),
+                                    "There are currently no active drumms",style: TextStyle(
+                                  fontFamily: APP_FONT_LIGHT,
+                                ),),
                               ),
                             ),
                           const SizedBox(

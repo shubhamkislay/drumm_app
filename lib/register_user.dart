@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -68,7 +69,7 @@ class _RegisterUserState extends State<RegisterUser> {
                     style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
-                        fontFamily: 'alata',
+                        fontFamily: APP_FONT_MEDIUM,
                         fontWeight: FontWeight.normal),
                   ),
                 ),
@@ -105,7 +106,7 @@ class _RegisterUserState extends State<RegisterUser> {
                   style: TextStyle(
                       fontSize: 14,
                       color: Colors.white70,
-                      fontFamily: 'alata',
+                      fontFamily: APP_FONT_MEDIUM,
                       fontWeight: FontWeight.normal),
                 ),
                 if (uploadProgress > 0 && uploadProgress < 1.0)
@@ -122,7 +123,7 @@ class _RegisterUserState extends State<RegisterUser> {
                     child: Text("Hey ${widget.name}, please enter the following details!",style: TextStyle(
                         fontSize: 16,
                         color: Colors.white,
-                        fontFamily: 'alata',
+                        fontFamily: APP_FONT_MEDIUM,
                         fontWeight: FontWeight.normal),),
                   ),
                 if(widget.name==null || widget.name!=null&&widget.name!.isEmpty)
@@ -136,11 +137,11 @@ class _RegisterUserState extends State<RegisterUser> {
                         hoverColor: Colors.white,
                         hintStyle: TextStyle(
                           color: Colors.white24,
-                          fontFamily: 'alata',
+                          fontFamily: APP_FONT_MEDIUM,
                         )),
                     style: TextStyle(
                       fontSize: inputTextSize,
-                      fontFamily: 'alata',
+                      fontFamily: APP_FONT_MEDIUM,
                       color: Colors.white,
                     ),
                     textInputAction: TextInputAction.done,
@@ -166,11 +167,11 @@ class _RegisterUserState extends State<RegisterUser> {
                         hoverColor: Colors.white,
                         hintStyle: TextStyle(
                           color: Colors.white24,
-                          fontFamily: 'alata',
+                          fontFamily: APP_FONT_MEDIUM,
                         )),
                     style: TextStyle(
                       fontSize: inputTextSize,
-                      fontFamily: 'alata',
+                      fontFamily: APP_FONT_MEDIUM,
                       color: Colors.white,
                     ),
                     textInputAction: TextInputAction.done,
@@ -206,11 +207,11 @@ class _RegisterUserState extends State<RegisterUser> {
                         hoverColor: Colors.white,
                         hintStyle: TextStyle(
                           color: Colors.white24,
-                          fontFamily: 'alata',
+                          fontFamily: APP_FONT_MEDIUM,
                         )),
                     style: TextStyle(
                       fontSize: inputTextSize,
-                      fontFamily: 'alata',
+                      fontFamily: APP_FONT_MEDIUM,
                       color: Colors.white,
                     ),
                     textInputAction: TextInputAction.done,
@@ -229,11 +230,11 @@ class _RegisterUserState extends State<RegisterUser> {
                         hoverColor: Colors.white,
                         hintStyle: TextStyle(
                           color: Colors.white24,
-                          fontFamily: 'alata',
+                          fontFamily: APP_FONT_MEDIUM,
                         )),
                     style: TextStyle(
                       fontSize: inputTextSize,
-                      fontFamily: 'alata',
+                      fontFamily: APP_FONT_MEDIUM,
                       color: Colors.white,
                     ),
                     textInputAction: TextInputAction.done,
@@ -253,11 +254,11 @@ class _RegisterUserState extends State<RegisterUser> {
                         hoverColor: Colors.white,
                         hintStyle: TextStyle(
                           color: Colors.white24,
-                          fontFamily: 'alata',
+                          fontFamily: APP_FONT_MEDIUM,
                         )),
                     style: TextStyle(
                       fontSize: inputTextSize,
-                      fontFamily: 'alata',
+                      fontFamily: APP_FONT_MEDIUM,
                       color: Colors.white,
                     ),
                     textInputAction: TextInputAction.done,
@@ -275,7 +276,7 @@ class _RegisterUserState extends State<RegisterUser> {
                       borderRadius: BorderRadius.circular(12),
                       color: Colors.white
                     ),
-                    child:  Text((uploadProgress == 0 || uploadProgress == 1)? "Continue":"Uploading Profile Pic...",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontFamily: "alata"),),
+                    child:  Text((uploadProgress == 0 || uploadProgress == 1)? "Continue":"Uploading Profile Pic...",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontFamily: APP_FONT_MEDIUM),),
                   ),
                   onTap: (){
                     if(uploadProgress == 0 || uploadProgress == 1) {

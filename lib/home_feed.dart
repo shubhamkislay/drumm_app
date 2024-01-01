@@ -661,6 +661,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                                   textAlign: TextAlign.start,
                                                   style: TextStyle(
                                                     color: Colors.white,
+                                                    fontFamily: APP_FONT_MEDIUM,
                                                     //fontWeight: FontWeight.bold,
                                                     fontSize: 42,
                                                   ),
@@ -675,6 +676,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                               textAlign: TextAlign.left,
                                               style: TextStyle(
                                                 color: Colors.grey.shade700,
+                                                fontFamily: APP_FONT_MEDIUM,
                                                 fontSize: 12,
                                               ),
                                             ),
@@ -703,6 +705,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                     "${artcls?.elementAt(index).source} | ${artcls?.elementAt(index).category}",
                                     textStyle: TextStyle(
                                       fontWeight: FontWeight.bold,
+                                      fontFamily: APP_FONT_MEDIUM,
                                       fontSize: 14,
                                     ),
                                     speed: Duration(milliseconds: 35)),

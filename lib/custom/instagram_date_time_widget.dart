@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../theme/theme_constants.dart';
+
 class InstagramDateTimeWidget extends StatelessWidget {
   final String publishedAt;
 
-  InstagramDateTimeWidget({required this.publishedAt});
+  const InstagramDateTimeWidget({required this.publishedAt});
 
   @override
   Widget build(BuildContext context) {
@@ -12,10 +14,10 @@ class InstagramDateTimeWidget extends StatelessWidget {
 
     return Text(
       formattedDateTime,
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 12,
-        //fontFamily: "rubik",
-        color: Colors.white54
+        fontFamily: APP_FONT_MEDIUM,
+        color: Colors.white54,
       ),
     );
   }

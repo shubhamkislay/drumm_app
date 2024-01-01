@@ -1021,7 +1021,12 @@ class FirebaseDBOperations {
     var url = Uri.https('fcm.googleapis.com', '/fcm/send');
     final uid = FirebaseAuth.instance.currentUser?.uid;
     Drummer drummer = await FirebaseDBOperations.getDrummer(uid ?? "");
-    String toParams = "/topics/" + '${jam.bandId}';
+    bool isBroadcast = jam.broadcast??false;
+    var toParams = "";
+    if(isBroadcast)
+      toParams = "/topics/" + 'creator';
+    else
+      toParams = "/topics/" + '${jam.bandId}';
 
     Map<String, String> header = {
       'Content-Type': 'application/json',
@@ -1032,15 +1037,17 @@ class FirebaseDBOperations {
     String type = "notification";
     String subtitle = (ring)
         ? "${drummer.username} is drumming..."
-        : "${drummer.username} is drumming...";
+        : (isBroadcast)?"Welcome ${drummer.username} to Drumm":"${drummer.username} is drumming...";
     if (ring) type = "data";
+
+    var notifcationBody = (jam.question!=null)?"${jam.question}\n\n${jam.title}":jam.title;
     //Due to conversion error, setting the timestamo for lastActive as null
     jam.lastActive = null;
     final body = jsonEncode({
       "to": "${toParams}",
       //if (!ring)
       "notification": {
-        "body": "${jam.question}\n\n${jam.title}",
+        "body": notifcationBody,
         "title": subtitle,
         "image": "${jam.imageUrl}"
       },

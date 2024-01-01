@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 import 'package:drumm_app/main.dart';
+import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -75,7 +76,7 @@ class _SettingsPageState extends State<SettingsPage> {
         backgroundColor: Colors.black,
         title: Text(
           'Settings',
-          style: TextStyle(fontFamily: "alata", fontWeight: FontWeight.bold),
+          style: TextStyle(fontFamily: APP_FONT_MEDIUM, fontWeight: FontWeight.bold),
         ),
       ),
       body: Column(
@@ -84,14 +85,19 @@ class _SettingsPageState extends State<SettingsPage> {
             child: ListView(
               children: <Widget>[
                 ListTile(
-                  title: Text('Privacy Policy'),
+                  title: Text('Privacy Policy',style: TextStyle(
+                    fontFamily: APP_FONT_MEDIUM,
+                  ),),
                   onTap: () {
                     _openWebPage(
                         'https://www.termsfeed.com/live/6bb937e0-0e2f-4d01-8257-5983452d2019');
                   },
                 ),
                 ListTile(
-                  title: Text('Terms and Conditions'),
+                  title: Text('Terms and Conditions',
+                  style: TextStyle(
+                    fontFamily: APP_FONT_MEDIUM,
+                  ),),
                   onTap: () {
                     _openWebPage(
                         'https://getdrumm.blogspot.com/2023/12/terms-and-conditions-for-drumm.html');
@@ -120,7 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
-                        fontFamily: "alata"),
+                        fontFamily: APP_FONT_MEDIUM),
                   ),
                   Icon(
                     Icons.navigate_next_rounded,
@@ -211,7 +217,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontFamily: "alata"),
+                        fontFamily: APP_FONT_MEDIUM),
                   ),
                   Icon(
                     Icons.navigate_next_rounded,

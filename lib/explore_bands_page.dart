@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -88,7 +89,7 @@ class ExploreBandsPageState extends State<ExploreBandsPage>
                   style: TextStyle(
                     fontSize: 22.0,
                     fontWeight: FontWeight.bold,
-                    fontFamily: 'alata',
+                    fontFamily: APP_FONT_MEDIUM,
                   ),
                 ),
               ),

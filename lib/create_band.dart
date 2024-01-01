@@ -59,7 +59,7 @@ class CreateBandState extends State<CreateBand> {
                   color: Colors.white,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                    fontFamily: "alata"
+                    fontFamily: APP_FONT_MEDIUM
                 ),
               ),
             ),
@@ -106,7 +106,7 @@ class CreateBandState extends State<CreateBand> {
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Text(
                 "Add hooks",
-                style: TextStyle(fontSize: 18, fontFamily: "alata"),
+                style: TextStyle(fontSize: 18, fontFamily: APP_FONT_MEDIUM),
               ),
             ),
             Padding(
@@ -114,7 +114,7 @@ class CreateBandState extends State<CreateBand> {
               child: Text(
                 "Hooks let your band pick news articles based on the category, which you can use to drumm with your band members",
                 style: TextStyle(
-                    fontSize: 10, fontFamily: "alata", color: Colors.white54),
+                    fontSize: 10, fontFamily: APP_FONT_MEDIUM, color: Colors.white54),
               ),
             ),
             SizedBox(
@@ -159,7 +159,7 @@ class CreateBandState extends State<CreateBand> {
                                 color: selectedHooks.contains(hook)
                                     ? Colors.black
                                     : Colors.white,
-                                fontFamily: "alata"),
+                                fontFamily: APP_FONT_MEDIUM),
                           ),
                         ),
                       ),
@@ -243,7 +243,7 @@ class CreateBandState extends State<CreateBand> {
                   ),
                   child: Text(
                     "Create",
-                    style: TextStyle(color: Colors.black, fontFamily: "alata"),
+                    style: TextStyle(color: Colors.black, fontFamily: APP_FONT_MEDIUM),
                   ),
                 ),
               ),

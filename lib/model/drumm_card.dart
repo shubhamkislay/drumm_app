@@ -92,12 +92,12 @@ class _DrummCardState extends State<DrummCard> {
                     ),
                     //RandomColorBackground.generateRandomVibrantColor().withOpacity(0.55),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Wrap(
                           children: [
-                            Container(
+                           if(false) Container(
                               padding: EdgeInsets.all(4),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
@@ -112,6 +112,7 @@ class _DrummCardState extends State<DrummCard> {
                                 style: TextStyle(
                                     fontSize: 8,
                                     //fontWeight: FontWeight.bold,
+                                    fontFamily: APP_FONT_MEDIUM,
                                     color: Colors.white),
                               ),
                             ),
@@ -130,6 +131,7 @@ class _DrummCardState extends State<DrummCard> {
                             style: TextStyle(
                                 overflow: TextOverflow.ellipsis,
 
+                                fontFamily: APP_FONT_MEDIUM,
                                 //fontWeight: FontWeight.bold,
                                 color: Colors.white),
                           ),
@@ -149,8 +151,10 @@ class _DrummCardState extends State<DrummCard> {
   void joinDrumm() async {
 
     Jam rJam = await FirebaseDBOperations.getDrummsFromJamId(widget.jam);
+    bool isBroadcast = rJam.broadcast??false;
     if (!FirebaseDBOperations.isTimestampWithin1Minute(
-        rJam.lastActive ?? Timestamp.now())) {
+        rJam.lastActive ?? Timestamp.now())
+    && !isBroadcast) {
       showModalBottomSheet(
         context: context,
         isScrollControlled: true,

@@ -91,7 +91,7 @@ with AutomaticKeepAliveClientMixin<BandSearchPage>{
                               style: TextStyle(
                                 fontSize: 22.0,
                                 fontWeight: FontWeight.bold,
-                                fontFamily: 'alata',
+                                fontFamily: APP_FONT_BOLD,
                               ),
                             ),
                           ],

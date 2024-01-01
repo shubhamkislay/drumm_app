@@ -30,7 +30,7 @@ class NotificationWidget extends StatefulWidget {
 }
 
 class NotificationWidgetState extends State<NotificationWidget>
-    with AutomaticKeepAliveClientMixin<NotificationWidget>{
+    with AutomaticKeepAliveClientMixin<NotificationWidget> {
   List<DrummCard> drummCards = [];
   List<NotificationItem>? notiList = [];
   List<DrummCard> userDrummCards = [];
@@ -64,17 +64,25 @@ class NotificationWidgetState extends State<NotificationWidget>
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
                           child: GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 clearNotifications();
                               },
-                              child: Text("Clear",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.redAccent),)),
+                              child: const Text(
+                                "Clear",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.redAccent,
+                                  fontFamily: APP_FONT_MEDIUM,
+                                ),
+                              )),
                         ),
                         Container(
                           alignment: Alignment.centerLeft,
                           padding:
-                          EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                              const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -84,8 +92,8 @@ class NotificationWidgetState extends State<NotificationWidget>
                                   child: GestureDetector(
                                     onTap: () => Navigator.pop(context),
                                     child: Container(
-                                      padding: EdgeInsets.all(4),
-                                      child: Icon(
+                                      padding: const EdgeInsets.all(4),
+                                      child: const Icon(
                                         Icons.keyboard_arrow_down_rounded,
                                         size: 32,
                                       ),
@@ -93,51 +101,39 @@ class NotificationWidgetState extends State<NotificationWidget>
                                   ),
                                 ),
                               ),
-                              if(false)  Container(
-                                  padding: EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(24),
-                                      gradient: LinearGradient(
-                                          colors: [
-                                            Colors.grey.shade900,
-                                            Colors.grey.shade900
-                                          ]
-                                      )
-                                  ),
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(24),
-                                        color: Colors.grey.shade900,
-                                      ),
-                                      child: Icon(Icons.language,size: 42))),
-                              SizedBox(width: 0,),
-                              Expanded(
+                              const SizedBox(
+                                width: 0,
+                              ),
+                              const Expanded(
                                 child: AutoSizeText(
                                   "Notifications from other drummers",
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontSize: 16.0,
+                                    fontFamily: APP_FONT_MEDIUM,
                                     //fontFamily: 'alata',
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
-                              Padding(padding: EdgeInsets.all(4),
+                              Padding(
+                                padding: const EdgeInsets.all(4),
                                 child: ToggleSwitch(
                                   minWidth: 60.0,
                                   cornerRadius: 20.0,
-                                  activeBgColors: [[Colors.redAccent], [Colors.white!]],
-                                  activeFgColor:  Colors.black,
+                                  activeBgColors: [
+                                    [Colors.redAccent],
+                                    [Colors.white!]
+                                  ],
+                                  activeFgColor: Colors.black,
                                   inactiveBgColor: Colors.grey.shade900,
                                   inactiveFgColor: Colors.white,
-                                  initialLabelIndex: notify ? 1:0,
+                                  initialLabelIndex: notify ? 1 : 0,
                                   totalSwitches: 2,
                                   labels: ['Off', 'On'],
                                   radiusStyle: true,
                                   customTextStyles: [
-                                    TextStyle(
-                                      fontWeight: FontWeight.bold
-                                    )
+                                    const TextStyle(fontWeight: FontWeight.bold,fontFamily: APP_FONT_BOLD,)
                                   ],
                                   onToggle: (index) {
                                     Vibrate.feedback(FeedbackType.impact);
@@ -149,20 +145,19 @@ class NotificationWidgetState extends State<NotificationWidget>
                             ],
                           ),
                         ),
-                        if (false &&notiList!.isNotEmpty)
+                        if (false && notiList!.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 16),
                             child: GridView.count(
                                 crossAxisCount: 1, // Number of columns
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.symmetric(horizontal: 0),
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: const EdgeInsets.symmetric(horizontal: 0),
                                 crossAxisSpacing: 0,
                                 mainAxisSpacing: 0,
-                                children: notiList??[]),
+                                children: notiList ?? []),
                           ),
-
                         if (notiList!.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.symmetric(
@@ -170,27 +165,31 @@ class NotificationWidgetState extends State<NotificationWidget>
                             child: ListView.separated(
                                 scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: notiList?.length??0,
-                                padding: EdgeInsets.all(4),
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: notiList?.length ?? 0,
+                                padding: const EdgeInsets.all(4),
                                 itemBuilder: (context, index) =>
                                     notiList?.elementAt(index),
-                                separatorBuilder: (context, index) =>
-                                    SizedBox(
+                                separatorBuilder: (context, index) => const SizedBox(
                                       height: 12,
                                     )),
                           ),
-
-                        if (notiList!.isEmpty&&loaded)
+                        if (notiList!.isEmpty && loaded)
                           Center(
                             child: Container(
                               alignment: Alignment.center,
-                              padding: EdgeInsets.all(32),
-                              height: MediaQuery.of(context).size.height*0.7,
-                              child: Text("Nothing much going on here",textAlign: TextAlign.center,),
+                              padding: const EdgeInsets.all(32),
+                              height: MediaQuery.of(context).size.height * 0.7,
+                              child: const Text(
+                                "Nothing much going on here",
+                                style: TextStyle(
+                                  fontFamily: APP_FONT_LIGHT,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
-                        SizedBox(
+                        const SizedBox(
                           height: 200,
                         ),
                       ],
@@ -199,16 +198,17 @@ class NotificationWidgetState extends State<NotificationWidget>
                 ),
               ),
               if (loaded)
-                if(false)Container(
-                  alignment: Alignment.bottomLeft,
-                  height: 100,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.transparent, Colors.black])),
-                ),
-              if (drummCards.isEmpty&&!loaded)
+                if (false)
+                  Container(
+                    alignment: Alignment.bottomLeft,
+                    height: 100,
+                    decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.transparent, Colors.black])),
+                  ),
+              if (drummCards.isEmpty && !loaded)
                 Center(
                   child: Container(
                       child: Lottie.asset('images/animation_loading.json',
@@ -224,7 +224,7 @@ class NotificationWidgetState extends State<NotificationWidget>
   Future<void> _refreshData() async {
     // Simulate a delay
     setState(() {
-      loaded=false;
+      loaded = false;
     });
     // await Future.delayed(Duration(seconds: 2));
     initialise();
@@ -232,7 +232,6 @@ class NotificationWidgetState extends State<NotificationWidget>
     // Refresh your data
     //getNews();
   }
-
 
   @override
   void initState() {
@@ -242,17 +241,18 @@ class NotificationWidgetState extends State<NotificationWidget>
     initialise();
   }
 
-  void initialise() async{
+  void initialise() async {
     notiPref = await SharedPreferences.getInstance();
-    notify = notiPref.getBool("notify")??true;
+    notify = notiPref.getBool("notify") ?? true;
 
     getNotifications();
   }
 
   Widget rollingIconBuilder(int? value, bool foreground) {
-    return notifactionValue == 1 ? Icon(Icons.access_time_rounded):Icon(Icons.ac_unit);
+    return notifactionValue == 1
+        ? const Icon(Icons.access_time_rounded)
+        : const Icon(Icons.ac_unit);
   }
-
 
   @override
   // TODO: implement wantKeepAlive
@@ -263,28 +263,29 @@ class NotificationWidgetState extends State<NotificationWidget>
     List<String>? notifications = notiPref.getStringList("notifications");
     List<Jam> fetchedJams = [];
 
-    int notifLen = notifications?.length??0;
+    int notifLen = notifications?.length ?? 0;
 
-    if(notifLen>0) {
+    if (notifLen > 0) {
       notifications = new List.from(notifications?.reversed as Iterable);
 
       setState(() {
         notiList = notifications?.map((msg) {
-          return NotificationItem(message: msg,
+          return NotificationItem(
+            message: msg,
           );
         }).toList();
         loaded = true;
       });
-    }
-    else
+    } else {
       setState(() {
         notiList = [];
         loaded = true;
       });
+    }
 
     return;
 
-    for(String jamJson in notifications!){
+    for (String jamJson in notifications!) {
       Map<String, dynamic> json = jsonDecode(jamJson);
       Jam jam = Jam.fromJson(json);
       fetchedJams.add(jam);
@@ -298,27 +299,26 @@ class NotificationWidgetState extends State<NotificationWidget>
         );
       }).toList();
 
-      loaded=true;
+      loaded = true;
     });
   }
 
   void clearNotifications() async {
-   // SharedPreferences notiPref = await SharedPreferences.getInstance();
+    // SharedPreferences notiPref = await SharedPreferences.getInstance();
     notiPref.setStringList("notifications", []);
 
     setState(() {
       notiList = [];
-      loaded=true;
+      loaded = true;
     });
   }
 
   void setNotify(int? index) {
-    if(index == 1){
+    if (index == 1) {
       notiPref.setBool("notify", true);
-      notify=true;
+      notify = true;
       FirebaseDBOperations.subscribeToUserBands();
-    }
-    else {
+    } else {
       notiPref.setBool("notify", false);
       notify = false;
       FirebaseDBOperations.unSubscribeToUserBands();

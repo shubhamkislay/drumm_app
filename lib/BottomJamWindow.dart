@@ -89,6 +89,7 @@ class _BottomJamWindowState extends State<BottomJamWindow> {
                     style: TextStyle(
                         overflow: TextOverflow.ellipsis,
                         color: Colors.white,
+                        fontFamily: APP_FONT_MEDIUM,
                         fontSize: 14),
                   ),
                 )),

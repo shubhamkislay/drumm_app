@@ -116,11 +116,11 @@ class _EditProfileState extends State<EditProfile> {
                             hoverColor: Color(0xff008cff),
                             hintStyle: TextStyle(
                               color: Colors.white38,
-                              fontFamily: 'alata',
+                              fontFamily: APP_FONT_MEDIUM,
                             )),
                         style: TextStyle(
                           fontSize: inputTextSize,
-                          fontFamily: 'alata',
+                          fontFamily: APP_FONT_MEDIUM,
                           color: Colors.white,
                         ),
                         textInputAction: TextInputAction.done,
@@ -145,11 +145,11 @@ class _EditProfileState extends State<EditProfile> {
                             hoverColor: Color(0xff008cff),
                             hintStyle: TextStyle(
                               color: Colors.white38,
-                              fontFamily: 'alata',
+                              fontFamily: APP_FONT_MEDIUM,
                             )),
                         style: TextStyle(
                           fontSize: inputTextSize,
-                          fontFamily: 'alata',
+                          fontFamily: APP_FONT_MEDIUM,
                           color: Colors.white,
                         ),
                         textInputAction: TextInputAction.done,
@@ -175,11 +175,11 @@ class _EditProfileState extends State<EditProfile> {
                             hoverColor: Color(0xff008cff),
                             hintStyle: TextStyle(
                               color: Colors.white38,
-                              fontFamily: 'alata',
+                              fontFamily: APP_FONT_MEDIUM,
                             )),
                         style: TextStyle(
                           fontSize: inputTextSize,
-                          fontFamily: 'alata',
+                          fontFamily: APP_FONT_MEDIUM,
                           color: Colors.white,
                         ),
                         textInputAction: TextInputAction.done,

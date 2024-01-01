@@ -204,7 +204,10 @@ flutter:
   #   - images/a_dot_ham.jpeg
 
   fonts:
-    - family: alata
+    - family: poppinslight
+      fonts:
+        - asset: fonts/Poppins-Light.ttf
+    - family: poppinsmedium
       fonts:
         - asset: fonts/Poppins-Medium.ttf
     - family: poppinsregular
@@ -261,6 +264,25 @@ flutter:
     - family: spacegrotesk
       fonts:
         - asset: fonts/SpaceGrotesk-Regular.ttf
+    - family: robotolight
+      fonts:
+        - asset: fonts/Roboto-Light.ttf
+    - family: robotomedium
+      fonts:
+        - asset: fonts/Roboto-Medium.ttf
+    - family: robotobold
+      fonts:
+        - asset: fonts/Roboto-Bold.ttf
+    - family: chakrapetchlight
+      fonts:
+        - asset: fonts/ChakraPetch-Light.ttf
+    - family: chakrapetchmedium
+      fonts:
+        - asset: fonts/ChakraPetch-Medium.ttf
+    - family: chakrapetchbold
+      fonts:
+        - asset: fonts/ChakraPetch-Bold.ttf
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
