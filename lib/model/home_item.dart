@@ -71,44 +71,41 @@ class _HomeItemState extends State<HomeItem> {
         borderRadius: BorderRadius.circular(curve),
         border: Border.all(color: Colors.grey.shade900, width: 2.5),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(curve),
-        child: Stack(
-          children: [
-            HomeFeedData(
-              onRefresh: widget.onRefresh,
-              source: widget.articleBand.article?.source ?? "",
-              publishedAt:
-                  widget.articleBand.article?.publishedAt.toString() ?? "",
-              openArticle: widget.openArticle,
-              article: widget.articleBand.article ?? Article(),
-              joinDrumm: widget.joinDrumm,
-              articleBand: widget.articleBand,
-            ),
-            GestureDetector(
-              onTap: () {
-                if (!widget.play) {
-                  setState(() {
-                    widget.play = true;
-                  });
+      child: Stack(
+        children: [
+          HomeFeedData(
+            onRefresh: widget.onRefresh,
+            source: widget.articleBand.article?.source ?? "",
+            publishedAt:
+                widget.articleBand.article?.publishedAt.toString() ?? "",
+            openArticle: widget.openArticle,
+            article: widget.articleBand.article ?? Article(),
+            joinDrumm: widget.joinDrumm,
+            articleBand: widget.articleBand,
+          ),
+          GestureDetector(
+            onTap: () {
+              if (!widget.play) {
+                setState(() {
+                  widget.play = true;
+                });
 
-                  widget.playPause(
-                      widget.articleBand.article ?? Article(), widget.play);
-                } else {
-                  setState(() {
-                    widget.play = false;
-                  });
-                  widget.playPause(
-                      widget.articleBand.article ?? Article(), widget.play);
-                }
-              },
-              child: SoundPlayWidget(
-                play: widget.play,
-              ),
+                widget.playPause(
+                    widget.articleBand.article ?? Article(), widget.play);
+              } else {
+                setState(() {
+                  widget.play = false;
+                });
+                widget.playPause(
+                    widget.articleBand.article ?? Article(), widget.play);
+              }
+            },
+            child: SoundPlayWidget(
+              play: widget.play,
             ),
-            BottomFade(),
-          ],
-        ),
+          ),
+          BottomFade(),
+        ],
       ),
     );
   }
@@ -142,7 +139,7 @@ class HomeFeedData extends StatelessWidget {
     double curve = 28;
     return Container(
       //color: COLOR_PRIMARY_DARK.withOpacity(0.0),
-      padding: EdgeInsets.only(bottom: 1),
+      padding: EdgeInsets.only(bottom: 32,top: 32),
       child: RefreshIndicator(
         onRefresh: onRefresh,
         child: SingleChildScrollView(
@@ -153,7 +150,7 @@ class HomeFeedData extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 16, top: 24),
+                padding: const EdgeInsets.only(left: 16, top: 0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -231,43 +228,40 @@ class HomeFeedData extends StatelessWidget {
                           spreadRadius: 0, // Spread radius
                         ),
                       ]),
-                  child: ClipRRect(
-                    //borderRadius: BorderRadius.only(bottomLeft: Radius.circular(curve),bottomRight: Radius.circular(curve)),
-                    child: CachedNetworkImage(
-                      imageUrl: article.imageUrl ?? "",
-                      placeholder: (context, imageUrl) {
-                        String imageUrl = article.imageUrl ?? "";
-                        return Container(
-                          height: 200,
-                          width: double.infinity,
-                          // padding: const EdgeInsets.all(32),
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            // borderRadius: BorderRadius.circular(curve - 4),
-                          ),
-                          child: Image.asset(
-                            "images/logo_background_white.png",
-                            color: Colors.white.withOpacity(0.1),
-                          ),
-                        );
-                      },
-                      errorWidget: (context, url, error) {
-                        return Container(
-                          height: 200,
-                          width: double.infinity,
-                          //padding: const EdgeInsets.all(32),
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(curve - 4),
-                          ),
-                          child: Image.asset(
-                            "images/logo_background_white.png",
-                            color: Colors.white.withOpacity(0.1),
-                          ),
-                        );
-                      },
-                      fit: BoxFit.fitWidth,
-                    ),
+                  child: CachedNetworkImage(
+                    imageUrl: article.imageUrl ?? "",
+                    placeholder: (context, imageUrl) {
+                      String imageUrl = article.imageUrl ?? "";
+                      return Container(
+                        height: 200,
+                        width: double.infinity,
+                        // padding: const EdgeInsets.all(32),
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          // borderRadius: BorderRadius.circular(curve - 4),
+                        ),
+                        child: Image.asset(
+                          "images/logo_background_white.png",
+                          color: Colors.white.withOpacity(0.1),
+                        ),
+                      );
+                    },
+                    errorWidget: (context, url, error) {
+                      return Container(
+                        height: 200,
+                        width: double.infinity,
+                        //padding: const EdgeInsets.all(32),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(curve - 4),
+                        ),
+                        child: Image.asset(
+                          "images/logo_background_white.png",
+                          color: Colors.white.withOpacity(0.1),
+                        ),
+                      );
+                    },
+                    fit: BoxFit.fitWidth,
                   ),
                 ),
               ),
@@ -433,6 +427,7 @@ class BottomFade extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double curve = 28;
     return IgnorePointer(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -448,7 +443,10 @@ class BottomFade extends StatelessWidget {
                   Colors.black,
                   Colors.black.withOpacity(0.85),
                   Colors.transparent
-                ])),
+                ]),
+              borderRadius: BorderRadius.circular(curve),
+
+            ),
           ),
         ],
       ),

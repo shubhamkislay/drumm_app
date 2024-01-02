@@ -237,8 +237,8 @@ class _NewsFeedState extends State<NewsFeed>
                                   ? articleBands.length
                                   : 0,
                               duration: const Duration(milliseconds: 175),
-                              maxAngle: 45,
-                              scale: 0.75,
+                              maxAngle: 60,
+                              scale: 0.9,
                               numberOfCardsDisplayed: (articleBands.length > 1)
                                   ? 2
                                   : (articleBands.isEmpty)

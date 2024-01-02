@@ -64,12 +64,12 @@ class _JamRoomPageState extends State<JamRoomPage> {
       height: MediaQuery.of(context).size.height * 0.9,
       child: Stack(
         children: [
-          if (userJoined)
-          Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.all(8),
-            child: Lottie.asset('images/wave_drumm.json',height: MediaQuery.of(context).size.height/2,fit:BoxFit.contain),
-          ),
+          // if (userJoined)
+          // Container(
+          //   alignment: Alignment.center,
+          //   padding: EdgeInsets.all(8),
+          //   child: Lottie.asset('images/wave_drumm.json',height: MediaQuery.of(context).size.height/2,fit:BoxFit.contain),
+          // ),
           Container(
             alignment: Alignment.center,
             width: double.infinity,
