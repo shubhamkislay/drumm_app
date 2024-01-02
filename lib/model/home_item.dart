@@ -165,7 +165,7 @@ class HomeFeedData extends StatelessWidget {
                       Text("${source}",
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 15,
                             fontFamily: APP_FONT_BOLD,
                             //fontWeight: FontWeight.bold,
                           )),
