@@ -71,7 +71,7 @@ class HomeFeedPage extends StatefulWidget {
       this.themeManager,
       this.analytics,
       this.observer,
-        required this.tag,
+      required this.tag,
       required this.userConnected,
       required this.scrollController})
       : super(key: key);
@@ -103,7 +103,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
 
   String summary = "Fetching summary from AI...";
 
-  final Duration _debounceDuration = Duration(milliseconds: 100);
+  final Duration _debounceDuration = const Duration(milliseconds: 100);
 
   HashSet<String?> articleIDs = HashSet();
 
@@ -143,12 +143,12 @@ class HomeFeedPageState extends State<HomeFeedPage>
 
   Drummer? drummer;
 
-  bool fromSearch =
-      false;
+  bool fromSearch = false;
 
   List<Jam> openDrumms = [];
 
-  List<DrummCard> openDrummCards = []; //Colors.white.withOpacity(0.1); // Number of documents to fetch per page
+  List<DrummCard> openDrummCards =
+      []; //Colors.white.withOpacity(0.1); // Number of documents to fetch per page
 
   // Choose from any of these available methods
 
@@ -157,7 +157,6 @@ class HomeFeedPageState extends State<HomeFeedPage>
   final Duration refreshInterval = const Duration(minutes: 15);
 
   bool refreshList = true; // Set your desired refresh interval here
-
 
   @override
   Widget build(BuildContext context) {
@@ -170,11 +169,11 @@ class HomeFeedPageState extends State<HomeFeedPage>
             height: isContainerVisible ? 275 : 0,
             width: double.maxFinite,
             decoration: BoxDecoration(
-              color: Colors.black,
-              border: Border(
-                bottom: BorderSide(color: Colors.grey.shade800,width: 1)
-              )
-            ), // Apply app theme background color
+                color: Colors.black,
+                border: Border(
+                    bottom: BorderSide(
+                        color: Colors.grey.shade800,
+                        width: 1))), // Apply app theme background color
             child: SafeArea(
               bottom: false,
               child: Transform.translate(
@@ -188,19 +187,19 @@ class HomeFeedPageState extends State<HomeFeedPage>
                       Container(
                         alignment: Alignment.centerLeft,
                         padding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                            const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                         child: Stack(
                           children: [
                             Row(
                               children: [
-                                SpinKitPulsingGrid(
+                                const SpinKitPulsingGrid(
                                   color: Colors.red,
                                   size: 18.0,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 6,
                                 ),
-                                AutoSizeText(
+                                const AutoSizeText(
                                   "Live",
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
@@ -229,7 +228,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                         context: context,
                                         isScrollControlled: true,
                                         backgroundColor: COLOR_PRIMARY_DARK,
-                                        shape: RoundedRectangleBorder(
+                                        shape: const RoundedRectangleBorder(
                                           borderRadius: BorderRadius.vertical(
                                               top: Radius.circular(0.0)),
                                         ),
@@ -241,7 +240,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                                     .bottom),
                                             child: ClipRRect(
                                               borderRadius:
-                                                  BorderRadius.vertical(
+                                                  const BorderRadius.vertical(
                                                       top:
                                                           Radius.circular(0.0)),
                                               child: CreateJam(
@@ -260,32 +259,32 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                 child: ListView.separated(
                                     scrollDirection: Axis.horizontal,
                                     shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
+                                    physics: const NeverScrollableScrollPhysics(),
                                     itemCount: drummCards.length,
-                                    padding: EdgeInsets.all(8),
+                                    padding: const EdgeInsets.all(8),
                                     itemBuilder: (context, index) =>
                                         drummCards.elementAt(index),
                                     separatorBuilder: (context, index) =>
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 8,
                                         )),
                               ),
                             if (openDrummCards.length > 0)
-                            Container(
-                              height: 160,
-                              child: ListView.separated(
-                                  scrollDirection: Axis.horizontal,
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: openDrummCards.length,
-                                  padding: EdgeInsets.fromLTRB(0,8,8,8 ),
-                                  itemBuilder: (context, index) =>
-                                      openDrummCards.elementAt(index),
-                                  separatorBuilder: (context, index) =>
-                                      SizedBox(
-                                        width: 8,
-                                      )),
-                            ),
+                              Container(
+                                height: 160,
+                                child: ListView.separated(
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemCount: openDrummCards.length,
+                                    padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+                                    itemBuilder: (context, index) =>
+                                        openDrummCards.elementAt(index),
+                                    separatorBuilder: (context, index) =>
+                                        const SizedBox(
+                                          width: 8,
+                                        )),
+                              ),
                           ],
                         ),
                       ),
@@ -340,12 +339,12 @@ class HomeFeedPageState extends State<HomeFeedPage>
                         //   ),
                         // );
 
-                        if (!autoJoinDrumms &&false)
+                        if (!autoJoinDrumms && false)
                           showModalBottomSheet(
                             context: context,
                             isScrollControlled: true,
                             backgroundColor: Colors.grey.shade900,
-                            shape: RoundedRectangleBorder(
+                            shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.vertical(
                                   top: Radius.circular(0.0)),
                             ),
@@ -356,7 +355,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                         .viewInsets
                                         .bottom),
                                 child: ClipRRect(
-                                  borderRadius: BorderRadius.vertical(
+                                  borderRadius: const BorderRadius.vertical(
                                       top: Radius.circular(0.0)),
                                   child: AutoJoinOption(optionCallback: (val) {
                                     setState(() {
@@ -392,15 +391,15 @@ class HomeFeedPageState extends State<HomeFeedPage>
                       iconColor: iconColor,
                       autoJoinDrumms: autoJoinDrumms && !widget.userConnected,
                     ),
-                  if(fromSearch)
+                  if (fromSearch)
                     SafeArea(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: GestureDetector(
                           onTap: () => Navigator.pop(context),
                           child: Container(
-                            padding: EdgeInsets.all(4),
-                            child: Icon(
+                            padding: const EdgeInsets.all(4),
+                            child: const Icon(
                               Icons.arrow_back_ios_new_rounded,
                               size: 36,
                             ),
@@ -434,7 +433,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
       loaded = false;
     });
     getArticlesData(true);
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     getBandDrumms();
     // Refresh your data
     //getNews();
@@ -456,9 +455,9 @@ class HomeFeedPageState extends State<HomeFeedPage>
           //   ),
           // );
 
-          return SkeletonFeed();
+          return const SkeletonFeed();
         } else {
-          if (!loaded) return SkeletonFeed();
+          if (!loaded) return const SkeletonFeed();
           List<Article>? artcls = snapshot.data;
           artcls = RemoveDuplicate.removeDuplicateArticles(artcls!);
           articles = artcls!;
@@ -515,7 +514,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                         children: [
                           Positioned.fill(
                             child: CachedNetworkImage(
-                              fadeInDuration: Duration(milliseconds: 0),
+                              fadeInDuration: const Duration(milliseconds: 0),
                               fit: BoxFit.cover,
                               alignment: Alignment.center,
                               width: double.infinity,
@@ -544,8 +543,10 @@ class HomeFeedPageState extends State<HomeFeedPage>
                               frostColor: Colors.black), //COLOR_PRIMARY_DARK),
                           Positioned.fill(
                             child: CachedNetworkImage(
-                              fadeInDuration: Duration(milliseconds: 0),
-                              fit:  (isContainerVisible) ? BoxFit.cover:BoxFit.fitWidth,
+                              fadeInDuration: const Duration(milliseconds: 0),
+                              fit: (isContainerVisible)
+                                  ? BoxFit.cover
+                                  : BoxFit.fitWidth,
                               alignment: Alignment.center,
                               width: double.infinity,
                               height: double.infinity,
@@ -573,7 +574,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                               },
                             ),
                           ),
-                          if (isContainerVisible&&false)
+                          if (isContainerVisible && false)
                             Container(
                               height: double.maxFinite,
                               width: double.maxFinite,
@@ -582,13 +583,13 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                       begin: Alignment.topCenter,
                                       end: Alignment.bottomCenter,
                                       colors: [
-                                        Colors.black,
-                                        Colors.black.withOpacity(0.5),
-                                        Colors.transparent
-                                      ])),
+                                    Colors.black,
+                                    Colors.black.withOpacity(0.5),
+                                    Colors.transparent
+                                  ])),
                             ),
                           GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               setState(() {
                                 isContainerVisible = false;
                                 print("Tapped images!!!!!!!!");
@@ -605,8 +606,8 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                     Colors.transparent,
                                     Colors.black.withOpacity(0.2),
                                     Colors.black.withOpacity(0.6),
-                                    Colors.black
-                                        .withOpacity(0.85), //.withOpacity(0.95),
+                                    Colors.black.withOpacity(
+                                        0.85), //.withOpacity(0.95),
                                   ],
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
@@ -622,16 +623,17 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                   children: [
                                     Container(
                                       height: 120,
-                                      padding: EdgeInsets.only(right: 0),
+                                      padding: const EdgeInsets.only(right: 0),
                                       child: FadeInContainer(
                                         child: Container(
                                           height: double.infinity,
                                           width: 3,
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             color: Colors.white,
                                             borderRadius: BorderRadius.only(
                                                 topRight: Radius.circular(0),
-                                                bottomRight: Radius.circular(0)),
+                                                bottomRight:
+                                                    Radius.circular(0)),
                                           ),
                                         ),
                                       ),
@@ -639,8 +641,8 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                     Expanded(
                                       child: Container(
                                         height: 150,
-                                        padding: EdgeInsets.all(16),
-                                        decoration: BoxDecoration(
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: const BoxDecoration(
                                           //  color: Colors.black.withOpacity(0.20),
                                           borderRadius: BorderRadius.only(
                                               topRight: Radius.circular(4),
@@ -653,13 +655,12 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                             Expanded(
                                               child: FadeInContainer(
                                                 child: AutoSizeText(
-                                                  RemoveDuplicate
-                                                      .removeTitleSource(artcls
-                                                              ?.elementAt(index)
-                                                              .title ??
-                                                          ""),
+                                                  artcls
+                                                          ?.elementAt(index)
+                                                          .title ??
+                                                      "",
                                                   textAlign: TextAlign.start,
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     color: Colors.white,
                                                     fontFamily: APP_FONT_MEDIUM,
                                                     //fontWeight: FontWeight.bold,
@@ -668,7 +669,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                                 ),
                                               ),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 6,
                                             ),
                                             Text(
@@ -684,7 +685,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                         ),
                                       ).frosted(
                                         blur: 8,
-                                        borderRadius: BorderRadius.only(
+                                        borderRadius: const BorderRadius.only(
                                             topRight: Radius.circular(4),
                                             bottomRight: Radius.circular(4)),
                                         frostColor: Colors.grey
@@ -703,12 +704,12 @@ class HomeFeedPageState extends State<HomeFeedPage>
                               animatedTexts: [
                                 TyperAnimatedText(
                                     "${artcls?.elementAt(index).source} | ${artcls?.elementAt(index).category}",
-                                    textStyle: TextStyle(
+                                    textStyle: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontFamily: APP_FONT_MEDIUM,
                                       fontSize: 14,
                                     ),
-                                    speed: Duration(milliseconds: 35)),
+                                    speed: const Duration(milliseconds: 35)),
                               ],
                               totalRepeatCount: 1,
                               repeatForever: false,
@@ -788,7 +789,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                 // if ((articles!.elementAt(index).likes ?? 0) > 0)
                                 Column(
                                   children: [
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 2,
                                     ),
                                     if ((articles!.elementAt(index).likes ??
@@ -835,7 +836,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                 if (false)
                                   Column(
                                     children: [
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 2,
                                       ),
                                       Text(
@@ -866,7 +867,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                 ),
                                 Column(
                                   children: [
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 0,
                                     ),
                                     Text(
@@ -877,7 +878,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                     ),
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 4, //sizedBoxedHeight,
                                 ),
                                 RoundedButton(
@@ -895,7 +896,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                       context: context,
                                       isScrollControlled: true,
                                       backgroundColor: Colors.grey.shade900,
-                                      shape: RoundedRectangleBorder(
+                                      shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.vertical(
                                             top: Radius.circular(0.0)),
                                       ),
@@ -906,7 +907,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                                   .viewInsets
                                                   .bottom),
                                           child: ClipRRect(
-                                            borderRadius: BorderRadius.vertical(
+                                            borderRadius: const BorderRadius.vertical(
                                                 top: Radius.circular(0.0)),
                                             child: ArticleJamPage(
                                               article:
@@ -921,7 +922,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                 ),
                                 Column(
                                   children: [
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 6,
                                     ),
                                     Text(
@@ -930,7 +931,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                     ),
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 8,
                                 ),
                                 // ArticleChannel(
@@ -956,8 +957,8 @@ class HomeFeedPageState extends State<HomeFeedPage>
 
   Future<void> getArticlesData(bool refresh) async {
     try {
-     // SharedPreferences prefs = await SharedPreferences.getInstance();
-     // List<String> userInterests = prefs.getStringList('interestList')!;
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      // List<String> userInterests = prefs.getStringList('interestList')!;
       // print("List of interests as per prefs $userInterests");
       List<Band> fetchedBands = await FirebaseDBOperations.getBandByUser();
       List<String> bandCategoryList = [];
@@ -1057,7 +1058,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
           _pageController
               .animateToPage(
             0,
-            duration: Duration(milliseconds: 250),
+            duration: const Duration(milliseconds: 250),
             curve: Curves.easeIn,
           )
               .then((value) {
@@ -1186,11 +1187,9 @@ class HomeFeedPageState extends State<HomeFeedPage>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-
     if (state == AppLifecycleState.resumed) {
       // Your code to react to app coming to the foreground in the HomeFeed widget
       _checkAndScheduleRefresh();
-
     } else {
       refreshList = true;
       _stopRefreshTimer(); // Stop the timer when the app goes to the background
@@ -1215,7 +1214,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
     }
   }
 
-  void refreshFeed(){
+  void refreshFeed() {
     if (widget.preloadList == null) {
       getArticlesData(true);
       // AnimatedSnackBar.material(
@@ -1223,8 +1222,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
       //     type: AnimatedSnackBarType.success,
       //     mobileSnackBarPosition: MobileSnackBarPosition.top
       // ).show(context);
-    }
-    else {
+    } else {
       setState(() {
         fromSearch = true;
         isContainerVisible = false;
@@ -1247,7 +1245,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
     });
   }
 
-    void listenToJamState() {
+  void listenToJamState() {
     ConnectionListener.onConnectionChanged = (connected, jam, open) {
       // Handle the channelID change here
       print("onConnectionChanged called in HomeFeed");
@@ -1272,10 +1270,10 @@ class HomeFeedPageState extends State<HomeFeedPage>
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     NotificationSettings notificationSettings =
         await messaging.requestPermission(
-          announcement: true,
-          carPlay: true,
-          criticalAlert: true,
-        );
+      announcement: true,
+      carPlay: true,
+      criticalAlert: true,
+    );
     print(notificationSettings.authorizationStatus);
   }
 
@@ -1367,8 +1365,8 @@ class HomeFeedPageState extends State<HomeFeedPage>
 
   Future<void> getOpenDrumms() async {
     List<Jam> fetchedDrumms =
-    await FirebaseDBOperations.getOpenDrummsFromBands(); //getUserBands();
-    openDrumms =  fetchedDrumms;
+        await FirebaseDBOperations.getOpenDrummsFromBands(); //getUserBands();
+    openDrumms = fetchedDrumms;
 
     setState(() {
       openDrummCards = openDrumms.map((jam) {
@@ -1380,24 +1378,26 @@ class HomeFeedPageState extends State<HomeFeedPage>
     });
   }
 
-  void openJamRoom(Jam jam,bool open){
-
-    FirebaseDBOperations.sendNotificationToTopic(jam,false,open);
+  void openJamRoom(Jam jam, bool open) {
+    FirebaseDBOperations.sendNotificationToTopic(jam, false, open);
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.grey.shade900,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
       ),
       builder: (BuildContext context) {
         return Padding(
-          padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom),
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
-            child: JamRoomPage(jam: jam, open: open,),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(0.0)),
+            child: JamRoomPage(
+              jam: jam,
+              open: open,
+            ),
           ),
         );
       },

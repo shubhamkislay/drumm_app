@@ -104,8 +104,7 @@ class ArticleImageCard extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(3.0),
-                          child: AutoSizeText(
-                            RemoveDuplicate.removeTitleSource(article.title??""),
+                          child: AutoSizeText(article.title??"",
                             textAlign: TextAlign.left,
                             overflow: TextOverflow.ellipsis,
                             maxFontSize: 12,

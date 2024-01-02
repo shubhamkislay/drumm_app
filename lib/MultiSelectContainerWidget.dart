@@ -9,7 +9,7 @@ class MultiSelectContainerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double multiSelectRadius = 24;
+    double multiSelectRadius = 14;
 
     return MultiSelectContainer(
       showInListView: true,
@@ -17,7 +17,7 @@ class MultiSelectContainerWidget extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         separatorBuilder: (_, __) => const SizedBox(
-          width: 5,
+          width: 4,
         ),
       ),
       suffix: MultiSelectSuffix(
@@ -36,28 +36,30 @@ class MultiSelectContainerWidget extends StatelessWidget {
       ),
       itemsDecoration: MultiSelectDecorations(
         decoration: BoxDecoration(
-            color: COLOR_PRIMARY_DARK, //Colors.grey.shade900,
+            color: Colors.black, //Colors.grey.shade900,
             border: Border.all(
-                color: Colors.grey.shade900, width: 2), //Color(0xff2f2f2f)),
+                color: Colors.black, width: 2), //Color(0xff2f2f2f)),
             borderRadius: BorderRadius.circular(multiSelectRadius)),
         selectedDecoration: BoxDecoration(
-            gradient: const LinearGradient(colors: [
-              Colors.white, //Colors.blue.shade600,
-              Colors.white, //Colors.blue.shade800, //Colors.cyan,
+            gradient:  LinearGradient(colors: [
+              Colors.black, //Colors.blue.shade600,
+              Colors.black, //Colors.blue.shade800, //Colors.cyan,
             ]),
+            border: Border.all(
+                color: Colors.grey.shade900, width: 2.5),
             borderRadius: BorderRadius.circular(multiSelectRadius)),
       ),
       items: bandsCards,
       textStyles: const MultiSelectTextStyles(
         selectedTextStyle: TextStyle(
-          color: Colors.black,
+          color: Colors.white,
           fontWeight: FontWeight.bold,
-          fontSize: 14,
+          fontSize: 16,
           fontFamily: APP_FONT_BOLD,
         ),
         textStyle: TextStyle(
-          color: Colors.white,
-          fontSize: 12,
+          color: Colors.white30,
+          fontSize: 16,
           //fontWeight: FontWeight.bold, // FontWeight.w700,
           fontFamily: APP_FONT_BOLD,
         ),

@@ -104,7 +104,7 @@ class _HomeItemState extends State<HomeItem> {
               play: widget.play,
             ),
           ),
-          BottomFade(),
+          const BottomFade(),
         ],
       ),
     );
@@ -137,14 +137,14 @@ class HomeFeedData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double curve = 28;
-    return Container(
+    return Padding(
       //color: COLOR_PRIMARY_DARK.withOpacity(0.0),
-      padding: EdgeInsets.only(bottom: 32,top: 32),
+      padding: const EdgeInsets.only(bottom: 32, top: 32),
       child: RefreshIndicator(
         onRefresh: onRefresh,
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -156,17 +156,20 @@ class HomeFeedData extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text("${source}",
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white70,
                           fontSize: 14,
                           fontFamily: APP_FONT_BOLD,
                           //fontWeight: FontWeight.bold,
                         )),
-                    SizedBox(
+                    const SizedBox(
                       width: 4,
                     ),
-                    Text("•",style: TextStyle(fontFamily: APP_FONT_BOLD),),
-                    SizedBox(
+                    const Text(
+                      "•",
+                      style: TextStyle(fontFamily: APP_FONT_BOLD),
+                    ),
+                    const SizedBox(
                       width: 4,
                     ),
                     InstagramDateTimeWidget(publishedAt: publishedAt),
@@ -177,7 +180,8 @@ class HomeFeedData extends StatelessWidget {
                 height: 4,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 14, top: 8, right: 14,bottom: 4),
+                padding: const EdgeInsets.only(
+                    left: 14, top: 8, right: 14, bottom: 4),
                 child: GestureDetector(
                   onTap: () {
                     Vibrate.feedback(FeedbackType.impact);
@@ -236,7 +240,7 @@ class HomeFeedData extends StatelessWidget {
                         height: 200,
                         width: double.infinity,
                         // padding: const EdgeInsets.all(32),
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.transparent,
                           // borderRadius: BorderRadius.circular(curve - 4),
                         ),
@@ -248,7 +252,7 @@ class HomeFeedData extends StatelessWidget {
                     },
                     errorWidget: (context, url, error) {
                       return Container(
-                        height: 200,
+                        height: 0,
                         width: double.infinity,
                         //padding: const EdgeInsets.all(32),
                         decoration: BoxDecoration(
@@ -268,12 +272,12 @@ class HomeFeedData extends StatelessWidget {
               if (article.question != null)
                 Container(
                   width: double.maxFinite,
-                  padding: EdgeInsets.all(12),
-                  margin: EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.all(12),
                   alignment: Alignment.centerLeft,
                   decoration: BoxDecoration(
                     //color: COLOR_PRIMARY_DARK,//Colors.grey.shade900.withOpacity(0.75),
-                    color: Colors.grey.shade900.withOpacity(0.6),
+                    color: COLOR_PRIMARY_DARK,
                     borderRadius: BorderRadius.circular(4),
                     //border: Border.all(color:  Colors.grey.shade900,width: 1),
                   ),
@@ -286,7 +290,7 @@ class HomeFeedData extends StatelessWidget {
                         },
                         child: Container(
                           alignment: Alignment.center,
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           child: Image.asset('images/audio-waves.png',
                               height: 32,
                               color: Colors.white,
@@ -318,7 +322,7 @@ class HomeFeedData extends StatelessWidget {
                                     //fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 4,
                                 ),
                                 Container(
@@ -328,14 +332,14 @@ class HomeFeedData extends StatelessWidget {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: Text(
+                                  child: const Text(
                                     "Generated by Drumm AI",
                                     textAlign: TextAlign.left,
-                                    style: const TextStyle(
-                                        color: Colors.white54,
-                                        fontSize: 12,
-                                        fontFamily: APP_FONT_MEDIUM,
-                                      ),
+                                    style: TextStyle(
+                                      color: Colors.white54,
+                                      fontSize: 12,
+                                      fontFamily: APP_FONT_MEDIUM,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -347,7 +351,7 @@ class HomeFeedData extends StatelessWidget {
                   ),
                 ),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   Vibrate.feedback(FeedbackType.impact);
                   openArticle(article);
 
@@ -367,7 +371,9 @@ class HomeFeedData extends StatelessWidget {
                             ? "${article.content}"
                             : "",
                     textAlign: TextAlign.left,
-                    style: const TextStyle(fontSize: 14, color: Colors.white54,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.white54,
                       fontFamily: APP_FONT_MEDIUM,
                     ),
                     //linkColor: Colors.white,
@@ -395,7 +401,7 @@ class SoundPlayWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Container(
-            padding: EdgeInsets.all(2.5),
+            padding: const EdgeInsets.all(2.5),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
                 gradient: LinearGradient(colors: [
@@ -403,7 +409,7 @@ class SoundPlayWidget extends StatelessWidget {
                   Colors.grey.shade900,
                 ])),
             child: Container(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
                 color: Colors.black,
@@ -436,16 +442,15 @@ class BottomFade extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             height: 200,
             decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [
-                  Colors.black,
-                  Colors.black.withOpacity(0.85),
-                  Colors.transparent
-                ]),
+              gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Colors.black,
+                    Colors.black.withOpacity(0.85),
+                    Colors.transparent
+                  ]),
               borderRadius: BorderRadius.circular(curve),
-
             ),
           ),
         ],

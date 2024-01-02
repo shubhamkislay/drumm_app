@@ -52,12 +52,12 @@ class _LiveIconState extends State<LiveIcon> {
             borderRadius: BorderRadius.circular(24),
             gradient: (liveDrummsExist)
                 ? LinearGradient(colors: [
-              Colors.blue,
-              Colors.blueAccent,
+              Colors.grey.shade900,
+              Colors.grey.shade900,
             ])
                 : LinearGradient(colors: [
-              Colors.grey.shade900,
-              Colors.grey.shade900,
+              COLOR_PRIMARY_DARK,
+              COLOR_PRIMARY_DARK,
             ])),
         child: Container(
           padding: EdgeInsets.all(6),

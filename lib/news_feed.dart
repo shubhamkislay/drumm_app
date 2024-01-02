@@ -121,7 +121,7 @@ class _NewsFeedState extends State<NewsFeed>
   String articleTop = "";
   late Article articleOnScreen;
 
-  double multiSelectRadius = 24;
+  double multiSelectRadius = 10;
 
   bool likedArticle = false;
   double fontSize = 10;
@@ -483,28 +483,41 @@ class _NewsFeedState extends State<NewsFeed>
       } else {
         String imageUrl = modifyImageUrl(element.url ?? "", "100x100");
         mulList.add(
+          // MultiSelectCard(
+          //   value: element,
+          //   child: Row(
+          //     children: [
+          //       // SizedBox(
+          //       //   height: 28,
+          //       //   width: 28,
+          //       //   child: ClipRRect(
+          //       //     borderRadius: BorderRadius.circular(multiSelectRadius),
+          //       //     child: CachedNetworkImage(
+          //       //       imageUrl: imageUrl,
+          //       //       fit: BoxFit.cover,
+          //       //     ),
+          //       //   ),
+          //       // ),
+          //       // const SizedBox(
+          //       //   width: 8,
+          //       // ),
+          //       Text("${element.name}")
+          //     ],
+          //   ),
+          // ),
           MultiSelectCard(
             value: element,
-            child: Row(
-              children: [
-                SizedBox(
-                  height: 28,
-                  width: 28,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(multiSelectRadius),
-                    child: CachedNetworkImage(
-                      imageUrl: imageUrl,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                Text("${element.name}")
-              ],
-            ),
+            selected: false,
+            child: Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                height: 28,
+                child:  Text(
+                  "${element.name}",
+                  textAlign: TextAlign.center,
+                )),
           ),
+
         );
       }
     });

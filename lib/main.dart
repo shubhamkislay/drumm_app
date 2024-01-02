@@ -198,7 +198,7 @@ class _MyAppState extends State<MyApp>
   }
 
   void startCallingNotification(RemoteMessage message) async {
-    var uuid = Uuid();
+    var uuid = const Uuid();
     Map<String, dynamic> json = jsonDecode(message.data["jam"]);
     Jam jam = Jam.fromJson(json);
     CallKitParams callKitParams = CallKitParams(
@@ -226,7 +226,7 @@ class _MyAppState extends State<MyApp>
           actionColor: '#4CAF50',
           incomingCallNotificationChannelName: "Incoming Call",
           missedCallNotificationChannelName: "Missed Call"),
-      ios: IOSParams(
+      ios: const IOSParams(
         iconName: 'Drumm',
         handleType: 'generic',
         supportsVideo: false,
@@ -338,7 +338,7 @@ class _MyAppState extends State<MyApp>
       if (jam.jamId != ConnectToChannel.channelID) joinRoom(jam, open,false);
     });
 
-    Future.delayed(Duration(seconds: 2)).then((value) {
+    Future.delayed(const Duration(seconds: 2)).then((value) {
       FirebaseMessaging.instance.getInitialMessage().then((message) {
         if(message!=null) {
           Map<String, dynamic> json = jsonDecode(message?.data["jam"]);
@@ -398,7 +398,7 @@ class _MyAppState extends State<MyApp>
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.grey.shade900,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
       ),
       builder: (BuildContext context) {
@@ -406,7 +406,7 @@ class _MyAppState extends State<MyApp>
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(0.0)),
             child: JamRoomPage(
               jam: jam,
               open: open,
@@ -441,7 +441,7 @@ class _MyAppState extends State<MyApp>
               return Wrap(
                 children: [
                   Container(
-                    padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
+                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                           colors: [Colors.grey.shade900, Colors.grey.shade900]),
@@ -452,7 +452,7 @@ class _MyAppState extends State<MyApp>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             color: COLOR_PRIMARY_DARK,
                             borderRadius: BorderRadius.circular(14),
@@ -469,7 +469,7 @@ class _MyAppState extends State<MyApp>
                                     width: 20,
                                     height: 20,
                                   )),
-                              SizedBox(
+                              const SizedBox(
                                 width: 4,
                               ),
                               GestureDetector(
@@ -487,13 +487,13 @@ class _MyAppState extends State<MyApp>
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 4,
                               ),
                             ],
                           ),
                         ),
-                        SizedBox(height: 8,),
+                        const SizedBox(height: 8,),
                         Row(
                           children: [
                             Expanded(
@@ -511,7 +511,7 @@ class _MyAppState extends State<MyApp>
                                             width: 72,
                                             height: 72,
                                           )),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 4,
                                       ),
                                       Expanded(
@@ -530,7 +530,7 @@ class _MyAppState extends State<MyApp>
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           )),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 4,
                                       ),
 
@@ -546,8 +546,8 @@ class _MyAppState extends State<MyApp>
                                   FirebaseDBOperations.sendNotificationToTopic(jam,false,open);
                                 }
                               },
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
                                 child: Text(
                                   "Drop in",
                                   style: TextStyle(
@@ -564,7 +564,7 @@ class _MyAppState extends State<MyApp>
                 ],
               );
             }),
-            duration: Duration(seconds: 8),
+            duration: const Duration(seconds: 8),
             mobileSnackBarPosition: MobileSnackBarPosition.bottom)
             .show(context);
       } else {
@@ -573,7 +573,7 @@ class _MyAppState extends State<MyApp>
               return Wrap(
                 children: [
                   Container(
-                    padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
+                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                           colors: [Colors.grey.shade900, Colors.grey.shade900]),
@@ -584,7 +584,7 @@ class _MyAppState extends State<MyApp>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             color: COLOR_PRIMARY_DARK,
                             borderRadius: BorderRadius.circular(14),
@@ -601,7 +601,7 @@ class _MyAppState extends State<MyApp>
                                     width: 20,
                                     height: 20,
                                   )),
-                              SizedBox(
+                              const SizedBox(
                                 width: 4,
                               ),
                               Text(
@@ -611,7 +611,7 @@ class _MyAppState extends State<MyApp>
                                 softWrap: true,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 4,
                               ),
                             ],
@@ -623,7 +623,7 @@ class _MyAppState extends State<MyApp>
                 ],
               );
             }),
-            duration: Duration(seconds: 8),
+            duration: const Duration(seconds: 8),
             mobileSnackBarPosition: MobileSnackBarPosition.bottom)
             .show(context);
       }
@@ -703,13 +703,13 @@ class _SplashScreenState extends State<SplashScreen> {
     _isOnboarded = prefs.getBool('isOnboarded') ?? false;
     //prefs.remove('isOnboarded');
     if(_isOnboarded){
-      Future.delayed(Duration(seconds: 1),(){
+      // Future.delayed(const Duration(seconds: 1),(){
+      //
+      //   setState(() {
+      //     toggleLogo = true;
+      //   });
 
-        setState(() {
-          toggleLogo = true;
-        });
-
-        Future.delayed(Duration(seconds: 1),(){
+        Future.delayed(const Duration(milliseconds: 1000),(){
           Navigator.of(context).push(PageRouteBuilder(
               opaque: false,
               pageBuilder: (context, animation, _) {
@@ -719,7 +719,7 @@ class _SplashScreenState extends State<SplashScreen> {
               }));
         });
 
-      });
+     // });
 
     }else{
       if ((FirebaseAuth.instance.currentUser != null)) {
@@ -819,16 +819,17 @@ class _SplashScreenState extends State<SplashScreen> {
                 //child: Lottie.asset('images/breaking_news.json',height: MediaQuery.of(context).size.height,fit:BoxFit.cover),
               ),
             ),
-            if(!toggleLogo) Image.asset("images/logo_dark.png",fit: BoxFit.fitWidth,),
-            if(toggleLogo)Text(
-              "Drumm",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 54,
-                fontWeight: FontWeight.bold,
-                fontFamily: APP_FONT_BOLD,
-              ),
-            ),
+            //if(!toggleLogo)
+              Image.asset("images/logo_dark.png",fit: BoxFit.fitWidth,),
+            // if(toggleLogo)const Text(
+            //   "Drumm",
+            //   textAlign: TextAlign.center,
+            //   style: TextStyle(
+            //     fontSize: 54,
+            //     fontWeight: FontWeight.bold,
+            //     fontFamily: APP_FONT_BOLD,
+            //   ),
+            // ),
           ],
         ),
       ),

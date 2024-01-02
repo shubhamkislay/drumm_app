@@ -17,8 +17,8 @@ class TutorialScreen extends StatelessWidget {
         //color: Colors.transparent,
       color: Colors.black,
         child: OnBoardingSlider(
-          headerBackgroundColor: Colors.grey.shade900,
-          pageBackgroundColor: Colors.grey.shade900,
+          headerBackgroundColor: Colors.black,
+          pageBackgroundColor: Colors.black,
           controllerColor: Colors.white,
           finishButtonText: "End tutorial",
           finishButtonTextStyle: const TextStyle(
@@ -29,7 +29,7 @@ class TutorialScreen extends StatelessWidget {
             finishTutorial();
           },
           finishButtonStyle: FinishButtonStyle(
-            backgroundColor: Colors.grey.shade800,
+            backgroundColor: COLOR_PRIMARY_DARK,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(64.0),
