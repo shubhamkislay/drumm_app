@@ -10,7 +10,7 @@ class SwipeBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Vibrate.feedback(FeedbackType.warning);
+        Vibrate.feedback(FeedbackType.selection);
         controller?.undo();
       },
       child: Container(

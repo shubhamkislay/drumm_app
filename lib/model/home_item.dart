@@ -16,7 +16,7 @@ import '../custom/rounded_button.dart';
 import '../theme/theme_constants.dart';
 import 'article.dart';
 import 'article_band.dart';
-
+double curve = 22;
 class HomeItem extends StatefulWidget {
   ArticleBand articleBand;
   int index;
@@ -57,7 +57,6 @@ class _HomeItemState extends State<HomeItem> {
       Colors.grey.shade900.withOpacity(0.5); //COLOR_PRIMARY_DARK;
   double iconHeight = 70;
   double sizedBoxedHeight = 12;
-  double curve = 28;
   Band? band;
   @override
   Widget build(BuildContext context) {
@@ -136,53 +135,59 @@ class HomeFeedData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double curve = 28;
+    int imageUrlLength = article.imageUrl?.length??0;
     return Padding(
       //color: COLOR_PRIMARY_DARK.withOpacity(0.0),
-      padding: const EdgeInsets.only(bottom: 32, top: 32),
+      padding: const EdgeInsets.only(bottom: 32, top: 0),
       child: RefreshIndicator(
         onRefresh: onRefresh,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 16, top: 0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text("${source}",
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
-                          fontFamily: APP_FONT_BOLD,
-                          //fontWeight: FontWeight.bold,
-                        )),
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    const Text(
-                      "•",
-                      style: TextStyle(fontFamily: APP_FONT_BOLD),
-                    ),
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    InstagramDateTimeWidget(publishedAt: publishedAt),
-                  ],
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(curve),topRight: Radius.circular(curve)),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                 Container(
+                  color: COLOR_PRIMARY_DARK,
+                  height: 16,
                 ),
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 14, top: 8, right: 14, bottom: 4),
-                child: GestureDetector(
+                Container(
+                  padding: const EdgeInsets.only(left: 16, top: 0),
+                  color: COLOR_PRIMARY_DARK,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+
+                      Text("${source}",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontFamily: APP_FONT_BOLD,
+                            //fontWeight: FontWeight.bold,
+                          )),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      const Text(
+                        "•",
+                        style: TextStyle(fontFamily: APP_FONT_BOLD),
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      InstagramDateTimeWidget(publishedAt: publishedAt),
+                    ],
+                  ),
+                ),
+                Container(
+                  color: COLOR_PRIMARY_DARK,
+                  height: 16,
+                ),
+                GestureDetector(
                   onTap: () {
                     Vibrate.feedback(FeedbackType.impact);
                     openArticle(article);
@@ -193,195 +198,208 @@ class HomeFeedData extends StatelessWidget {
                       objectIDs: [article.articleId ?? ""],
                     );
                   },
-                  child: Text(
-                    article.title ?? "",
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontFamily: APP_FONT_MEDIUM,
-                      //fontWeight: FontWeight.bold,
+                  child: Container(
+                    // padding: const EdgeInsets.all(6.0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(curve),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.15), // Shadow color
+                            offset: const Offset(
+                                0, -2), // Shadow offset (horizontal, vertical)
+                            blurRadius: 8, // Blur radius
+                            spreadRadius: 0, // Spread radius
+                          ),
+                        ]),
+                    child: CachedNetworkImage(
+                      imageUrl: article.imageUrl ?? "",
+                      placeholder: (context, imageUrl) {
+                        String imageUrl = article.imageUrl ?? "";
+                        return Container(
+                          height: (imageUrlLength>0)?200:0,
+                          width: double.infinity,
+                          // padding: const EdgeInsets.all(32),
+                          decoration: const BoxDecoration(
+                            color: Colors.transparent,
+                            // borderRadius: BorderRadius.circular(curve - 4),
+                          ),
+                          child: Image.asset(
+                            "images/logo_background_white.png",
+                            color: Colors.white.withOpacity(0.1),
+                          ),
+                        );
+                      },
+                      errorWidget: (context, url, error) {
+                        return Container(
+                          height: 0,
+                          width: double.infinity,
+                          //padding: const EdgeInsets.all(32),
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(curve - 4),
+                          ),
+                          child: Image.asset(
+                            "images/logo_background_white.png",
+                            color: Colors.white.withOpacity(0.1),
+                          ),
+                        );
+                      },
+                      fit: BoxFit.fitHeight,
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              GestureDetector(
-                onTap: () {
-                  Vibrate.feedback(FeedbackType.impact);
-                  openArticle(article);
 
-                  ConnectToChannel.insights.viewedObjects(
-                    indexName: 'articles',
-                    eventName: 'Viewed Item',
-                    objectIDs: [article.articleId ?? ""],
-                  );
-                },
-                child: Container(
-                  // padding: const EdgeInsets.all(6.0),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(curve),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.15), // Shadow color
-                          offset: const Offset(
-                              0, -2), // Shadow offset (horizontal, vertical)
-                          blurRadius: 8, // Blur radius
-                          spreadRadius: 0, // Spread radius
-                        ),
-                      ]),
-                  child: CachedNetworkImage(
-                    imageUrl: article.imageUrl ?? "",
-                    placeholder: (context, imageUrl) {
-                      String imageUrl = article.imageUrl ?? "";
-                      return Container(
-                        height: 200,
-                        width: double.infinity,
-                        // padding: const EdgeInsets.all(32),
-                        decoration: const BoxDecoration(
-                          color: Colors.transparent,
-                          // borderRadius: BorderRadius.circular(curve - 4),
-                        ),
-                        child: Image.asset(
-                          "images/logo_background_white.png",
-                          color: Colors.white.withOpacity(0.1),
-                        ),
+                Container(
+                  padding: const EdgeInsets.only(
+                      left: 14, top: 12, right: 14, bottom: 12),
+                  color: COLOR_PRIMARY_DARK,
+                  child: GestureDetector(
+                    onTap: () {
+                      Vibrate.feedback(FeedbackType.impact);
+                      openArticle(article);
+
+                      ConnectToChannel.insights.viewedObjects(
+                        indexName: 'articles',
+                        eventName: 'Viewed Item',
+                        objectIDs: [article.articleId ?? ""],
                       );
                     },
-                    errorWidget: (context, url, error) {
-                      return Container(
-                        height: 0,
-                        width: double.infinity,
-                        //padding: const EdgeInsets.all(32),
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(curve - 4),
-                        ),
-                        child: Image.asset(
-                          "images/logo_background_white.png",
-                          color: Colors.white.withOpacity(0.1),
-                        ),
-                      );
-                    },
-                    fit: BoxFit.fitWidth,
+                    child: (imageUrlLength>0)?Text(
+                      article.title ?? "",
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontFamily: APP_FONT_MEDIUM,
+                        //fontWeight: FontWeight.bold,
+                      ),
+                    ):Text(
+                      article.title ?? "",
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontFamily: APP_FONT_MEDIUM,
+                        //fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              if (article.question != null)
-                Container(
-                  width: double.maxFinite,
-                  padding: const EdgeInsets.all(12),
-                  margin: const EdgeInsets.all(12),
-                  alignment: Alignment.centerLeft,
-                  decoration: BoxDecoration(
-                    //color: COLOR_PRIMARY_DARK,//Colors.grey.shade900.withOpacity(0.75),
-                    color: COLOR_PRIMARY_DARK,
-                    borderRadius: BorderRadius.circular(4),
-                    //border: Border.all(color:  Colors.grey.shade900,width: 1),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          joinDrumm(articleBand);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.all(8),
-                          child: Image.asset('images/audio-waves.png',
-                              height: 32,
-                              color: Colors.white,
-                              fit: BoxFit.contain),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 6,
-                      ),
-                      Expanded(
-                        child: GestureDetector(
+                //SizedBox(height: 4),
+                if (article.question != null)
+                  Container(
+                    width: double.maxFinite,
+                    padding: const EdgeInsets.all(12),
+                    //margin: const EdgeInsets.all(9),
+                    alignment: Alignment.centerLeft,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade900.withOpacity(0.85),
+                      //color: COLOR_PRIMARY_DARK,
+                      //borderRadius: BorderRadius.circular(curve-16),
+                      //border: Border.all(color:  Colors.grey.shade900,width: 1),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        GestureDetector(
                           onTap: () {
-                            print("Join Drumm");
                             joinDrumm(articleBand);
                           },
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "\"${article.question}\"" ?? "",
-                                  textAlign: TextAlign.start,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    //fontStyle: FontStyle.italic,
-                                    fontFamily: APP_FONT_MEDIUM,
-                                    //fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 4,
-                                ),
-                                Container(
-                                  width: double.infinity,
-                                  alignment: Alignment.centerLeft,
-                                  padding: const EdgeInsets.all(0.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: const Text(
-                                    "Generated by Drumm AI",
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                      color: Colors.white54,
-                                      fontSize: 12,
+                          child: Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.all(8),
+                            child: Image.asset('images/audio-waves.png',
+                                height: 32,
+                                color: Colors.white,
+                                fit: BoxFit.contain),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 6,
+                        ),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              print("Join Drumm");
+                              joinDrumm(articleBand);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "\"${article.question}\"" ?? "",
+                                    textAlign: TextAlign.start,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      //fontStyle: FontStyle.italic,
                                       fontFamily: APP_FONT_MEDIUM,
+                                      //fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(
+                                    height: 4,
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    alignment: Alignment.centerLeft,
+                                    padding: const EdgeInsets.all(0.0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: const Text(
+                                      "Generated by Drumm AI",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        color: Colors.white54,
+                                        fontSize: 12,
+                                        fontFamily: APP_FONT_MEDIUM,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              GestureDetector(
-                onTap: () {
-                  Vibrate.feedback(FeedbackType.impact);
-                  openArticle(article);
-
-                  ConnectToChannel.insights.viewedObjects(
-                    indexName: 'articles',
-                    eventName: 'Viewed Item',
-                    objectIDs: [article.articleId ?? ""],
-                  );
-                },
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.all(14),
-                  child: Text(
-                    (article.description != null)
-                        ? "${article.description}"
-                        : (article.content != null)
-                            ? "${article.content}"
-                            : "",
-                    textAlign: TextAlign.left,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.white54,
-                      fontFamily: APP_FONT_MEDIUM,
+                      ],
                     ),
-                    //linkColor: Colors.white,
+                  ),
+                GestureDetector(
+                  onTap: () {
+                    Vibrate.feedback(FeedbackType.impact);
+                    openArticle(article);
+
+                    ConnectToChannel.insights.viewedObjects(
+                      indexName: 'articles',
+                      eventName: 'Viewed Item',
+                      objectIDs: [article.articleId ?? ""],
+                    );
+                  },
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.all(14),
+                    child: Text(
+                      (article.description != null)
+                          ? "${article.description}"
+                          : (article.content != null)
+                              ? "${article.content}"
+                              : "",
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white38,
+                        fontFamily: APP_FONT_MEDIUM,
+                      ),
+                      //linkColor: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 150),
-            ],
+                const SizedBox(height: 150),
+              ],
+            ),
           ),
         ),
       ),
@@ -396,30 +414,21 @@ class SoundPlayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Container(
-            padding: const EdgeInsets.all(2.5),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                gradient: LinearGradient(colors: [
-                  Colors.grey.shade900,
-                  Colors.grey.shade900,
-                ])),
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                color: Colors.black,
-              ),
-              child: Image.asset(
-                (play) ? 'images/volume.png' : 'images/mute.png',
-                height: 16,
-                color: Colors.white,
-                fit: BoxFit.contain,
-              ),
+              borderRadius: BorderRadius.circular(24),
+              color: Colors.grey.shade900.withOpacity(0.75),
+            ),
+            child: Image.asset(
+              (play) ? 'images/volume.png' : 'images/mute.png',
+              height: 12,
+              color: Colors.white,
+              fit: BoxFit.contain,
             ),
           ),
         ],
@@ -433,7 +442,6 @@ class BottomFade extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double curve = 28;
     return IgnorePointer(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,

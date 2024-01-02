@@ -365,7 +365,7 @@ class _NewsFeedState extends State<NewsFeed>
   startDrumming(ArticleBand articleBand) {
     if (ConnectToChannel.channelID == null ||
         ConnectToChannel.channelID == "") {
-      Vibrate.feedback(FeedbackType.heavy);
+      //Vibrate.feedback(FeedbackType.heavy);
       try {
         joinOpenDrumm(articleBand);
       } catch (e) {}
@@ -675,14 +675,14 @@ class _NewsFeedState extends State<NewsFeed>
     } catch (e) {}
 
     if (direction == CardSwiperDirection.left) {
-      Vibrate.feedback(FeedbackType.selection);
+      //Vibrate.feedback(FeedbackType.selection);
 
       return true;
     }
 
     if (ConnectToChannel.channelID == null ||
         ConnectToChannel.channelID == "") {
-      Vibrate.feedback(FeedbackType.heavy);
+      Vibrate.feedback(FeedbackType.success);
       try {
         joinOpenDrumm(articleBands.elementAt(previousIndex));
       } catch (e) {}
