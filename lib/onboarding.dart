@@ -12,13 +12,12 @@ class OnBoarding extends StatelessWidget {
   final ThemeManager themeManager;
   final FirebaseAnalyticsObserver observer;
   final FirebaseAnalytics analytics;
-   OnBoarding({
+  OnBoarding({
     Key? key,
     required this.themeManager,
     required this.observer,
     required this.analytics,
   }) : super(key: key);
-  bool _isOnboarded = false;
 
   String actionState = "Let\'s Drumm!";
 
@@ -26,16 +25,27 @@ class OnBoarding extends StatelessWidget {
   Widget build(BuildContext context) {
     double textSize = 28;
     Color offText = Colors.white.withOpacity(0.6);
-
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: TransparentSlider(
+    return MaterialApp(
+      color: Colors.black,
+      debugShowCheckedModeBanner: false,
+      home: OnBoardingSlider(
         headerBackgroundColor: Colors.black,
-        controllerColor: Colors.white,
-        finishButtonText: actionState,
-        pageBackgroundColor: Colors.black,
         centerBackground: true,
-        onFinish: () {
+        finishButtonText: 'Get Started',
+        finishButtonTextStyle: const TextStyle(
+          color: Colors.white,
+          fontFamily: APP_FONT_BOLD,
+        ),
+        pageBackgroundColor: Colors.black,
+        finishButtonStyle:  FinishButtonStyle(
+          backgroundColor: Colors.grey.shade900,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(50.0),
+            ),
+          ),
+        ),
+        onFinish: (){
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
@@ -46,23 +56,8 @@ class OnBoarding extends StatelessWidget {
                   )),
                   (_) => false);
         },
-        finishButtonStyle: FinishButtonStyle(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(50.0),
-            ),
-          ),
-        ),
-        finishButtonTextStyle: TextStyle(
-            color: Colors.black,
-            fontFamily: APP_FONT_MEDIUM,
-            fontWeight: FontWeight.bold,
-            fontSize: 16),
-        skipTextButton: Text(
-          'Skip',
-          style: TextStyle(color: Colors.white),
-        ),
+        skipTextButton: const Text('Skip',style: TextStyle(color: Colors.white,),),
+        //trailing: Text('Login'),
         background: [
           Container(
             height: MediaQuery.of(context).size.height / 1.75,
@@ -70,10 +65,10 @@ class OnBoarding extends StatelessWidget {
               alignment: Alignment.center,
               child: ClipRRect(
                   child: Lottie.asset(
-                'images/breaking_news.json',
-                height: MediaQuery.of(context).size.height,
-                fit: BoxFit.cover,
-              )),
+                    'images/breaking_news.json',
+                    height: MediaQuery.of(context).size.height,
+                    fit: BoxFit.cover,
+                  )),
             ),
           ),
           Container(
@@ -122,7 +117,8 @@ class OnBoarding extends StatelessWidget {
         speed: 1.8,
         pageBodies: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 40),
+
+            padding: const EdgeInsets.symmetric(horizontal: 40),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -154,14 +150,14 @@ class OnBoarding extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 32,
                 ),
               ],
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 40),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -186,14 +182,14 @@ class OnBoarding extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 32,
                 ),
               ],
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 40),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -220,17 +216,17 @@ class OnBoarding extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 32,
                 ),
               ],
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 40),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
+              children: const <Widget>[
                 SizedBox(
                   height: 80,
                 ),

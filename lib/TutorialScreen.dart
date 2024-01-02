@@ -2,39 +2,41 @@ import 'package:blur/blur.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_onboarding_slider/background_final_button.dart';
+import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
 
 import 'custom/transparent_slider.dart';
 
 class TutorialScreen extends StatelessWidget {
   VoidCallback finishTutorial;
-  TutorialScreen({required this.finishTutorial});
+  TutorialScreen({super.key, required this.finishTutorial});
 
   @override
   Widget build(BuildContext context) {
     double textSize = 28;
     return Container(
-        color: Colors.transparent,
-        child: TransparentSlider(
-          headerBackgroundColor: Colors.transparent,
-          pageBackgroundColor: Colors.transparent,
+        //color: Colors.transparent,
+      color: Colors.black,
+        child: OnBoardingSlider(
+          headerBackgroundColor: Colors.grey.shade900,
+          pageBackgroundColor: Colors.grey.shade900,
           controllerColor: Colors.white,
           finishButtonText: "End tutorial",
-          finishButtonTextStyle: TextStyle(
-              color: Colors.black,
+          finishButtonTextStyle: const TextStyle(
+              color: Colors.white,
               fontFamily: APP_FONT_MEDIUM,
               fontWeight: FontWeight.bold),
           onFinish: () {
             finishTutorial();
           },
           finishButtonStyle: FinishButtonStyle(
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
+            backgroundColor: Colors.grey.shade800,
+            shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(64.0),
               ),
             ),
           ),
-          skipTextButton: Text(
+          skipTextButton: const Text(
             'Skip',
             style: TextStyle(color: Colors.white),
           ),
@@ -45,8 +47,8 @@ class TutorialScreen extends StatelessWidget {
               height: MediaQuery.of(context).size.height / 1.75,
               child: Container(
                 alignment: Alignment.center,
-                margin: EdgeInsets.all(8),
-                child: Text(
+                margin: const EdgeInsets.all(8),
+                child: const Text(
                   "Welcome to Drumm!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -68,8 +70,8 @@ class TutorialScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(150),
                       border: Border.all(color: Colors.grey.shade800,width: 2.5)),
                   child: Container(
-                    padding: EdgeInsets.all(16),
-                    margin: EdgeInsets.all(2),
+                    padding: const EdgeInsets.all(16),
+                    margin: const EdgeInsets.all(2),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(150),
                       boxShadow: [
@@ -78,7 +80,7 @@ class TutorialScreen extends StatelessWidget {
                             spreadRadius: 2,
                             blurRadius: 4),
                       ],
-                      gradient: LinearGradient(colors: [
+                      gradient: const LinearGradient(colors: [
                         Colors.orange,
                         Colors.red,
                         Colors.pinkAccent,
@@ -106,8 +108,8 @@ class TutorialScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(124),
                       border: Border.all(color: Colors.grey.shade800,width: 2.5)),
                   child: Container(
-                    padding: EdgeInsets.all(32),
-                    margin: EdgeInsets.all(2),
+                    padding: const EdgeInsets.all(32),
+                    margin: const EdgeInsets.all(2),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(124),
                       boxShadow: [
@@ -153,11 +155,11 @@ class TutorialScreen extends StatelessWidget {
           pageBodies: [
             Container(
               color: Colors.transparent,
-              padding: EdgeInsets.symmetric(horizontal: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 40),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  SizedBox(
+                  const SizedBox(
                     height: 32,
                   ),
                 ],
@@ -165,7 +167,7 @@ class TutorialScreen extends StatelessWidget {
             ),
             Container(
               color: Colors.transparent,
-              padding: EdgeInsets.symmetric(horizontal: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 40),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
@@ -201,7 +203,7 @@ class TutorialScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 32,
                   ),
                 ],
@@ -209,7 +211,7 @@ class TutorialScreen extends StatelessWidget {
             ),
             Container(
               color: Colors.transparent,
-              padding: EdgeInsets.symmetric(horizontal: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 40),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
@@ -243,7 +245,7 @@ class TutorialScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 32,
                   ),
                 ],
@@ -251,7 +253,7 @@ class TutorialScreen extends StatelessWidget {
             ),
             Container(
               color: Colors.transparent,
-              padding: EdgeInsets.symmetric(horizontal: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 40),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
@@ -286,7 +288,7 @@ class TutorialScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 100,
                   ),
                 ],

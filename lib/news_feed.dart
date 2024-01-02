@@ -8,6 +8,7 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:aws_polly/aws_polly.dart';
 import 'package:blur/blur.dart';
+import 'package:drumm_app/MultiSelectContainerWidget.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -34,9 +35,13 @@ import 'package:ogg_opus_player/ogg_opus_player.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'ArticleDrummButton.dart';
+import 'ExploreNewsButton.dart';
+import 'JoinDrummButton.dart';
 import 'LikeBtn.dart';
 import 'LiveIconWidget.dart';
 import 'NotificationIconWidget.dart';
+import 'SwipeBackButton.dart';
 import 'article_jam_page.dart';
 import 'custom/create_jam_bottom_sheet.dart';
 import 'custom/helper/image_uploader.dart';
@@ -67,7 +72,7 @@ class _NewsFeedState extends State<NewsFeed>
   List<MultiSelectCard<dynamic>> mulList = [];
   String selectedCategory = "For You";
   List<dynamic> mAllSelectedItems = [];
-  late MultiSelectContainer multiSelectContainer;
+  late MultiSelectContainerWidget multiSelectContainer;
   List<MultiSelectCard<dynamic>> bandsCards = [];
   Drummer drummer = Drummer();
   double horizontalPadding = 8;
@@ -82,7 +87,6 @@ class _NewsFeedState extends State<NewsFeed>
   bool loadAnimation = false;
 
   String selectedBandID = "For You";
-
 
   double drummLogoSize = 30;
   double iconSpaces = 20;
@@ -235,15 +239,13 @@ class _NewsFeedState extends State<NewsFeed>
                               duration: const Duration(milliseconds: 175),
                               maxAngle: 45,
                               scale: 0.75,
-                              numberOfCardsDisplayed:
-                                  (articleBands.length > 1)
-                                      ? 2
-                                      : (articleBands.isEmpty)
-                                          ? 0
-                                          : 1,
+                              numberOfCardsDisplayed: (articleBands.length > 1)
+                                  ? 2
+                                  : (articleBands.isEmpty)
+                                      ? 0
+                                      : 1,
                               isVerticalSwipingEnabled: false,
                               onEnd: () {
-                                print("Ended swipes");
                                 if (selectedBandID == "For You") {
                                   getArticles();
                                 } else {
@@ -299,8 +301,6 @@ class _NewsFeedState extends State<NewsFeed>
                                     return Container();
                                   }
                                 } catch (e) {
-                                  print(
-                                      "//////////////////////////ERROR/////////////////////${e.toString()}");
                                   return Container();
                                 }
                               },
@@ -319,169 +319,25 @@ class _NewsFeedState extends State<NewsFeed>
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                Vibrate.feedback(FeedbackType.warning);
-                                controller?.undo();
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(42),
-                                    border: Border.all(
-                                        color: Colors.grey.shade800,
-                                        width: 2.25)),
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  margin: const EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(42),
-                                    color: Colors.black.withOpacity(0.5),
-                                  ),
-                                  child: Image.asset(
-                                    'images/turn-back.png',
-                                    height: 16,
-                                    color: (undoIndex == 0)
-                                        ? Colors.grey.shade600
-                                        : Colors.white,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Vibrate.feedback(FeedbackType.impact);
-                                controller?.swipeLeft();
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(42),
-                                    border: Border.all(
-                                        color: Colors.grey.shade800,
-                                        width: 2.5)),
-                                child: Container(
-                                  padding: const EdgeInsets.all(16),
-                                  margin: const EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(42),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.grey.shade900,
-                                          spreadRadius: 2,
-                                          blurRadius: 4),
-                                    ],
-                                    gradient: const LinearGradient(colors: [
-                                      Colors.orange,
-                                      Colors.red,
-                                      Colors.pinkAccent,
-                                    ]),
-                                  ),
-                                  child: Image.asset(
-                                    'images/google-earth.png',
-                                    height: 42,
-                                    color: Colors.white,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 4,
-                            ),
-                            RoundedButton(
-                              padding: 10,
-                              height: iconHeight - 6,
-                              color: Colors.white,
-                              bgColor: Colors.transparent,
-                              onPressed: () {
-                                Vibrate.feedback(FeedbackType.selection);
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.grey.shade900,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(0.0)),
-                                  ),
-                                  builder: (BuildContext context) {
-                                    return Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom: MediaQuery.of(context)
-                                              .viewInsets
-                                              .bottom),
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            const BorderRadius.vertical(
-                                                top: Radius.circular(0.0)),
-                                        child: ArticleJamPage(
-                                          article: articleOnScreen,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              assetPath: 'images/drumm_logo.png',
-                            ),
-                            const SizedBox(
-                              width: 4,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Vibrate.feedback(FeedbackType.impact);
-                                controller?.swipeRight();
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(42),
-                                    border: Border.all(
-                                        color: Colors.grey.shade800,
-                                        width: 2.5)),
-                                child: Container(
-                                  padding: const EdgeInsets.all(18),
-                                  margin: const EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(42),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.grey.shade900,
-                                          spreadRadius: 2,
-                                          blurRadius: 4),
-                                    ],
-                                    gradient: LinearGradient(colors: [
-                                      Colors.indigo,
-                                      Colors.blue.shade700,
-                                      Colors.lightBlue,
-                                    ]),
-                                  ),
-                                  child: Image.asset(
-                                    'images/audio-waves.png',
-                                    height: 38,
-                                    color: Colors.white,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
+                            SwipeBackButton(controller: controller),
+                            const SizedBox(width: 8),
+                            ExploreNewsButton(controller: controller),
+                            const SizedBox(width: 4),
+                            ArticleDrummButton(
+                                articleOnScreen: articleOnScreen),
+                            const SizedBox(width: 4),
+                            JoinDrummButton(controller: controller),
+                            const SizedBox(width: 8),
                             LikeBtn(
-                              article: articleOnScreen,
-                              queryID: queryID ?? "",
-                            ),
+                                article: articleOnScreen,
+                                queryID: queryID ?? ""),
                           ],
                         ),
                       ),
                     ],
                   ),
                 ),
-              const SizedBox(
-                height: 8,
-              ),
+              const SizedBox(height: 8),
             ],
           ),
         ),
@@ -626,7 +482,6 @@ class _NewsFeedState extends State<NewsFeed>
         );
       } else {
         String imageUrl = modifyImageUrl(element.url ?? "", "100x100");
-        print("The imageUrl is $imageUrl");
         mulList.add(
           MultiSelectCard(
             value: element,
@@ -657,82 +512,27 @@ class _NewsFeedState extends State<NewsFeed>
     setState(() {
       bandsCards = mulList;
       multiSelectContainer = getMultiSelectWidget(context);
-      print("bandsCards size ${bandsCards.length}");
     });
   }
 
-  MultiSelectContainer getMultiSelectWidget(BuildContext bContext) {
-    return MultiSelectContainer(
-      showInListView: true,
-      listViewSettings: ListViewSettings(
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        separatorBuilder: (_, __) => const SizedBox(
-          width: 5,
-        ),
-      ),
-      suffix: MultiSelectSuffix(
-          selectedSuffix: const Padding(
-            padding: EdgeInsets.only(left: 1, right: 1),
-          ),
-          disabledSuffix: const Padding(
-            padding: EdgeInsets.only(left: 1),
-            child: Icon(
-              Icons.do_disturb_alt_sharp,
-              size: 14,
-            ),
-          )),
-      controller: MultiSelectController(
-        deSelectPerpetualSelectedItems: true,
-      ),
-      itemsDecoration: MultiSelectDecorations(
-        decoration: BoxDecoration(
-            color: COLOR_PRIMARY_DARK, //Colors.grey.shade900,
-            border: Border.all(
-                color: Colors.grey.shade900, width: 2), //Color(0xff2f2f2f)),
-            borderRadius: BorderRadius.circular(multiSelectRadius)),
-        selectedDecoration: BoxDecoration(
-            gradient: const LinearGradient(colors: [
-              Colors.white, //Colors.blue.shade600,
-              Colors.white, //Colors.blue.shade800, //Colors.cyan,
-            ]),
-            borderRadius: BorderRadius.circular(multiSelectRadius)),
-      ),
-      items: bandsCards,
-      textStyles: const MultiSelectTextStyles(
-        selectedTextStyle: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-          fontFamily: APP_FONT_BOLD,
-        ),
-        textStyle: TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-          //fontWeight: FontWeight.bold, // FontWeight.w700,
-          fontFamily: APP_FONT_BOLD,
-        ),
-      ),
-      onChange: (allSelectedItems, selectedItem) {
-        Vibrate.feedback(FeedbackType.selection);
-        FirebaseDBOperations.lastDocument = null;
-        controller = CardSwiperController();
-        setState(() {
-          //selectedCategory = selectedItem;
-          loadAnimation = false;
-          loadingAnimation = LOADING_ASSET;
-          selectedBand = selectedItem;
-          selectedBandID = selectedBand.bandId ?? "For You";
-          if (selectedBandID == "For You") {
-            getArticles();
-          } else {
-            getArticlesForBands(selectedBand);
-          }
-        });
-      },
-      singleSelectedItem: true,
-      itemsPadding: const EdgeInsets.all(0),
-    );
+  MultiSelectContainerWidget getMultiSelectWidget(BuildContext bContext) {
+    return MultiSelectContainerWidget(onSelect: (selectedItems, selectedItem){
+      Vibrate.feedback(FeedbackType.selection);
+      FirebaseDBOperations.lastDocument = null;
+      controller = CardSwiperController();
+      loadAnimation = false;
+      loadingAnimation = LOADING_ASSET;
+      selectedBand = selectedItem;
+      selectedBandID = selectedBand.bandId ?? "For You";
+      setState(() {
+        //selectedCategory = selectedItem;
+        if (selectedBandID == "For You") {
+          getArticles();
+        } else {
+          getArticlesForBands(selectedBand);
+        }
+      });
+    }, bandsCards: bandsCards);
   }
 
   void openArticlePage(Article? article, int index) async {
@@ -747,10 +547,10 @@ class _NewsFeedState extends State<NewsFeed>
   }
 
   void getArticles() async {
-    setState(() {
+    //setState(() {
       articles.clear();
       articleBands.clear();
-    });
+    //});
     controller = CardSwiperController();
     algoliaArticles = await FirebaseDBOperations.getArticlesFromAlgolia();
     List<Article> articleFetched = algoliaArticles?.articles ??
@@ -785,11 +585,7 @@ class _NewsFeedState extends State<NewsFeed>
           if (articleTop == "") {
             articleTop = articleBands.elementAt(0).article?.articleId ?? "";
           }
-        } catch (e) {
-          print("No elements present as ${e.toString()}");
-        }
-
-        print("Article length ${articles.length}");
+        } catch (e) {}
       });
 
       //  Article articleForSpeech = articleBands.elementAt(0).article?? Article();
@@ -801,10 +597,10 @@ class _NewsFeedState extends State<NewsFeed>
   }
 
   void getArticlesForBands(Band selectedBand) async {
-    setState(() {
+    //setState(() {
       articles.clear();
       articleBands.clear();
-    });
+    //});
     controller = CardSwiperController();
     algoliaArticles =
         await FirebaseDBOperations.getArticlesByBandHookFromAlgolia(
@@ -834,7 +630,6 @@ class _NewsFeedState extends State<NewsFeed>
         articleBands = fetchedArticleBand;
         undoIndex = 0;
         articleOnScreen = articleBands.elementAt(0).article ?? Article();
-        print("getArticlesForBands length ${articles.length}");
       });
     }
   }
@@ -844,7 +639,6 @@ class _NewsFeedState extends State<NewsFeed>
     int? currentIndex,
     CardSwiperDirection direction,
   ) {
-
     //return true;
     cleanCache();
 
@@ -857,7 +651,7 @@ class _NewsFeedState extends State<NewsFeed>
       player.dispose();
     } catch (e) {}
     setState(() {
-      undoIndex = currentIndex ?? 0;
+      //undoIndex = currentIndex ?? 0;
       articleOnScreen =
           articleBands.elementAt(currentIndex ?? 0).article ?? Article();
     });
@@ -966,7 +760,7 @@ class _NewsFeedState extends State<NewsFeed>
     articleTop =
         articleBands.elementAt(currentIndex ?? 0).article?.articleId ?? "";
     setState(() {
-      undoIndex = currentIndex;
+      //undoIndex = currentIndex;
       articleOnScreen =
           articleBands.elementAt(currentIndex ?? 0).article ?? Article();
     });
@@ -1031,7 +825,6 @@ class _NewsFeedState extends State<NewsFeed>
     FirebaseDBOperations.addMemberToJam(aBand.article?.jamId ?? "",
             FirebaseAuth.instance.currentUser?.uid ?? "", true)
         .then((value) {
-      print("Added the member ${value}");
       if (!value) {
         FirebaseDBOperations.createOpenDrumm(jam);
       }
@@ -1063,8 +856,6 @@ class _NewsFeedState extends State<NewsFeed>
     );
   }
 
-
-
   void cleanCache() async {
     await DefaultCacheManager().emptyCache();
   }
@@ -1077,7 +868,6 @@ class _NewsFeedState extends State<NewsFeed>
       carPlay: true,
       criticalAlert: true,
     );
-    print(notificationSettings.authorizationStatus);
   }
 
   @override
@@ -1118,7 +908,6 @@ class _NewsFeedState extends State<NewsFeed>
     });
   }
 
-
   Future speakNews(String? url) async {
     // await player.setUrl(url!).catchError((Onerr) {
     //   print("Error setting url : $Onerr");
@@ -1129,9 +918,7 @@ class _NewsFeedState extends State<NewsFeed>
 
     try {
       //await audioPlayer.play(UrlSource(url??""));
-    } catch (e) {
-      print("Error playing : $e");
-    }
+    } catch (e) {}
   }
 
   Future<void> convertTextToSpeech(String text, String id) async {
@@ -1176,7 +963,6 @@ class _NewsFeedState extends State<NewsFeed>
     );
 
     if (response.statusCode == 200) {
-      print("The response is successful");
       //  //await audioPlayer.play(BytesSource(response.bodyBytes));
       final audioBytes = response.bodyBytes;
       final appDir = await getApplicationDocumentsDirectory();
@@ -1188,8 +974,6 @@ class _NewsFeedState extends State<NewsFeed>
       }
     } else {
       // Handle API error
-      print('Error: ${response.statusCode}');
-      print('Response: ${response.body}');
     }
   }
 }

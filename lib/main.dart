@@ -816,7 +816,7 @@ class _SplashScreenState extends State<SplashScreen> {
               height: double.infinity,
               child: Container(
                 alignment: Alignment.center,
-                child: Lottie.asset('images/breaking_news.json',height: MediaQuery.of(context).size.height,fit:BoxFit.cover),
+                //child: Lottie.asset('images/breaking_news.json',height: MediaQuery.of(context).size.height,fit:BoxFit.cover),
               ),
             ),
             if(!toggleLogo) Image.asset("images/logo_dark.png",fit: BoxFit.fitWidth,),

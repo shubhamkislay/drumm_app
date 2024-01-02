@@ -155,18 +155,20 @@ class HomeFeedData extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 16, top: 24),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text("${source}",
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.75),
+                          color: Colors.white70,
                           fontSize: 14,
-                          fontFamily: APP_FONT_MEDIUM,
+                          fontFamily: APP_FONT_BOLD,
                           //fontWeight: FontWeight.bold,
                         )),
                     SizedBox(
                       width: 4,
                     ),
-                    Text("•"),
+                    Text("•",style: TextStyle(fontFamily: APP_FONT_BOLD),),
                     SizedBox(
                       width: 4,
                     ),
@@ -338,7 +340,7 @@ class HomeFeedData extends StatelessWidget {
                                     style: const TextStyle(
                                         color: Colors.white54,
                                         fontSize: 12,
-                                        fontFamily: APP_FONT_LIGHT,
+                                        fontFamily: APP_FONT_MEDIUM,
                                       ),
                                   ),
                                 ),

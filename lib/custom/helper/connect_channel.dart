@@ -422,7 +422,9 @@ class ConnectToChannel {
         channelId: channelID ?? "",
         options: mode ?? options,
         uid: uid,
-      );
+      ).onError((error, stackTrace) {
+        print("${error}");
+      });
     }
   }
 
