@@ -1,9 +1,15 @@
+import 'dart:async';
+
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/band_details_page.dart';
 import 'package:drumm_app/model/band.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import '../article_jam_page.dart';
 import '../custom/ai_summary.dart';
@@ -16,6 +22,7 @@ import '../custom/rounded_button.dart';
 import '../theme/theme_constants.dart';
 import 'article.dart';
 import 'article_band.dart';
+import 'jam.dart';
 double curve = 22;
 class HomeItem extends StatefulWidget {
   ArticleBand articleBand;
@@ -58,6 +65,15 @@ class _HomeItemState extends State<HomeItem> {
   double iconHeight = 70;
   double sizedBoxedHeight = 12;
   Band? band;
+  BranchContentMetaData metadata = BranchContentMetaData();
+  BranchLinkProperties lp = BranchLinkProperties();
+  late BranchUniversalObject buo;
+  late BranchEvent eventStandard;
+  late BranchEvent eventCustom;
+
+  StreamSubscription<Map>? streamSubscription;
+  StreamController<String> controllerData = StreamController<String>();
+  StreamController<String> controllerInitSession = StreamController<String>();
   @override
   Widget build(BuildContext context) {
     //setband();
@@ -82,26 +98,39 @@ class _HomeItemState extends State<HomeItem> {
             joinDrumm: widget.joinDrumm,
             articleBand: widget.articleBand,
           ),
-          GestureDetector(
-            onTap: () {
-              if (!widget.play) {
-                setState(() {
-                  widget.play = true;
-                });
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
 
-                widget.playPause(
-                    widget.articleBand.article ?? Article(), widget.play);
-              } else {
-                setState(() {
-                  widget.play = false;
-                });
-                widget.playPause(
-                    widget.articleBand.article ?? Article(), widget.play);
-              }
-            },
-            child: SoundPlayWidget(
-              play: widget.play,
-            ),
+              GestureDetector(
+                onTap: () {
+                  generateLink();
+                },
+                child: ShareWidget(),
+              ),
+              SizedBox(width: 8,),
+              GestureDetector(
+                onTap: () {
+                  if (!widget.play) {
+                    setState(() {
+                      widget.play = true;
+                    });
+
+                    widget.playPause(
+                        widget.articleBand.article ?? Article(), widget.play);
+                  } else {
+                    setState(() {
+                      widget.play = false;
+                    });
+                    widget.playPause(
+                        widget.articleBand.article ?? Article(), widget.play);
+                  }
+                },
+                child: SoundPlayWidget(
+                  play: widget.play,
+                ),
+              ),
+            ],
           ),
           const BottomFade(),
         ],
@@ -112,6 +141,80 @@ class _HomeItemState extends State<HomeItem> {
   @override
   void initState() {
     super.initState();
+  }
+
+  void generateLink() async{
+
+    Jam jam = Jam();
+    jam.broadcast = false;
+    jam.title = widget.articleBand.article?.title;
+    jam.bandId = widget.articleBand.article?.category;
+    jam.jamId = widget.articleBand.article?.jamId;
+    jam.articleId = widget.articleBand.article?.articleId;
+    jam.startedBy = widget.articleBand.article?.source;
+    jam.imageUrl = widget.articleBand.article?.imageUrl;
+    if (widget.articleBand.article?.question != null)
+      jam.question = widget.articleBand.article?.question;
+    else
+      jam.question = widget.articleBand.article?.title;
+    jam.count = 1;
+    jam.membersID = [];
+    //jam.lastActive = Timestamp.now();
+
+    metadata = BranchContentMetaData()
+      ..addCustomMetadata('jam', jam.toJson());
+
+    buo = BranchUniversalObject(
+        canonicalIdentifier: 'flutter/branch',
+        //parameter canonicalUrl
+        //If your content lives both on the web and in the app, make sure you set its canonical URL
+        // (i.e. the URL of this piece of content on the web) when building any BUO.
+        // By doing so, we’ll attribute clicks on the links that you generate back to their original web page,
+        // even if the user goes to the app instead of your website! This will help your SEO efforts.
+        //canonicalUrl: 'https://flutter.dev',
+        title: widget.articleBand.article?.question??widget.articleBand.article?.title??"Drumm News",
+        imageUrl: widget.articleBand.article?.imageUrl??DEFAULT_APP_IMAGE_URL,
+        contentDescription: 'Drop-in to join the drumm',
+        contentMetadata: metadata,
+        publiclyIndex: true,
+        locallyIndex: true,
+        expirationDateInMilliSec: DateTime.now()
+            .add(const Duration(days: 365))
+            .millisecondsSinceEpoch);
+
+    lp = BranchLinkProperties(
+        channel: 'facebook',
+        feature: 'sharing',
+        //parameter alias
+        //Instead of our standard encoded short url, you can specify the vanity alias.
+        // For example, instead of a random string of characters/integers, you can set the vanity alias as *.app.link/devonaustin.
+        // Aliases are enforced to be unique** and immutable per domain, and per link - they cannot be reused unless deleted.
+        //alias: 'https://branch.io' //define link url,
+        stage: 'new share',
+        campaign: 'campaign',
+        tags: ['one', 'two', 'three'])
+      ..addControlParam('\$uri_redirect_mode', '1')
+      ..addControlParam('\$ios_nativelink', true)
+      ..addControlParam('\$match_duration', 7200)
+      ..addControlParam('\$always_deeplink', true)
+      ..addControlParam('\$android_redirect_timeout', 750)
+      ..addControlParam('referring_user_id', 'user_id');
+
+    BranchResponse response =
+        await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
+    if (response.success) {
+      if (context.mounted) {
+        print('GeneratedLink : ${response.result}');
+        await Clipboard.setData(ClipboardData(text: response.result)).then((value) {
+        });
+
+
+
+      }
+    } else {
+      print('Error : ${response.errorCode} - ${response.errorMessage}');
+
+    }
   }
 }
 
@@ -427,6 +530,36 @@ class SoundPlayWidget extends StatelessWidget {
             child: Image.asset(
               (play) ? 'images/volume.png' : 'images/mute.png',
               height: 12,
+              color: Colors.white,
+              fit: BoxFit.contain,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ShareWidget extends StatelessWidget {
+
+  ShareWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              color: Colors.grey.shade900.withOpacity(0.75),
+            ),
+            child: Image.asset(
+              'images/share.png',
+              height: 22,
               color: Colors.white,
               fit: BoxFit.contain,
             ),

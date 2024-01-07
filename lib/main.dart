@@ -14,6 +14,7 @@ import 'package:floating_frosted_bottom_bar/floating_frosted_bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_callkit_incoming/entities/android_params.dart';
 import 'package:flutter_callkit_incoming/entities/call_event.dart';
 import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
@@ -109,6 +110,7 @@ class _MyAppState extends State<MyApp>
 
   @override
   void initState() {
+
     initNotification();
     WidgetsBinding.instance.addObserver(this);
     //FirebaseDatabase.instance.setPersistenceEnabled(true);

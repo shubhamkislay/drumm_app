@@ -6,6 +6,7 @@ const Color COLOR_PRIMARY_DARK = Color(0xff101010);
 const APP_FONT_LIGHT = "chakrapetchlight";//"poppinslight";//"robotolight";
 const APP_FONT_MEDIUM = "chakrapetchmedium";//"poppinsmedium";//"robotomedium";
 const APP_FONT_BOLD = "chakrapetchbold";//"poppinsbold";//"robotobold";
+const DEFAULT_APP_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/drummapp.appspot.com/o/post_images%2FdCMkdrzofMhepCfXk9bM.jpg?alt=media&token=823114d8-6a42-479a-8b0a-bf7c98ce87e3";
 
 MaterialColor mainAppColor = const MaterialColor(COLOR_PRIMARY_VAL, <int, Color>{
   50: Color(COLOR_PRIMARY_VAL),

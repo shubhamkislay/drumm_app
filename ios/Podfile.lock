@@ -62,6 +62,7 @@ PODS:
     - AWSCore (= 2.33.4)
   - AWSPolly (2.33.4):
     - AWSCore (= 2.33.4)
+  - BranchSDK (2.1.2)
   - cloud_firestore (4.9.1):
     - Firebase/Firestore (= 10.12.0)
     - firebase_core
@@ -199,6 +200,9 @@ PODS:
     - FirebaseCoreExtension (~> 10.0)
     - GTMSessionFetcher/Core (< 4.0, >= 2.1)
   - Flutter (1.0.0)
+  - flutter_branch_sdk (6.4.0):
+    - BranchSDK (~> 2.1.0)
+    - Flutter
   - flutter_callkit_incoming (0.0.1):
     - CryptoSwift
     - Flutter
@@ -346,6 +350,7 @@ DEPENDENCIES:
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - FirebaseFirestore (from `https://github.com/invertase/firestore-ios-sdk-frameworks.git`, tag `10.12.0`)
   - Flutter (from `Flutter`)
+  - flutter_branch_sdk (from `.symlinks/plugins/flutter_branch_sdk/ios`)
   - flutter_callkit_incoming (from `.symlinks/plugins/flutter_callkit_incoming/ios`)
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
@@ -379,6 +384,7 @@ SPEC REPOS:
     - AWSCore
     - AWSMobileClient
     - AWSPolly
+    - BranchSDK
     - CryptoSwift
     - Firebase
     - FirebaseAnalytics
@@ -438,6 +444,8 @@ EXTERNAL SOURCES:
     :tag: 10.12.0
   Flutter:
     :path: Flutter
+  flutter_branch_sdk:
+    :path: ".symlinks/plugins/flutter_branch_sdk/ios"
   flutter_callkit_incoming:
     :path: ".symlinks/plugins/flutter_callkit_incoming/ios"
   flutter_inappwebview:
@@ -498,6 +506,7 @@ SPEC CHECKSUMS:
   AWSCore: 83e3416d2224ba98b61d8eadcfcb1f90f48fab82
   AWSMobileClient: ff115272d8b29f05443f82f5800036c498c5ca8b
   AWSPolly: b72504cb494522292df0428bc537489f52e1bae7
+  BranchSDK: 8b25eda1d9e82778d476edc1026e385cf58c56b6
   cloud_firestore: 85d66b543b25130c45258412a39e851e230186e7
   CryptoSwift: 52aaf3fce7337552863b1d952e408085f0e65030
   Firebase: 07150e75d142fb9399f6777fa56a187b17f833a0
@@ -523,6 +532,7 @@ SPEC CHECKSUMS:
   FirebaseSessions: 96e7781e545929cde06dd91088ddbb0841391b43
   FirebaseStorage: 1d7ca8c8953fc61ccacaa7c612696b5402968a0d
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_branch_sdk: cc0393df011973fe6ab0380bc54bce1a3726e8a3
   flutter_callkit_incoming: 417dd1b46541cdd5d855ad795ccbe97d1c18155e
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743

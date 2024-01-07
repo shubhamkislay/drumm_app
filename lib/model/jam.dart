@@ -46,6 +46,19 @@ class Jam {
         lastActive = json['lastActive'],
         membersID = List<dynamic>.from(json['membersID']);
 
+  Jam.fromJsonObject(Map<Object?, Object?> json)
+      : startedBy = json['startedBy'].toString(),
+        bandId = json['bandId'].toString(),
+        broadcast = bool.fromEnvironment(json['broadcast'].toString().toLowerCase(), defaultValue: false),
+        count = int.parse(json['count'].toString()),
+        question = json['question'].toString(),
+        creationTime = json['creationTime'].toString(),
+        jamId = json['jamId'].toString(),
+        articleId = json['articleId'].toString(),
+        title = json['title'].toString(),
+        imageUrl = json['imageUrl'].toString(),
+        lastActive = Timestamp.now();
+
   factory Jam.fromRealtimeSnapshot(DataSnapshot snapshot) {
     Jam jam = Jam.fromDataSnapshot(snapshot.value);
     return jam;
