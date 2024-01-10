@@ -98,6 +98,7 @@ dependencies:
   sign_in_with_apple: ^4.3.0
   crypto: ^3.0.3
   flutter_branch_sdk: ^6.6.0
+  share_plus: ^7.2.1
 
 dev_dependencies:
   flutter_test:
@@ -203,6 +204,9 @@ flutter:
     - images/mute.png
     - images/volume.png
     - images/share.png
+    - images/share-btn.png
+    - images/volume-off.png
+    - images/volume-on.png
   #   - images/a_dot_ham.jpeg
 
   fonts:

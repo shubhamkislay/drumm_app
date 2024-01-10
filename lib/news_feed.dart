@@ -29,7 +29,6 @@ import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:ogg_opus_player/ogg_opus_player.dart';
 import 'package:path_provider/path_provider.dart';
@@ -75,7 +74,7 @@ class _NewsFeedState extends State<NewsFeed>
   late MultiSelectContainerWidget multiSelectContainer;
   List<MultiSelectCard<dynamic>> bandsCards = [];
   Drummer drummer = Drummer();
-  double horizontalPadding = 8;
+  double horizontalPadding = 4;
   late String loadingAnimation;
   final String LOADING_ASSET = "images/pulse_white.json";
   final String NO_FOUND_ASSET = "images/caught_up.json";
@@ -106,7 +105,7 @@ class _NewsFeedState extends State<NewsFeed>
   //final player = AudioPlayer();
   late OggOpusPlayer player;
 
-  AudioPlayer audioPlayer = AudioPlayer();
+  //AudioPlayer audioPlayer = AudioPlayer();
   //AudioCache audioCache = AudioCache();
   String audioFilePath = '';
 
@@ -121,7 +120,7 @@ class _NewsFeedState extends State<NewsFeed>
   String articleTop = "";
   late Article articleOnScreen;
 
-  double multiSelectRadius = 10;
+  double multiSelectRadius = 18;
 
   bool likedArticle = false;
   double fontSize = 10;
@@ -282,18 +281,6 @@ class _NewsFeedState extends State<NewsFeed>
                                       index: index,
                                       joinDrumm: (articleBand) {
                                         startDrumming(articleBand);
-                                      },
-                                      playPause: (article, listen) {
-                                        try {
-                                          player.pause();
-                                          player.dispose();
-                                        } catch (e) {}
-
-                                        if (listen) {
-                                          convertTextToSpeech(
-                                              getSpeechText(article) ?? "",
-                                              article.articleId ?? "");
-                                        }
                                       },
                                       play: false,
                                     );
@@ -483,40 +470,40 @@ class _NewsFeedState extends State<NewsFeed>
       } else {
         String imageUrl = modifyImageUrl(element.url ?? "", "100x100");
         mulList.add(
-          // MultiSelectCard(
-          //   value: element,
-          //   child: Row(
-          //     children: [
-          //       // SizedBox(
-          //       //   height: 28,
-          //       //   width: 28,
-          //       //   child: ClipRRect(
-          //       //     borderRadius: BorderRadius.circular(multiSelectRadius),
-          //       //     child: CachedNetworkImage(
-          //       //       imageUrl: imageUrl,
-          //       //       fit: BoxFit.cover,
-          //       //     ),
-          //       //   ),
-          //       // ),
-          //       // const SizedBox(
-          //       //   width: 8,
-          //       // ),
-          //       Text("${element.name}")
-          //     ],
-          //   ),
-          // ),
           MultiSelectCard(
             value: element,
-            selected: false,
-            child: Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                height: 28,
-                child:  Text(
-                  "${element.name}",
-                  textAlign: TextAlign.center,
-                )),
+            child: Row(
+              children: [
+                SizedBox(
+                  height: 28,
+                  width: 28,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(multiSelectRadius),
+                    child: CachedNetworkImage(
+                      imageUrl: imageUrl,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                Text("${element.name}")
+              ],
+            ),
           ),
+          // MultiSelectCard(
+          //   value: element,
+          //   selected: false,
+          //   child: Container(
+          //       alignment: Alignment.center,
+          //       padding: const EdgeInsets.symmetric(horizontal: 8),
+          //       height: 28,
+          //       child:  Text(
+          //         "${element.name}",
+          //         textAlign: TextAlign.center,
+          //       )),
+          // ),
 
         );
       }
@@ -653,6 +640,11 @@ class _NewsFeedState extends State<NewsFeed>
     CardSwiperDirection direction,
   ) {
     //return true;
+    try {
+      //audioPlayer.stop();
+      FirebaseDBOperations.OggOpus_Player.pause();
+      FirebaseDBOperations.OggOpus_Player.dispose();
+    } catch (e) {}
     cleanCache();
 
     articleTop =
@@ -753,17 +745,6 @@ class _NewsFeedState extends State<NewsFeed>
     return true;
   }
 
-  String? getSpeechText(Article articleForSpeech) {
-    //return articleForSpeech.question;
-    String? text = (articleForSpeech.description == null)
-        ? articleForSpeech.title
-        : "${articleForSpeech.description}";
-    if (articleForSpeech.question != null) {
-      text =
-          "${text}\n${articleForSpeech.question}\nStart a drumm to check what the community thinks!";
-    }
-    return text;
-  }
 
   bool _onUndo(
     int? previousIndex,
@@ -934,59 +915,4 @@ class _NewsFeedState extends State<NewsFeed>
     } catch (e) {}
   }
 
-  Future<void> convertTextToSpeech(String text, String id) async {
-    try {
-      player.pause();
-      player.dispose();
-    } catch (e) {}
-    final apiKey = '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';
-    final endpoint = 'https://api.openai.com/v1/audio/speech';
-
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $apiKey',
-    };
-
-    // Define a list of voices
-    final voices = [
-      'alloy',
-      'fable',
-      'echo',
-      'onyx',
-      'nova',
-      'shimmer'
-    ]; //'echo', 'onyx', 'nova', 'shimmer'
-
-    // Randomly select a voice from the list
-    final random = Random();
-    final selectedVoice = voices[random.nextInt(voices.length)];
-
-    // Set the selected voice in the data
-    final data = {
-      'input': text,
-      'model': 'tts-1',
-      'voice': selectedVoice,
-      'response_format': 'opus',
-    };
-
-    final response = await http.post(
-      Uri.parse(endpoint),
-      headers: headers,
-      body: jsonEncode(data),
-    );
-
-    if (response.statusCode == 200) {
-      //  //await audioPlayer.play(BytesSource(response.bodyBytes));
-      final audioBytes = response.bodyBytes;
-      final appDir = await getApplicationDocumentsDirectory();
-      final audioFile = File('${appDir.path}/${id}.opus');
-      await audioFile.writeAsBytes(audioBytes);
-      if (articleTop == id) {
-        player = OggOpusPlayer(audioFile.path);
-        player.play();
-      }
-    } else {
-      // Handle API error
-    }
-  }
 }

@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
 
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -11,6 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:ogg_opus_player/ogg_opus_player.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import '../SoundPlayWidget.dart';
 import '../article_jam_page.dart';
 import '../custom/ai_summary.dart';
 import '../custom/helper/connect_channel.dart';
@@ -20,10 +27,13 @@ import '../custom/helper/remove_duplicate.dart';
 import '../custom/instagram_date_time_widget.dart';
 import '../custom/rounded_button.dart';
 import '../theme/theme_constants.dart';
+import 'package:http/http.dart' as http;
 import 'article.dart';
 import 'article_band.dart';
 import 'jam.dart';
-double curve = 22;
+
+double curve = 8;
+
 class HomeItem extends StatefulWidget {
   ArticleBand articleBand;
   int index;
@@ -35,7 +45,6 @@ class HomeItem extends StatefulWidget {
   Function(ArticleBand) joinDrumm;
   Function(Article) updateList;
   Function(Article) openArticle;
-  Function(Article, bool) playPause;
 
   Future<void> Function() onRefresh;
   HomeItem(
@@ -48,7 +57,6 @@ class HomeItem extends StatefulWidget {
       required this.undo,
       required this.isContainerVisible,
       required this.updateList,
-      required this.playPause,
       this.bandId,
       this.queryID,
       required this.openArticle})
@@ -74,6 +82,7 @@ class _HomeItemState extends State<HomeItem> {
   StreamSubscription<Map>? streamSubscription;
   StreamController<String> controllerData = StreamController<String>();
   StreamController<String> controllerInitSession = StreamController<String>();
+
   @override
   Widget build(BuildContext context) {
     //setband();
@@ -98,39 +107,14 @@ class _HomeItemState extends State<HomeItem> {
             joinDrumm: widget.joinDrumm,
             articleBand: widget.articleBand,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-
-              GestureDetector(
-                onTap: () {
-                  generateLink();
-                },
-                child: ShareWidget(),
-              ),
-              SizedBox(width: 8,),
-              GestureDetector(
-                onTap: () {
-                  if (!widget.play) {
-                    setState(() {
-                      widget.play = true;
-                    });
-
-                    widget.playPause(
-                        widget.articleBand.article ?? Article(), widget.play);
-                  } else {
-                    setState(() {
-                      widget.play = false;
-                    });
-                    widget.playPause(
-                        widget.articleBand.article ?? Article(), widget.play);
-                  }
-                },
-                child: SoundPlayWidget(
-                  play: widget.play,
-                ),
-              ),
-            ],
+          GestureDetector(
+            onTap: () {
+              generateLink();
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: ShareWidget(),
+            ),
           ),
           const BottomFade(),
         ],
@@ -142,9 +126,7 @@ class _HomeItemState extends State<HomeItem> {
   void initState() {
     super.initState();
   }
-
-  void generateLink() async{
-
+  void generateLink() async {
     Jam jam = Jam();
     jam.broadcast = false;
     jam.title = widget.articleBand.article?.title;
@@ -161,8 +143,7 @@ class _HomeItemState extends State<HomeItem> {
     jam.membersID = [];
     //jam.lastActive = Timestamp.now();
 
-    metadata = BranchContentMetaData()
-      ..addCustomMetadata('jam', jam.toJson());
+    metadata = BranchContentMetaData()..addCustomMetadata('jam', jam.toJson());
 
     buo = BranchUniversalObject(
         canonicalIdentifier: 'flutter/branch',
@@ -172,9 +153,9 @@ class _HomeItemState extends State<HomeItem> {
         // By doing so, we’ll attribute clicks on the links that you generate back to their original web page,
         // even if the user goes to the app instead of your website! This will help your SEO efforts.
         //canonicalUrl: 'https://flutter.dev',
-        title: widget.articleBand.article?.question??widget.articleBand.article?.title??"Drumm News",
-        imageUrl: widget.articleBand.article?.imageUrl??DEFAULT_APP_IMAGE_URL,
-        contentDescription: 'Drop-in to join the drumm',
+        title: widget.articleBand.article?.title ?? "Drumm News",
+        imageUrl: widget.articleBand.article?.imageUrl ?? DEFAULT_APP_IMAGE_URL,
+        contentDescription: 'Drumm - News & Conversations',
         contentMetadata: metadata,
         publiclyIndex: true,
         locallyIndex: true,
@@ -201,19 +182,23 @@ class _HomeItemState extends State<HomeItem> {
       ..addControlParam('referring_user_id', 'user_id');
 
     BranchResponse response =
-        await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
+    await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
+
     if (response.success) {
-      if (context.mounted) {
-        print('GeneratedLink : ${response.result}');
-        await Clipboard.setData(ClipboardData(text: response.result)).then((value) {
-        });
+      //if (context.mounted) {
+      print('GeneratedLink : ${response.result}');
 
+      String articleLink =
+          "Drumm: ${(widget.articleBand.article?.question != null) ? widget.articleBand.article?.question : widget.articleBand.article?.title}\n\nTap the link to join the discussion ${response.result}";
 
+      Share.share(articleLink);
 
-      }
+      // await Clipboard.setData(ClipboardData(text: response.result)).then((value) {
+      // });
+
+      // }
     } else {
       print('Error : ${response.errorCode} - ${response.errorMessage}');
-
     }
   }
 }
@@ -236,16 +221,28 @@ class HomeFeedData extends StatelessWidget {
       required this.joinDrumm,
       required this.articleBand});
 
+  BranchContentMetaData metadata = BranchContentMetaData();
+  BranchLinkProperties lp = BranchLinkProperties();
+  late BranchUniversalObject buo;
+  late BranchEvent eventStandard;
+  late BranchEvent eventCustom;
+
+  StreamSubscription<Map>? streamSubscription;
+  StreamController<String> controllerData = StreamController<String>();
+  StreamController<String> controllerInitSession = StreamController<String>();
+
   @override
   Widget build(BuildContext context) {
-    int imageUrlLength = article.imageUrl?.length??0;
+    int imageUrlLength = article.imageUrl?.length ?? 0;
     return Padding(
       //color: COLOR_PRIMARY_DARK.withOpacity(0.0),
       padding: const EdgeInsets.only(bottom: 32, top: 0),
       child: RefreshIndicator(
         onRefresh: onRefresh,
         child: ClipRRect(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(curve),topRight: Radius.circular(curve)),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(curve),
+              topRight: Radius.circular(curve)),
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             physics: const AlwaysScrollableScrollPhysics(),
@@ -253,43 +250,6 @@ class HomeFeedData extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                 Container(
-                  color: COLOR_PRIMARY_DARK,
-                  height: 16,
-                ),
-                Container(
-                  padding: const EdgeInsets.only(left: 16, top: 0),
-                  color: COLOR_PRIMARY_DARK,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-
-                      Text("${source}",
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontFamily: APP_FONT_BOLD,
-                            //fontWeight: FontWeight.bold,
-                          )),
-                      const SizedBox(
-                        width: 4,
-                      ),
-                      const Text(
-                        "•",
-                        style: TextStyle(fontFamily: APP_FONT_BOLD),
-                      ),
-                      const SizedBox(
-                        width: 4,
-                      ),
-                      InstagramDateTimeWidget(publishedAt: publishedAt),
-                    ],
-                  ),
-                ),
-                Container(
-                  color: COLOR_PRIMARY_DARK,
-                  height: 16,
-                ),
                 GestureDetector(
                   onTap: () {
                     Vibrate.feedback(FeedbackType.impact);
@@ -307,7 +267,8 @@ class HomeFeedData extends StatelessWidget {
                         borderRadius: BorderRadius.circular(curve),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.15), // Shadow color
+                            color:
+                                Colors.black.withOpacity(0.15), // Shadow color
                             offset: const Offset(
                                 0, -2), // Shadow offset (horizontal, vertical)
                             blurRadius: 8, // Blur radius
@@ -319,7 +280,7 @@ class HomeFeedData extends StatelessWidget {
                       placeholder: (context, imageUrl) {
                         String imageUrl = article.imageUrl ?? "";
                         return Container(
-                          height: (imageUrlLength>0)?200:0,
+                          height: (imageUrlLength > 0) ? 200 : 0,
                           width: double.infinity,
                           // padding: const EdgeInsets.all(32),
                           decoration: const BoxDecoration(
@@ -351,11 +312,108 @@ class HomeFeedData extends StatelessWidget {
                     ),
                   ),
                 ),
-
+                if (article.question != null)
+                  Container(
+                    width: double.maxFinite,
+                    padding: const EdgeInsets.all(6),
+                    alignment: Alignment.centerLeft,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade900.withOpacity(0.65),
+                      // gradient: LinearGradient(colors: [
+                      //   Colors.indigo,
+                      //   Colors.blue.shade700,
+                      //   Colors.lightBlue,
+                      // ]),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            joinDrumm(articleBand);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            child: Image.asset('images/audio-waves.png',
+                                height: 20,
+                                color: Colors.white,
+                                fit: BoxFit.contain),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 4,
+                        ),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              print("Join Drumm");
+                              joinDrumm(articleBand);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 4.0,top: 4,bottom: 4,right: 12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "\"${article.question}\"" ?? "",
+                                    textAlign: TextAlign.start,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 13,
+                                      //fontStyle: FontStyle.italic,
+                                      fontFamily: APP_FONT_MEDIUM,
+                                      //fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                Container(
+                  padding: const EdgeInsets.only(left: 16, top: 0),
+                  //color: COLOR_PRIMARY_DARK,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("${source}",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontFamily: APP_FONT_BOLD,
+                                //fontWeight: FontWeight.bold,
+                              )),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          const Text(
+                            "•",
+                            style: TextStyle(fontFamily: APP_FONT_BOLD),
+                          ),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          InstagramDateTimeWidget(publishedAt: publishedAt),
+                        ],
+                      ),
+                      SoundPlayWidget(
+                        article:article,
+                        play:false,
+                      ),
+                    ],
+                  ),
+                ),
                 Container(
                   padding: const EdgeInsets.only(
-                      left: 14, top: 12, right: 14, bottom: 12),
-                  color: COLOR_PRIMARY_DARK,
+                      left: 14, top: 0, right: 14, bottom: 12),
+                  //color: COLOR_PRIMARY_DARK,
                   child: GestureDetector(
                     onTap: () {
                       Vibrate.feedback(FeedbackType.impact);
@@ -367,109 +425,30 @@ class HomeFeedData extends StatelessWidget {
                         objectIDs: [article.articleId ?? ""],
                       );
                     },
-                    child: (imageUrlLength>0)?Text(
-                      article.title ?? "",
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontFamily: APP_FONT_MEDIUM,
-                        //fontWeight: FontWeight.bold,
-                      ),
-                    ):Text(
-                      article.title ?? "",
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 32,
-                        fontFamily: APP_FONT_MEDIUM,
-                        //fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child: (imageUrlLength > 0)
+                        ? Text(
+                            article.title ?? "",
+                            textAlign: TextAlign.start,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontFamily: APP_FONT_MEDIUM,
+                              //fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        : Text(
+                            article.title ?? "",
+                            textAlign: TextAlign.start,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 32,
+                              fontFamily: APP_FONT_MEDIUM,
+                              //fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
                 //SizedBox(height: 4),
-                if (article.question != null)
-                  Container(
-                    width: double.maxFinite,
-                    padding: const EdgeInsets.all(12),
-                    //margin: const EdgeInsets.all(9),
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade900.withOpacity(0.85),
-                      //color: COLOR_PRIMARY_DARK,
-                      //borderRadius: BorderRadius.circular(curve-16),
-                      //border: Border.all(color:  Colors.grey.shade900,width: 1),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            joinDrumm(articleBand);
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.all(8),
-                            child: Image.asset('images/audio-waves.png',
-                                height: 32,
-                                color: Colors.white,
-                                fit: BoxFit.contain),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 6,
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              print("Join Drumm");
-                              joinDrumm(articleBand);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "\"${article.question}\"" ?? "",
-                                    textAlign: TextAlign.start,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      //fontStyle: FontStyle.italic,
-                                      fontFamily: APP_FONT_MEDIUM,
-                                      //fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 4,
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    alignment: Alignment.centerLeft,
-                                    padding: const EdgeInsets.all(0.0),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: const Text(
-                                      "Generated by Drumm AI",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        color: Colors.white54,
-                                        fontSize: 12,
-                                        fontFamily: APP_FONT_MEDIUM,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 GestureDetector(
                   onTap: () {
                     Vibrate.feedback(FeedbackType.impact);
@@ -493,7 +472,7 @@ class HomeFeedData extends StatelessWidget {
                       textAlign: TextAlign.left,
                       style: const TextStyle(
                         fontSize: 14,
-                        color: Colors.white38,
+                        color: Colors.white70,
                         fontFamily: APP_FONT_MEDIUM,
                       ),
                       //linkColor: Colors.white,
@@ -508,41 +487,12 @@ class HomeFeedData extends StatelessWidget {
       ),
     );
   }
-}
 
-class SoundPlayWidget extends StatelessWidget {
-  bool play;
-  SoundPlayWidget({required this.play});
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              color: Colors.grey.shade900.withOpacity(0.75),
-            ),
-            child: Image.asset(
-              (play) ? 'images/volume.png' : 'images/mute.png',
-              height: 12,
-              color: Colors.white,
-              fit: BoxFit.contain,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class ShareWidget extends StatelessWidget {
-
-  ShareWidget();
+  const ShareWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -552,14 +502,14 @@ class ShareWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              color: Colors.grey.shade900.withOpacity(0.75),
-            ),
+      padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          color: Colors.grey.shade900.withOpacity(0.75),
+        ),
             child: Image.asset(
-              'images/share.png',
-              height: 22,
+              'images/share-btn.png',
+              height: 20,
               color: Colors.white,
               fit: BoxFit.contain,
             ),

@@ -9,7 +9,7 @@ class MultiSelectContainerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double multiSelectRadius = 14;
+    double multiSelectRadius = 18;
 
     return MultiSelectContainer(
       showInListView: true,
@@ -17,7 +17,7 @@ class MultiSelectContainerWidget extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         separatorBuilder: (_, __) => const SizedBox(
-          width: 4,
+          width: 8,
         ),
       ),
       suffix: MultiSelectSuffix(
@@ -38,28 +38,25 @@ class MultiSelectContainerWidget extends StatelessWidget {
         decoration: BoxDecoration(
             color: Colors.black, //Colors.grey.shade900,
             border: Border.all(
-                color: Colors.black, width: 2), //Color(0xff2f2f2f)),
+                color: Colors.grey.shade900, width: 2.25), //Color(0xff2f2f2f)),
             borderRadius: BorderRadius.circular(multiSelectRadius)),
         selectedDecoration: BoxDecoration(
-            gradient:  LinearGradient(colors: [
-              Colors.black, //Colors.blue.shade600,
-              Colors.black, //Colors.blue.shade800, //Colors.cyan,
-            ]),
+          color: Colors.white,
             border: Border.all(
-                color: Colors.grey.shade900, width: 2.5),
+                color: Colors.grey.shade900, width: 2.25),
             borderRadius: BorderRadius.circular(multiSelectRadius)),
       ),
       items: bandsCards,
       textStyles: const MultiSelectTextStyles(
         selectedTextStyle: TextStyle(
-          color: Colors.white,
+          color: Colors.black,
           fontWeight: FontWeight.bold,
-          fontSize: 16,
+          fontSize: 15,
           fontFamily: APP_FONT_BOLD,
         ),
         textStyle: TextStyle(
-          color: Colors.white30,
-          fontSize: 16,
+          color: Colors.white,
+          fontSize: 12,
           //fontWeight: FontWeight.bold, // FontWeight.w700,
           fontFamily: APP_FONT_BOLD,
         ),

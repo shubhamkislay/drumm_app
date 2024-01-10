@@ -24,7 +24,7 @@ class _LikeBtnState extends State<LikeBtn> {
       child: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(42),
-            border: Border.all(color: Colors.grey.shade800,width: 2.25)),
+            border: Border.all(color: Colors.grey.shade900,width: 2.25)),
         child: Container(
           padding: const EdgeInsets.all(8),
           margin: const EdgeInsets.all(2),

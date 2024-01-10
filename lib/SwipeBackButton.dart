@@ -17,7 +17,7 @@ class SwipeBackButton extends StatelessWidget {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(42),
             border: Border.all(
-                color: Colors.grey.shade800,
+                color: Colors.grey.shade900,
                 width: 2.25)),
         child: Container(
           padding: const EdgeInsets.all(10),

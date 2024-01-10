@@ -12,6 +12,7 @@ import 'package:drumm_app/model/Drummer.dart';
 import 'package:drumm_app/model/article.dart';
 import 'package:drumm_app/model/jam.dart';
 import 'package:drumm_app/model/question.dart';
+import 'package:ogg_opus_player/ogg_opus_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
@@ -31,6 +32,8 @@ class FirebaseDBOperations {
     applicationId: '6GGZ3SNOXT',
     apiKey: '556ea147474872eb56f4fa0d31ad71eb',
   );
+
+  static late OggOpusPlayer OggOpus_Player;
 
   static List<Article> exploreArticles = [];
   static HashMap<String, String> articleBand = HashMap();
