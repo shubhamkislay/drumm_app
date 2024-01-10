@@ -145,9 +145,9 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                                           },
                                           child: Row(
                                             children: [
-                                              Text(
+                                              const Text(
                                                 "Founded by",
-                                                style: const TextStyle(
+                                                style: TextStyle(
                                                     fontSize: 12,
                                                     fontFamily: APP_FONT_MEDIUM,
                                                     fontWeight:
@@ -188,7 +188,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                                           const SizedBox(
                                             height: 2,
                                           ),
-                                          Icon(
+                                          const Icon(
                                             Icons.people,
                                             size: 18,
                                           )
@@ -213,13 +213,13 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                     alignment: WrapAlignment.spaceEvenly,
                     children: categoryList.map(
                           (hook) => Container(
-                            padding: EdgeInsets.symmetric(vertical: 2,horizontal: 12),
+                            padding: const EdgeInsets.symmetric(vertical: 2,horizontal: 12),
                             decoration: BoxDecoration(
                               color: COLOR_PRIMARY_DARK,
                               border: Border.all(color: Colors.grey.shade900,width: 1.25),
                               borderRadius: BorderRadius.circular(32),
                             ),
-                            child: Text(hook,style: TextStyle(color: Colors.white,fontFamily: APP_FONT_MEDIUM),),
+                            child: Text(hook,style: const TextStyle(color: Colors.white,fontFamily: APP_FONT_MEDIUM),),
                           ),
                     ).toList(),
                   ),
@@ -247,8 +247,8 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                       collapseText: 'show less',
                       maxLines: 2,
                       linkColor: Colors.blue,
-                      style: TextStyle(
-                        fontFamily: APP_FONT_MEDIUM,
+                      style: const TextStyle(
+                        fontFamily: APP_FONT_LIGHT,
                       ),
                     ),
                   ),
@@ -262,13 +262,13 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                       },
                       child: Container(
                         alignment: Alignment.center,
-                        padding: EdgeInsets.all(12),
-                        margin: EdgeInsets.symmetric(horizontal: 20),
+                        padding: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.symmetric(horizontal: 20),
                         width: double.maxFinite,
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8)),
-                        child: Text(
+                        child: const Text(
                           "Join the Band",
                           style: TextStyle(
                               color: Colors.black, fontWeight: FontWeight.bold),
@@ -282,13 +282,13 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                       },
                       child: Container(
                         alignment: Alignment.center,
-                        padding: EdgeInsets.all(12),
-                        margin: EdgeInsets.symmetric(horizontal: 20),
+                        padding: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.symmetric(horizontal: 20),
                         width: double.maxFinite,
                         decoration: BoxDecoration(
                             color: Colors.grey.shade900,
                             borderRadius: BorderRadius.circular(8)),
-                        child: Text(
+                        child: const Text(
                           "Joined",
                           style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
@@ -314,12 +314,12 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                     Container(
                       padding: const EdgeInsets.all(1),
                       width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           // color: (jamImageCards.isNotEmpty)
                           //     ? COLOR_PRIMARY_DARK
                           //     : Colors.black,
                           color: COLOR_PRIMARY_DARK,
-                          border: const Border(
+                          border: Border(
                             top: BorderSide(
                               color: Colors.white24,
                               width: 1.0,
@@ -372,7 +372,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                               height: 200,
                               color: COLOR_PRIMARY_DARK,
                               width: MediaQuery.of(context).size.width,
-                              child: Center(
+                              child: const Center(
                                 child: Text(
                                     "There are currently no active drumms",style: TextStyle(
                                   fontFamily: APP_FONT_LIGHT,
@@ -393,7 +393,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                 width: double.infinity,
                 alignment: /*jamImageCards.isNotEmpty ?*/
                     Alignment.bottomCenter, //:Alignment.center,
-                margin: EdgeInsets.symmetric(horizontal: 0, vertical: 32),
+                margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 32),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -430,7 +430,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                           context: context,
                           isScrollControlled: true,
                           backgroundColor: COLOR_PRIMARY_DARK,
-                          shape: RoundedRectangleBorder(
+                          shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.vertical(
                                 top: Radius.circular(0.0)),
                           ),
@@ -440,7 +440,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                                   bottom:
                                       MediaQuery.of(context).viewInsets.bottom),
                               child: ClipRRect(
-                                borderRadius: BorderRadius.vertical(
+                                borderRadius: const BorderRadius.vertical(
                                     top: Radius.circular(0.0)),
                                 child: JamRoomPage(
                                   jam: jam,
@@ -454,7 +454,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                       imageAsset: 'images/drumm_logo.png',
                       height: 40,
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     GestureDetector(
                       onTap: () {
                         print('Ask a question');
@@ -464,7 +464,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                           context: context,
                           isScrollControlled: true,
                           backgroundColor: COLOR_PRIMARY_DARK,
-                          shape: RoundedRectangleBorder(
+                          shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.vertical(
                                 top: Radius.circular(0.0)),
                           ),
@@ -474,7 +474,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                                   bottom:
                                       MediaQuery.of(context).viewInsets.bottom),
                               child: ClipRRect(
-                                borderRadius: BorderRadius.vertical(
+                                borderRadius: const BorderRadius.vertical(
                                     top: Radius.circular(0.0)),
                                 child: CreateJam(
                                     title: widget.band?.name,
@@ -486,9 +486,9 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                         );
                       },
                       child: Container(
-                        child: Icon(Icons.add),
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
+                        child: const Icon(Icons.add),
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             color: Color(COLOR_PRIMARY_VAL)),
                       ),
@@ -502,8 +502,8 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                 child: GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Container(
-                    padding: EdgeInsets.all(4),
-                    child: Icon(
+                    padding: const EdgeInsets.all(4),
+                    child: const Icon(
                       Icons.arrow_back_ios_new_rounded,
                       size: 36,
                     ),
@@ -553,7 +553,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
     setState(() {
       memberCards = drummers.map((e) {
         return Container(
-          padding: EdgeInsets.all(2),
+          padding: const EdgeInsets.all(2),
           child: GestureDetector(
             onTap: () {
               Navigator.push(

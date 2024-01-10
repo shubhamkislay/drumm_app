@@ -36,7 +36,7 @@ class MultiSelectContainerWidget extends StatelessWidget {
       ),
       itemsDecoration: MultiSelectDecorations(
         decoration: BoxDecoration(
-            color: Colors.black, //Colors.grey.shade900,
+            color: Colors.grey.shade900.withOpacity(0.65), //Colors.grey.shade900,
             border: Border.all(
                 color: Colors.grey.shade900, width: 2.25), //Color(0xff2f2f2f)),
             borderRadius: BorderRadius.circular(multiSelectRadius)),
@@ -51,14 +51,14 @@ class MultiSelectContainerWidget extends StatelessWidget {
         selectedTextStyle: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
-          fontSize: 15,
-          fontFamily: APP_FONT_BOLD,
+          fontSize: 13,
+          fontFamily: APP_FONT_MEDIUM,
         ),
         textStyle: TextStyle(
           color: Colors.white,
           fontSize: 12,
           //fontWeight: FontWeight.bold, // FontWeight.w700,
-          fontFamily: APP_FONT_BOLD,
+          fontFamily: APP_FONT_MEDIUM,
         ),
       ),
       onChange: onSelect,

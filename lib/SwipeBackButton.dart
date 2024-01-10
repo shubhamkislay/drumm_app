@@ -4,7 +4,9 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 
 class SwipeBackButton extends StatelessWidget {
   CardSwiperController? controller;
-  SwipeBackButton({Key? key, this.controller}) : super(key: key);
+  int undoIndex;
+  VoidCallback fetchArticle;
+  SwipeBackButton({Key? key, this.controller, required this.undoIndex, required this.fetchArticle}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,6 +14,8 @@ class SwipeBackButton extends StatelessWidget {
       onTap: () {
         Vibrate.feedback(FeedbackType.selection);
         controller?.undo();
+        if(undoIndex == 0)
+          fetchArticle();
       },
       child: Container(
         decoration: BoxDecoration(

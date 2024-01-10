@@ -711,15 +711,22 @@ class _SplashScreenState extends State<SplashScreen> {
       //     toggleLogo = true;
       //   });
 
-        Future.delayed(const Duration(milliseconds: 1000),(){
-          Navigator.of(context).push(PageRouteBuilder(
-              opaque: false,
-              pageBuilder: (context, animation, _) {
-                return LauncherPage(themeManager: widget.themeManager,
+        // Future.delayed(const Duration(milliseconds: 1000),(){
+        //   Navigator.of(context).push(PageRouteBuilder(
+        //       opaque: false,
+        //       pageBuilder: (context, animation, _) {
+        //         return LauncherPage(themeManager: widget.themeManager,
+        //           analytics: widget.analytics,
+        //           observer: widget.observer,);
+        //       }));
+        // });
+
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => LauncherPage(themeManager: widget.themeManager,
                   analytics: widget.analytics,
-                  observer: widget.observer,);
-              }));
-        });
+                  observer: widget.observer,)));
 
      // });
 

@@ -16,8 +16,8 @@ class InstagramDateTimeWidget extends StatelessWidget {
       formattedDateTime,
       textAlign: TextAlign.end,
       style: const TextStyle(
-        fontSize: 12,
-        fontFamily: APP_FONT_BOLD,
+        fontSize: 13,
+        fontFamily: APP_FONT_MEDIUM,
         color: Colors.white70,
       ),
     );

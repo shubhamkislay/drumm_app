@@ -63,7 +63,7 @@ class _LiveIconState extends State<LiveIcon> {
           padding: EdgeInsets.all(6),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            color: Colors.black,
+            color: COLOR_PRIMARY_DARK,
           ),
           child: Image.asset(
             'images/drumm_logo.png',

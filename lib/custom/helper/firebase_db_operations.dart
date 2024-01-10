@@ -72,8 +72,8 @@ class FirebaseDBOperations {
     return result;
   }
 
-  static Future<AlgoliaArticles> getArticlesFromAlgolia() async {
-    List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
+  static Future<AlgoliaArticles> getArticlesFromAlgolia(int page) async {
+    //List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
     String userToken = await FirebaseAuth.instance.currentUser?.uid ?? "";
     List<String> rmvPosts = [];
 
@@ -90,13 +90,13 @@ class FirebaseDBOperations {
 
     AlgoliaArticles algoliaArticles = AlgoliaArticles();
     int arLen = algoliaArticles.articles?.length ??0 ;
-    int page = 0;
+    //int page = 0;
 
-    while(arLen<1 && page<=2) {
+    //while(arLen<1 && page<=2) {
       AlgoliaQuery algoliaQuery = algolia.instance
           .index('articles')
           .setFacets(['meta'])
-          .setHitsPerPage(1000)
+          .setHitsPerPage(7)
           .setPage(page)
           .setUserToken(userToken)
           .setDistinct(value: true)
@@ -110,21 +110,21 @@ class FirebaseDBOperations {
       List<Article> result =
       List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
 
-      List<Article> filteredList = [];
-      for (Article farticle in result) {
-        if (!seenPosts.contains(farticle.articleId)) filteredList.add(farticle);
-      }
+      // List<Article> filteredList = [];
+      // for (Article farticle in result) {
+      //   if (!seenPosts.contains(farticle.articleId)) filteredList.add(farticle);
+      // }
 
       algoliaArticles =
-          AlgoliaArticles(articles: filteredList, queryID: getArticles.queryID);
+          AlgoliaArticles(articles: result, queryID: getArticles.queryID);
 
       arLen = algoliaArticles.articles?.length ?? 0;
 
-      if (arLen < 1) {
-        print("You have seen all articles");
-        page = page+1;
-      }
-    }
+      // if (arLen < 1) {
+      //   print("You have seen all articles");
+      //   page = page+1;
+      // }
+    //}
 
     return algoliaArticles;
   }
@@ -172,15 +172,16 @@ class FirebaseDBOperations {
     return algoliaArticles;
   }
 
-  static Future<AlgoliaArticles> getArticlesByBandHookFromAlgolia(Band selectedBand) async {
-    List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
+  static Future<AlgoliaArticles> getArticlesByBandHookFromAlgolia(Band selectedBand, int page) async {
+    //List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
     String userToken = await FirebaseAuth.instance.currentUser?.uid ?? "";
     List hooks = selectedBand.hooks??[];
 
     AlgoliaQuery algoliaQuery = algolia.instance
         .index('articles')
         .setFacets(['meta'])
-        .setHitsPerPage(1000)
+        .setHitsPerPage(7)
+    .setPage(page)
         .setUserToken(userToken)
         .setDistinct(value: true)
         .setPersonalizationImpact(value: 75)
@@ -203,13 +204,13 @@ class FirebaseDBOperations {
     List<Article> result =
     List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
 
-    List<Article> filteredList = [];
-    for (Article farticle in result) {
-      if (!seenPosts.contains(farticle.articleId)) filteredList.add(farticle);
-    }
+    // List<Article> filteredList = [];
+    // for (Article farticle in result) {
+    //   if (!seenPosts.contains(farticle.articleId)) filteredList.add(farticle);
+    // }
 
     AlgoliaArticles algoliaArticles =
-    AlgoliaArticles(articles: filteredList, queryID: getArticles.queryID);
+    AlgoliaArticles(articles: result, queryID: getArticles.queryID);
 
     return algoliaArticles;
   }

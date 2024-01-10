@@ -104,70 +104,53 @@ class _LauncherPageState extends State<LauncherPage>
 
   @override
   Widget build(BuildContext context) {
-    _animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 1250),
-      upperBound: 1.0,
-    );
-    _animationController.forward();
     tabController = TabController(
         length: 5, vsync: this, animationDuration: Duration(milliseconds: 0));
     FirebaseDBOperations.searchArticles("");
-    return AnimatedBuilder(
-      builder: (BuildContext context, Widget? child) {
-        return ClipPath(
-          clipper: CircleRevealClipper(
-            fraction: _animationController.value,
-          ),
-          child: child,
-        );
-      },
-      animation: _animationController,
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        body: Stack(
-          children: [
-            FrostedBottomBar(
-              opacity: 1,
-              sigmaX: 200,
-              sigmaY: 200,
-              bottom: 0,
-              hideOnScroll: false,
-              //currentPage == 0 ? true:false,
-              width: MediaQuery.of(context).size.width,
-              bottomBarColor: Colors.black, //Color(0xff101010),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          FrostedBottomBar(
+            opacity: 1,
+            sigmaX: 200,
+            sigmaY: 200,
+            bottom: 0,
+            hideOnScroll: false,
+            //currentPage == 0 ? true:false,
+            width: MediaQuery.of(context).size.width,
+            bottomBarColor: Colors.black, //Color(0xff101010),
 
-              body: (context, controller) => Column(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 0,
-                      ),
-                      child: TabBarView(
-                        dragStartBehavior: DragStartBehavior.down,
-                        physics:
-                            NeverScrollableScrollPhysics(), //const BouncingScrollPhysics(),
-                        children: [
-                          NewsFeed(),
-                          ExplorePage(),
-                          SwipePage(),
-                          BandSearchPage(),
-                          UserProfilePage(),
-                        ],
-                        controller: tabController,
-                      ),
+            body: (context, controller) => Column(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: 0,
+                    ),
+                    child: TabBarView(
+                      dragStartBehavior: DragStartBehavior.down,
+                      physics:
+                          NeverScrollableScrollPhysics(), //const BouncingScrollPhysics(),
+                      children: [
+                        NewsFeed(),
+                        ExplorePage(),
+                        SwipePage(),
+                        BandSearchPage(),
+                        UserProfilePage(),
+                      ],
+                      controller: tabController,
                     ),
                   ),
-                  BottomJamWindow(),
-                  SizedBox(height: 80), //Wave Mode it was 88
-                ],
-              ),
-              child: BottomTabBar(tabController: tabController,),
+                ),
+                BottomJamWindow(),
+                SizedBox(height: 80), //Wave Mode it was 88
+              ],
             ),
-            TutotrialManager(),
-          ],
-        ),
+            child: BottomTabBar(tabController: tabController,),
+          ),
+          TutotrialManager(),
+        ],
       ),
     );
   }

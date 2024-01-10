@@ -62,41 +62,38 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
         }
       },
       child: Container(
-        padding: const EdgeInsets.all(12.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              height: 34,
-              width: 34,
-              //padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                //color: Colors.grey.shade900.withOpacity(0.75),
-                border: Border.all(color: (widget.play)?Colors.white54:Colors.white12,width: 2)
+        padding: const EdgeInsets.only(left: 16.0,right: 16),
+        alignment: Alignment.center,
+        child: Container(
+          height: 28,
+          width: 28,
+          alignment: Alignment.center,
+          //padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            //color: Colors.grey.shade900.withOpacity(0.75),
+            border: Border.all(color: (widget.play)?Colors.white54:Colors.white12,width: 2)
+          ),
+          child:
+         Stack(
+           alignment: Alignment.center,
+            children: [
+              if(status == "loading") SizedBox(
+                height: 26,
+                width: 26,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
               ),
-              child:
-             Stack(
-               alignment: Alignment.center,
-                children: [
-                  if(status == "loading") SizedBox(
-                    height: 32,
-                    width: 32,
-                    child: CircularProgressIndicator(
-                      color: Colors.white54,
-                      strokeWidth: 2,
-                    ),
-                  ),
-                  Image.asset(
-                    (status == "playing" && widget.play) ? 'images/volume-on.png' :'images/volume-off.png',
-                    height: 17,
-                    color: Colors.white,
-                    fit: BoxFit.contain,
-                  ),
-                ],
+              Image.asset(
+                (status == "playing" && widget.play) ? 'images/volume-on.png' :'images/volume-off.png',
+                height: 12,
+                color: Colors.white,
+                fit: BoxFit.contain,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

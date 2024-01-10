@@ -9,6 +9,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:aws_polly/aws_polly.dart';
 import 'package:blur/blur.dart';
 import 'package:drumm_app/MultiSelectContainerWidget.dart';
+import 'package:drumm_app/SkeletonHomeItem.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -97,6 +98,7 @@ class _NewsFeedState extends State<NewsFeed>
   String audioUrl = "";
 
   double iconSize = 30;
+  int articlePage = 0;
 
   bool isOnboarded = false;
   bool isTutorialDone = false;
@@ -120,7 +122,7 @@ class _NewsFeedState extends State<NewsFeed>
   String articleTop = "";
   late Article articleOnScreen;
 
-  double multiSelectRadius = 18;
+  double multiSelectRadius = 12;
 
   bool likedArticle = false;
   double fontSize = 10;
@@ -173,54 +175,31 @@ class _NewsFeedState extends State<NewsFeed>
               ),
               if (articleBands.isEmpty || loadAnimation)
                 Expanded(
-                    child: Center(
-                  child: Stack(
-                    children: [
-                      Center(
-                        child: Lottie.asset(
-                          "images/pulse_white.json", //loadingAnimation,
-                          fit: BoxFit.contain,
-                          width: double.maxFinite,
-                        ),
-                      ),
-                      //if (!loadAnimation)
-                      Center(
-                        child: Container(
-                            height: 275,
-                            width: 275,
-                            padding: const EdgeInsets.all(28),
-                            decoration: BoxDecoration(
-                              color: Colors.black, //COLOR_PRIMARY_DARK,
-                              borderRadius: BorderRadius.circular(275),
-                            ),
-                            child: Image.asset(
-                              "images/logo_background_white.png",
-                              color: (!loadAnimation)
-                                  ? Colors.white.withOpacity(1)
-                                  : Colors.white.withOpacity(0.05),
-                              fit: BoxFit.contain,
-                            )),
-                      ),
-                      if (articles.isEmpty && loadAnimation)
-                        Center(
-                            child: Container(
-                                alignment: Alignment.center,
-                                height: 250,
-                                width: 250,
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  //color: Colors.black,
-                                  borderRadius: BorderRadius.circular(250),
-                                  border: Border.all(
-                                      color: Colors.transparent, width: 1),
-                                ),
-                                child: const Text(
-                                  "You're all caught up",
-                                  textAlign: TextAlign.center,
-                                ))),
-                    ],
+                  child: Center(
+                    child: Stack(
+                      children: [
+                        const SkeletonHomeItem(),
+                        if (articles.isEmpty && loadAnimation)
+                          Center(
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  height: 250,
+                                  width: 250,
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    //color: Colors.black,
+                                    borderRadius: BorderRadius.circular(250),
+                                    border: Border.all(
+                                        color: Colors.transparent, width: 1),
+                                  ),
+                                  child: const Text(
+                                    "You're all caught up",
+                                    textAlign: TextAlign.center,
+                                  ))),
+                      ],
+                    ),
                   ),
-                )),
+                ),
               if (articleBands.isNotEmpty)
                 Expanded(
                   child: Stack(
@@ -245,6 +224,7 @@ class _NewsFeedState extends State<NewsFeed>
                                       : 1,
                               isVerticalSwipingEnabled: false,
                               onEnd: () {
+                                articlePage += 1;
                                 if (selectedBandID == "For You") {
                                   getArticles();
                                 } else {
@@ -273,7 +253,11 @@ class _NewsFeedState extends State<NewsFeed>
                                       },
                                       updateList: (article) {},
                                       undo: () {
-                                        controller?.undo();
+                                        print("undoIndex ${undoIndex}");
+                                        if (undoIndex != 0)
+                                          controller?.undo();
+                                        else
+                                          print("Cannot undo");
                                       },
                                       onRefresh: () {
                                         return _refreshData();
@@ -306,7 +290,25 @@ class _NewsFeedState extends State<NewsFeed>
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SwipeBackButton(controller: controller),
+                            SwipeBackButton(
+                              controller: controller,
+                              undoIndex: undoIndex,
+                              fetchArticle: () {
+                                if (articlePage != 0) {
+                                  articlePage -= 1;
+
+                                  setState(() {
+                                    articleBands = [];
+                                  });
+
+                                  if (selectedBandID == "For You") {
+                                    getArticles();
+                                  } else {
+                                    getArticlesForBands(selectedBand);
+                                  }
+                                }
+                              },
+                            ),
                             const SizedBox(width: 8),
                             ExploreNewsButton(controller: controller),
                             const SizedBox(width: 4),
@@ -504,7 +506,6 @@ class _NewsFeedState extends State<NewsFeed>
           //         textAlign: TextAlign.center,
           //       )),
           // ),
-
         );
       }
     });
@@ -516,23 +517,26 @@ class _NewsFeedState extends State<NewsFeed>
   }
 
   MultiSelectContainerWidget getMultiSelectWidget(BuildContext bContext) {
-    return MultiSelectContainerWidget(onSelect: (selectedItems, selectedItem){
-      Vibrate.feedback(FeedbackType.selection);
-      FirebaseDBOperations.lastDocument = null;
-      controller = CardSwiperController();
-      loadAnimation = false;
-      loadingAnimation = LOADING_ASSET;
-      selectedBand = selectedItem;
-      selectedBandID = selectedBand.bandId ?? "For You";
-      setState(() {
-        //selectedCategory = selectedItem;
-        if (selectedBandID == "For You") {
-          getArticles();
-        } else {
-          getArticlesForBands(selectedBand);
-        }
-      });
-    }, bandsCards: bandsCards);
+    return MultiSelectContainerWidget(
+        onSelect: (selectedItems, selectedItem) {
+          Vibrate.feedback(FeedbackType.selection);
+          FirebaseDBOperations.lastDocument = null;
+          controller = CardSwiperController();
+          loadAnimation = false;
+          loadingAnimation = LOADING_ASSET;
+          selectedBand = selectedItem;
+          selectedBandID = selectedBand.bandId ?? "For You";
+          setState(() {
+            articlePage = 0;
+            //selectedCategory = selectedItem;
+            if (selectedBandID == "For You") {
+              getArticles();
+            } else {
+              getArticlesForBands(selectedBand);
+            }
+          });
+        },
+        bandsCards: bandsCards);
   }
 
   void openArticlePage(Article? article, int index) async {
@@ -548,11 +552,12 @@ class _NewsFeedState extends State<NewsFeed>
 
   void getArticles() async {
     //setState(() {
-      articles.clear();
-      articleBands.clear();
+    articles.clear();
+    articleBands.clear();
     //});
     controller = CardSwiperController();
-    algoliaArticles = await FirebaseDBOperations.getArticlesFromAlgolia();
+    algoliaArticles =
+        await FirebaseDBOperations.getArticlesFromAlgolia(articlePage);
     List<Article> articleFetched = algoliaArticles?.articles ??
         []; //await FirebaseDBOperations.getArticlesByBands();
     if (articleFetched.length < 1) {
@@ -598,13 +603,13 @@ class _NewsFeedState extends State<NewsFeed>
 
   void getArticlesForBands(Band selectedBand) async {
     //setState(() {
-      articles.clear();
-      articleBands.clear();
+    articles.clear();
+    articleBands.clear();
     //});
     controller = CardSwiperController();
     algoliaArticles =
         await FirebaseDBOperations.getArticlesByBandHookFromAlgolia(
-            selectedBand);
+            selectedBand, articlePage);
     List<Article> articleFetched = algoliaArticles?.articles ??
         []; //await FirebaseDBOperations.getArticlesByBands();
 
@@ -640,6 +645,7 @@ class _NewsFeedState extends State<NewsFeed>
     CardSwiperDirection direction,
   ) {
     //return true;
+    undoIndex = currentIndex ?? 0;
     try {
       //audioPlayer.stop();
       FirebaseDBOperations.OggOpus_Player.pause();
@@ -745,12 +751,13 @@ class _NewsFeedState extends State<NewsFeed>
     return true;
   }
 
-
   bool _onUndo(
     int? previousIndex,
     int currentIndex,
     CardSwiperDirection direction,
   ) {
+    undoIndex = currentIndex;
+    print("undo tapped ${currentIndex}");
     articleTop =
         articleBands.elementAt(currentIndex ?? 0).article?.articleId ?? "";
     setState(() {
@@ -914,5 +921,4 @@ class _NewsFeedState extends State<NewsFeed>
       //await audioPlayer.play(UrlSource(url??""));
     } catch (e) {}
   }
-
 }

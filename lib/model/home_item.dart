@@ -17,6 +17,7 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:ogg_opus_player/ogg_opus_player.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import '../ShareWidget.dart';
 import '../SoundPlayWidget.dart';
 import '../article_jam_page.dart';
 import '../custom/ai_summary.dart';
@@ -107,15 +108,6 @@ class _HomeItemState extends State<HomeItem> {
             joinDrumm: widget.joinDrumm,
             articleBand: widget.articleBand,
           ),
-          GestureDetector(
-            onTap: () {
-              generateLink();
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: ShareWidget(),
-            ),
-          ),
           const BottomFade(),
         ],
       ),
@@ -126,81 +118,7 @@ class _HomeItemState extends State<HomeItem> {
   void initState() {
     super.initState();
   }
-  void generateLink() async {
-    Jam jam = Jam();
-    jam.broadcast = false;
-    jam.title = widget.articleBand.article?.title;
-    jam.bandId = widget.articleBand.article?.category;
-    jam.jamId = widget.articleBand.article?.jamId;
-    jam.articleId = widget.articleBand.article?.articleId;
-    jam.startedBy = widget.articleBand.article?.source;
-    jam.imageUrl = widget.articleBand.article?.imageUrl;
-    if (widget.articleBand.article?.question != null)
-      jam.question = widget.articleBand.article?.question;
-    else
-      jam.question = widget.articleBand.article?.title;
-    jam.count = 1;
-    jam.membersID = [];
-    //jam.lastActive = Timestamp.now();
 
-    metadata = BranchContentMetaData()..addCustomMetadata('jam', jam.toJson());
-
-    buo = BranchUniversalObject(
-        canonicalIdentifier: 'flutter/branch',
-        //parameter canonicalUrl
-        //If your content lives both on the web and in the app, make sure you set its canonical URL
-        // (i.e. the URL of this piece of content on the web) when building any BUO.
-        // By doing so, we’ll attribute clicks on the links that you generate back to their original web page,
-        // even if the user goes to the app instead of your website! This will help your SEO efforts.
-        //canonicalUrl: 'https://flutter.dev',
-        title: widget.articleBand.article?.title ?? "Drumm News",
-        imageUrl: widget.articleBand.article?.imageUrl ?? DEFAULT_APP_IMAGE_URL,
-        contentDescription: 'Drumm - News & Conversations',
-        contentMetadata: metadata,
-        publiclyIndex: true,
-        locallyIndex: true,
-        expirationDateInMilliSec: DateTime.now()
-            .add(const Duration(days: 365))
-            .millisecondsSinceEpoch);
-
-    lp = BranchLinkProperties(
-        channel: 'facebook',
-        feature: 'sharing',
-        //parameter alias
-        //Instead of our standard encoded short url, you can specify the vanity alias.
-        // For example, instead of a random string of characters/integers, you can set the vanity alias as *.app.link/devonaustin.
-        // Aliases are enforced to be unique** and immutable per domain, and per link - they cannot be reused unless deleted.
-        //alias: 'https://branch.io' //define link url,
-        stage: 'new share',
-        campaign: 'campaign',
-        tags: ['one', 'two', 'three'])
-      ..addControlParam('\$uri_redirect_mode', '1')
-      ..addControlParam('\$ios_nativelink', true)
-      ..addControlParam('\$match_duration', 7200)
-      ..addControlParam('\$always_deeplink', true)
-      ..addControlParam('\$android_redirect_timeout', 750)
-      ..addControlParam('referring_user_id', 'user_id');
-
-    BranchResponse response =
-    await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
-
-    if (response.success) {
-      //if (context.mounted) {
-      print('GeneratedLink : ${response.result}');
-
-      String articleLink =
-          "Drumm: ${(widget.articleBand.article?.question != null) ? widget.articleBand.article?.question : widget.articleBand.article?.title}\n\nTap the link to join the discussion ${response.result}";
-
-      Share.share(articleLink);
-
-      // await Clipboard.setData(ClipboardData(text: response.result)).then((value) {
-      // });
-
-      // }
-    } else {
-      print('Error : ${response.errorCode} - ${response.errorMessage}');
-    }
-  }
 }
 
 class HomeFeedData extends StatelessWidget {
@@ -268,7 +186,7 @@ class HomeFeedData extends StatelessWidget {
                         boxShadow: [
                           BoxShadow(
                             color:
-                                Colors.black.withOpacity(0.15), // Shadow color
+                            Colors.black.withOpacity(0.15), // Shadow color
                             offset: const Offset(
                                 0, -2), // Shadow offset (horizontal, vertical)
                             blurRadius: 8, // Blur radius
@@ -318,12 +236,14 @@ class HomeFeedData extends StatelessWidget {
                     padding: const EdgeInsets.all(6),
                     alignment: Alignment.centerLeft,
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade900.withOpacity(0.65),
-                      // gradient: LinearGradient(colors: [
-                      //   Colors.indigo,
-                      //   Colors.blue.shade700,
-                      //   Colors.lightBlue,
-                      // ]),
+                      //color: Colors.grey.shade900.withOpacity(0.65),
+                        gradient: LinearGradient(
+                            colors: [
+                              Colors.indigo,
+                              Colors.blue.shade700,
+                              Colors.lightBlue,
+                            ]
+                        )
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -350,19 +270,17 @@ class HomeFeedData extends StatelessWidget {
                               joinDrumm(articleBand);
                             },
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 4.0,top: 4,bottom: 4,right: 12),
+                              padding: const EdgeInsets.all(4),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     "\"${article.question}\"" ?? "",
-                                    textAlign: TextAlign.start,
+                                    textAlign: TextAlign.left,
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 13,
-                                      //fontStyle: FontStyle.italic,
-                                      fontFamily: APP_FONT_MEDIUM,
-                                      //fontWeight: FontWeight.bold,
+                                      fontFamily: APP_FONT_LIGHT,
                                     ),
                                   ),
                                 ],
@@ -370,24 +288,36 @@ class HomeFeedData extends StatelessWidget {
                             ),
                           ),
                         ),
+                        GestureDetector(
+                          onTap: () {
+                            Vibrate.feedback(FeedbackType.selection);
+                            generateLink();
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 2),
+                            child: ShareWidget(),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 Container(
-                  padding: const EdgeInsets.only(left: 16, top: 0),
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.only(left: 16, top: 16,bottom: 8),
                   //color: COLOR_PRIMARY_DARK,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text("${source}",
                               style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 15,
-                                fontFamily: APP_FONT_BOLD,
+                                fontSize: 14,
+                                fontFamily: APP_FONT_LIGHT,
                                 //fontWeight: FontWeight.bold,
                               )),
                           const SizedBox(
@@ -432,8 +362,8 @@ class HomeFeedData extends StatelessWidget {
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 22,
-                              fontFamily: APP_FONT_MEDIUM,
-                              //fontWeight: FontWeight.bold,
+                              fontFamily: APP_FONT_LIGHT,
+                              fontWeight: FontWeight.bold,
                             ),
                           )
                         : Text(
@@ -442,13 +372,13 @@ class HomeFeedData extends StatelessWidget {
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 32,
-                              fontFamily: APP_FONT_MEDIUM,
+                              fontFamily: APP_FONT_LIGHT,
                               //fontWeight: FontWeight.bold,
                             ),
                           ),
                   ),
                 ),
-                //SizedBox(height: 4),
+                SizedBox(height: 8),
                 GestureDetector(
                   onTap: () {
                     Vibrate.feedback(FeedbackType.impact);
@@ -472,8 +402,8 @@ class HomeFeedData extends StatelessWidget {
                       textAlign: TextAlign.left,
                       style: const TextStyle(
                         fontSize: 14,
-                        color: Colors.white70,
-                        fontFamily: APP_FONT_MEDIUM,
+                        color: Colors.white,
+                        fontFamily: APP_FONT_LIGHT,
                       ),
                       //linkColor: Colors.white,
                     ),
@@ -488,36 +418,84 @@ class HomeFeedData extends StatelessWidget {
     );
   }
 
+  void generateLink() async {
+    Jam jam = Jam();
+    jam.broadcast = false;
+    jam.title = article?.title;
+    jam.bandId = article?.category;
+    jam.jamId = article?.jamId;
+    jam.articleId = article?.articleId;
+    jam.startedBy = article?.source;
+    jam.imageUrl = article?.imageUrl;
+    if (article?.question != null) {
+      jam.question = article?.question;
+    } else {
+      jam.question = article?.title;
+    }
+    jam.count = 1;
+    jam.membersID = [];
+    //jam.lastActive = Timestamp.now();
 
-}
+    metadata = BranchContentMetaData()..addCustomMetadata('jam', jam.toJson());
 
-class ShareWidget extends StatelessWidget {
-  const ShareWidget();
+    buo = BranchUniversalObject(
+        canonicalIdentifier: 'flutter/branch',
+        //parameter canonicalUrl
+        //If your content lives both on the web and in the app, make sure you set its canonical URL
+        // (i.e. the URL of this piece of content on the web) when building any BUO.
+        // By doing so, we’ll attribute clicks on the links that you generate back to their original web page,
+        // even if the user goes to the app instead of your website! This will help your SEO efforts.
+        //canonicalUrl: 'https://flutter.dev',
+        title: article?.title ?? "Drumm News",
+        imageUrl: article?.imageUrl ?? DEFAULT_APP_IMAGE_URL,
+        contentDescription: 'Drumm - News & Conversations',
+        contentMetadata: metadata,
+        publiclyIndex: true,
+        locallyIndex: true,
+        expirationDateInMilliSec: DateTime.now()
+            .add(const Duration(days: 365))
+            .millisecondsSinceEpoch);
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Container(
-      padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          color: Colors.grey.shade900.withOpacity(0.75),
-        ),
-            child: Image.asset(
-              'images/share-btn.png',
-              height: 20,
-              color: Colors.white,
-              fit: BoxFit.contain,
-            ),
-          ),
-        ],
-      ),
-    );
+    lp = BranchLinkProperties(
+        channel: 'facebook',
+        feature: 'sharing',
+        //parameter alias
+        //Instead of our standard encoded short url, you can specify the vanity alias.
+        // For example, instead of a random string of characters/integers, you can set the vanity alias as *.app.link/devonaustin.
+        // Aliases are enforced to be unique** and immutable per domain, and per link - they cannot be reused unless deleted.
+        //alias: 'https://branch.io' //define link url,
+        stage: 'new share',
+        campaign: 'campaign',
+        tags: ['one', 'two', 'three'])
+      ..addControlParam('\$uri_redirect_mode', '1')
+      ..addControlParam('\$ios_nativelink', true)
+      ..addControlParam('\$match_duration', 7200)
+      ..addControlParam('\$always_deeplink', true)
+      ..addControlParam('\$android_redirect_timeout', 750)
+      ..addControlParam('referring_user_id', 'user_id');
+
+    BranchResponse response =
+    await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
+
+    if (response.success) {
+      //if (context.mounted) {
+      print('GeneratedLink : ${response.result}');
+
+      String articleLink =
+          "${(article?.question != null) ? article?.question : article?.title}\n\nTap the link to join the discussion on the Drumm app ${response.result}";
+
+      Share.share(articleLink);
+
+      // await Clipboard.setData(ClipboardData(text: response.result)).then((value) {
+      // });
+
+      // }
+    } else {
+      print('Error : ${response.errorCode} - ${response.errorMessage}');
+    }
   }
+
+
 }
 
 class BottomFade extends StatelessWidget {

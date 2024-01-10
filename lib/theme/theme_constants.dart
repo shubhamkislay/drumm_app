@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 const int COLOR_PRIMARY_VAL = 0xff008cff;
 const COLOR_ACCENT = Colors.blue;
 const Color COLOR_PRIMARY_DARK = Color(0xff101010);
-const APP_FONT_LIGHT = "chakrapetchlight";//"poppinslight";//"robotolight";
-const APP_FONT_MEDIUM = "chakrapetchmedium";//"poppinsmedium";//"robotomedium";
-const APP_FONT_BOLD = "chakrapetchbold";//"poppinsbold";//"robotobold";
+const APP_FONT_LIGHT = "sans-serif";//"poppinslight";//"robotolight";chakrapetchlight
+const APP_FONT_MEDIUM = "sans-serif";//"poppinsmedium";//"robotomedium";chakrapetchmedium
+const APP_FONT_BOLD = "sans-serif";//"poppinsbold";//"robotobold";chakrapetchbold
 const DEFAULT_APP_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/drummapp.appspot.com/o/post_images%2FdCMkdrzofMhepCfXk9bM.jpg?alt=media&token=823114d8-6a42-479a-8b0a-bf7c98ce87e3";
 
 MaterialColor mainAppColor = const MaterialColor(COLOR_PRIMARY_VAL, <int, Color>{

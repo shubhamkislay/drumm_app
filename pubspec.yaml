@@ -289,6 +289,16 @@ flutter:
       fonts:
         - asset: fonts/ChakraPetch-Bold.ttf
 
+    - family: firasansbold
+      fonts:
+        - asset: fonts/FiraSans-Bold.ttf
+    - family: firasanslight
+      fonts:
+        - asset: fonts/FiraSans-Light.ttf
+    - family: firasansmedium
+      fonts:
+        - asset: fonts/FiraSans-Medium.ttf
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
