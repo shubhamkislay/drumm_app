@@ -8,9 +8,9 @@ import 'bottom_sheet.dart';
 
 class AISummary {
   static Future<String> getNewsSummary(String? newsArticle) async {
-    final apiKey =
+    const apiKey =
         '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'; // Replace with your ChatGPT API key
-    final apiUrl = 'https://api.openai.com/v1/completions';
+    const apiUrl = 'https://api.openai.com/v1/completions';
 
     final requestBody = {
       "model": "gpt-3.5-turbo-instruct",
@@ -33,10 +33,10 @@ class AISummary {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final summary = data['choices'][0]['text'].toString();
-      print(summary);
+      //print(summary);
       return summary;
     } else {
-      print('Failed to get news summary. Error: ${response.body}');
+      //print('Failed to get news summary. Error: ${response.body}');
       return "There seems to be an error while summarizing this article.\nPlease try again later.";
     }
   }
@@ -44,12 +44,12 @@ class AISummary {
     showModalBottomSheet(
       context: context,
       backgroundColor: bgColor,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
       ),
       builder: (BuildContext context) {
         return ClipRRect(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(0.0)),
           child: BottomSheetContent(article: article, bgColor: bgColor,),
         );
       },
