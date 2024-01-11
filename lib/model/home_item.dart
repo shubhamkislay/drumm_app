@@ -446,9 +446,9 @@ class HomeFeedData extends StatelessWidget {
         // By doing so, we’ll attribute clicks on the links that you generate back to their original web page,
         // even if the user goes to the app instead of your website! This will help your SEO efforts.
         //canonicalUrl: 'https://flutter.dev',
-        title: article?.title ?? "Drumm News",
+        title: "Drop-in Audio discussion on Drumm",
         imageUrl: article?.imageUrl ?? DEFAULT_APP_IMAGE_URL,
-        contentDescription: 'Drumm - News & Conversations',
+        contentDescription: '${ article?.title}',
         contentMetadata: metadata,
         publiclyIndex: true,
         locallyIndex: true,
@@ -482,7 +482,7 @@ class HomeFeedData extends StatelessWidget {
       print('GeneratedLink : ${response.result}');
 
       String articleLink =
-          "${(article?.question != null) ? article?.question : article?.title}\n\nTap the link to join the discussion on the Drumm app ${response.result}";
+          "${(article?.question != null) ? "Drumm: ${article?.question}" : article?.title}\n\nTap to join the discussion on Drumm.\n${response.result}";
 
       Share.share(articleLink);
 

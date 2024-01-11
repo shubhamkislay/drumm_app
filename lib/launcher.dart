@@ -39,6 +39,7 @@ import 'InterestPage.dart';
 import 'TutorialScreen.dart';
 import 'UserProfileIcon.dart';
 import 'ask_page.dart';
+import 'band_details_page.dart';
 import 'custom/bottom_sheet.dart';
 import 'custom/create_jam_bottom_sheet.dart';
 import 'custom/helper/circular_reveal_clipper.dart';
@@ -46,6 +47,7 @@ import 'custom/helper/image_uploader.dart';
 import 'custom/listener/connection_listener.dart';
 import 'custom/rounded_button.dart';
 import 'jam_room_page.dart';
+import 'model/band.dart';
 import 'my_home_page.dart';
 import 'news_feed.dart';
 import 'theme/theme_constants.dart';
@@ -316,6 +318,21 @@ class _LauncherPageState extends State<LauncherPage>
               );
             },
           );
+          return;
+        }
+        else if(data.containsKey('band')){
+
+          Band band = Band.fromJsonObject(data['band']);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    BandDetailsPage(
+                      band: band,
+                    ),
+              ));
+
+
           return;
         }
 

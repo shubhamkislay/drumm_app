@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -6,6 +8,7 @@ import 'package:drumm_app/custom/helper/image_uploader.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:drumm_app/custom/create_jam_bottom_sheet.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
@@ -19,7 +22,10 @@ import 'package:drumm_app/model/jam_image_card.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/user_profile_page.dart';
 import 'package:flutter_chip_tags/flutter_chip_tags.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:share_plus/share_plus.dart';
 
+import 'ShareWidget.dart';
 import 'model/Drummer.dart';
 import 'model/band.dart';
 import 'profile_page.dart';
@@ -42,6 +48,15 @@ class BandDetailsPageState extends State<BandDetailsPage> {
   bool joined = false;
   List<JamImageCard> jamImageCards = [];
   List<Jam> jams = [];
+  BranchContentMetaData metadata = BranchContentMetaData();
+  BranchLinkProperties lp = BranchLinkProperties();
+  late BranchUniversalObject buo;
+  late BranchEvent eventStandard;
+  late BranchEvent eventCustom;
+
+  StreamSubscription<Map>? streamSubscription;
+  StreamController<String> controllerData = StreamController<String>();
+  StreamController<String> controllerInitSession = StreamController<String>();
 
   @override
   Widget build(BuildContext context) {
@@ -80,12 +95,12 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                           ).frosted(blur: 6, frostColor: Colors.black),
                           Center(
                             child: SizedBox(
-                              width: 175,
-                              height: 175,
+                              width: 200,
+                              height: 200,
                               child: ClipRRect(
-                                borderRadius: BorderRadius.circular(64),
+                                borderRadius: BorderRadius.circular(4),
                                 child: CachedNetworkImage(
-                                  imageUrl:modifyImageUrl(band?.url ?? "","300x300"),
+                                  imageUrl:modifyImageUrl(band?.url ?? "","500x500"),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -496,20 +511,34 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                   ],
                 ),
               ),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    child: const Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      size: 36,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        size: 28,
+                      ),
                     ),
                   ),
                 ),
-              ),
+                SafeArea(
+                  child: GestureDetector(
+                    onTap: (){
+                      Vibrate.feedback(FeedbackType.selection);
+                      generateLink();
+                    },
+                    child: const Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: ShareWidget(),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -518,6 +547,81 @@ class BandDetailsPageState extends State<BandDetailsPage> {
   }
 
 
+  void generateLink() async {
+    Band? linkBand = band;
+    linkBand?.creationTime = null;
+
+    metadata = BranchContentMetaData()..addCustomMetadata('band', linkBand?.toJson());
+
+    print("Band url is: ${band?.url}");
+
+    buo = BranchUniversalObject(
+        canonicalIdentifier: 'flutter/branch',
+        //parameter canonicalUrl
+        //If your content lives both on the web and in the app, make sure you set its canonical URL
+        // (i.e. the URL of this piece of content on the web) when building any BUO.
+        // By doing so, we’ll attribute clicks on the links that you generate back to their original web page,
+        // even if the user goes to the app instead of your website! This will help your SEO efforts.
+        //canonicalUrl: 'https://flutter.dev',
+        title: "Join the \"${band?.name}\" Band",
+        imageUrl: modifyImageUrl(linkBand?.url ?? "","500x500")??DEFAULT_APP_IMAGE_URL,
+        contentDescription: 'Drumm - News & Conversations',
+        contentMetadata: metadata,
+        publiclyIndex: true,
+        locallyIndex: true,
+        expirationDateInMilliSec: DateTime.now()
+            .add(const Duration(days: 365))
+            .millisecondsSinceEpoch);
+
+    lp = BranchLinkProperties(
+        channel: 'facebook',
+        feature: 'sharing',
+        //parameter alias
+        //Instead of our standard encoded short url, you can specify the vanity alias.
+        // For example, instead of a random string of characters/integers, you can set the vanity alias as *.app.link/devonaustin.
+        // Aliases are enforced to be unique** and immutable per domain, and per link - they cannot be reused unless deleted.
+        //alias: 'https://branch.io' //define link url,
+        stage: 'new share',
+        campaign: 'campaign',
+        tags: ['one', 'two', 'three'])
+      ..addControlParam('\$uri_redirect_mode', '1')
+      ..addControlParam('\$ios_nativelink', true)
+      ..addControlParam('\$match_duration', 7200)
+      ..addControlParam('\$always_deeplink', true)
+      ..addControlParam('\$android_redirect_timeout', 750)
+      ..addControlParam('referring_user_id', 'user_id');
+
+    BranchResponse response =
+    await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
+
+    if (response.success) {
+      //if (context.mounted) {
+      print('GeneratedLink : ${response.result}');
+
+      String topic = "";
+      int index = 0;
+      for(String category in categoryList){
+        if(topic == "")
+            topic = category;
+        else if(index == categoryList.length-1)
+          topic = topic + ", and ${category}";
+        else
+          topic = topic +", ${category}";
+          index+=1;
+      }
+      String bandLink =
+          "Tap the link to checkout the band \"${linkBand?.name}\" on the Drumm app, and stay synced with latest news, updates and live audio conversations on ${topic}.\n\n${response.result}";
+
+      Share.share(bandLink);
+
+      // await Clipboard.setData(ClipboardData(text: response.result)).then((value) {
+      // });
+
+      // }
+    } else {
+      print('Error : ${response.errorCode} - ${response.errorMessage}');
+    }
+  }
 
   @override
   void initState() {

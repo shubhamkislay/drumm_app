@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -6,12 +7,17 @@ import 'package:drumm_app/main.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'ShareWidget.dart';
 import 'custom/helper/connect_channel.dart';
+import 'custom/helper/image_uploader.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -19,6 +25,16 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+
+  BranchContentMetaData metadata = BranchContentMetaData();
+  BranchLinkProperties lp = BranchLinkProperties();
+  late BranchUniversalObject buo;
+  late BranchEvent eventStandard;
+  late BranchEvent eventCustom;
+
+  StreamSubscription<Map>? streamSubscription;
+  StreamController<String> controllerData = StreamController<String>();
+  StreamController<String> controllerInitSession = StreamController<String>();
   // Function to handle logout
   void _logout() {
     // Add your logout logic here
@@ -103,6 +119,24 @@ class _SettingsPageState extends State<SettingsPage> {
                         'https://getdrumm.blogspot.com/2023/12/terms-and-conditions-for-drumm.html');
                   },
                 ),
+                ListTile(
+                  title: Row(
+                    children:  [
+                      const Text('Share with your friends',
+                        style: TextStyle(
+                        fontFamily: APP_FONT_MEDIUM,
+                      ),),
+                      GestureDetector(
+                        onTap: (){
+                          generateLink();
+                        },
+                          child: ShareWidget()),
+                    ],
+                  ),
+                  onTap: () {
+                    generateLink();
+                  },
+                ),
               ],
             ),
           ),
@@ -120,7 +154,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   border: Border.all(color: Colors.white, width: 1)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: const [
                   Text(
                     "Log Out",
                     style: TextStyle(
@@ -211,7 +245,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       color: Colors.redAccent.withOpacity(0.25), width: 2)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: const [
                   Text(
                     "Delete Account",
                     style: TextStyle(
@@ -233,6 +267,62 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
       ),
     );
+  }
+
+  void generateLink() async {
+
+
+    Vibrate.feedback(FeedbackType.selection);
+    //metadata = BranchContentMetaData()..addCustomMetadata('band', linkBand?.toJson());
+
+    buo = BranchUniversalObject(
+        canonicalIdentifier: 'flutter/branch',
+        //parameter canonicalUrl
+        //If your content lives both on the web and in the app, make sure you set its canonical URL
+        // (i.e. the URL of this piece of content on the web) when building any BUO.
+        // By doing so, we’ll attribute clicks on the links that you generate back to their original web page,
+        // even if the user goes to the app instead of your website! This will help your SEO efforts.
+        //canonicalUrl: 'https://flutter.dev',
+        title: "Drumm - News & Conversations",
+        imageUrl: modifyImageUrl(DEFAULT_APP_IMAGE_URL,"500x500"),
+        contentDescription: 'Let\'s truly connect',
+        //contentMetadata: metadata,
+        publiclyIndex: true,
+        locallyIndex: true,
+        expirationDateInMilliSec: DateTime.now()
+            .add(const Duration(days: 365))
+            .millisecondsSinceEpoch);
+
+    lp = BranchLinkProperties(
+        channel: 'facebook',
+        feature: 'sharing',
+        stage: 'new share',
+        campaign: 'campaign',
+        tags: ['one', 'two', 'three'])
+      ..addControlParam('\$uri_redirect_mode', '1')
+      ..addControlParam('\$ios_nativelink', true)
+      ..addControlParam('\$match_duration', 7200)
+      ..addControlParam('\$always_deeplink', true)
+      ..addControlParam('\$android_redirect_timeout', 750)
+      ..addControlParam('referring_user_id', 'user_id');
+
+    BranchResponse response =
+    await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
+
+    if (response.success) {
+
+      String bandLink =
+          "Connecting minds, sparking conversations, and sharing the pulse of the world. Join us to talk, share news, and connect in a global community.\n\n${response.result}";
+
+      Share.share(bandLink);
+
+      // await Clipboard.setData(ClipboardData(text: response.result)).then((value) {
+      // });
+
+      // }
+    } else {
+      print('Error : ${response.errorCode} - ${response.errorMessage}');
+    }
   }
 
   void reauthenticate() async {

@@ -13,7 +13,7 @@ class AISummary {
     final apiUrl = 'https://api.openai.com/v1/completions';
 
     final requestBody = {
-      "model": "text-davinci-003",
+      "model": "gpt-3.5-turbo-instruct",
       'prompt': 'Summarize the news: $newsArticle',
       'max_tokens': 200, // Adjust the summary length as needed
       'temperature':

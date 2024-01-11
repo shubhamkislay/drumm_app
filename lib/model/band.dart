@@ -35,6 +35,27 @@ class Band {
         'hooks': hooks,
       };
 
+  Band.fromJsonObject(Map<Object?, Object?> json)
+      : foundedBy = json['foundedBy'].toString(),
+        bandId = json['bandId'].toString(),
+        count = json['count'].toString(),
+        creationTime = Timestamp.now(),
+        name = json['name'].toString(),
+        url = json['url'].toString(),
+        visibility = json['visibility'].toString(),
+        description = json['description'].toString(),
+        hooks = convertObjectToList(json['hooks']);
+
+  static List<dynamic> convertObjectToList(Object? object) {
+    if (object == null) {
+      return []; // return an empty list if the object is null
+    } else if (object is List<dynamic>) {
+      return object; // if it's already a List<dynamic>, return as is
+    } else {
+      throw FormatException('Object cannot be converted to List<dynamic>');
+    }
+  }
+
   Band.fromSnapshot(snapshot)
       : foundedBy = snapshot.data()['foundedBy'],
         bandId = snapshot.data()['bandId'],
