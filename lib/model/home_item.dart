@@ -301,48 +301,11 @@ class HomeFeedData extends StatelessWidget {
                       ],
                     ),
                   ),
+                SizedBox(height: 16,),
                 Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.only(left: 16, top: 16,bottom: 8),
-                  //color: COLOR_PRIMARY_DARK,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("${source}",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontFamily: APP_FONT_LIGHT,
-                                //fontWeight: FontWeight.bold,
-                              )),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          const Text(
-                            "•",
-                            style: TextStyle(fontFamily: APP_FONT_BOLD),
-                          ),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          InstagramDateTimeWidget(publishedAt: publishedAt),
-                        ],
-                      ),
-                      SoundPlayWidget(
-                        article:article,
-                        play:false,
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
+                  alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.only(
-                      left: 14, top: 0, right: 14, bottom: 12),
+                      left: 14, top: 0, right: 14, bottom: 8),
                   //color: COLOR_PRIMARY_DARK,
                   child: GestureDetector(
                     onTap: () {
@@ -357,25 +320,64 @@ class HomeFeedData extends StatelessWidget {
                     },
                     child: (imageUrlLength > 0)
                         ? Text(
-                            article.title ?? "",
-                            textAlign: TextAlign.start,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontFamily: APP_FONT_LIGHT,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
+                      article.title ?? "",
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontFamily: APP_FONT_LIGHT,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
                         : Text(
-                            article.title ?? "",
-                            textAlign: TextAlign.start,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 32,
-                              fontFamily: APP_FONT_LIGHT,
-                              //fontWeight: FontWeight.bold,
-                            ),
+                      article.title ?? "",
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 36,
+                        fontFamily: APP_FONT_LIGHT,
+                        //fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.only(left: 16, top: 0,bottom: 0),
+                  //color: COLOR_PRIMARY_DARK,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("${source}",
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 13,
+                                fontFamily: APP_FONT_LIGHT,
+                                //fontWeight: FontWeight.bold,
+                              )),
+                          const SizedBox(
+                            width: 4,
                           ),
+                          const Text(
+                            "•",
+                            style: TextStyle(fontFamily: APP_FONT_BOLD,color: Colors.white70),
+                          ),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          InstagramDateTimeWidget(publishedAt: publishedAt),
+                        ],
+                      ),
+                      SoundPlayWidget(
+                        article:article,
+                        play:false,
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(height: 8),
@@ -392,20 +394,41 @@ class HomeFeedData extends StatelessWidget {
                   },
                   child: Container(
                     alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.all(14),
-                    child: Text(
-                      (article.description != null)
-                          ? "${article.description}"
-                          : (article.content != null)
-                              ? "${article.content}"
-                              : "",
-                      textAlign: TextAlign.left,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.white,
-                        fontFamily: APP_FONT_LIGHT,
-                      ),
-                      //linkColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16,horizontal: 12),
+                    margin: EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      //color: COLOR_PRIMARY_DARK,
+                      border: Border.all(color: COLOR_PRIMARY_DARK,width: 2.5),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text("Read",style: TextStyle(fontSize: 12,),),
+                            SizedBox(width: 4,),
+                            Icon(Icons.outbound_rounded,size: 14,)
+                          ],
+                        ),
+                        SizedBox(height: 16,),
+                        Text(
+                          (article.description != null)
+                              ? "${article.description}"
+                              : (article.content != null)
+                                  ? "${article.content}"
+                                  : "",
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.white,
+                            fontFamily: APP_FONT_LIGHT,
+                          ),
+                          //linkColor: Colors.white,
+                        ),
+
+
+                      ],
                     ),
                   ),
                 ),
