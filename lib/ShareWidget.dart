@@ -15,7 +15,7 @@ class ShareWidget extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
-              color: Colors.grey.shade900.withOpacity(0.5),
+              color: Colors.grey.shade900.withOpacity(0.35),
             ),
             child: Image.asset(
               'images/share-btn.png',

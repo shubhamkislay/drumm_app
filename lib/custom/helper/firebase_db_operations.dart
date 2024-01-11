@@ -948,6 +948,7 @@ class FirebaseDBOperations {
       "notification": {
         "body": jam.title,
         "title": "Drumm Call",
+        "sound": "drumm_bass.caf",
         "subtitle": "You asked"
       },
       "priority": "high",
@@ -995,6 +996,7 @@ class FirebaseDBOperations {
       "notification": {
         "body": (jam.question!=null) ? "${jam.title}\n\n${jam.question}":"${jam.title}",
         "title": subtitle,
+        "sound": "drumm_bass.caf",
         "image": "${jam.imageUrl}"
       },
       "priority": "high",
@@ -1053,6 +1055,7 @@ class FirebaseDBOperations {
       "notification": {
         "body": notifcationBody,
         "title": subtitle,
+        "sound": "drumm_bass.caf",
         "image": "${jam.imageUrl}"
       },
       "priority": "high",
