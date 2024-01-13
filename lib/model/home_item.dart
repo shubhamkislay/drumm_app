@@ -33,7 +33,7 @@ import 'article.dart';
 import 'article_band.dart';
 import 'jam.dart';
 
-double curve = 8;
+double curve = 4;
 
 class HomeItem extends StatefulWidget {
   ArticleBand articleBand;
@@ -118,7 +118,6 @@ class _HomeItemState extends State<HomeItem> {
   void initState() {
     super.initState();
   }
-
 }
 
 class HomeFeedData extends StatelessWidget {
@@ -186,7 +185,7 @@ class HomeFeedData extends StatelessWidget {
                         boxShadow: [
                           BoxShadow(
                             color:
-                            Colors.black.withOpacity(0.15), // Shadow color
+                                Colors.black.withOpacity(0.15), // Shadow color
                             offset: const Offset(
                                 0, -2), // Shadow offset (horizontal, vertical)
                             blurRadius: 8, // Blur radius
@@ -233,18 +232,15 @@ class HomeFeedData extends StatelessWidget {
                 if (article.question != null)
                   Container(
                     width: double.maxFinite,
-                    padding: const EdgeInsets.all(6),
+                    padding: const EdgeInsets.only(left: 4,right: 4,top: 4,bottom: 4),
                     alignment: Alignment.centerLeft,
                     decoration: BoxDecoration(
-                      //color: Colors.grey.shade900.withOpacity(0.65),
-                        gradient: LinearGradient(
-                            colors: [
-                              Colors.indigo,
-                              Colors.blue.shade700,
-                              Colors.lightBlue,
-                            ]
-                        )
-                    ),
+                        //color: Colors.grey.shade900.withOpacity(0.65),
+                        gradient: LinearGradient(colors: [
+                      Colors.indigo,
+                      Colors.blue.shade700,
+                      Colors.lightBlue,
+                    ])),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -279,7 +275,7 @@ class HomeFeedData extends StatelessWidget {
                                     textAlign: TextAlign.left,
                                     style: const TextStyle(
                                       color: Colors.white,
-                                      fontSize: 13,
+                                      fontSize: 14,
                                       fontFamily: APP_FONT_LIGHT,
                                     ),
                                   ),
@@ -301,12 +297,15 @@ class HomeFeedData extends StatelessWidget {
                       ],
                     ),
                   ),
-                SizedBox(height: 16,),
+                Container(
+                  height: 16,
+                   color: COLOR_PRIMARY_DARK,
+                ),
                 Container(
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.only(
-                      left: 14, top: 0, right: 14, bottom: 8),
-                  //color: COLOR_PRIMARY_DARK,
+                      left: 8, top: 0, right: 8, bottom: 4),
+                  color: COLOR_PRIMARY_DARK,
                   child: GestureDetector(
                     onTap: () {
                       Vibrate.feedback(FeedbackType.impact);
@@ -320,67 +319,86 @@ class HomeFeedData extends StatelessWidget {
                     },
                     child: (imageUrlLength > 0)
                         ? Text(
-                      article.title ?? "",
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontFamily: APP_FONT_LIGHT,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
+                            article.title ?? "",
+                            textAlign: TextAlign.start,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 21,
+                              fontFamily: APP_FONT_LIGHT,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
                         : Text(
-                      article.title ?? "",
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 36,
-                        fontFamily: APP_FONT_LIGHT,
-                        //fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                            article.title ?? "",
+                            textAlign: TextAlign.start,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 36,
+                              fontFamily: APP_FONT_LIGHT,
+                              //fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
                 Container(
                   alignment: Alignment.center,
-                  padding: const EdgeInsets.only(left: 16, top: 0,bottom: 0),
-                  //color: COLOR_PRIMARY_DARK,
+                  padding: const EdgeInsets.only(
+                      left: 8, top: 0, bottom: 4, right: 12),
+                  color: COLOR_PRIMARY_DARK,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("${source}",
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 13,
-                                fontFamily: APP_FONT_LIGHT,
-                                //fontWeight: FontWeight.bold,
-                              )),
-                          const SizedBox(
-                            width: 4,
+                      Text(source,
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.8),
+                            fontSize: 13,
+                            fontFamily: APP_FONT_MEDIUM,
+                          )),
+                      Text(" • "),
+                      InstagramDateTimeWidget(publishedAt: publishedAt),
+                      Text(" • "),
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    BandDetailsPage(
+                                      band: articleBand.band,
+                                    ),
+                              ));
+                        },
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8,vertical: 6),
+                          //margin: const EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade900.withOpacity(0.85), //.withOpacity(0.8),
+                            //border: Border.all(color: Colors.grey.shade900.withOpacity(0.85),width: 2.5),
+                            borderRadius: BorderRadius.circular(24),
                           ),
-                          const Text(
-                            "•",
-                            style: TextStyle(fontFamily: APP_FONT_BOLD,color: Colors.white70),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                               Text(
+                                articleBand.band?.name??"",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          InstagramDateTimeWidget(publishedAt: publishedAt),
-                        ],
-                      ),
-                      SoundPlayWidget(
-                        article:article,
-                        play:false,
+                        ),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 8),
+                Container(
+                  height: 8,
+                  color: COLOR_PRIMARY_DARK,
+                ),
                 GestureDetector(
                   onTap: () {
                     Vibrate.feedback(FeedbackType.impact);
@@ -394,45 +412,88 @@ class HomeFeedData extends StatelessWidget {
                   },
                   child: Container(
                     alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.symmetric(vertical: 16,horizontal: 12),
-                    margin: EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 12),
+                    margin: const EdgeInsets.symmetric(horizontal: 0),
                     decoration: BoxDecoration(
-                      //color: COLOR_PRIMARY_DARK,
-                      border: Border.all(color: COLOR_PRIMARY_DARK,width: 2.5),
-                      borderRadius: BorderRadius.circular(8),
+                     //color: COLOR_PRIMARY_DARK, //.withOpacity(0.8),
+                      //border: Border.all(color: Colors.grey.shade900.withOpacity(0.85),width: 2.5),
+                      border: Border(top: BorderSide(color: Colors.grey.shade900.withOpacity(0.85),width: 2)),
+                      //borderRadius: BorderRadius.circular(8),
                     ),
                     child: Column(
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Read",style: TextStyle(fontSize: 12,),),
-                            SizedBox(width: 4,),
-                            Icon(Icons.outbound_rounded,size: 14,)
+                            Row(
+                              children: [
+                                Text("GPT-4  ",style: TextStyle(color: Colors.white,fontSize: 12,fontWeight: FontWeight.bold),),
+                                SoundPlayWidget(
+                                  article: article,
+                                  play: false,
+                                ),
+                              ],
+                            ),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              padding: const EdgeInsets.symmetric(
+                                 horizontal: 8,vertical: 6),
+                              //margin: const EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                color: COLOR_PRIMARY_DARK, //.withOpacity(0.8),
+                                border: Border.all(color: Colors.grey.shade900.withOpacity(0.85),width: 2.5),
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  const Text(
+                                    "Read",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  const Icon(
+                                    Icons.outbound_rounded,
+                                    size: 14,
+                                  )
+                                ],
+                              ),
+                            ),
                           ],
                         ),
-                        SizedBox(height: 16,),
-                        Text(
+                        const SizedBox(
+                          height: 18,
+                        ),
+                        ExpandableText(
                           (article.description != null)
                               ? "${article.description}"
                               : (article.content != null)
                                   ? "${article.content}"
                                   : "",
                           textAlign: TextAlign.left,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.white,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white.withOpacity(0.85),
                             fontFamily: APP_FONT_LIGHT,
                           ),
+                          linkColor: Colors.blue,
+                          expandText: 'show more',
+                          collapseText: 'show less',
                           //linkColor: Colors.white,
                         ),
-
-
+                        const SizedBox(
+                          height: 16,
+                        ),
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 150),
+                const SizedBox(height: 75),
               ],
             ),
           ),
@@ -463,15 +524,9 @@ class HomeFeedData extends StatelessWidget {
 
     buo = BranchUniversalObject(
         canonicalIdentifier: 'flutter/branch',
-        //parameter canonicalUrl
-        //If your content lives both on the web and in the app, make sure you set its canonical URL
-        // (i.e. the URL of this piece of content on the web) when building any BUO.
-        // By doing so, we’ll attribute clicks on the links that you generate back to their original web page,
-        // even if the user goes to the app instead of your website! This will help your SEO efforts.
-        //canonicalUrl: 'https://flutter.dev',
         title: "Drop-in Audio discussion on Drumm",
         imageUrl: article?.imageUrl ?? DEFAULT_APP_IMAGE_URL,
-        contentDescription: '${ article?.title}',
+        contentDescription: '${article?.title}',
         contentMetadata: metadata,
         publiclyIndex: true,
         locallyIndex: true,
@@ -482,11 +537,6 @@ class HomeFeedData extends StatelessWidget {
     lp = BranchLinkProperties(
         channel: 'facebook',
         feature: 'sharing',
-        //parameter alias
-        //Instead of our standard encoded short url, you can specify the vanity alias.
-        // For example, instead of a random string of characters/integers, you can set the vanity alias as *.app.link/devonaustin.
-        // Aliases are enforced to be unique** and immutable per domain, and per link - they cannot be reused unless deleted.
-        //alias: 'https://branch.io' //define link url,
         stage: 'new share',
         campaign: 'campaign',
         tags: ['one', 'two', 'three'])
@@ -498,7 +548,7 @@ class HomeFeedData extends StatelessWidget {
       ..addControlParam('referring_user_id', 'user_id');
 
     BranchResponse response =
-    await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
+        await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
 
     if (response.success) {
       //if (context.mounted) {
@@ -517,8 +567,6 @@ class HomeFeedData extends StatelessWidget {
       print('Error : ${response.errorCode} - ${response.errorMessage}');
     }
   }
-
-
 }
 
 class BottomFade extends StatelessWidget {
@@ -532,7 +580,7 @@ class BottomFade extends StatelessWidget {
         children: [
           Container(
             alignment: Alignment.bottomCenter,
-            height: 200,
+            height: 150,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.bottomCenter,

@@ -110,11 +110,11 @@ class _MyAppState extends State<MyApp>
 
   @override
   void initState() {
-
     initNotification();
     WidgetsBinding.instance.addObserver(this);
     //FirebaseDatabase.instance.setPersistenceEnabled(true);
-    FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
+    FirebaseFirestore.instance.settings =
+        const Settings(persistenceEnabled: true);
 
     _themeManager.addListener(themeListener);
     _themeManager.darkTheme(true);
@@ -125,13 +125,11 @@ class _MyAppState extends State<MyApp>
       FirebaseMessaging.instance.getToken().then((token) {
         print('Device Token FCM: $token');
         if (token != null) {
-          if(FirebaseAuth.instance.currentUser!=null)
+          if (FirebaseAuth.instance.currentUser != null)
             FirebaseDBOperations.updateDrummerToken(token);
         }
       });
-    }catch(e){
-
-    }
+    } catch (e) {}
 
     super.initState();
   }
@@ -152,10 +150,10 @@ class _MyAppState extends State<MyApp>
         if (broadcast) {
           setupPersonalisedNotification();
           return;
-        }else{
+        } else {
           showForegroundNotification(message);
         }
-      }catch(e){
+      } catch (e) {
         print("It's not a broadcast message because ${e.toString()}");
         showForegroundNotification(message);
       }
@@ -165,7 +163,6 @@ class _MyAppState extends State<MyApp>
   @pragma('vm:entry-point')
   Future<void> _firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
-
     try {
       bool broadcast = jsonDecode(message.data["broadcast"]);
 
@@ -173,7 +170,7 @@ class _MyAppState extends State<MyApp>
         setupPersonalisedNotification();
         return;
       }
-    }catch(e){
+    } catch (e) {
       print("It's not a broadcast message because ${e.toString()}");
     }
 
@@ -186,14 +183,14 @@ class _MyAppState extends State<MyApp>
     if (FirebaseAuth.instance.currentUser?.uid != drummerID)
       addToNotification(message);
 
-    print("Drummer ID: ${drummerID}\nUID: ${FirebaseAuth.instance.currentUser?.uid}" );
+    print(
+        "Drummer ID: ${drummerID}\nUID: ${FirebaseAuth.instance.currentUser?.uid}");
 
     //Map userMap = jsonDecode(shared_User.getString('user'));
     //
     //
     //
     // var user = User.fromJson(userMap);
-
 
     if (FirebaseAuth.instance.currentUser?.uid != jam.startedBy) if (ring)
       startCallingNotification(message);
@@ -286,7 +283,7 @@ class _MyAppState extends State<MyApp>
             bool open = jsonDecode(message.data["open"]);
             Jam jam = Jam.fromJson(json);
             print("/// // onMessageOpenedApp // ///:  ${jam.title}");
-            joinRoom(jam, open,true);
+            joinRoom(jam, open, true);
           } catch (e) {
             print("NavigationService is null");
           }
@@ -337,12 +334,12 @@ class _MyAppState extends State<MyApp>
       Jam jam = Jam.fromJson(json);
       bool open = jsonDecode(message.data["open"]);
       //joinRoom(jam);
-      if (jam.jamId != ConnectToChannel.channelID) joinRoom(jam, open,false);
+      if (jam.jamId != ConnectToChannel.channelID) joinRoom(jam, open, false);
     });
 
     Future.delayed(const Duration(seconds: 2)).then((value) {
       FirebaseMessaging.instance.getInitialMessage().then((message) {
-        if(message!=null) {
+        if (message != null) {
           Map<String, dynamic> json = jsonDecode(message?.data["jam"]);
           // AnimatedSnackBar.material(
           //     'getInitialMessage: ${json}',
@@ -353,12 +350,11 @@ class _MyAppState extends State<MyApp>
           Jam jam = Jam.fromJson(json);
           bool open = jsonDecode(message?.data["open"]);
           //joinRoom(jam);
-          if (jam.jamId != ConnectToChannel.channelID) joinRoom(jam, open,false);
+          if (jam.jamId != ConnectToChannel.channelID)
+            joinRoom(jam, open, false);
         }
       });
     });
-
-
   }
 
   // void changePage(int newPage) {
@@ -395,7 +391,7 @@ class _MyAppState extends State<MyApp>
     // print(headlines);
   }
 
-  void joinRoom(Jam jam, bool open,bool ring) {
+  void joinRoom(Jam jam, bool open, bool ring) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -408,11 +404,12 @@ class _MyAppState extends State<MyApp>
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(0.0)),
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(0.0)),
             child: JamRoomPage(
               jam: jam,
               open: open,
-              ring:ring,
+              ring: ring,
             ),
           ),
         );
@@ -426,207 +423,225 @@ class _MyAppState extends State<MyApp>
     Map<String, dynamic> json = jsonDecode(message.data["jam"]);
     Jam jam = Jam.fromJson(json);
 
-    print("Drummer ID: ${drummerID}\nUID: ${FirebaseAuth.instance.currentUser?.uid}" );
+    print(
+        "Drummer ID: ${drummerID}\nUID: ${FirebaseAuth.instance.currentUser?.uid}");
 
     if (drummerID != FirebaseAuth.instance.currentUser?.uid) {
       addToNotification(message);
       Drummer drummer = await FirebaseDBOperations.getDrummer(drummerID);
       String drummerImage = drummer.imageUrl ?? "";
 
-
-      Vibrate.feedback(FeedbackType.error);
-      if(context == null)
-        throw Exception();
+      Vibrate.feedback(FeedbackType.light);
+      if (context == null) throw Exception();
       if (jam.jamId != ConnectToChannel.channelID) {
-        AnimatedSnackBar(
-            builder: ((context) {
-              return Wrap(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: [Colors.grey.shade900, Colors.grey.shade900]),
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: COLOR_PRIMARY_DARK,
-                            borderRadius: BorderRadius.circular(14),
+        setState(() {
+          AnimatedSnackBar(
+              builder: ((context) {
+                return Wrap(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(colors: [
+                          Colors.grey.shade900,
+                          Colors.grey.shade900
+                        ]),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: COLOR_PRIMARY_DARK,
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ClipRRect(
+                                    borderRadius: BorderRadius.circular(4),
+                                    child: CachedNetworkImage(
+                                      imageUrl: drummerImage,
+                                      fit: BoxFit.cover,
+                                      width: 20,
+                                      height: 20,
+                                    )),
+                                const SizedBox(
+                                  width: 4,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (jam.jamId !=
+                                        ConnectToChannel.channelID) {
+                                      joinRoom(jam, open, false);
+                                      FirebaseDBOperations
+                                          .sendNotificationToTopic(
+                                          jam, false, open);
+                                    }
+                                  },
+                                  child: Text(
+                                    "${drummer.username} joined the drumm",
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    softWrap: true,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 4,
+                                ),
+                              ],
+                            ),
                           ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Row(
                             children: [
-                              ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: CachedNetworkImage(
-                                    imageUrl: drummerImage,
-                                    fit: BoxFit.cover,
-                                    width: 20,
-                                    height: 20,
-                                  )),
-                              const SizedBox(
-                                width: 4,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        ClipRRect(
+                                            borderRadius:
+                                            BorderRadius.circular(16),
+                                            child: CachedNetworkImage(
+                                              imageUrl: jam.imageUrl ?? "",
+                                              fit: BoxFit.cover,
+                                              width: 72,
+                                              height: 72,
+                                            )),
+                                        const SizedBox(
+                                          width: 4,
+                                        ),
+                                        Expanded(
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                if (jam.jamId !=
+                                                    ConnectToChannel.channelID) {
+                                                  joinRoom(jam, open, false);
+                                                  FirebaseDBOperations
+                                                      .sendNotificationToTopic(
+                                                      jam, false, open);
+                                                }
+                                              },
+                                              child: Text(
+                                                "${jam.title}",
+                                                textAlign: TextAlign.center,
+                                                maxLines: 3,
+                                                softWrap: true,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            )),
+                                        const SizedBox(
+                                          width: 4,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  if (jam.jamId != ConnectToChannel.channelID) {
+                                  if (jam.jamId !=
+                                      ConnectToChannel.channelID) {
                                     joinRoom(jam, open, false);
-                                    FirebaseDBOperations.sendNotificationToTopic(jam,false,open);
+                                    FirebaseDBOperations
+                                        .sendNotificationToTopic(
+                                        jam, false, open);
                                   }
                                 },
-                                child: Text(
-                                  "${drummer.username} joined the drumm",
-                                  textAlign: TextAlign.center,
-                                  maxLines: 1,
-                                  softWrap: true,
-                                  overflow: TextOverflow.ellipsis,
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Drop in",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              ),
+                              )
                             ],
                           ),
-                        ),
-                        const SizedBox(height: 8,),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      ClipRRect(
-                                          borderRadius: BorderRadius.circular(16),
-                                          child: CachedNetworkImage(
-                                            imageUrl: jam.imageUrl??"",
-                                            fit: BoxFit.cover,
-                                            width: 72,
-                                            height: 72,
-                                          )),
-                                      const SizedBox(
-                                        width: 4,
-                                      ),
-                                      Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              if (jam.jamId != ConnectToChannel.channelID) {
-                                                joinRoom(jam, open, false);
-                                                FirebaseDBOperations.sendNotificationToTopic(jam,false,open);
-                                              }
-                                            },
-                                            child: Text(
-                                              "${jam.title}",
-                                              textAlign: TextAlign.center,
-                                              maxLines: 3,
-                                              softWrap: true,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          )),
-                                      const SizedBox(
-                                        width: 4,
-                                      ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }),
+              duration: const Duration(seconds: 8),
+              mobileSnackBarPosition: MobileSnackBarPosition.bottom)
+              .show(context);
+        });
 
-                                    ],
+      } else {
+        AnimatedSnackBar(
+                builder: ((context) {
+                  return Wrap(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(colors: [
+                            Colors.grey.shade900,
+                            Colors.grey.shade900
+                          ]),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: COLOR_PRIMARY_DARK,
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ClipRRect(
+                                      borderRadius: BorderRadius.circular(4),
+                                      child: CachedNetworkImage(
+                                        imageUrl: drummerImage,
+                                        fit: BoxFit.cover,
+                                        width: 20,
+                                        height: 20,
+                                      )),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  Text(
+                                    "${drummer.username} joined the drumm",
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    softWrap: true,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(
+                                    width: 4,
                                   ),
                                 ],
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                if (jam.jamId != ConnectToChannel.channelID) {
-                                  joinRoom(jam, open, false);
-                                  FirebaseDBOperations.sendNotificationToTopic(jam,false,open);
-                                }
-                              },
-                              child: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  "Drop in",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
-                                ),
-                              ),
-                            )
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            }),
-            duration: const Duration(seconds: 8),
-            mobileSnackBarPosition: MobileSnackBarPosition.bottom)
-            .show(context);
-      } else {
-        AnimatedSnackBar(
-            builder: ((context) {
-              return Wrap(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: [Colors.grey.shade900, Colors.grey.shade900]),
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: COLOR_PRIMARY_DARK,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: CachedNetworkImage(
-                                    imageUrl: drummerImage,
-                                    fit: BoxFit.cover,
-                                    width: 20,
-                                    height: 20,
-                                  )),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              Text(
-                                "${drummer.username} joined the drumm",
-                                textAlign: TextAlign.center,
-                                maxLines: 1,
-                                softWrap: true,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            }),
-            duration: const Duration(seconds: 8),
-            mobileSnackBarPosition: MobileSnackBarPosition.bottom)
+                      ),
+                    ],
+                  );
+                }),
+                duration: const Duration(seconds: 8),
+                mobileSnackBarPosition: MobileSnackBarPosition.bottom)
             .show(context);
       }
     }
@@ -639,6 +654,7 @@ class _MyAppState extends State<MyApp>
     notifications.add(remoteMessageToJson(message));
     notiPref.setStringList("notifications", notifications);
   }
+
   String remoteMessageToJson(RemoteMessage remoteMessage) {
     final Map<String, dynamic> data = remoteMessage.data;
     final Map<String, dynamic> jsonMessage = {
@@ -646,15 +662,14 @@ class _MyAppState extends State<MyApp>
     };
     return jsonEncode(jsonMessage);
   }
-
 }
 
 void setupPersonalisedNotification() async {
   print("///Calling algolia personalised");
-  AlgoliaArticles algoliaArticles = await FirebaseDBOperations.getArticleFromAlgoliaForPersonalisedNotificaiton();
-  Article? personalisedArticle =  algoliaArticles.articles?.elementAt(0);
-  if(personalisedArticle!=null){
-
+  AlgoliaArticles algoliaArticles = await FirebaseDBOperations
+      .getArticleFromAlgoliaForPersonalisedNotificaiton();
+  Article? personalisedArticle = algoliaArticles.articles?.elementAt(0);
+  if (personalisedArticle != null) {
     Jam jam = Jam();
     jam.startedBy = "Drumm";
     jam.bandId = "dCMkdrzofMhepCfXk9bM";
@@ -667,13 +682,9 @@ void setupPersonalisedNotification() async {
     jam.broadcast = false;
     jam.imageUrl = personalisedArticle.imageUrl;
 
-
     FirebaseDBOperations.sendNotificationToDeviceToken(jam);
-
   }
 }
-
-
 
 class SplashScreen extends StatefulWidget {
   final FirebaseAnalyticsObserver observer;
@@ -704,43 +715,52 @@ class _SplashScreenState extends State<SplashScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _isOnboarded = prefs.getBool('isOnboarded') ?? false;
     //prefs.remove('isOnboarded');
-    if(_isOnboarded){
+    if (_isOnboarded) {
       // Future.delayed(const Duration(seconds: 1),(){
       //
       //   setState(() {
       //     toggleLogo = true;
       //   });
 
-        // Future.delayed(const Duration(milliseconds: 1000),(){
-        //   Navigator.of(context).push(PageRouteBuilder(
-        //       opaque: false,
-        //       pageBuilder: (context, animation, _) {
-        //         return LauncherPage(themeManager: widget.themeManager,
-        //           analytics: widget.analytics,
-        //           observer: widget.observer,);
-        //       }));
-        // });
+      // Future.delayed(const Duration(milliseconds: 1000),(){
+      //   Navigator.of(context).push(PageRouteBuilder(
+      //       opaque: false,
+      //       pageBuilder: (context, animation, _) {
+      //         return LauncherPage(themeManager: widget.themeManager,
+      //           analytics: widget.analytics,
+      //           observer: widget.observer,);
+      //       }));
+      // });
 
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => LauncherPage(themeManager: widget.themeManager,
-                  analytics: widget.analytics,
-                  observer: widget.observer,)));
 
-     // });
+      Future.delayed(Duration(milliseconds: 500),(){
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => LauncherPage(
+              themeManager: widget.themeManager,
+              analytics: widget.analytics,
+              observer: widget.observer,
+            ),
+            transitionDuration: Duration(seconds: 0),
+            reverseTransitionDuration: Duration(seconds: 0),
+          ),
+        );
+      });
 
-    }else{
+
+      // });
+    } else {
       if ((FirebaseAuth.instance.currentUser != null)) {
-        bool notify = prefs.getBool("notify")??true;
-        if(notify)
-          FirebaseDBOperations.subscribeToUserBands();
-        Drummer drummer = await FirebaseDBOperations.getDrummer(FirebaseAuth.instance.currentUser?.uid??"");
-        if(drummer!=null){
-          int userLen = drummer.username?.length??0;
-          if(userLen>0){
+        bool notify = prefs.getBool("notify") ?? true;
+        if (notify) FirebaseDBOperations.subscribeToUserBands();
+        Drummer drummer = await FirebaseDBOperations.getDrummer(
+            FirebaseAuth.instance.currentUser?.uid ?? "");
+        if (drummer != null) {
+          int userLen = drummer.username?.length ?? 0;
+          if (userLen > 0) {
             await prefs.setBool("isOnboarded", true);
-            await prefs.setString('uid', drummer.uid??"");
+            await prefs.setString('uid', drummer.uid ?? "");
             await prefs.setInt('rid', drummer.rid ?? 0);
 
             print("This part is being called");
@@ -748,11 +768,13 @@ class _SplashScreenState extends State<SplashScreen> {
             Navigator.of(context).push(PageRouteBuilder(
                 opaque: false,
                 pageBuilder: (context, animation, _) {
-                  return LauncherPage(themeManager: widget.themeManager,
+                  return LauncherPage(
+                    themeManager: widget.themeManager,
                     analytics: widget.analytics,
-                    observer: widget.observer,);
+                    observer: widget.observer,
+                  );
                 }));
-          }else{
+          } else {
             Navigator.of(context).push(PageRouteBuilder(
                 opaque: false,
                 pageBuilder: (context, animation, _) {
@@ -764,7 +786,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       email: "");
                 }));
           }
-        }else{
+        } else {
           Navigator.of(context).push(PageRouteBuilder(
               opaque: false,
               pageBuilder: (context, animation, _) {
@@ -776,8 +798,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     email: "");
               }));
         }
-
-      }else{
+      } else {
         Navigator.of(context).push(PageRouteBuilder(
             opaque: false,
             pageBuilder: (context, animation, _) {
@@ -790,36 +811,32 @@ class _SplashScreenState extends State<SplashScreen> {
       }
     }
 
-
     setState(() {
       _isOnboarded = prefs.getBool('isOnboarded') ?? false;
     });
-    String userID = FirebaseAuth.instance.currentUser?.uid??"";
-    if(userID.length>0) {
+    String userID = FirebaseAuth.instance.currentUser?.uid ?? "";
+    if (userID.length > 0) {
       Drummer drummer = await FirebaseDBOperations.getDrummer(userID);
       if (userID.length > 1) {
         await prefs.setString('uid', userID);
         await prefs.setInt('rid', drummer.rid ?? 0);
       }
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     // if ((FirebaseAuth.instance.currentUser != null))
     //   FirebaseDBOperations.subscribeToUserBands();
 
     return Scaffold(
       body: Container(
-        color: Colors.black,//Color(0xff202020),
+        color: Colors.black, //Color(0xff202020),
         height: double.infinity,
         width: double.infinity,
         child: Stack(
           alignment: Alignment.center,
           children: [
-
             Container(
               width: MediaQuery.of(context).size.width,
               height: double.infinity,
@@ -829,7 +846,10 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             //if(!toggleLogo)
-              Image.asset("images/logo_dark.png",fit: BoxFit.fitWidth,),
+            Image.asset(
+              "images/logo_dark.png",
+              fit: BoxFit.fitWidth,
+            ),
             // if(toggleLogo)const Text(
             //   "Drumm",
             //   textAlign: TextAlign.center,

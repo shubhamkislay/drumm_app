@@ -62,7 +62,7 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
         }
       },
       child: Container(
-        padding: const EdgeInsets.only(left: 16.0,right: 16),
+        padding: const EdgeInsets.only(left: 0.0,right: 16),
         alignment: Alignment.center,
         child: Container(
           height: 28,
@@ -72,7 +72,7 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
             //color: Colors.grey.shade900.withOpacity(0.75),
-            border: Border.all(color: (widget.play)?Colors.white54:Colors.white12,width: 2)
+            border: Border.all(color: (widget.play)?Colors.white:Colors.white12,width: 2)
           ),
           child:
          Stack(
@@ -102,12 +102,16 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
   String? getSpeechText(Article articleForSpeech) {
     //return articleForSpeech.question;
     String? text = (articleForSpeech.description == null)
-        ? articleForSpeech.title
+        ? (articleForSpeech.content == null)?articleForSpeech.title:articleForSpeech.content
         : "${articleForSpeech.description}";
     if (articleForSpeech.question != null) {
       text =
-      "${text}\n${articleForSpeech.question}\nStart a drumm to check what the community thinks!";
+      "$text\n${articleForSpeech.question}\nStart a drumm to check what the community thinks!";
+    }else {
+      text =
+      "$text\nStart a drumm to check what the community thinks!";
     }
+
     return text;
   }
 
@@ -157,7 +161,7 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
       //  //await audioPlayer.play(BytesSource(response.bodyBytes));
       final audioBytes = response.bodyBytes;
       final appDir = await getApplicationDocumentsDirectory();
-      final audioFile = File('${appDir.path}/${id}.opus');
+      final audioFile = File('${appDir.path}/$id.opus');
       await audioFile.writeAsBytes(audioBytes);
       //if (articleTop == id) {
       // audioPlayer.setFilePath(audioFile.path);
