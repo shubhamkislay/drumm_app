@@ -328,7 +328,7 @@ class HomeFeedData extends StatelessWidget {
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 22,
-                              fontFamily: APP_FONT_LIGHT,
+                              fontFamily: APP_FONT_BOLD,
                               fontWeight: FontWeight.bold,
                             ),
                           )
@@ -338,7 +338,8 @@ class HomeFeedData extends StatelessWidget {
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 36,
-                              fontFamily: APP_FONT_LIGHT,
+                              fontFamily: APP_FONT_BOLD,
+                              fontWeight: FontWeight.bold,
                               //fontWeight: FontWeight.bold,
                             ),
                           ),

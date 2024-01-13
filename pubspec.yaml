@@ -299,6 +299,20 @@ flutter:
       fonts:
         - asset: fonts/FiraSans-Medium.ttf
 
+    - family: opensansbold
+      fonts:
+        - asset: fonts/OpenSans-Bold.ttf
+    - family: opensanslight
+      fonts:
+        - asset: fonts/OpenSans-Light.ttf
+    - family: opensansmedium
+      fonts:
+        - asset: fonts/OpenSans-Medium.ttf
+
+    - family: centurygothic
+      fonts:
+        - asset: fonts/CenturyGothic.ttf
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
