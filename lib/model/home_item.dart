@@ -8,6 +8,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/band_details_page.dart';
+import 'package:drumm_app/model/algolia_article.dart';
 import 'package:drumm_app/model/band.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +87,6 @@ class _HomeItemState extends State<HomeItem> {
 
   @override
   Widget build(BuildContext context) {
-    //setband();
     return Container(
       //color: Colors.black.withOpacity(0.95),
       decoration: BoxDecoration(
@@ -118,6 +118,7 @@ class _HomeItemState extends State<HomeItem> {
   void initState() {
     super.initState();
   }
+
 }
 
 class HomeFeedData extends StatelessWidget {
@@ -225,14 +226,15 @@ class HomeFeedData extends StatelessWidget {
                           ),
                         );
                       },
-                      fit: BoxFit.fitHeight,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
                 if (article.question != null)
                   Container(
                     width: double.maxFinite,
-                    padding: const EdgeInsets.only(left: 4,right: 4,top: 4,bottom: 4),
+                    padding: const EdgeInsets.only(
+                        left: 4, right: 4, top: 4, bottom: 4),
                     alignment: Alignment.centerLeft,
                     decoration: BoxDecoration(
                         //color: Colors.grey.shade900.withOpacity(0.65),
@@ -274,8 +276,10 @@ class HomeFeedData extends StatelessWidget {
                                     "\"${article.question}\"" ?? "",
                                     textAlign: TextAlign.left,
                                     style: const TextStyle(
-                                      color: Colors.white,
+                                      color: Colors.white, //.withOpacity(0.85),
                                       fontSize: 14,
+                                      //fontWeight: FontWeight.bold,
+                                      //fontStyle: FontStyle.italic,
                                       fontFamily: APP_FONT_LIGHT,
                                     ),
                                   ),
@@ -299,7 +303,7 @@ class HomeFeedData extends StatelessWidget {
                   ),
                 Container(
                   height: 16,
-                   color: COLOR_PRIMARY_DARK,
+                  color: COLOR_PRIMARY_DARK,
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
@@ -323,7 +327,7 @@ class HomeFeedData extends StatelessWidget {
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 21,
+                              fontSize: 22,
                               fontFamily: APP_FONT_LIGHT,
                               fontWeight: FontWeight.bold,
                             ),
@@ -355,36 +359,36 @@ class HomeFeedData extends StatelessWidget {
                             fontSize: 13,
                             fontFamily: APP_FONT_MEDIUM,
                           )),
-                      Text(" • "),
+                      const Text(" • "),
                       InstagramDateTimeWidget(publishedAt: publishedAt),
-                      Text(" • "),
+                      const Text(" • "),
                       GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    BandDetailsPage(
-                                      band: articleBand.band,
-                                    ),
+                                builder: (context) => BandDetailsPage(
+                                  band: articleBand.band,
+                                ),
                               ));
                         },
                         child: Container(
                           alignment: Alignment.centerLeft,
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8,vertical: 6),
+                              horizontal: 8, vertical: 6),
                           //margin: const EdgeInsets.symmetric(horizontal: 10),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade900.withOpacity(0.85), //.withOpacity(0.8),
+                            color: Colors.grey.shade900
+                                .withOpacity(0.85), //.withOpacity(0.8),
                             //border: Border.all(color: Colors.grey.shade900.withOpacity(0.85),width: 2.5),
                             borderRadius: BorderRadius.circular(24),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                               Text(
-                                articleBand.band?.name??"",
-                                style: TextStyle(
+                              Text(
+                                articleBand.band?.name ?? "",
+                                style: const TextStyle(
                                   fontSize: 12,
                                 ),
                               ),
@@ -396,7 +400,7 @@ class HomeFeedData extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  height: 8,
+                  height: 16,
                   color: COLOR_PRIMARY_DARK,
                 ),
                 GestureDetector(
@@ -413,12 +417,15 @@ class HomeFeedData extends StatelessWidget {
                   child: Container(
                     alignment: Alignment.centerLeft,
                     padding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 12),
+                        vertical: 16, horizontal: 12),
                     margin: const EdgeInsets.symmetric(horizontal: 0),
                     decoration: BoxDecoration(
-                     //color: COLOR_PRIMARY_DARK, //.withOpacity(0.8),
+                      //color: COLOR_PRIMARY_DARK, //.withOpacity(0.8),
                       //border: Border.all(color: Colors.grey.shade900.withOpacity(0.85),width: 2.5),
-                      border: Border(top: BorderSide(color: Colors.grey.shade900.withOpacity(0.85),width: 2)),
+                      border: Border(
+                          top: BorderSide(
+                              color: Colors.grey.shade900.withOpacity(0.85),
+                              width: 2)),
                       //borderRadius: BorderRadius.circular(8),
                     ),
                     child: Column(
@@ -427,8 +434,16 @@ class HomeFeedData extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text("GPT-4  ",style: TextStyle(color: Colors.white,fontSize: 12,fontWeight: FontWeight.bold),),
+                                const Text(
+                                  "Description ",
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 SoundPlayWidget(
                                   article: article,
                                   play: false,
@@ -438,11 +453,14 @@ class HomeFeedData extends StatelessWidget {
                             Container(
                               alignment: Alignment.centerLeft,
                               padding: const EdgeInsets.symmetric(
-                                 horizontal: 8,vertical: 6),
+                                  horizontal: 8, vertical: 6),
                               //margin: const EdgeInsets.symmetric(horizontal: 10),
                               decoration: BoxDecoration(
                                 color: COLOR_PRIMARY_DARK, //.withOpacity(0.8),
-                                border: Border.all(color: Colors.grey.shade900.withOpacity(0.85),width: 2.5),
+                                border: Border.all(
+                                    color:
+                                    Colors.grey.shade900.withOpacity(0.85),
+                                    width: 2.5),
                                 borderRadius: BorderRadius.circular(24),
                               ),
                               child: Row(
@@ -466,8 +484,9 @@ class HomeFeedData extends StatelessWidget {
                             ),
                           ],
                         ),
+
                         const SizedBox(
-                          height: 18,
+                          height: 16,
                         ),
                         ExpandableText(
                           (article.description != null)
@@ -481,6 +500,7 @@ class HomeFeedData extends StatelessWidget {
                             color: Colors.white.withOpacity(0.85),
                             fontFamily: APP_FONT_LIGHT,
                           ),
+                          maxLines: 3,
                           linkColor: Colors.blue,
                           expandText: 'show more',
                           collapseText: 'show less',

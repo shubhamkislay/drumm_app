@@ -129,6 +129,27 @@ class FirebaseDBOperations {
     return algoliaArticles;
   }
 
+  static Future<AlgoliaArticles> getRelatedArticlesFromAlgolia(String similarQuery) async {
+
+    AlgoliaArticles algoliaArticles = AlgoliaArticles();
+
+    AlgoliaQuery algoliaQuery = algolia.instance
+        .index('articles');
+
+    algoliaQuery.similarQuery(similarQuery);
+
+    AlgoliaQuerySnapshot getArticles = await algoliaQuery.getObjects();
+
+    List<Article> result =
+    List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
+
+    algoliaArticles =
+        AlgoliaArticles(articles: result, queryID: getArticles.queryID);
+
+
+    return algoliaArticles;
+  }
+
   static Future<AiVoice> getAiVoice(String doc) async{
 
     var data = await FirebaseFirestore.instance
