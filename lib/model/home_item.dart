@@ -18,6 +18,7 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:ogg_opus_player/ogg_opus_player.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../ShareWidget.dart';
 import '../SoundPlayWidget.dart';
 import '../article_jam_page.dart';
@@ -118,7 +119,6 @@ class _HomeItemState extends State<HomeItem> {
   void initState() {
     super.initState();
   }
-
 }
 
 class HomeFeedData extends StatelessWidget {
@@ -152,6 +152,18 @@ class HomeFeedData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int imageUrlLength = article.imageUrl?.length ?? 0;
+    // if(source.toLowerCase() =='youtube') {
+    //   FirebaseDBOperations.youtubeController =
+    //       YoutubePlayerController(
+    //         initialVideoId: YoutubePlayer.convertUrlToId(article.url??"")??"",
+    //         flags: const YoutubePlayerFlags(
+    //           autoPlay: false,
+    //           mute: false,
+    //           controlsVisibleAtStart: false,
+    //         ),
+    //       );
+    // }
+
     return Padding(
       //color: COLOR_PRIMARY_DARK.withOpacity(0.0),
       padding: const EdgeInsets.only(bottom: 32, top: 0),
@@ -168,67 +180,67 @@ class HomeFeedData extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                GestureDetector(
-                  onTap: () {
-                    Vibrate.feedback(FeedbackType.impact);
-                    openArticle(article);
-
-                    ConnectToChannel.insights.viewedObjects(
-                      indexName: 'articles',
-                      eventName: 'Viewed Item',
-                      objectIDs: [article.articleId ?? ""],
-                    );
-                  },
-                  child: Container(
-                    // padding: const EdgeInsets.all(6.0),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(curve),
-                        boxShadow: [
-                          BoxShadow(
-                            color:
-                                Colors.black.withOpacity(0.15), // Shadow color
-                            offset: const Offset(
-                                0, -2), // Shadow offset (horizontal, vertical)
-                            blurRadius: 8, // Blur radius
-                            spreadRadius: 0, // Spread radius
+                Container(
+                  // padding: const EdgeInsets.all(6.0),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(curve),
+                      boxShadow: [
+                        BoxShadow(
+                          color:
+                              Colors.black.withOpacity(0.15), // Shadow color
+                          offset: const Offset(
+                              0, -2), // Shadow offset (horizontal, vertical)
+                          blurRadius: 8, // Blur radius
+                          spreadRadius: 0, // Spread radius
+                        ),
+                      ]),
+                  child: (source.toLowerCase() != 'youtube')
+                      ? CachedNetworkImage(
+                          imageUrl: article.imageUrl ?? "",
+                          placeholder: (context, imageUrl) {
+                            String imageUrl = article.imageUrl ?? "";
+                            return Container(
+                              height: (imageUrlLength > 0) ? 200 : 0,
+                              width: double.infinity,
+                              // padding: const EdgeInsets.all(32),
+                              decoration: const BoxDecoration(
+                                color: Colors.transparent,
+                                // borderRadius: BorderRadius.circular(curve - 4),
+                              ),
+                              child: Image.asset(
+                                "images/logo_background_white.png",
+                                color: Colors.white.withOpacity(0.1),
+                              ),
+                            );
+                          },
+                          errorWidget: (context, url, error) {
+                            return Container(
+                              height: 0,
+                              width: double.infinity,
+                              //padding: const EdgeInsets.all(32),
+                              decoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius:
+                                    BorderRadius.circular(curve - 4),
+                              ),
+                              child: Image.asset(
+                                "images/logo_background_white.png",
+                                color: Colors.white.withOpacity(0.1),
+                              ),
+                            );
+                          },
+                          fit: BoxFit.cover,
+                        )
+                      : YoutubePlayer(
+                          controller: FirebaseDBOperations.youtubeController,
+                          showVideoProgressIndicator: false,
+                          progressColors: const ProgressBarColors(
+                            playedColor: Colors.blue,
+                            backgroundColor: Colors.blue,
+                            handleColor: Colors.blue,
+                            bufferedColor: Colors.blue,
                           ),
-                        ]),
-                    child: CachedNetworkImage(
-                      imageUrl: article.imageUrl ?? "",
-                      placeholder: (context, imageUrl) {
-                        String imageUrl = article.imageUrl ?? "";
-                        return Container(
-                          height: (imageUrlLength > 0) ? 200 : 0,
-                          width: double.infinity,
-                          // padding: const EdgeInsets.all(32),
-                          decoration: const BoxDecoration(
-                            color: Colors.transparent,
-                            // borderRadius: BorderRadius.circular(curve - 4),
-                          ),
-                          child: Image.asset(
-                            "images/logo_background_white.png",
-                            color: Colors.white.withOpacity(0.1),
-                          ),
-                        );
-                      },
-                      errorWidget: (context, url, error) {
-                        return Container(
-                          height: 0,
-                          width: double.infinity,
-                          //padding: const EdgeInsets.all(32),
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(curve - 4),
-                          ),
-                          child: Image.asset(
-                            "images/logo_background_white.png",
-                            color: Colors.white.withOpacity(0.1),
-                          ),
-                        );
-                      },
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                        ),
                 ),
                 if (article.question != null)
                   Container(
@@ -335,9 +347,10 @@ class HomeFeedData extends StatelessWidget {
                         : Text(
                             article.title ?? "",
                             textAlign: TextAlign.start,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 36,
+                              fontSize:
+                                  (source.toLowerCase() != 'youtube') ? 36 : 22,
                               fontFamily: APP_FONT_BOLD,
                               fontWeight: FontWeight.bold,
                               //fontWeight: FontWeight.bold,
@@ -460,7 +473,7 @@ class HomeFeedData extends StatelessWidget {
                                 color: COLOR_PRIMARY_DARK, //.withOpacity(0.8),
                                 border: Border.all(
                                     color:
-                                    Colors.grey.shade900.withOpacity(0.85),
+                                        Colors.grey.shade900.withOpacity(0.85),
                                     width: 2.5),
                                 borderRadius: BorderRadius.circular(24),
                               ),
@@ -485,7 +498,6 @@ class HomeFeedData extends StatelessWidget {
                             ),
                           ],
                         ),
-
                         const SizedBox(
                           height: 16,
                         ),

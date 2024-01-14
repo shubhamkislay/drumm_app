@@ -16,6 +16,7 @@ import 'package:ogg_opus_player/ogg_opus_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../model/AiVoice.dart';
 import '../../model/algolia_article.dart';
@@ -27,6 +28,16 @@ typedef void JamCallback(Jam jam);
 
 class FirebaseDBOperations {
   static var listener;
+  static YoutubePlayerController youtubeController =
+      YoutubePlayerController(
+    initialVideoId: YoutubePlayer.convertUrlToId(
+            "https://www.youtube.com/watch?v=d8jFqvDn3o8")??"d8jFqvDn3o8",
+    flags: const YoutubePlayerFlags(
+      autoPlay: false,
+      mute: false,
+      controlsVisibleAtStart: false,
+    ),
+  );
 
   static Algolia algolia = Algolia.init(
     applicationId: '6GGZ3SNOXT',
@@ -89,69 +100,65 @@ class FirebaseDBOperations {
     }
 
     AlgoliaArticles algoliaArticles = AlgoliaArticles();
-    int arLen = algoliaArticles.articles?.length ??0 ;
+    int arLen = algoliaArticles.articles?.length ?? 0;
     //int page = 0;
 
     //while(arLen<1 && page<=2) {
-      AlgoliaQuery algoliaQuery = algolia.instance
-          .index('articles')
-          .setFacets(['meta'])
-          .setHitsPerPage(7)
-          .setPage(page)
-          .setUserToken(userToken)
-          .setDistinct(value: true)
-          .setPersonalizationImpact(value: 75)
-          .setEnablePersonalization(enabled: true);
+    AlgoliaQuery algoliaQuery = algolia.instance
+        .index('articles')
+        .setFacets(['meta'])
+        .setHitsPerPage(7)
+        .setPage(page)
+        .setUserToken(userToken)
+        .setDistinct(value: true)
+        .setPersonalizationImpact(value: 75)
+        .setEnablePersonalization(enabled: true);
 
+    algoliaQuery = algoliaQuery.facetFilter(filterStr);
 
-      algoliaQuery = algoliaQuery.facetFilter(filterStr);
+    AlgoliaQuerySnapshot getArticles = await algoliaQuery.getObjects();
+    List<Article> result =
+        List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
 
-      AlgoliaQuerySnapshot getArticles = await algoliaQuery.getObjects();
-      List<Article> result =
-      List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
+    // List<Article> filteredList = [];
+    // for (Article farticle in result) {
+    //   if (!seenPosts.contains(farticle.articleId)) filteredList.add(farticle);
+    // }
 
-      // List<Article> filteredList = [];
-      // for (Article farticle in result) {
-      //   if (!seenPosts.contains(farticle.articleId)) filteredList.add(farticle);
-      // }
+    algoliaArticles =
+        AlgoliaArticles(articles: result, queryID: getArticles.queryID);
 
-      algoliaArticles =
-          AlgoliaArticles(articles: result, queryID: getArticles.queryID);
+    arLen = algoliaArticles.articles?.length ?? 0;
 
-      arLen = algoliaArticles.articles?.length ?? 0;
-
-      // if (arLen < 1) {
-      //   print("You have seen all articles");
-      //   page = page+1;
-      // }
+    // if (arLen < 1) {
+    //   print("You have seen all articles");
+    //   page = page+1;
+    // }
     //}
 
     return algoliaArticles;
   }
 
-  static Future<AlgoliaArticles> getRelatedArticlesFromAlgolia(String similarQuery) async {
-
+  static Future<AlgoliaArticles> getRelatedArticlesFromAlgolia(
+      String similarQuery) async {
     AlgoliaArticles algoliaArticles = AlgoliaArticles();
 
-    AlgoliaQuery algoliaQuery = algolia.instance
-        .index('articles');
+    AlgoliaQuery algoliaQuery = algolia.instance.index('articles');
 
     algoliaQuery.similarQuery(similarQuery);
 
     AlgoliaQuerySnapshot getArticles = await algoliaQuery.getObjects();
 
     List<Article> result =
-    List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
+        List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
 
     algoliaArticles =
         AlgoliaArticles(articles: result, queryID: getArticles.queryID);
 
-
     return algoliaArticles;
   }
 
-  static Future<AiVoice> getAiVoice(String doc) async{
-
+  static Future<AiVoice> getAiVoice(String doc) async {
     var data = await FirebaseFirestore.instance
         .collection('aivoice')
         .doc(doc)
@@ -163,46 +170,43 @@ class FirebaseDBOperations {
     });
 
     return AiVoice.fromSnapshot(data);
-
   }
 
-  static Future<AlgoliaArticles> getArticleFromAlgoliaForPersonalisedNotificaiton() async {
+  static Future<AlgoliaArticles>
+      getArticleFromAlgoliaForPersonalisedNotificaiton() async {
     String userToken = await FirebaseAuth.instance.currentUser?.uid ?? "";
     AlgoliaArticles algoliaArticles = AlgoliaArticles();
 
-      AlgoliaQuery algoliaQuery = algolia.instance
-          .index('articles')
-          .setFacets(['meta'])
-          .setHitsPerPage(1)
-          .setUserToken(userToken)
-          .setDistinct(value: true)
-          .setPersonalizationImpact(value: 75)
-          .setEnablePersonalization(enabled: true);
+    AlgoliaQuery algoliaQuery = algolia.instance
+        .index('articles')
+        .setFacets(['meta'])
+        .setHitsPerPage(1)
+        .setUserToken(userToken)
+        .setDistinct(value: true)
+        .setPersonalizationImpact(value: 75)
+        .setEnablePersonalization(enabled: true);
 
+    AlgoliaQuerySnapshot getArticles = await algoliaQuery.getObjects();
+    List<Article> result =
+        List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
 
-      AlgoliaQuerySnapshot getArticles = await algoliaQuery.getObjects();
-      List<Article> result =
-      List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
-
-
-      algoliaArticles =
-          AlgoliaArticles(articles: result, queryID: getArticles.queryID);
-
-
+    algoliaArticles =
+        AlgoliaArticles(articles: result, queryID: getArticles.queryID);
 
     return algoliaArticles;
   }
 
-  static Future<AlgoliaArticles> getArticlesByBandHookFromAlgolia(Band selectedBand, int page) async {
+  static Future<AlgoliaArticles> getArticlesByBandHookFromAlgolia(
+      Band selectedBand, int page) async {
     //List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
     String userToken = await FirebaseAuth.instance.currentUser?.uid ?? "";
-    List hooks = selectedBand.hooks??[];
+    List hooks = selectedBand.hooks ?? [];
 
     AlgoliaQuery algoliaQuery = algolia.instance
         .index('articles')
         .setFacets(['meta'])
         .setHitsPerPage(7)
-    .setPage(page)
+        .setPage(page)
         .setUserToken(userToken)
         .setDistinct(value: true)
         .setPersonalizationImpact(value: 75)
@@ -213,6 +217,7 @@ class FirebaseDBOperations {
       filterStr.add("category:${hook}");
       //algoliaQuery = algoliaQuery.facetFilter("'category:${hook}'");
     }
+    //filterStr.add("source:youtube");
     algoliaQuery = algoliaQuery.facetFilter(filterStr);
     //
     // for(String post in seenPosts){
@@ -221,9 +226,8 @@ class FirebaseDBOperations {
 
     AlgoliaQuerySnapshot getArticles = await algoliaQuery.getObjects();
 
-
     List<Article> result =
-    List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
+        List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
 
     // List<Article> filteredList = [];
     // for (Article farticle in result) {
@@ -231,7 +235,7 @@ class FirebaseDBOperations {
     // }
 
     AlgoliaArticles algoliaArticles =
-    AlgoliaArticles(articles: result, queryID: getArticles.queryID);
+        AlgoliaArticles(articles: result, queryID: getArticles.queryID);
 
     return algoliaArticles;
   }
@@ -283,7 +287,7 @@ class FirebaseDBOperations {
     final DocumentReference openDrumms =
         FirebaseFirestore.instance.collection("openDrumm").doc(jamID);
 
-   // jams.update({'count': count});
+    // jams.update({'count': count});
     openDrumms.update({'count': count});
     return true;
   }
@@ -446,15 +450,14 @@ class FirebaseDBOperations {
         List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
     List<Jam> filterList = [];
     for (Jam jam in fetchedList) {
-     // int memLen = jam.membersID?.length ?? 0;
-      if (isTimestampWithin1Minute(jam.lastActive??Timestamp.now())) {
+      // int memLen = jam.membersID?.length ?? 0;
+      if (isTimestampWithin1Minute(jam.lastActive ?? Timestamp.now())) {
         filterList.add(jam);
       }
     }
 
     return filterList;
   }
-
 
   static bool isTimestampWithin1Minute(Timestamp firebaseTimestamp) {
     // Get the current timestamp
@@ -488,14 +491,14 @@ class FirebaseDBOperations {
         .collection('openDrumm')
         .where('bandId', whereIn: bandIDList)
         .where('broadcast', isEqualTo: false)
-       // .where('count', isGreaterThan: 0)
+        // .where('count', isGreaterThan: 0)
         .get();
 
     List<Jam> fetchedList =
         List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
     List<Jam> filterList = [];
     for (Jam jam in fetchedList) {
-      if (isTimestampWithin1Minute(jam.lastActive??Timestamp.now())) {
+      if (isTimestampWithin1Minute(jam.lastActive ?? Timestamp.now())) {
         filterList.add(jam);
       }
     }
@@ -506,11 +509,10 @@ class FirebaseDBOperations {
   static Future<Jam> getDrummsFromJamId(Jam jam) async {
     var data = await FirebaseFirestore.instance
         .collection('openDrumm')
-    .doc(jam.jamId)
+        .doc(jam.jamId)
         .get();
 
     Jam fetchedJam = Jam.fromSnapshot(data);
-
 
     return fetchedJam;
   }
@@ -547,10 +549,11 @@ class FirebaseDBOperations {
     //   }
     // }
 
-    List<Jam> fetchedJams = List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+    List<Jam> fetchedJams =
+        List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
     List<Jam> filteredJams = [];
-    for(Jam liveJam in fetchedJams){
-      if(isTimestampWithin1Minute(liveJam.lastActive??Timestamp.now())) {
+    for (Jam liveJam in fetchedJams) {
+      if (isTimestampWithin1Minute(liveJam.lastActive ?? Timestamp.now())) {
         filteredJams.add(liveJam);
       }
     }
@@ -561,7 +564,7 @@ class FirebaseDBOperations {
   static Future<void> updateLastActive(String bandId) async {
     try {
       final CollectionReference bandsCollection =
-      FirebaseFirestore.instance.collection('openDrumm');
+          FirebaseFirestore.instance.collection('openDrumm');
 
       // Get the current timestamp
       final Timestamp currentTime = Timestamp.now();
@@ -577,7 +580,6 @@ class FirebaseDBOperations {
     }
   }
 
-
   static Future<List<Jam>> getJamsFromArticle(String articleId) async {
     print("getJamsFromArticle triggered");
     final uid = FirebaseAuth.instance.currentUser?.uid;
@@ -589,8 +591,6 @@ class FirebaseDBOperations {
     List<Jam> fetchedList =
         List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
 
-
-
     // var opendata = await FirebaseFirestore.instance
     //     .collection('openDrumm')
     //     .where('articleId', isEqualTo: articleId)
@@ -601,7 +601,7 @@ class FirebaseDBOperations {
     List<Jam> filterList = [];
     for (Jam jam in fetchedList) {
       //int memLen = jam.membersID?.length ?? 0;
-      if (isTimestampWithin1Minute(jam.lastActive??Timestamp.now())) {
+      if (isTimestampWithin1Minute(jam.lastActive ?? Timestamp.now())) {
         filterList.add(jam);
       }
     }
@@ -994,19 +994,18 @@ class FirebaseDBOperations {
     }
   }
 
-  static Future<void> sendNotificationToDeviceToken(
-      Jam jam) async {
+  static Future<void> sendNotificationToDeviceToken(Jam jam) async {
     print("Sending notification");
     var url = Uri.https('fcm.googleapis.com', '/fcm/send');
     final uid = FirebaseAuth.instance.currentUser?.uid;
     Drummer drummer = await FirebaseDBOperations.getDrummer(uid ?? "");
-    String deviceToken = drummer.token??"";
+    String deviceToken = drummer.token ?? "";
     print("Device Token is: ${deviceToken}");
 
     Map<String, String> header = {
       'Content-Type': 'application/json',
       'Authorization':
-      'key=AAAA8pEyjik:APA91bFjoRwCsioHAgDsWYHhcmy63BQuxL3iUBBaYnE9s2SHMnJtl0oyD39Mdp0KphI53ldusblYoiCCvxNaKJEFVQbGVTrwMcqDu9w_Rpx_Vsjx_9TdE3xI54vqj0lNOPDqAb5GPwOp'
+          'key=AAAA8pEyjik:APA91bFjoRwCsioHAgDsWYHhcmy63BQuxL3iUBBaYnE9s2SHMnJtl0oyD39Mdp0KphI53ldusblYoiCCvxNaKJEFVQbGVTrwMcqDu9w_Rpx_Vsjx_9TdE3xI54vqj0lNOPDqAb5GPwOp'
     };
 
     String subtitle = "Hey ${drummer.username}! Did you know?";
@@ -1015,7 +1014,9 @@ class FirebaseDBOperations {
     final body = jsonEncode({
       "to": deviceToken,
       "notification": {
-        "body": (jam.question!=null) ? "${jam.title}\n\n${jam.question}":"${jam.title}",
+        "body": (jam.question != null)
+            ? "${jam.title}\n\n${jam.question}"
+            : "${jam.title}",
         "title": subtitle,
         "sound": "conga_drumm.caf",
         "image": "${jam.imageUrl}"
@@ -1048,9 +1049,9 @@ class FirebaseDBOperations {
     var url = Uri.https('fcm.googleapis.com', '/fcm/send');
     final uid = FirebaseAuth.instance.currentUser?.uid;
     Drummer drummer = await FirebaseDBOperations.getDrummer(uid ?? "");
-    bool isBroadcast = jam.broadcast??false;
+    bool isBroadcast = jam.broadcast ?? false;
     var toParams = "";
-    if(isBroadcast)
+    if (isBroadcast)
       toParams = "/topics/" + 'creator';
     else
       toParams = "/topics/" + '${jam.bandId}';
@@ -1064,10 +1065,13 @@ class FirebaseDBOperations {
     String type = "notification";
     String subtitle = (ring)
         ? "${drummer.username} is drumming..."
-        : (isBroadcast)?"Welcome ${drummer.username} to Drumm":"${drummer.username} is drumming...";
+        : (isBroadcast)
+            ? "Welcome ${drummer.username} to Drumm"
+            : "${drummer.username} is drumming...";
     if (ring) type = "data";
 
-    var notifcationBody = (jam.question!=null)?"${jam.question}\n\n${jam.title}":jam.title;
+    var notifcationBody =
+        (jam.question != null) ? "${jam.question}\n\n${jam.title}" : jam.title;
     //Due to conversion error, setting the timestamo for lastActive as null
     jam.lastActive = null;
     final body = jsonEncode({
@@ -1217,7 +1221,7 @@ class FirebaseDBOperations {
 
     // Construct the query
     print("getBandByUser triggered");
-    if (list.isEmpty){
+    if (list.isEmpty) {
       print("bandsData list is null");
       return [];
     }
@@ -1228,7 +1232,7 @@ class FirebaseDBOperations {
 
       // Execute the query
       return List.from(data.docs.map((e) => Band.fromSnapshot(e)));
-    }catch(e){
+    } catch (e) {
       print("Unable to fetch bands because ${e.toString()}");
       return [];
     }
@@ -1439,22 +1443,22 @@ class FirebaseDBOperations {
 
   static void updateDrummerToken(String token) {
     try {
-      DocumentReference drummerSpeaking =
-      FirebaseFirestore.instance.collection('users').doc(getCurrentUserID());
+      DocumentReference drummerSpeaking = FirebaseFirestore.instance
+          .collection('users')
+          .doc(getCurrentUserID());
 
       drummerSpeaking.update({"token": token});
-    }catch(e){
+    } catch (e) {
       print("Unable to update device token${e}");
     }
   }
-
-
 
   static void addMemberToRoom(String jamId, String memberId) async {
     DocumentReference memberRef =
         FirebaseFirestore.instance.collection("openDrumm").doc(jamId);
 
-    final sfDocRef = FirebaseFirestore.instance.collection("openDrumm").doc(jamId);
+    final sfDocRef =
+        FirebaseFirestore.instance.collection("openDrumm").doc(jamId);
     FirebaseFirestore.instance.runTransaction((transaction) async {
       final snapshot = await transaction.get(memberRef);
       // Note: this could be done without a transaction
@@ -1548,7 +1552,8 @@ class FirebaseDBOperations {
     DocumentReference memberRef =
         FirebaseFirestore.instance.collection("openDrumm").doc(jamId);
 
-    final sfDocRef = FirebaseFirestore.instance.collection("openDrumm").doc(jamId);
+    final sfDocRef =
+        FirebaseFirestore.instance.collection("openDrumm").doc(jamId);
     FirebaseFirestore.instance.runTransaction((transaction) async {
       final snapshot = await transaction.get(memberRef);
       // Note: this could be done without a transaction

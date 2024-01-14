@@ -99,6 +99,7 @@ dependencies:
   crypto: ^3.0.3
   flutter_branch_sdk: ^6.6.0
   share_plus: ^7.2.1
+  youtube_player_flutter: ^8.1.2
 
 dev_dependencies:
   flutter_test:

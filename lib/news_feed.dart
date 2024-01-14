@@ -34,6 +34,7 @@ import 'package:lottie/lottie.dart';
 import 'package:ogg_opus_player/ogg_opus_player.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import 'ArticleDrummButton.dart';
 import 'ExploreNewsButton.dart';
@@ -143,7 +144,7 @@ class _NewsFeedState extends State<NewsFeed>
           padding: const EdgeInsets.only(bottom: 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+      children: [
               Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: 2, horizontal: horizontalPadding),
@@ -589,6 +590,8 @@ class _NewsFeedState extends State<NewsFeed>
           articleOnScreen = articleBands.elementAt(0).article ?? Article();
           if (articleTop == "") {
             articleTop = articleBands.elementAt(0).article?.articleId ?? "";
+            Article article = articleBands.elementAt(0).article??Article();
+            playYoutubeVideo(article);
           }
         } catch (e) {}
       });
@@ -635,6 +638,10 @@ class _NewsFeedState extends State<NewsFeed>
         articleBands = fetchedArticleBand;
         undoIndex = 0;
         articleOnScreen = articleBands.elementAt(0).article ?? Article();
+        articleTop =
+            articleBands.elementAt(0).article?.articleId ?? "";
+        Article article = articleBands.elementAt(0).article??Article();
+        playYoutubeVideo(article);
       });
     }
   }
@@ -655,6 +662,8 @@ class _NewsFeedState extends State<NewsFeed>
 
     articleTop =
         articleBands.elementAt(currentIndex ?? 0).article?.articleId ?? "";
+    Article article = articleBands.elementAt(currentIndex??0).article??Article();
+    playYoutubeVideo(article);
 
     Article articleForSpeech =
         articleBands.elementAt(currentIndex ?? 0).article ?? Article();
@@ -751,6 +760,40 @@ class _NewsFeedState extends State<NewsFeed>
     return true;
   }
 
+  void playYoutubeVideo(Article article){
+
+    if(article.source?.toLowerCase() == 'youtube'){
+      try {
+        //FirebaseDBOperations.youtubeController.cue(YoutubePlayer.convertUrlToId(article.url??"")??"");
+        FirebaseDBOperations.youtubeController =
+            YoutubePlayerController(
+              initialVideoId: YoutubePlayer.convertUrlToId(article.url??"")??"",
+              flags: const YoutubePlayerFlags(
+                showLiveFullscreenButton: false,
+                loop: true,
+                autoPlay: true,
+                mute: false,
+                controlsVisibleAtStart: false,
+              ),
+            );
+
+      }catch(e){
+      }
+    }
+    else{
+      FirebaseDBOperations.youtubeController =
+          YoutubePlayerController(
+            initialVideoId: YoutubePlayer.convertUrlToId(
+                "https://www.youtube.com/watch?v=d8jFqvDn3o8")??"d8jFqvDn3o8",
+            flags: const YoutubePlayerFlags(
+              autoPlay: false,
+              mute: false,
+              controlsVisibleAtStart: false,
+            ),
+          );
+    }
+  }
+
   bool _onUndo(
     int? previousIndex,
     int currentIndex,
@@ -760,6 +803,10 @@ class _NewsFeedState extends State<NewsFeed>
     print("undo tapped ${currentIndex}");
     articleTop =
         articleBands.elementAt(currentIndex ?? 0).article?.articleId ?? "";
+    Article article = articleBands.elementAt(currentIndex).article??Article();
+    playYoutubeVideo(article);
+
+
     setState(() {
       //undoIndex = currentIndex;
       articleOnScreen =
