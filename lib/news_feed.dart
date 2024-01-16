@@ -847,16 +847,16 @@ class _NewsFeedState extends State<NewsFeed>
         print("Error playing video because $e");
       }
     } else {
-      FirebaseDBOperations.youtubeController = YoutubePlayerController(
-        initialVideoId: YoutubePlayer.convertUrlToId(
-                "https://www.youtube.com/watch?v=d8jFqvDn3o8") ??
-            "d8jFqvDn3o8",
-        flags: const YoutubePlayerFlags(
-          autoPlay: false,
-          mute: false,
-          controlsVisibleAtStart: false,
-        ),
-      );
+      // FirebaseDBOperations.youtubeController = YoutubePlayerController(
+      //   initialVideoId: YoutubePlayer.convertUrlToId(
+      //           "https://www.youtube.com/watch?v=d8jFqvDn3o8") ??
+      //       "d8jFqvDn3o8",
+      //   flags: const YoutubePlayerFlags(
+      //     autoPlay: false,
+      //     mute: false,
+      //     controlsVisibleAtStart: false,
+      //   ),
+      // );
     }
   }
 

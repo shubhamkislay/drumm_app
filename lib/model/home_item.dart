@@ -231,7 +231,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                           ),
                         ),
                         const SizedBox(
-                          width: 12,
+                          width: 8,
                         ),
                         Expanded(
                           child: GestureDetector(
@@ -249,10 +249,8 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                                 maxFontSize: 32,
                                 minFontSize: 6,
                                 style: const TextStyle(
-                                  color: Colors.white, //.withOpacity(0.85),
+                                  color: Colors.white,
                                   fontSize: 16,
-                                  //fontWeight: FontWeight.bold,
-                                  //fontStyle: FontStyle.italic,
                                   fontFamily: APP_FONT_BOLD,
                                 ),
                               ),
@@ -260,7 +258,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                           ),
                         ),
                         const SizedBox(
-                          width: 12,
+                          width: 8,
                         ),
                         GestureDetector(
                           onTap: () {
