@@ -43,15 +43,18 @@ class HomeItem extends StatefulWidget {
   String? bandId;
   String? queryID;
   bool play;
+  bool onTop;
   bool isContainerVisible = false;
   VoidCallback undo;
   Function(ArticleBand) joinDrumm;
   Function(Article) updateList;
   Function(Article) openArticle;
+  YoutubePlayerController youtubePlayerController;
 
   Future<void> Function() onRefresh;
   HomeItem(
       {Key? key,
+      required this.youtubePlayerController,
       required this.play,
       required this.index,
       required this.articleBand,
@@ -60,6 +63,7 @@ class HomeItem extends StatefulWidget {
       required this.undo,
       required this.isContainerVisible,
       required this.updateList,
+      required this.onTop,
       this.bandId,
       this.queryID,
       required this.openArticle})
@@ -100,6 +104,7 @@ class _HomeItemState extends State<HomeItem> {
       child: Stack(
         children: [
           HomeFeedData(
+            youtubePlayerController: widget.youtubePlayerController,
             onRefresh: widget.onRefresh,
             source: widget.articleBand.article?.source ?? "",
             publishedAt:
@@ -108,6 +113,7 @@ class _HomeItemState extends State<HomeItem> {
             article: widget.articleBand.article ?? Article(),
             joinDrumm: widget.joinDrumm,
             articleBand: widget.articleBand,
+            onTop: widget.onTop,
           ),
           const BottomFade(),
         ],
@@ -121,7 +127,7 @@ class _HomeItemState extends State<HomeItem> {
   }
 }
 
-class HomeFeedData extends StatelessWidget {
+class HomeFeedData extends StatefulWidget {
   Future<void> Function() onRefresh;
   Function(Article) openArticle;
   Function(ArticleBand) joinDrumm;
@@ -129,6 +135,8 @@ class HomeFeedData extends StatelessWidget {
   Article article;
   String publishedAt;
   ArticleBand articleBand;
+  YoutubePlayerController youtubePlayerController;
+  bool onTop;
 
   HomeFeedData(
       {required this.onRefresh,
@@ -136,22 +144,36 @@ class HomeFeedData extends StatelessWidget {
       required this.publishedAt,
       required this.openArticle,
       required this.article,
+      required this.youtubePlayerController,
       required this.joinDrumm,
-      required this.articleBand});
+      required this.articleBand,
+      required this.onTop});
 
+  @override
+  State<HomeFeedData> createState() => _HomeFeedDataState();
+}
+
+class _HomeFeedDataState extends State<HomeFeedData> {
   BranchContentMetaData metadata = BranchContentMetaData();
+
   BranchLinkProperties lp = BranchLinkProperties();
+
   late BranchUniversalObject buo;
+
   late BranchEvent eventStandard;
+
   late BranchEvent eventCustom;
 
   StreamSubscription<Map>? streamSubscription;
+
   StreamController<String> controllerData = StreamController<String>();
+
   StreamController<String> controllerInitSession = StreamController<String>();
 
   @override
   Widget build(BuildContext context) {
-    int imageUrlLength = article.imageUrl?.length ?? 0;
+    bool muteAudio = false;
+    int imageUrlLength = widget.article.imageUrl?.length ?? 0;
     // if(source.toLowerCase() =='youtube') {
     //   FirebaseDBOperations.youtubeController =
     //       YoutubePlayerController(
@@ -168,7 +190,7 @@ class HomeFeedData extends StatelessWidget {
       //color: COLOR_PRIMARY_DARK.withOpacity(0.0),
       padding: const EdgeInsets.only(bottom: 32, top: 0),
       child: RefreshIndicator(
-        onRefresh: onRefresh,
+        onRefresh: widget.onRefresh,
         child: ClipRRect(
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(curve),
@@ -180,25 +202,100 @@ class HomeFeedData extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                if (widget.article.question != null)
+                  Container(
+                    width: double.maxFinite,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    alignment: Alignment.centerLeft,
+                    decoration: BoxDecoration(
+                        //color: Colors.grey.shade900.withOpacity(0.65),
+                        gradient: LinearGradient(colors: [
+                      Colors.indigo,
+                      Colors.blue.shade700,
+                      Colors.lightBlue,
+                    ])),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            widget.joinDrumm(widget.articleBand);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            child: Image.asset('images/audio-waves.png',
+                                height: 24,
+                                color: Colors.white,
+                                fit: BoxFit.contain),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 12,
+                        ),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              print("Join Drumm");
+                              widget.joinDrumm(widget.articleBand);
+                            },
+                            child: Container(
+                              height: 80,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.all(4),
+                              child: AutoSizeText(
+                                "\"${widget.article.question}\"" ?? "",
+                                textAlign: TextAlign.center,
+                                maxFontSize: 32,
+                                minFontSize: 6,
+                                style: const TextStyle(
+                                  color: Colors.white, //.withOpacity(0.85),
+                                  fontSize: 16,
+                                  //fontWeight: FontWeight.bold,
+                                  //fontStyle: FontStyle.italic,
+                                  fontFamily: APP_FONT_BOLD,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 12,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Vibrate.feedback(FeedbackType.selection);
+                            generateLink();
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 2),
+                            child: ShareWidget(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                SizedBox(
+                  height: 3,
+                ),
                 Container(
                   // padding: const EdgeInsets.all(6.0),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(curve),
                       boxShadow: [
                         BoxShadow(
-                          color:
-                              Colors.black.withOpacity(0.15), // Shadow color
+                          color: Colors.black.withOpacity(0.15), // Shadow color
                           offset: const Offset(
                               0, -2), // Shadow offset (horizontal, vertical)
                           blurRadius: 8, // Blur radius
                           spreadRadius: 0, // Spread radius
                         ),
                       ]),
-                  child: (source.toLowerCase() != 'youtube')
+                  child: (widget.source.toLowerCase() != 'youtube')
                       ? CachedNetworkImage(
-                          imageUrl: article.imageUrl ?? "",
+                          imageUrl: widget.article.imageUrl ?? "",
                           placeholder: (context, imageUrl) {
-                            String imageUrl = article.imageUrl ?? "";
+                            String imageUrl = widget.article.imageUrl ?? "";
                             return Container(
                               height: (imageUrlLength > 0) ? 200 : 0,
                               width: double.infinity,
@@ -220,8 +317,7 @@ class HomeFeedData extends StatelessWidget {
                               //padding: const EdgeInsets.all(32),
                               decoration: BoxDecoration(
                                 color: Colors.black,
-                                borderRadius:
-                                    BorderRadius.circular(curve - 4),
+                                borderRadius: BorderRadius.circular(curve - 4),
                               ),
                               child: Image.asset(
                                 "images/logo_background_white.png",
@@ -231,88 +327,61 @@ class HomeFeedData extends StatelessWidget {
                           },
                           fit: BoxFit.cover,
                         )
-                      : YoutubePlayer(
-                          controller: FirebaseDBOperations.youtubeController,
-                          showVideoProgressIndicator: false,
-                          progressColors: const ProgressBarColors(
-                            playedColor: Colors.blue,
-                            backgroundColor: Colors.blue,
-                            handleColor: Colors.blue,
-                            bufferedColor: Colors.blue,
-                          ),
+                      : (widget.onTop)
+                          ? YoutubePlayer(
+                              controller: widget.youtubePlayerController,
+                    bottomActions: [
+                      ProgressBar(
+                        isExpanded: true,
+                        colors: ProgressBarColors(
+                          playedColor: Colors.white70,
+                          bufferedColor: Colors.white24,
+                          handleColor: Colors.transparent,
+                          backgroundColor: Colors.white12
                         ),
-                ),
-                if (article.question != null)
-                  Container(
-                    width: double.maxFinite,
-                    padding: const EdgeInsets.only(
-                        left: 4, right: 4, top: 4, bottom: 4),
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                        //color: Colors.grey.shade900.withOpacity(0.65),
-                        gradient: LinearGradient(colors: [
-                      Colors.indigo,
-                      Colors.blue.shade700,
-                      Colors.lightBlue,
-                    ])),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            joinDrumm(articleBand);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            child: Image.asset('images/audio-waves.png',
-                                height: 20,
-                                color: Colors.white,
-                                fit: BoxFit.contain),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 4,
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              print("Join Drumm");
-                              joinDrumm(articleBand);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(4),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "\"${article.question}\"" ?? "",
-                                    textAlign: TextAlign.left,
-                                    style: const TextStyle(
-                                      color: Colors.white, //.withOpacity(0.85),
-                                      fontSize: 14,
-                                      //fontWeight: FontWeight.bold,
-                                      //fontStyle: FontStyle.italic,
-                                      fontFamily: APP_FONT_LIGHT,
-                                    ),
-                                  ),
-                                ],
+                      ),
+                    ],
+                    actionsPadding: EdgeInsets.all(0),
+                    topActions: [
+                      Expanded(child: Container()),
+                      VolumeButton(youtubePlayerController: widget.youtubePlayerController)
+                    ],
+                    thumbnail: Image.network(
+                      YoutubePlayer.getThumbnail(videoId: convertUrlToId(widget.article.url??"")??""),
+                      fit: BoxFit.cover,
+                      loadingBuilder: (_, child, progress) =>
+                      progress == null
+                          ? child
+                          : Container(color: Colors.transparent),
+                      errorBuilder: (context, _, __) => Image.network(
+                        YoutubePlayer.getThumbnail(videoId: convertUrlToId(widget.article.url??"")??""),
+                        fit: BoxFit.cover,
+                        loadingBuilder: (_, child, progress) =>
+                        progress == null
+                            ? child
+                            : Container(color: Colors.black),
+                        errorBuilder: (context, _, __) => Container(),
+                      ),
+                    ),
+                            )
+                          : Image.network(
+                    YoutubePlayer.getThumbnail(videoId: convertUrlToId(widget.article.url??"")??""),
+                              fit: BoxFit.cover,
+                              loadingBuilder: (_, child, progress) =>
+                                  progress == null
+                                      ? child
+                                      : Container(color: Colors.transparent),
+                              errorBuilder: (context, _, __) => Image.network(
+                                YoutubePlayer.getThumbnail(videoId: convertUrlToId(widget.article.url??"")??""),
+                                fit: BoxFit.cover,
+                                loadingBuilder: (_, child, progress) =>
+                                    progress == null
+                                        ? child
+                                        : Container(color: Colors.black),
+                                errorBuilder: (context, _, __) => Container(),
                               ),
                             ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Vibrate.feedback(FeedbackType.selection);
-                            generateLink();
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 2),
-                            child: ShareWidget(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                ),
                 Container(
                   height: 16,
                   color: COLOR_PRIMARY_DARK,
@@ -325,32 +394,34 @@ class HomeFeedData extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () {
                       Vibrate.feedback(FeedbackType.impact);
-                      openArticle(article);
+                      widget.openArticle(widget.article);
 
                       ConnectToChannel.insights.viewedObjects(
                         indexName: 'articles',
                         eventName: 'Viewed Item',
-                        objectIDs: [article.articleId ?? ""],
+                        objectIDs: [widget.article.articleId ?? ""],
                       );
                     },
                     child: (imageUrlLength > 0)
                         ? Text(
-                            article.title ?? "",
+                            widget.article.title ?? "",
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 22,
+                              fontSize: 20,
                               fontFamily: APP_FONT_BOLD,
                               fontWeight: FontWeight.bold,
                             ),
                           )
                         : Text(
-                            article.title ?? "",
+                            widget.article.title ?? "",
                             textAlign: TextAlign.start,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize:
-                                  (source.toLowerCase() != 'youtube') ? 36 : 22,
+                                  (widget.source.toLowerCase() != 'youtube')
+                                      ? 36
+                                      : 20,
                               fontFamily: APP_FONT_BOLD,
                               fontWeight: FontWeight.bold,
                               //fontWeight: FontWeight.bold,
@@ -367,14 +438,14 @@ class HomeFeedData extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(source,
+                      Text(widget.source,
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.8),
                             fontSize: 13,
                             fontFamily: APP_FONT_MEDIUM,
                           )),
                       const Text(" • "),
-                      InstagramDateTimeWidget(publishedAt: publishedAt),
+                      InstagramDateTimeWidget(publishedAt: widget.publishedAt),
                       const Text(" • "),
                       GestureDetector(
                         onTap: () {
@@ -382,7 +453,7 @@ class HomeFeedData extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => BandDetailsPage(
-                                  band: articleBand.band,
+                                  band: widget.articleBand.band,
                                 ),
                               ));
                         },
@@ -401,7 +472,7 @@ class HomeFeedData extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Text(
-                                articleBand.band?.name ?? "",
+                                widget.articleBand.band?.name ?? "",
                                 style: const TextStyle(
                                   fontSize: 12,
                                 ),
@@ -420,16 +491,17 @@ class HomeFeedData extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     Vibrate.feedback(FeedbackType.impact);
-                    openArticle(article);
+                    widget.openArticle(widget.article);
 
                     ConnectToChannel.insights.viewedObjects(
                       indexName: 'articles',
                       eventName: 'Viewed Item',
-                      objectIDs: [article.articleId ?? ""],
+                      objectIDs: [widget.article.articleId ?? ""],
                     );
                   },
                   child: Container(
                     alignment: Alignment.centerLeft,
+                    width: double.maxFinite,
                     padding: const EdgeInsets.symmetric(
                         vertical: 16, horizontal: 12),
                     margin: const EdgeInsets.symmetric(horizontal: 0),
@@ -443,6 +515,8 @@ class HomeFeedData extends StatelessWidget {
                       //borderRadius: BorderRadius.circular(8),
                     ),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -459,7 +533,7 @@ class HomeFeedData extends StatelessWidget {
                                   ),
                                 ),
                                 SoundPlayWidget(
-                                  article: article,
+                                  article: widget.article,
                                   play: false,
                                 ),
                               ],
@@ -502,10 +576,10 @@ class HomeFeedData extends StatelessWidget {
                           height: 16,
                         ),
                         ExpandableText(
-                          (article.description != null)
-                              ? "${article.description}"
-                              : (article.content != null)
-                                  ? "${article.content}"
+                          (widget.source.toLowerCase() =='youtube')? widget.article.title??"": (widget.article.description != null)
+                              ? "${widget.article.description}"
+                              : (widget.article.content != null)
+                                  ? "${widget.article.content}"
                                   : "",
                           textAlign: TextAlign.left,
                           style: TextStyle(
@@ -513,7 +587,7 @@ class HomeFeedData extends StatelessWidget {
                             color: Colors.white.withOpacity(0.85),
                             fontFamily: APP_FONT_LIGHT,
                           ),
-                          maxLines: 3,
+                          maxLines: 2,
                           linkColor: Colors.blue,
                           expandText: 'show more',
                           collapseText: 'show less',
@@ -534,20 +608,45 @@ class HomeFeedData extends StatelessWidget {
       ),
     );
   }
+  static String? convertUrlToId(String url, {bool trimWhitespaces = true}) {
+    if (!url.contains("http") && (url.length == 11)) return url;
+    if (trimWhitespaces) url = url.trim();
 
+    for (var exp in [
+      RegExp(
+          r"^https:\/\/(?:www\.|m\.)?youtube\.com\/watch\?v=([_\-a-zA-Z0-9]{11}).*$"),
+      RegExp(
+          r"^https:\/\/(?:music\.)?youtube\.com\/watch\?v=([_\-a-zA-Z0-9]{11}).*$"),
+      RegExp(
+          r"^https:\/\/(?:www\.|m\.)?youtube\.com\/shorts\/([_\-a-zA-Z0-9]{11}).*$"),
+      RegExp(
+          r"^https:\/\/(?:www\.|m\.)?youtube(?:-nocookie)?\.com\/embed\/([_\-a-zA-Z0-9]{11}).*$"),
+      RegExp(r"^https:\/\/youtu\.be\/([_\-a-zA-Z0-9]{11}).*$")
+    ]) {
+      Match? match = exp.firstMatch(url);
+      if (match != null && match.groupCount >= 1) return match.group(1);
+    }
+
+    return null;
+  }
   void generateLink() async {
+    String imageUrl = widget.article?.imageUrl ?? DEFAULT_APP_IMAGE_URL;
+    String source = widget.article?.source??"";
+    if(source.toLowerCase()=="youtube"){
+      imageUrl = YoutubePlayer.getThumbnail(videoId: YoutubePlayer.convertUrlToId(widget.article.url??"")??"");
+    }
     Jam jam = Jam();
     jam.broadcast = false;
-    jam.title = article?.title;
-    jam.bandId = article?.category;
-    jam.jamId = article?.jamId;
-    jam.articleId = article?.articleId;
-    jam.startedBy = article?.source;
-    jam.imageUrl = article?.imageUrl;
-    if (article?.question != null) {
-      jam.question = article?.question;
+    jam.title = widget.article?.title;
+    jam.bandId = widget.article?.category;
+    jam.jamId = widget.article?.jamId;
+    jam.articleId = widget.article?.articleId;
+    jam.startedBy = widget.article?.source;
+    jam.imageUrl = imageUrl;
+    if (widget.article?.question != null) {
+      jam.question = widget.article?.question;
     } else {
-      jam.question = article?.title;
+      jam.question = widget.article?.title;
     }
     jam.count = 1;
     jam.membersID = [];
@@ -555,11 +654,12 @@ class HomeFeedData extends StatelessWidget {
 
     metadata = BranchContentMetaData()..addCustomMetadata('jam', jam.toJson());
 
+
     buo = BranchUniversalObject(
         canonicalIdentifier: 'flutter/branch',
         title: "Drop-in Audio discussion on Drumm",
-        imageUrl: article?.imageUrl ?? DEFAULT_APP_IMAGE_URL,
-        contentDescription: '${article?.title}',
+        imageUrl: imageUrl,
+        contentDescription: '${widget.article?.title}',
         contentMetadata: metadata,
         publiclyIndex: true,
         locallyIndex: true,
@@ -588,7 +688,7 @@ class HomeFeedData extends StatelessWidget {
       print('GeneratedLink : ${response.result}');
 
       String articleLink =
-          "${(article?.question != null) ? "Drumm: ${article?.question}" : article?.title}\n\nTap to join the discussion on Drumm.\n${response.result}";
+          "${(widget.article?.question != null) ? "Drumm: ${widget.article?.question}" : widget.article?.title}\n\nTap to join the discussion on Drumm.\n${response.result}";
 
       Share.share(articleLink);
 
@@ -599,6 +699,41 @@ class HomeFeedData extends StatelessWidget {
     } else {
       print('Error : ${response.errorCode} - ${response.errorMessage}');
     }
+  }
+}
+
+class VolumeButton extends StatefulWidget {
+  YoutubePlayerController youtubePlayerController;
+
+  VolumeButton({Key? key, required this.youtubePlayerController})
+      : super(key: key);
+
+  @override
+  State<VolumeButton> createState() => _VolumeButtonState();
+}
+
+class _VolumeButtonState extends State<VolumeButton> {
+  bool muteAudio = false;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: () {
+          if (!muteAudio) {
+            widget.youtubePlayerController.mute();
+            setState(() {
+              muteAudio = true;
+            });
+          } else {
+            widget.youtubePlayerController.unMute();
+            setState(() {
+              muteAudio = false;
+            });
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: (muteAudio) ? Icon(Icons.volume_mute) : Icon(Icons.volume_up),
+        ));
   }
 }
 

@@ -36,9 +36,9 @@ class MultiSelectContainerWidget extends StatelessWidget {
       ),
       itemsDecoration: MultiSelectDecorations(
         decoration: BoxDecoration(
-            color: Colors.grey.shade900.withOpacity(0.65), //Colors.grey.shade900,
+            color: Colors.grey.shade900.withOpacity(0.75), //Colors.grey.shade900,
             border: Border.all(
-                color: Colors.grey.shade900, width: 2.25), //Color(0xff2f2f2f)),
+                color: Colors.grey.shade900.withOpacity(0.5), width: 2.25), //Color(0xff2f2f2f)),
             borderRadius: BorderRadius.circular(multiSelectRadius)),
         selectedDecoration: BoxDecoration(
           color: Colors.white,

@@ -194,9 +194,11 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
   @override
   void dispose() {
     // TODO: implement dispose
-    setState(() {
-      status = "idle";
-    });
+    try {
+      setState(() {
+        status = "idle";
+      });
+    }catch(e){}
     super.dispose();
   }
 }

@@ -100,6 +100,7 @@ dependencies:
   flutter_branch_sdk: ^6.6.0
   share_plus: ^7.2.1
   youtube_player_flutter: ^8.1.2
+  youtube_player_iframe: ^4.0.4
 
 dev_dependencies:
   flutter_test:

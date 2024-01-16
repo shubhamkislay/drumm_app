@@ -18,6 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+
 import '../../model/AiVoice.dart';
 import '../../model/algolia_article.dart';
 import '../../model/band.dart';
@@ -28,16 +29,7 @@ typedef void JamCallback(Jam jam);
 
 class FirebaseDBOperations {
   static var listener;
-  static YoutubePlayerController youtubeController =
-      YoutubePlayerController(
-    initialVideoId: YoutubePlayer.convertUrlToId(
-            "https://www.youtube.com/watch?v=d8jFqvDn3o8")??"d8jFqvDn3o8",
-    flags: const YoutubePlayerFlags(
-      autoPlay: false,
-      mute: false,
-      controlsVisibleAtStart: false,
-    ),
-  );
+  static late YoutubePlayerController youtubeController;
 
   static Algolia algolia = Algolia.init(
     applicationId: '6GGZ3SNOXT',
@@ -108,6 +100,7 @@ class FirebaseDBOperations {
         .index('articles')
         .setFacets(['meta'])
         .setHitsPerPage(7)
+    .query("Youtube")
         .setPage(page)
         .setUserToken(userToken)
         .setDistinct(value: true)

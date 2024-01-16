@@ -72,6 +72,8 @@ class _NewsFeedState extends State<NewsFeed>
   late CardSwiperController? controller;
   List<MultiSelectCard<dynamic>> mulList = [];
   String selectedCategory = "For You";
+  late YoutubePlayerController youtubePlayerController;
+  bool initialisedYoutubePlayer = false;
   List<dynamic> mAllSelectedItems = [];
   late MultiSelectContainerWidget multiSelectContainer;
   List<MultiSelectCard<dynamic>> bandsCards = [];
@@ -134,6 +136,8 @@ class _NewsFeedState extends State<NewsFeed>
 
   int undoIndex = 0;
 
+  int topIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -144,7 +148,7 @@ class _NewsFeedState extends State<NewsFeed>
           padding: const EdgeInsets.only(bottom: 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
+            children: [
               Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: 2, horizontal: horizontalPadding),
@@ -217,15 +221,18 @@ class _NewsFeedState extends State<NewsFeed>
                                   : 0,
                               duration: const Duration(milliseconds: 175),
                               maxAngle: 60,
-                              scale: 0.9,
+                              scale: 0.8,
                               numberOfCardsDisplayed: (articleBands.length > 1)
                                   ? 2
                                   : (articleBands.isEmpty)
                                       ? 0
                                       : 1,
-                              isVerticalSwipingEnabled: false,
+                              isVerticalSwipingEnabled: true,
                               onEnd: () {
+                                print("//////////////////////////On END");
+
                                 articlePage += 1;
+                                articleTop = "";
                                 if (selectedBandID == "For You") {
                                   getArticles();
                                 } else {
@@ -255,10 +262,11 @@ class _NewsFeedState extends State<NewsFeed>
                                       updateList: (article) {},
                                       undo: () {
                                         print("undoIndex ${undoIndex}");
-                                        if (undoIndex != 0)
+                                        if (undoIndex != 0) {
                                           controller?.undo();
-                                        else
+                                        } else {
                                           print("Cannot undo");
+                                        }
                                       },
                                       onRefresh: () {
                                         return _refreshData();
@@ -268,6 +276,9 @@ class _NewsFeedState extends State<NewsFeed>
                                         startDrumming(articleBand);
                                       },
                                       play: false,
+                                      youtubePlayerController:
+                                          youtubePlayerController,
+                                      onTop: topIndex == index,
                                     );
                                   } else {
                                     return Container();
@@ -529,6 +540,7 @@ class _NewsFeedState extends State<NewsFeed>
           selectedBandID = selectedBand.bandId ?? "For You";
           setState(() {
             articlePage = 0;
+            initialisedYoutubePlayer = false;
             //selectedCategory = selectedItem;
             if (selectedBandID == "For You") {
               getArticles();
@@ -580,6 +592,14 @@ class _NewsFeedState extends State<NewsFeed>
       }
 
       setState(() {
+        Article article = fetchedArticleBand.elementAt(0).article ?? Article();
+        print("getArticles page $articlePage item ${article.title}");
+        try {
+          //youtubePlayerController.dispose();
+        } catch (e) {}
+        topIndex = 0;
+        initialisedYoutubePlayer = false;
+        playYoutubeVideo(article);
         loadAnimation = false;
         queryID = algoliaArticles?.queryID;
         loadingAnimation = LOADING_ASSET;
@@ -590,8 +610,6 @@ class _NewsFeedState extends State<NewsFeed>
           articleOnScreen = articleBands.elementAt(0).article ?? Article();
           if (articleTop == "") {
             articleTop = articleBands.elementAt(0).article?.articleId ?? "";
-            Article article = articleBands.elementAt(0).article??Article();
-            playYoutubeVideo(article);
           }
         } catch (e) {}
       });
@@ -637,10 +655,11 @@ class _NewsFeedState extends State<NewsFeed>
         articles = articleFetched;
         articleBands = fetchedArticleBand;
         undoIndex = 0;
+        topIndex = 0;
+        initialisedYoutubePlayer = false;
         articleOnScreen = articleBands.elementAt(0).article ?? Article();
-        articleTop =
-            articleBands.elementAt(0).article?.articleId ?? "";
-        Article article = articleBands.elementAt(0).article??Article();
+        articleTop = articleBands.elementAt(0).article?.articleId ?? "";
+        Article article = articleBands.elementAt(0).article ?? Article();
         playYoutubeVideo(article);
       });
     }
@@ -660,20 +679,59 @@ class _NewsFeedState extends State<NewsFeed>
     } catch (e) {}
     cleanCache();
 
-    articleTop =
-        articleBands.elementAt(currentIndex ?? 0).article?.articleId ?? "";
-    Article article = articleBands.elementAt(currentIndex??0).article??Article();
-    playYoutubeVideo(article);
+    if (currentIndex != null) {
 
-    Article articleForSpeech =
-        articleBands.elementAt(currentIndex ?? 0).article ?? Article();
+      articleTop =
+          articleBands.elementAt(currentIndex).article?.articleId ?? "";
+      Article article =
+          articleBands.elementAt(currentIndex).article ?? Article();
+      print("onSwipe item ${article.title}");
+
+      if(currentIndex == articleBands.length-1){
+        youtubePlayerController = YoutubePlayerController(
+          initialVideoId:
+          YoutubePlayer.convertUrlToId(article?.url ?? "") ?? "",
+          flags: const YoutubePlayerFlags(
+            autoPlay: true,
+            mute: false,
+            loop: true,
+            hideThumbnail: false,
+            controlsVisibleAtStart: false,
+          ),
+        );
+      }
+      else
+        playYoutubeVideo(article);
+
+      setState(() {
+          topIndex = currentIndex;
+        });
+
+    } else {
+      print("The current index is null");
+      // setState(() {
+      //   topIndex = 0;
+      //   try {
+      //     youtubePlayerController.pause();
+      //     youtubePlayerController.dispose();
+      //   }catch(e){
+      //
+      //   }
+      // });
+
+      //initialisedYoutubePlayer = false;
+      //youtubePlayerController.dispose();
+    }
+
     try {
       player.dispose();
     } catch (e) {}
     setState(() {
       //undoIndex = currentIndex ?? 0;
-      articleOnScreen =
-          articleBands.elementAt(currentIndex ?? 0).article ?? Article();
+      if (currentIndex != null) {
+        articleOnScreen =
+            articleBands.elementAt(currentIndex).article ?? Article();
+      }
     });
 
     try {
@@ -681,6 +739,8 @@ class _NewsFeedState extends State<NewsFeed>
           articleBands.elementAt(previousIndex).article?.articleId);
     } catch (e) {}
 
+    if (direction == CardSwiperDirection.top ||
+        direction == CardSwiperDirection.bottom) return false;
     if (direction == CardSwiperDirection.left) {
       //Vibrate.feedback(FeedbackType.selection);
 
@@ -760,38 +820,117 @@ class _NewsFeedState extends State<NewsFeed>
     return true;
   }
 
-  void playYoutubeVideo(Article article){
+  void playYoutubeVideo(Article article) {
+    print("Playing youtube video ${article.title}");
 
-    if(article.source?.toLowerCase() == 'youtube'){
+
+    if (article.source?.toLowerCase() == 'youtube') {
       try {
-        //FirebaseDBOperations.youtubeController.cue(YoutubePlayer.convertUrlToId(article.url??"")??"");
-        FirebaseDBOperations.youtubeController =
-            YoutubePlayerController(
-              initialVideoId: YoutubePlayer.convertUrlToId(article.url??"")??"",
+        if (!initialisedYoutubePlayer) {
+            youtubePlayerController = YoutubePlayerController(
+              initialVideoId:
+                  YoutubePlayer.convertUrlToId(article?.url ?? "") ?? "",
               flags: const YoutubePlayerFlags(
-                showLiveFullscreenButton: false,
-                loop: true,
                 autoPlay: true,
                 mute: false,
+                loop: true,
+                hideThumbnail: false,
                 controlsVisibleAtStart: false,
               ),
             );
-
-      }catch(e){
+            initialisedYoutubePlayer = true;
+        } else {
+          youtubePlayerController
+              .load(YoutubePlayer.convertUrlToId(article?.url ?? "") ?? "");
+        }
+      } catch (e) {
+        print("Error playing video because $e");
       }
+    } else {
+      FirebaseDBOperations.youtubeController = YoutubePlayerController(
+        initialVideoId: YoutubePlayer.convertUrlToId(
+                "https://www.youtube.com/watch?v=d8jFqvDn3o8") ??
+            "d8jFqvDn3o8",
+        flags: const YoutubePlayerFlags(
+          autoPlay: false,
+          mute: false,
+          controlsVisibleAtStart: false,
+        ),
+      );
     }
-    else{
-      FirebaseDBOperations.youtubeController =
-          YoutubePlayerController(
-            initialVideoId: YoutubePlayer.convertUrlToId(
-                "https://www.youtube.com/watch?v=d8jFqvDn3o8")??"d8jFqvDn3o8",
-            flags: const YoutubePlayerFlags(
-              autoPlay: false,
-              mute: false,
-              controlsVisibleAtStart: false,
-            ),
-          );
+  }
+
+  // void playYoutube(Article article){
+  //   if (article.source?.toLowerCase() == 'youtube') {
+  //     try {
+  //       if (!initialisedYoutubePlayer) {
+  //         youtubePlayerController = YoutubePlayerController(
+  //           onWebResourceError: (e){
+  //             print("Error loading video beccause $e");
+  //           },
+  //
+  //           params: YoutubePlayerParams(
+  //             loop: true,
+  //             mute: false,
+  //             showControls: false,
+  //             showVideoAnnotations: false,
+  //             playsInline: true,
+  //             showFullscreenButton: false,
+  //           ),
+  //         );
+  //         youtubePlayerController.loadVideoById(videoId:convertUrlToId(article?.url ?? "")??"");
+  //
+  //         youtubePlayerController.listen((event) {
+  //           print("Event: ${event}");
+  //         },onError: (e){
+  //           print("Error playing video because $e");
+  //         });
+  //         initialisedYoutubePlayer = true;
+  //       } else {
+  //         //youtubePlayerController.close();
+  //         youtubePlayerController.loadVideoById(videoId:convertUrlToId(article?.url ?? "")??"").then((value) {
+  //           print("Error playing video");
+  //         },onError: (e){
+  //           print("Error playing video because $e");
+  //         });
+  //       }
+  //     } catch (e) {
+  //       print("Error playing video because $e");
+  //     }
+  //   } else {
+  //     // FirebaseDBOperations.youtubeController = YoutubePlayerController(
+  //     //   initialVideoId: YoutubePlayer.convertUrlToId(
+  //     //       "https://www.youtube.com/watch?v=d8jFqvDn3o8") ??
+  //     //       "d8jFqvDn3o8",
+  //     //   flags: const YoutubePlayerFlags(
+  //     //     autoPlay: false,
+  //     //     mute: false,
+  //     //     controlsVisibleAtStart: false,
+  //     //   ),
+  //     // );
+  //   }
+  // }
+
+  static String? convertUrlToId(String url, {bool trimWhitespaces = true}) {
+    if (!url.contains("http") && (url.length == 11)) return url;
+    if (trimWhitespaces) url = url.trim();
+
+    for (var exp in [
+      RegExp(
+          r"^https:\/\/(?:www\.|m\.)?youtube\.com\/watch\?v=([_\-a-zA-Z0-9]{11}).*$"),
+      RegExp(
+          r"^https:\/\/(?:music\.)?youtube\.com\/watch\?v=([_\-a-zA-Z0-9]{11}).*$"),
+      RegExp(
+          r"^https:\/\/(?:www\.|m\.)?youtube\.com\/shorts\/([_\-a-zA-Z0-9]{11}).*$"),
+      RegExp(
+          r"^https:\/\/(?:www\.|m\.)?youtube(?:-nocookie)?\.com\/embed\/([_\-a-zA-Z0-9]{11}).*$"),
+      RegExp(r"^https:\/\/youtu\.be\/([_\-a-zA-Z0-9]{11}).*$")
+    ]) {
+      Match? match = exp.firstMatch(url);
+      if (match != null && match.groupCount >= 1) return match.group(1);
     }
+
+    return null;
   }
 
   bool _onUndo(
@@ -800,12 +939,30 @@ class _NewsFeedState extends State<NewsFeed>
     CardSwiperDirection direction,
   ) {
     undoIndex = currentIndex;
+    setState(() {
+      topIndex = currentIndex;
+    });
     print("undo tapped ${currentIndex}");
     articleTop =
         articleBands.elementAt(currentIndex ?? 0).article?.articleId ?? "";
-    Article article = articleBands.elementAt(currentIndex).article??Article();
-    playYoutubeVideo(article);
+    Article article = articleBands.elementAt(currentIndex).article ?? Article();
+    print("_onUndo item ${article.title}");
 
+    if(previousIndex == articleBands.length-1){
+      youtubePlayerController = YoutubePlayerController(
+        initialVideoId:
+        YoutubePlayer.convertUrlToId(article?.url ?? "") ?? "",
+        flags: const YoutubePlayerFlags(
+          autoPlay: true,
+          mute: false,
+          loop: true,
+          hideThumbnail: false,
+          controlsVisibleAtStart: false,
+        ),
+      );
+    }
+    else
+    playYoutubeVideo(article);
 
     setState(() {
       //undoIndex = currentIndex;
