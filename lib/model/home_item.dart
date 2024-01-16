@@ -289,8 +289,8 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                           spreadRadius: 0, // Spread radius
                         ),
                       ]),
-                  child: (widget.source.toLowerCase() != 'youtube')
-                      ? CachedNetworkImage(
+                  child: (widget.source.toLowerCase() != 'youtube') ?
+                  CachedNetworkImage(
                           imageUrl: widget.article.imageUrl ?? "",
                           placeholder: (context, imageUrl) {
                             String imageUrl = widget.article.imageUrl ?? "";

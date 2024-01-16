@@ -72,7 +72,16 @@ class _NewsFeedState extends State<NewsFeed>
   late CardSwiperController? controller;
   List<MultiSelectCard<dynamic>> mulList = [];
   String selectedCategory = "For You";
-  late YoutubePlayerController youtubePlayerController;
+  YoutubePlayerController youtubePlayerController =  YoutubePlayerController(
+    initialVideoId: YoutubePlayer.convertUrlToId(
+        "https://www.youtube.com/watch?v=d8jFqvDn3o8") ??
+        "d8jFqvDn3o8",
+    flags: const YoutubePlayerFlags(
+      autoPlay: false,
+      mute: false,
+      controlsVisibleAtStart: false,
+    ),
+  );
   bool initialisedYoutubePlayer = false;
   List<dynamic> mAllSelectedItems = [];
   late MultiSelectContainerWidget multiSelectContainer;
@@ -595,7 +604,7 @@ class _NewsFeedState extends State<NewsFeed>
         Article article = fetchedArticleBand.elementAt(0).article ?? Article();
         print("getArticles page $articlePage item ${article.title}");
         try {
-          //youtubePlayerController.dispose();
+
         } catch (e) {}
         topIndex = 0;
         initialisedYoutubePlayer = false;
@@ -611,7 +620,9 @@ class _NewsFeedState extends State<NewsFeed>
           if (articleTop == "") {
             articleTop = articleBands.elementAt(0).article?.articleId ?? "";
           }
-        } catch (e) {}
+        } catch (e) {
+          print("Error setting Article $e");
+        }
       });
 
       //  Article articleForSpeech = articleBands.elementAt(0).article?? Article();
@@ -821,9 +832,8 @@ class _NewsFeedState extends State<NewsFeed>
   }
 
   void playYoutubeVideo(Article article) {
+
     print("Playing youtube video ${article.title}");
-
-
     if (article.source?.toLowerCase() == 'youtube') {
       try {
         if (!initialisedYoutubePlayer) {
@@ -846,18 +856,8 @@ class _NewsFeedState extends State<NewsFeed>
       } catch (e) {
         print("Error playing video because $e");
       }
-    } else {
-      // FirebaseDBOperations.youtubeController = YoutubePlayerController(
-      //   initialVideoId: YoutubePlayer.convertUrlToId(
-      //           "https://www.youtube.com/watch?v=d8jFqvDn3o8") ??
-      //       "d8jFqvDn3o8",
-      //   flags: const YoutubePlayerFlags(
-      //     autoPlay: false,
-      //     mute: false,
-      //     controlsVisibleAtStart: false,
-      //   ),
-      // );
     }
+
   }
 
   // void playYoutube(Article article){

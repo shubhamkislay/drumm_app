@@ -29,7 +29,16 @@ typedef void JamCallback(Jam jam);
 
 class FirebaseDBOperations {
   static var listener;
-  static late YoutubePlayerController youtubeController;
+  static  YoutubePlayerController youtubeController = YoutubePlayerController(
+    initialVideoId: YoutubePlayer.convertUrlToId(
+        "https://www.youtube.com/watch?v=d8jFqvDn3o8") ??
+        "d8jFqvDn3o8",
+    flags: const YoutubePlayerFlags(
+      autoPlay: false,
+      mute: false,
+      controlsVisibleAtStart: false,
+    ),
+  );
 
   static Algolia algolia = Algolia.init(
     applicationId: '6GGZ3SNOXT',
@@ -100,7 +109,7 @@ class FirebaseDBOperations {
         .index('articles')
         .setFacets(['meta'])
         .setHitsPerPage(7)
-    .query("Youtube")
+        //.query("Youtube")
         .setPage(page)
         .setUserToken(userToken)
         .setDistinct(value: true)
@@ -199,6 +208,7 @@ class FirebaseDBOperations {
         .index('articles')
         .setFacets(['meta'])
         .setHitsPerPage(7)
+        //.query("Youtube")
         .setPage(page)
         .setUserToken(userToken)
         .setDistinct(value: true)
