@@ -40,6 +40,7 @@ import 'TutorialScreen.dart';
 import 'UserProfileIcon.dart';
 import 'ask_page.dart';
 import 'band_details_page.dart';
+import 'custom/CustomSwiper.dart';
 import 'custom/bottom_sheet.dart';
 import 'custom/create_jam_bottom_sheet.dart';
 import 'custom/helper/circular_reveal_clipper.dart';
@@ -107,7 +108,7 @@ class _LauncherPageState extends State<LauncherPage>
   @override
   Widget build(BuildContext context) {
     tabController = TabController(
-        length: 5, vsync: this, animationDuration: Duration(milliseconds: 0));
+        length: 5, vsync: this, animationDuration: const Duration(milliseconds: 0));
     FirebaseDBOperations.searchArticles("");
     return Scaffold(
       backgroundColor: Colors.black,
@@ -133,20 +134,22 @@ class _LauncherPageState extends State<LauncherPage>
                     child: TabBarView(
                       dragStartBehavior: DragStartBehavior.down,
                       physics:
-                          NeverScrollableScrollPhysics(), //const BouncingScrollPhysics(),
+                          const NeverScrollableScrollPhysics(), //const BouncingScrollPhysics(),
                       children: [
-                        NewsFeed(),
+                        const NewsFeed(),
                         ExplorePage(),
                         SwipePage(),
                         BandSearchPage(),
                         UserProfilePage(),
+                        //CustomSwiper(),
+
                       ],
                       controller: tabController,
                     ),
                   ),
                 ),
-                BottomJamWindow(),
-                SizedBox(height: 80), //Wave Mode it was 88
+                const BottomJamWindow(),
+                const SizedBox(height: 80), //Wave Mode it was 88
               ],
             ),
             child: BottomTabBar(tabController: tabController,),
@@ -298,7 +301,7 @@ class _LauncherPageState extends State<LauncherPage>
             context: context,
             isScrollControlled: true,
             backgroundColor: Colors.grey.shade900,
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
                   top: Radius.circular(0.0)),
             ),
@@ -308,7 +311,7 @@ class _LauncherPageState extends State<LauncherPage>
                     bottom:
                     MediaQuery.of(context).viewInsets.bottom),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.vertical(
+                  borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(0.0)),
                   child: JamRoomPage(
                     jam: jam,
@@ -396,6 +399,10 @@ class _TutotrialManagerState extends State<TutotrialManager> {
   }
 
   void finishedTutorial() async {
+
+    Future.delayed(const Duration(milliseconds: 1000),(){
+      FirebaseDBOperations.ANIMATION_CONTROLLER.forward();
+    });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       isTutorialDone = true;

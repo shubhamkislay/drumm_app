@@ -12,6 +12,7 @@ import 'package:drumm_app/model/Drummer.dart';
 import 'package:drumm_app/model/article.dart';
 import 'package:drumm_app/model/jam.dart';
 import 'package:drumm_app/model/question.dart';
+import 'package:flutter/animation.dart';
 import 'package:ogg_opus_player/ogg_opus_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,6 +30,7 @@ typedef void JamCallback(Jam jam);
 
 class FirebaseDBOperations {
   static var listener;
+  static late AnimationController ANIMATION_CONTROLLER;
   static  YoutubePlayerController youtubeController = YoutubePlayerController(
     initialVideoId: YoutubePlayer.convertUrlToId(
         "https://www.youtube.com/watch?v=d8jFqvDn3o8") ??
@@ -927,9 +929,7 @@ class FirebaseDBOperations {
     return article;
   }
 
-  /**
-   * Notification functions start
-   */
+  /// Notification functions start
   static void subscribeToTopic(String topic) async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     await messaging.unsubscribeFromTopic(topic);
@@ -961,7 +961,6 @@ class FirebaseDBOperations {
   static Future<void> sendRingingNotification(
       String deviceToken, Jam jam) async {
     var url = Uri.https('fcm.googleapis.com', '/fcm/send');
-    final uid = FirebaseAuth.instance.currentUser?.uid;
     Map<String, String> header = {
       'Content-Type': 'application/json',
       'Authorization':
@@ -983,16 +982,17 @@ class FirebaseDBOperations {
         "jamId": jam.jamId,
       }
     });
-    var response = await http.post(url, headers: header, body: body);
 
+    var response = await http.post(url, headers: header, body: body);
     if (response.statusCode == 200) {
-      // If the server returns an OK response, then parse the JSON.
-      Map<String, dynamic> json = jsonDecode(response.body);
-      /*List<dynamic> list = json['choices'];
-    String searchResult = list[0]["text”];*/
+
+     /*
+     Map<String, dynamic> json = jsonDecode(response.body);
+     List<dynamic> list = json['choices'];
+     String searchResult = list[0]["text”];
+     */
+
     } else {
-      // If the server did not return an OK response,
-      // then throw an exception.
       throw Exception('Failed to send calling notification');
     }
   }
@@ -1054,10 +1054,11 @@ class FirebaseDBOperations {
     Drummer drummer = await FirebaseDBOperations.getDrummer(uid ?? "");
     bool isBroadcast = jam.broadcast ?? false;
     var toParams = "";
-    if (isBroadcast)
+    if (isBroadcast) {
       toParams = "/topics/" + 'creator';
-    else
+    } else {
       toParams = "/topics/" + '${jam.bandId}';
+    }
 
     Map<String, String> header = {
       'Content-Type': 'application/json',
@@ -1108,9 +1109,7 @@ class FirebaseDBOperations {
     }
   }
 
-  /**
-   * Notification functions end
-   */
+  // Notification functions end
 
   static Future<Band> getBand(String bandId) async {
     Band band = Band();
@@ -1139,8 +1138,9 @@ class FirebaseDBOperations {
           .get();
       print(data.docs.length);
       return List.from(data.docs.map((e) => Article.fromJson(e)));
-    } else
+    } else {
       return emptyList;
+    }
   }
 
   static Future<List<Article>> getArticlesByUser(String uid) async {
@@ -1248,7 +1248,7 @@ class FirebaseDBOperations {
       bandCategoryList += band.hooks ?? [];
       print("Band name: ${band.name} Band hooks: ${band.hooks?.elementAt(0)}");
     }
-    if (fetchedBands.length < 1) bandCategoryList.add("general");
+    if (fetchedBands.isEmpty) bandCategoryList.add("general");
 
     //print("Fetched interesets: ${userInterests.toString()}");
     //print("Fetched categories: ${bandCategoryList.toString()}");
@@ -1266,7 +1266,7 @@ class FirebaseDBOperations {
     List<Article> filterArticle = [];
     bool checkedEverything = false;
 
-    while (filterArticle.length < 1 && !checkedEverything) {
+    while (filterArticle.isEmpty && !checkedEverything) {
       if (lastDocument != null) {
         query = query.startAfterDocument(lastDocument!);
       }
@@ -1274,12 +1274,13 @@ class FirebaseDBOperations {
       if (snapshot.docs.isNotEmpty) lastDocument = snapshot.docs.last;
       List<Article> newArticles =
           snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
-      if (newArticles.length < 1) {
+      if (newArticles.isEmpty) {
         checkedEverything = true;
       }
       for (Article article in newArticles) {
-        if (!seenPosts.contains(article.articleId) || checkedEverything)
+        if (!seenPosts.contains(article.articleId) || checkedEverything) {
           filterArticle.add(article);
+        }
       }
     }
 
@@ -1314,7 +1315,7 @@ class FirebaseDBOperations {
 
     List<Article> filterArticle = [];
     bool checkedEverything = false;
-    while (filterArticle.length < 1 && !checkedEverything) {
+    while (filterArticle.isEmpty && !checkedEverything) {
       if (lastDocument != null) {
         query = query.startAfterDocument(lastDocument!);
       }
@@ -1325,11 +1326,12 @@ class FirebaseDBOperations {
       List<Article> newArticles =
           snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
 
-      if (newArticles.length < 1) checkedEverything = true;
+      if (newArticles.isEmpty) checkedEverything = true;
 
       for (Article article in newArticles) {
-        if (!seenPosts.contains(article.articleId) || checkedEverything)
+        if (!seenPosts.contains(article.articleId) || checkedEverything) {
           filterArticle.add(article);
+        }
       }
     }
 
@@ -1385,10 +1387,11 @@ class FirebaseDBOperations {
 
   static Future<Jam> getJamData(String jamId, bool open) async {
     String path = "";
-    if (open)
+    if (open) {
       path = "openDrumm";
-    else
+    } else {
       path = "openDrumm";
+    }
 
     CollectionReference jamCollection =
         FirebaseFirestore.instance.collection(path);
@@ -1469,8 +1472,9 @@ class FirebaseDBOperations {
       Jam jam = Jam.fromDocListenSnapshot(snapshot);
       final count = snapshot.get("count") + 1;
       List<dynamic> memList = jam.membersID ?? [];
-      if (!memList.contains(FirebaseAuth.instance.currentUser?.uid ?? ""))
+      if (!memList.contains(FirebaseAuth.instance.currentUser?.uid ?? "")) {
         memList.add(FirebaseAuth.instance.currentUser?.uid ?? "");
+      }
       transaction.update(sfDocRef,
           {"count": count, "membersID": memList}); //,"membersID":memList
     }).then(
@@ -1485,10 +1489,11 @@ class FirebaseDBOperations {
     bool result = false;
     try {
       String path = "";
-      if (open)
+      if (open) {
         path = "openDrumm";
-      else
+      } else {
         path = "openDrumm";
+      }
       DocumentReference memberRef =
           FirebaseFirestore.instance.collection(path).doc(jamId);
 
@@ -1530,10 +1535,11 @@ class FirebaseDBOperations {
       print("removing Member from Jam $jamId");
       String path = "";
 
-      if (open)
+      if (open) {
         path = "openDrumm";
-      else
+      } else {
         path = "openDrumm";
+      }
       try {
         DocumentReference memberRef =
             FirebaseFirestore.instance.collection(path).doc(jamId);
@@ -1564,8 +1570,9 @@ class FirebaseDBOperations {
       Jam jam = Jam.fromDocListenSnapshot(snapshot);
       final count = snapshot.get("count") - 1;
       List<dynamic> memList = jam.membersID ?? [];
-      if (memList.contains(FirebaseAuth.instance.currentUser?.uid ?? ""))
+      if (memList.contains(FirebaseAuth.instance.currentUser?.uid ?? "")) {
         memList.remove(FirebaseAuth.instance.currentUser?.uid ?? "");
+      }
       transaction.update(sfDocRef,
           {"count": count, "membersID": memList}); //,"membersID":memList
     }).then(

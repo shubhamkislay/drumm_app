@@ -250,7 +250,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                                 minFontSize: 5,
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 20,
+                                  fontSize: 22,
                                   fontFamily: APP_FONT_BOLD,
                                 ),
                               ),
@@ -406,7 +406,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 19,
+                              fontSize: 18,
                               fontFamily: APP_FONT_BOLD,
                               fontWeight: FontWeight.bold,
                             ),
@@ -419,7 +419,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                               fontSize:
                                   (widget.source.toLowerCase() != 'youtube')
                                       ? 36
-                                      : 20,
+                                      : 18,
                               fontFamily: APP_FONT_BOLD,
                               fontWeight: FontWeight.bold,
                               //fontWeight: FontWeight.bold,
@@ -547,7 +547,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                                     color:
                                         Colors.grey.shade900.withOpacity(0.85),
                                     width: 2.5),
-                                borderRadius: BorderRadius.circular(24),
+                                borderRadius: BorderRadius.circular(16),
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -562,9 +562,11 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                                     width: 4,
                                   ),
                                   const Icon(
-                                    Icons.outbound_rounded,
+                                    Icons.arrow_forward_ios_rounded,
                                     size: 14,
-                                  )
+                                  ),
+                                  //Image.asset("images/read-more.png",color: Colors.white,height: 18,),
+
                                 ],
                               ),
                             ),

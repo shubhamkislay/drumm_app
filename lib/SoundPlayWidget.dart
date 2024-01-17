@@ -72,7 +72,7 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
             color: Colors.grey.shade900.withOpacity(0.85),
-            border: Border.all(color: (widget.play)?Colors.white:Colors.white12,width: 2)
+            border: Border.all(color: (widget.play)?Colors.white38:Colors.grey.shade900.withOpacity(0.85),width: 2)
           ),
           child:
          Stack(
@@ -82,7 +82,7 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
                 height: 26,
                 width: 26,
                 child: CircularProgressIndicator(
-                  color: Colors.white,
+                  color: Colors.white38,
                   strokeWidth: 2,
                 ),
               ),

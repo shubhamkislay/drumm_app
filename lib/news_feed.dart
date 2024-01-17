@@ -66,7 +66,7 @@ class NewsFeed extends StatefulWidget {
 }
 
 class _NewsFeedState extends State<NewsFeed>
-    with AutomaticKeepAliveClientMixin<NewsFeed> {
+    with AutomaticKeepAliveClientMixin<NewsFeed>, TickerProviderStateMixin {
   List<Article> articles = [];
   List<ArticleBand> articleBands = [];
   late CardSwiperController? controller;
@@ -147,6 +147,10 @@ class _NewsFeedState extends State<NewsFeed>
 
   int topIndex = 0;
 
+  late Animation<double> slideAnimation;
+  late Animation<double> rotationAnimation;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -220,87 +224,103 @@ class _NewsFeedState extends State<NewsFeed>
                     alignment: Alignment.bottomCenter,
                     fit: StackFit.loose,
                     children: [
-                      Builder(
-                        builder: (BuildContext context) {
-                          try {
-                            return CardSwiper(
-                              controller: controller,
-                              cardsCount: (articleBands.isNotEmpty)
-                                  ? articleBands.length
-                                  : 0,
-                              duration: const Duration(milliseconds: 175),
-                              maxAngle: 60,
-                              scale: 0.8,
-                              numberOfCardsDisplayed: (articleBands.length > 1)
-                                  ? 2
-                                  : (articleBands.isEmpty)
-                                      ? 0
-                                      : 1,
-                              isVerticalSwipingEnabled: true,
-                              onEnd: () {
-                                print("//////////////////////////On END");
+                      AnimatedBuilder(
+                        builder: (context,child) {// adjust slide value as needed
+                          double slideValue = 50 * FirebaseDBOperations.ANIMATION_CONTROLLER.value;
+                          // return Transform.translate(
+                          //   offset: Offset(slideValue, 0.0), // Horizontal slide
+                          //   child:
 
-                                articlePage += 1;
-                                articleTop = "";
-                                if (selectedBandID == "For You") {
-                                  getArticles();
-                                } else {
-                                  getArticlesForBands(selectedBand);
-                                }
-                              },
-                              threshold: 25,
-                              onSwipe: _onSwipe,
-                              isLoop: false,
-                              onUndo: _onUndo,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: horizontalPadding),
-                              cardBuilder: (context, index) {
-                                try {
-                                  if (index >= 0) {
-                                    return HomeItem(
-                                      bandId: selectedBandID != "For You"
-                                          ? selectedBandID
-                                          : null,
-                                      articleBand:
-                                          articleBands.elementAt(index),
-                                      queryID: queryID,
-                                      isContainerVisible: false,
-                                      openArticle: (article) {
-                                        openArticlePage(article, index);
-                                      },
-                                      updateList: (article) {},
-                                      undo: () {
-                                        print("undoIndex ${undoIndex}");
-                                        if (undoIndex != 0) {
-                                          controller?.undo();
-                                        } else {
-                                          print("Cannot undo");
-                                        }
-                                      },
-                                      onRefresh: () {
-                                        return _refreshData();
-                                      },
-                                      index: index,
-                                      joinDrumm: (articleBand) {
-                                        startDrumming(articleBand);
-                                      },
-                                      play: false,
-                                      youtubePlayerController:
-                                          youtubePlayerController,
-                                      onTop: topIndex == index,
-                                    );
+                          return  Transform.rotate(
+                              angle: rotationAnimation.value * (2.417 / 180), // Convert to radians
+                              origin: Offset(0, 1500), // Adjust as needed for rotation origin
+                              child: child,
+                            //),
+                          );
+                        }, animation: FirebaseDBOperations.ANIMATION_CONTROLLER,
+                        child: Builder(
+                          builder: (BuildContext context) {
+                            try {
+                              return CardSwiper(
+                                controller: controller,
+                                cardsCount: (articleBands.isNotEmpty)
+                                    ? articleBands.length
+                                    : 0,
+                                duration: const Duration(milliseconds: 175),
+                                maxAngle: 60,
+                                scale: 0.8,
+                                numberOfCardsDisplayed: (articleBands.length > 1)
+                                    ? 2
+                                    : (articleBands.isEmpty)
+                                    ? 0
+                                    : 1,
+                                isVerticalSwipingEnabled: true,
+                                onEnd: () {
+                                  print("//////////////////////////On END");
+
+                                  articlePage += 1;
+                                  articleTop = "";
+                                  if (selectedBandID == "For You") {
+                                    getArticles();
                                   } else {
+                                    getArticlesForBands(selectedBand);
+                                  }
+                                },
+                                threshold: 25,
+                                onSwipe: _onSwipe,
+                                isLoop: false,
+                                onUndo: _onUndo,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: horizontalPadding),
+                                cardBuilder: (context, index) {
+                                  try {
+                                    if (index >= 0) {
+                                      return HomeItem(
+                                        bandId: selectedBandID != "For You"
+                                            ? selectedBandID
+                                            : null,
+                                        articleBand:
+                                        articleBands.elementAt(index),
+                                        queryID: queryID,
+                                        isContainerVisible: false,
+                                        openArticle: (article) {
+                                          openArticlePage(article, index);
+                                        },
+                                        updateList: (article) {},
+                                        undo: () {
+                                          print("undoIndex ${undoIndex}");
+                                          if (undoIndex != 0) {
+                                            controller?.undo();
+                                          } else {
+                                            print("Cannot undo");
+                                          }
+                                        },
+                                        onRefresh: () {
+                                          return _refreshData();
+                                        },
+                                        index: index,
+                                        joinDrumm: (articleBand) {
+                                          startDrumming(articleBand);
+                                        },
+                                        play: false,
+                                        youtubePlayerController:
+                                        youtubePlayerController,
+                                        onTop: topIndex == index,
+                                      );
+                                    } else {
+                                      return Container();
+                                    }
+                                  } catch (e) {
                                     return Container();
                                   }
-                                } catch (e) {
-                                  return Container();
-                                }
-                              },
-                            );
-                          } catch (e) {
-                            return Container();
-                          }
-                        },
+                                },
+                              );
+                            } catch (e) {
+                              return Container();
+                            }
+                          },
+                        ),
+
                       ),
                       Container(
                         alignment: Alignment.bottomCenter,
@@ -359,6 +379,7 @@ class _NewsFeedState extends State<NewsFeed>
     // Simulate a delay
     // initState();
     _lastRefreshTime = DateTime.now();
+
     _checkAndScheduleRefresh();
     FirebaseDBOperations.lastDocument = null;
     //controller = CardSwiperController();
@@ -443,6 +464,9 @@ class _NewsFeedState extends State<NewsFeed>
   @override
   void dispose() {
     if (controller != null) controller?.dispose();
+
+    if (FirebaseDBOperations.ANIMATION_CONTROLLER != null) FirebaseDBOperations.ANIMATION_CONTROLLER.dispose();
+
     super.dispose();
   }
 
@@ -453,6 +477,9 @@ class _NewsFeedState extends State<NewsFeed>
     controller = CardSwiperController();
 
     super.initState();
+
+    initialiseSwipeAnimation();
+
     ConnectToChannel.insights.userToken =
         FirebaseAuth.instance.currentUser?.uid ?? "";
     _lastRefreshTime = DateTime.now();
@@ -460,6 +487,7 @@ class _NewsFeedState extends State<NewsFeed>
     FirebaseDBOperations.lastDocument = null;
     getBandsCards();
     requestPermissions();
+
   }
 
   void getBandsCards() async {
@@ -624,6 +652,7 @@ class _NewsFeedState extends State<NewsFeed>
           print("Error setting Article $e");
         }
       });
+
 
       //  Article articleForSpeech = articleBands.elementAt(0).article?? Article();
       // // if(articleOnScreen.aiVoiceUrl==null)
@@ -1124,5 +1153,30 @@ class _NewsFeedState extends State<NewsFeed>
     try {
       //await audioPlayer.play(UrlSource(url??""));
     } catch (e) {}
+  }
+
+  void initialiseSwipeAnimation() {
+    bool repeated = false;
+    FirebaseDBOperations.ANIMATION_CONTROLLER = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+
+    )..addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        FirebaseDBOperations.ANIMATION_CONTROLLER.reverse();
+      } else if (status == AnimationStatus.dismissed) {
+        if(!repeated)
+          FirebaseDBOperations.ANIMATION_CONTROLLER.forward();
+        else
+          FirebaseDBOperations.ANIMATION_CONTROLLER.dispose();
+        repeated = true;
+      }
+    });
+
+
+    slideAnimation = Tween<double>(begin: 0.0, end: 10.0) // Slide movement
+        .animate(CurvedAnimation(parent: FirebaseDBOperations.ANIMATION_CONTROLLER, curve: Curves.easeInOut,reverseCurve: Curves.easeInOutBack));
+    rotationAnimation = Tween<double>(begin: 0.0, end: 2.5) // Rotation in degrees
+        .animate(CurvedAnimation(parent: FirebaseDBOperations.ANIMATION_CONTROLLER, curve: Curves.easeInOut,reverseCurve: Curves.easeInOutBack));
   }
 }
