@@ -71,7 +71,7 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
           //padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            //color: Colors.grey.shade900.withOpacity(0.75),
+            color: Colors.grey.shade900.withOpacity(0.85),
             border: Border.all(color: (widget.play)?Colors.white:Colors.white12,width: 2)
           ),
           child:

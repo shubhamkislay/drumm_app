@@ -206,7 +206,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                   Container(
                     width: double.maxFinite,
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     alignment: Alignment.centerLeft,
                     decoration: BoxDecoration(
                         //color: Colors.grey.shade900.withOpacity(0.65),
@@ -231,7 +231,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                           ),
                         ),
                         const SizedBox(
-                          width: 8,
+                          width: 12,
                         ),
                         Expanded(
                           child: GestureDetector(
@@ -240,17 +240,17 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                               widget.joinDrumm(widget.articleBand);
                             },
                             child: Container(
-                              height: 80,
+                              height: 72,
                               alignment: Alignment.center,
                               padding: const EdgeInsets.all(4),
                               child: AutoSizeText(
                                 "\"${widget.article.question}\"" ?? "",
-                                textAlign: TextAlign.center,
+                                textAlign: TextAlign.left,
                                 maxFontSize: 32,
-                                minFontSize: 6,
+                                minFontSize: 5,
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: 20,
                                   fontFamily: APP_FONT_BOLD,
                                 ),
                               ),
@@ -258,7 +258,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                           ),
                         ),
                         const SizedBox(
-                          width: 8,
+                          width: 12,
                         ),
                         GestureDetector(
                           onTap: () {
@@ -406,7 +406,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 20,
+                              fontSize: 19,
                               fontFamily: APP_FONT_BOLD,
                               fontWeight: FontWeight.bold,
                             ),
@@ -542,7 +542,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                                   horizontal: 8, vertical: 6),
                               //margin: const EdgeInsets.symmetric(horizontal: 10),
                               decoration: BoxDecoration(
-                                color: COLOR_PRIMARY_DARK, //.withOpacity(0.8),
+                                color: Colors.grey.shade900.withOpacity(0.85), //.withOpacity(0.8),
                                 border: Border.all(
                                     color:
                                         Colors.grey.shade900.withOpacity(0.85),
