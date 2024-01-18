@@ -19,7 +19,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-
 import '../../model/AiVoice.dart';
 import '../../model/algolia_article.dart';
 import '../../model/band.dart';
@@ -31,9 +30,9 @@ typedef void JamCallback(Jam jam);
 class FirebaseDBOperations {
   static var listener;
   static late AnimationController ANIMATION_CONTROLLER;
-  static  YoutubePlayerController youtubeController = YoutubePlayerController(
+  static YoutubePlayerController youtubeController = YoutubePlayerController(
     initialVideoId: YoutubePlayer.convertUrlToId(
-        "https://www.youtube.com/watch?v=d8jFqvDn3o8") ??
+            "https://www.youtube.com/watch?v=d8jFqvDn3o8") ??
         "d8jFqvDn3o8",
     flags: const YoutubePlayerFlags(
       autoPlay: false,
@@ -53,6 +52,9 @@ class FirebaseDBOperations {
   static HashMap<String, String> articleBand = HashMap();
 
   static DocumentSnapshot<Map<String, dynamic>>? lastDocument;
+  static late Query<Map<String, dynamic>> query;
+  static List<Band> fetchedBands = [];
+  static List<String> bandCategoryList = [];
 
   static Future<List<Article>> searchArticles(String query) async {
     AlgoliaQuerySnapshot getArticles = await algolia.instance
@@ -85,7 +87,7 @@ class FirebaseDBOperations {
 
     return result;
   }
-
+/**
   static Future<AlgoliaArticles> getArticlesFromAlgolia(int page) async {
     //List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
     String userToken = await FirebaseAuth.instance.currentUser?.uid ?? "";
@@ -139,6 +141,124 @@ class FirebaseDBOperations {
     //   page = page+1;
     // }
     //}
+
+    return algoliaArticles;
+  }
+    **/
+
+  static Future<AlgoliaArticles> getArticlesData(
+      DocumentSnapshot<Map<String, dynamic>>? _startDocument,
+      DocumentSnapshot<Map<String, dynamic>>? _lastDocument,
+      bool reverse) async {
+    DocumentSnapshot<Map<String, dynamic>>? fetchedStartDocument = null;
+    DocumentSnapshot<Map<String, dynamic>>? fetchedLastDocument = null;
+
+    //if (fetchedBands.isEmpty)
+      fetchedBands = await FirebaseDBOperations.getBandByUser();
+    List bandCategoryList = [];
+
+    for (Band band in fetchedBands) {
+      bandCategoryList.addAll(band.hooks??[]);
+    }
+    if (fetchedBands.isEmpty) bandCategoryList.add("general");
+
+    if (reverse) {
+      query = FirebaseFirestore.instance
+          .collection('articles')
+          .where('category', whereIn: bandCategoryList)
+          .where('country', isEqualTo: 'in')
+          .where('source', isNotEqualTo: null)
+          .orderBy("publishedAt", descending: true)
+          .limitToLast(5);
+      if (_startDocument != null) {
+        query = query.endBeforeDocument(_startDocument);
+      }
+    } else {
+      query = FirebaseFirestore.instance
+          .collection('articles')
+          .where('category', whereIn: bandCategoryList)
+          .where('country', isEqualTo: 'in')
+          .where('source', isNotEqualTo: null)
+          .orderBy("publishedAt", descending: true)
+          .limit(5);
+
+      if (_lastDocument != null) {
+        query = query.startAfterDocument(_lastDocument!);
+      }
+    }
+
+    final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+    List<Article> newArticles = [];
+    if (snapshot.docs.isNotEmpty) {
+      newArticles = snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+      fetchedLastDocument =
+          snapshot.docs.last; // Save the last document for the next page
+      fetchedStartDocument = snapshot.docs.first;
+    } else {
+      print('Nothing found');
+    }
+
+    AlgoliaArticles algoliaArticles = AlgoliaArticles(
+        articles: newArticles, queryID: fetchedLastDocument.toString());
+
+    algoliaArticles.setLastDocument(fetchedLastDocument);
+    algoliaArticles.setStartDocument(fetchedStartDocument);
+
+    return algoliaArticles;
+  }
+
+  static Future<AlgoliaArticles> getArticlesDataForBand(
+      DocumentSnapshot<Map<String, dynamic>>? _startDocument,
+      DocumentSnapshot<Map<String, dynamic>>? _lastDocument,
+      bool reverse, Band selectedBand) async {
+    DocumentSnapshot<Map<String, dynamic>>? fetchedStartDocument = null;
+    DocumentSnapshot<Map<String, dynamic>>? fetchedLastDocument = null;
+
+    List bandCategoryList = [];
+
+    bandCategoryList.addAll(selectedBand.hooks??[]);
+
+    if (reverse) {
+      query = FirebaseFirestore.instance
+          .collection('articles')
+          .where('category', whereIn: bandCategoryList)
+          .where('country', isEqualTo: 'in')
+          .where('source', isNotEqualTo: null)
+          .orderBy("publishedAt", descending: true)
+          .limitToLast(5);
+      if (_startDocument != null) {
+        query = query.endBeforeDocument(_startDocument);
+      }
+    } else {
+      query = FirebaseFirestore.instance
+          .collection('articles')
+          .where('category', whereIn: bandCategoryList)
+          .where('country', isEqualTo: 'in')
+          .where('source', isNotEqualTo: null)
+          .orderBy("publishedAt", descending: true)
+          .limit(5);
+
+      if (_lastDocument != null) {
+        query = query.startAfterDocument(_lastDocument!);
+      }
+    }
+
+    final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+    List<Article> newArticles = [];
+    if (snapshot.docs.isNotEmpty) {
+      newArticles = snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+      fetchedLastDocument =
+          snapshot.docs.last; // Save the last document for the next page
+      fetchedStartDocument = snapshot.docs.first;
+    } else {
+      print('Nothing found');
+    }
+
+    AlgoliaArticles algoliaArticles = AlgoliaArticles(
+        articles: newArticles, queryID: fetchedLastDocument.toString());
+
+    algoliaArticles.setLastDocument(fetchedLastDocument);
+    algoliaArticles.setStartDocument(fetchedStartDocument);
 
     return algoliaArticles;
   }
@@ -213,9 +333,9 @@ class FirebaseDBOperations {
         //.query("Youtube")
         .setPage(page)
         .setUserToken(userToken)
-        .setDistinct(value: true)
-        .setPersonalizationImpact(value: 75)
-        .setEnablePersonalization(enabled: true);
+        .setDistinct(value: true);
+        //.setPersonalizationImpact(value: 75)
+        //.setEnablePersonalization(enabled: true);
 
     List<String> filterStr = [];
     for (String hook in hooks) {
@@ -483,18 +603,18 @@ class FirebaseDBOperations {
   static Future<List<Jam>> getDrummsFromBands() async {
     print("getDrummsFromBands triggered");
 
-    List<Band> bandsList = await FirebaseDBOperations.getBandByUser();
+    //if (fetchedBands.isEmpty)
+      fetchedBands = await FirebaseDBOperations.getBandByUser();
 
-    print("bandsList: $bandsList");
 
-    List<String> bandIDList = [];
-    for (Band band in bandsList) {
-      bandIDList.add(band.bandId ?? "");
+    for (Band band in fetchedBands) {
+      bandCategoryList.add(band.bandId ?? "");
     }
-    if (bandIDList.isEmpty) return [];
+    if (bandCategoryList.isEmpty) return [];
+
     var data = await FirebaseFirestore.instance
         .collection('openDrumm')
-        .where('bandId', whereIn: bandIDList)
+        .where('bandId', whereIn: bandCategoryList)
         .where('broadcast', isEqualTo: false)
         // .where('count', isGreaterThan: 0)
         .get();
@@ -525,21 +645,21 @@ class FirebaseDBOperations {
   static Future<List<Jam>> getOpenDrummsFromBands() async {
     print("getJamsFromBand triggered");
 
-    List<Band> bandsList = await FirebaseDBOperations.getBandByUser();
+    //if (fetchedBands.isEmpty)
+      fetchedBands = await FirebaseDBOperations.getBandByUser();
 
-    print("bandsList: $bandsList");
 
-    List<String> bandIDList = [];
-    for (Band band in bandsList) {
-      bandIDList.add(band.bandId ?? "");
+    for (Band band in fetchedBands) {
+      bandCategoryList.add(band.bandId ?? "");
     }
-    if (bandIDList.isEmpty) {
+    if (bandCategoryList.isEmpty) {
       print("BandIDList is empty");
       return [];
     }
+
     var data = await FirebaseFirestore.instance
         .collection('openDrumm')
-        .where('bandId', whereIn: bandIDList)
+        .where('bandId', whereIn: bandCategoryList)
         .where('broadcast', isEqualTo: false)
         .where('count', isGreaterThan: 0)
         .get();
@@ -938,16 +1058,20 @@ class FirebaseDBOperations {
   }
 
   static void subscribeToUserBands() async {
-    List<Band> userBands = await FirebaseDBOperations.getBandByUser();
+    //if (fetchedBands.isEmpty)
+      fetchedBands = await FirebaseDBOperations.getBandByUser();
+
     FirebaseDBOperations.subscribeToTopic("broadcast");
-    for (Band band in userBands) {
+    for (Band band in fetchedBands) {
       FirebaseDBOperations.subscribeToTopic(band.bandId ?? "");
     }
   }
 
   static void unSubscribeToUserBands() async {
-    List<Band> userBands = await FirebaseDBOperations.getBandByUser();
-    for (Band band in userBands) {
+    //if (fetchedBands.isEmpty)
+      fetchedBands = await FirebaseDBOperations.getBandByUser();
+
+    for (Band band in fetchedBands) {
       FirebaseDBOperations.unsubscribeFromTopic(band.bandId ?? "");
     }
   }
@@ -985,13 +1109,11 @@ class FirebaseDBOperations {
 
     var response = await http.post(url, headers: header, body: body);
     if (response.statusCode == 200) {
-
-     /*
+      /*
      Map<String, dynamic> json = jsonDecode(response.body);
      List<dynamic> list = json['choices'];
      String searchResult = list[0]["text”];
      */
-
     } else {
       throw Exception('Failed to send calling notification');
     }
@@ -1239,65 +1361,6 @@ class FirebaseDBOperations {
       print("Unable to fetch bands because ${e.toString()}");
       return [];
     }
-  }
-
-  static Future<List<Article>> getArticlesByBands() async {
-    List<Band> fetchedBands = await FirebaseDBOperations.getBandByUser();
-    List<dynamic> bandCategoryList = [];
-    for (Band band in fetchedBands) {
-      bandCategoryList += band.hooks ?? [];
-      print("Band name: ${band.name} Band hooks: ${band.hooks?.elementAt(0)}");
-    }
-    if (fetchedBands.isEmpty) bandCategoryList.add("general");
-
-    //print("Fetched interesets: ${userInterests.toString()}");
-    //print("Fetched categories: ${bandCategoryList.toString()}");
-    List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
-    //if(seenPosts.isEmpty)
-
-    Query<Map<String, dynamic>> query = FirebaseFirestore.instance
-        .collection('articles')
-        .where('category', whereIn: bandCategoryList)
-        // .where('country', isEqualTo: 'in')
-        .where('source', isNotEqualTo: null)
-        .orderBy("publishedAt", descending: true)
-        .limit(50);
-
-    List<Article> filterArticle = [];
-    bool checkedEverything = false;
-
-    while (filterArticle.isEmpty && !checkedEverything) {
-      if (lastDocument != null) {
-        query = query.startAfterDocument(lastDocument!);
-      }
-      final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
-      if (snapshot.docs.isNotEmpty) lastDocument = snapshot.docs.last;
-      List<Article> newArticles =
-          snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
-      if (newArticles.isEmpty) {
-        checkedEverything = true;
-      }
-      for (Article article in newArticles) {
-        if (!seenPosts.contains(article.articleId) || checkedEverything) {
-          filterArticle.add(article);
-        }
-      }
-    }
-
-    ///Uncomment the below code if you want to replay the articles after you have seen everything
-    // if(filterArticle.length<1&&checkedEverything){
-    //   Query<Map<String, dynamic>> query = FirebaseFirestore.instance
-    //       .collection('articles')
-    //       .where('category', whereIn: bandCategoryList)
-    //   // .where('country', isEqualTo: 'in')
-    //       .where('source', isNotEqualTo: null)
-    //       .orderBy("publishedAt", descending: true)
-    //       .limit(50);
-    //   final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
-    //   filterArticle = snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
-    // }
-
-    return filterArticle;
   }
 
   static Future<List<Article>> getArticlesByBandID(

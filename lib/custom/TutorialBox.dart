@@ -24,28 +24,29 @@ class TutorialBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: COLOR_PRIMARY_DARK,
+      backgroundColor: Colors.grey.shade900,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12)
       ),
       icon: Image.asset(
         tutorialImageAsset,
-        height: 32,
+        height: 42,
         color: Colors.white,
       ),
       title: Text(
         tutorialMessageTitle,
         textAlign: TextAlign.center,
-        style: const TextStyle(color: Colors.white, fontSize: 20),
+        style: const TextStyle(color: Colors.white, fontSize: 22,fontWeight: FontWeight.bold),
       ),
-      contentPadding: EdgeInsets.all(24),
+      contentPadding: EdgeInsets.all(32),
+      iconPadding: EdgeInsets.all(32),
       content: Text(
         tutorialMessage,
         textAlign: TextAlign.center,
         style: const TextStyle(color: Colors.white70, fontSize: 12),
       ),
       actionsAlignment: MainAxisAlignment.spaceEvenly,
-      actionsPadding: EdgeInsets.symmetric(vertical: 16,horizontal: 8),
+      actionsPadding: EdgeInsets.all(24),
       actions: [
         GestureDetector(
           onTap: () {
@@ -53,10 +54,10 @@ class TutorialBox extends StatelessWidget {
           },
           child: Container(
             padding:
-            const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
             decoration: BoxDecoration(
-                color: Colors.grey.shade900,
-                borderRadius: BorderRadius.circular(12)),
+                color: COLOR_PRIMARY_DARK,
+                borderRadius: BorderRadius.circular(24)),
             child: const Text(
               "Not now",
               style: TextStyle(
@@ -74,10 +75,13 @@ class TutorialBox extends StatelessWidget {
           },
           child: Container(
             padding:
-            const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
             decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(12)),
+                gradient: LinearGradient(colors: [
+                  Colors.blue.shade600,
+                  Colors.blue.shade700,
+                ]),
+                borderRadius: BorderRadius.circular(24)),
             child: const Text(
               "Let's Go",
               style: TextStyle(

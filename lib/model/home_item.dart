@@ -223,15 +223,15 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                             widget.joinDrumm(widget.articleBand);
                           },
                           child: Container(
-                            padding: const EdgeInsets.all(4),
+                            padding: const EdgeInsets.all(12),
                             child: Image.asset('images/audio-waves.png',
-                                height: 24,
+                                height: 36,
                                 color: Colors.white,
                                 fit: BoxFit.contain),
                           ),
                         ),
                         const SizedBox(
-                          width: 12,
+                          width: 4,
                         ),
                         Expanded(
                           child: GestureDetector(
@@ -240,17 +240,17 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                               widget.joinDrumm(widget.articleBand);
                             },
                             child: Container(
-                              height: 72,
+                              height: 120,
                               alignment: Alignment.center,
-                              padding: const EdgeInsets.all(4),
+                              padding: const EdgeInsets.all(16),
                               child: AutoSizeText(
                                 "\"${widget.article.question}\"" ?? "",
                                 textAlign: TextAlign.left,
-                                maxFontSize: 32,
+                                maxFontSize: 36,
                                 minFontSize: 5,
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 22,
+                                  fontSize: 28,
                                   fontFamily: APP_FONT_BOLD,
                                 ),
                               ),
@@ -258,7 +258,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                           ),
                         ),
                         const SizedBox(
-                          width: 12,
+                          width: 4,
                         ),
                         GestureDetector(
                           onTap: () {
@@ -273,7 +273,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                       ],
                     ),
                   ),
-                SizedBox(
+                const SizedBox(
                   height: 3,
                 ),
                 Container(
@@ -331,7 +331,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                     bottomActions: [
                       ProgressBar(
                         isExpanded: true,
-                        colors: ProgressBarColors(
+                        colors: const ProgressBarColors(
                           playedColor: Colors.white70,
                           bufferedColor: Colors.white24,
                           handleColor: Colors.transparent,
@@ -339,7 +339,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                         ),
                       ),
                     ],
-                    actionsPadding: EdgeInsets.all(0),
+                    actionsPadding: const EdgeInsets.all(0),
                     topActions: [
                       Expanded(child: Container()),
                       VolumeButton(youtubePlayerController: widget.youtubePlayerController)
@@ -387,7 +387,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                 Container(
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.only(
-                      left: 8, top: 0, right: 8, bottom: 4),
+                      left: 10, top: 0, right: 10, bottom: 4),
                   color: COLOR_PRIMARY_DARK,
                   child: GestureDetector(
                     onTap: () {
@@ -406,7 +406,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 16,
+                              fontSize: 18,
                               fontFamily: APP_FONT_BOLD,
                               fontWeight: FontWeight.bold,
                             ),
@@ -430,7 +430,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                 Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.only(
-                      left: 8, top: 0, bottom: 4, right: 12),
+                      left: 10, top: 0, bottom: 4, right: 10),
                   color: COLOR_PRIMARY_DARK,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -732,7 +732,7 @@ class _VolumeButtonState extends State<VolumeButton> {
         },
         child: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: (muteAudio) ? Icon(Icons.volume_mute) : Icon(Icons.volume_up),
+          child: (muteAudio) ? const Icon(Icons.volume_mute) : const Icon(Icons.volume_up),
         ));
   }
 }

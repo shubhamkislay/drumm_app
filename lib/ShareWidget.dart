@@ -19,7 +19,7 @@ class ShareWidget extends StatelessWidget {
             ),
             child: Image.asset(
               'images/share-btn.png',
-              height: 20,
+              height: 24,
               color: Colors.white,
               fit: BoxFit.contain,
             ),

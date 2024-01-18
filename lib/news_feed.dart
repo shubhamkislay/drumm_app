@@ -152,6 +152,8 @@ class _NewsFeedState extends State<NewsFeed>
 
   late Animation<double> slideAnimation;
   late Animation<double> rotationAnimation;
+  DocumentSnapshot<Map<String, dynamic>>? _lastDocument = null;
+  DocumentSnapshot<Map<String, dynamic>>? _startDocument = null;
 
 
   @override
@@ -264,9 +266,9 @@ class _NewsFeedState extends State<NewsFeed>
                                   articlePage += 1;
                                   articleTop = "";
                                   if (selectedBandID == "For You") {
-                                    getArticles();
+                                    getArticles(false);
                                   } else {
-                                    getArticlesForBands(selectedBand);
+                                    getArticlesForBands(selectedBand,false);
                                   }
                                 },
                                 threshold: 25,
@@ -346,9 +348,9 @@ class _NewsFeedState extends State<NewsFeed>
                                   });
 
                                   if (selectedBandID == "For You") {
-                                    getArticles();
+                                    getArticles(true);
                                   } else {
-                                    getArticlesForBands(selectedBand);
+                                    getArticlesForBands(selectedBand,true);
                                   }
                                 }
                               },
@@ -387,7 +389,7 @@ class _NewsFeedState extends State<NewsFeed>
     FirebaseDBOperations.lastDocument = null;
     //controller = CardSwiperController();
     if (selectedBandID != "For You") {
-      getArticlesForBands(selectedBand);
+      getArticlesForBands(selectedBand,false);
       return;
     }
     getBandsCards();
@@ -497,11 +499,13 @@ class _NewsFeedState extends State<NewsFeed>
 
   void getBandsCards() async {
     mulList.clear();
-    bandList = await FirebaseDBOperations.getBandByUser();
+    //if(FirebaseDBOperations.fetchedBands.isEmpty) {
+      bandList = await FirebaseDBOperations.getBandByUser();
+
     for (Band band in bandList) {
       bandMap.putIfAbsent(band.bandId ?? "", () => band);
     }
-    getArticles();
+    getArticles(false);
 
     Band allBands = Band();
     allBands.name = "For You";
@@ -573,6 +577,8 @@ class _NewsFeedState extends State<NewsFeed>
   MultiSelectContainerWidget getMultiSelectWidget(BuildContext bContext) {
     return MultiSelectContainerWidget(
         onSelect: (selectedItems, selectedItem) {
+          _lastDocument = null;
+          _startDocument = null;
           Vibrate.feedback(FeedbackType.selection);
           FirebaseDBOperations.lastDocument = null;
           controller = CardSwiperController();
@@ -585,9 +591,9 @@ class _NewsFeedState extends State<NewsFeed>
             initialisedYoutubePlayer = false;
             //selectedCategory = selectedItem;
             if (selectedBandID == "For You") {
-              getArticles();
+              getArticles(false);
             } else {
-              getArticlesForBands(selectedBand);
+              getArticlesForBands(selectedBand,false);
             }
           });
         },
@@ -605,23 +611,27 @@ class _NewsFeedState extends State<NewsFeed>
     );
   }
 
-  void getArticles() async {
+  void getArticles(bool reverse) async {
     //setState(() {
     articles.clear();
     articleBands.clear();
     //});
     controller = CardSwiperController();
-    algoliaArticles =
-        await FirebaseDBOperations.getArticlesFromAlgolia(articlePage);
+      algoliaArticles =
+        await FirebaseDBOperations.getArticlesData(_startDocument,_lastDocument,reverse);
     List<Article> articleFetched = algoliaArticles?.articles ??
         []; //await FirebaseDBOperations.getArticlesByBands();
-    if (articleFetched.length < 1) {
+    _lastDocument = algoliaArticles?.getLastDocument();
+    _startDocument = algoliaArticles?.getStartDocument();
+
+    if (articleFetched.isEmpty) {
       setState(() {
         loadingAnimation = NO_FOUND_ASSET;
         loadAnimation = true;
       });
     } else {
       List<ArticleBand> fetchedArticleBand = [];
+
       for (Article article in articleFetched) {
         for (Band band in bandList) {
           List hooks = band.hooks ?? [];
@@ -667,21 +677,27 @@ class _NewsFeedState extends State<NewsFeed>
     }
   }
 
-  void getArticlesForBands(Band selectedBand) async {
+  void getArticlesForBands(Band selectedBand, bool reverse) async {
     //setState(() {
     articles.clear();
     articleBands.clear();
     //});
     controller = CardSwiperController();
+    // algoliaArticles =
+    //     await FirebaseDBOperations.getArticlesByBandHookFromAlgolia(
+    //         selectedBand, articlePage);
     algoliaArticles =
-        await FirebaseDBOperations.getArticlesByBandHookFromAlgolia(
-            selectedBand, articlePage);
+    await FirebaseDBOperations.getArticlesDataForBand(_startDocument,_lastDocument,reverse,
+        selectedBand);
     List<Article> articleFetched = algoliaArticles?.articles ??
         []; //await FirebaseDBOperations.getArticlesByBands();
 
+    _lastDocument = algoliaArticles?.getLastDocument();
+    _startDocument = algoliaArticles?.getStartDocument();
+
     List<ArticleBand> fetchedArticleBand = [];
 
-    if (articleFetched.length < 1) {
+    if (articleFetched.isEmpty) {
       setState(() {
         loadingAnimation = NO_FOUND_ASSET;
         loadAnimation = true;
@@ -745,8 +761,9 @@ class _NewsFeedState extends State<NewsFeed>
           ),
         );
       }
-      else
+      else {
         playYoutubeVideo(article);
+      }
 
       setState(() {
           topIndex = currentIndex;
@@ -1019,8 +1036,9 @@ class _NewsFeedState extends State<NewsFeed>
         ),
       );
     }
-    else
-    playYoutubeVideo(article);
+    else {
+      playYoutubeVideo(article);
+    }
 
     setState(() {
       //undoIndex = currentIndex;
@@ -1045,7 +1063,7 @@ class _NewsFeedState extends State<NewsFeed>
 
     List<ArticleBand> fetchedArticleBand = [];
 
-    if (fetchcedArticle.length < 1) {
+    if (fetchcedArticle.isEmpty) {
       setState(() {
         loadingAnimation = NO_FOUND_ASSET;
         loadAnimation = true;
@@ -1199,8 +1217,9 @@ class _NewsFeedState extends State<NewsFeed>
 
           FirebaseDBOperations.ANIMATION_CONTROLLER.forward();
         }
-        else
+        else {
           FirebaseDBOperations.ANIMATION_CONTROLLER.dispose();
+        }
         repeated = true;
       }
     });
