@@ -206,15 +206,15 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                   Container(
                     width: double.maxFinite,
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     alignment: Alignment.centerLeft,
                     decoration: BoxDecoration(
-                        //color: Colors.grey.shade900.withOpacity(0.65),
+                      //color: Colors.grey.shade900.withOpacity(0.65),
                         gradient: LinearGradient(colors: [
-                      Colors.indigo,
-                      Colors.blue.shade700,
-                      Colors.lightBlue,
-                    ])),
+                          Colors.indigo,
+                          Colors.blue.shade700,
+                          Colors.lightBlue,
+                        ])),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -406,7 +406,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 18,
+                              fontSize: 16,
                               fontFamily: APP_FONT_BOLD,
                               fontWeight: FontWeight.bold,
                             ),

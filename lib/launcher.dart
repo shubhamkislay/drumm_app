@@ -400,7 +400,7 @@ class _TutotrialManagerState extends State<TutotrialManager> {
 
   void finishedTutorial() async {
 
-    Future.delayed(const Duration(milliseconds: 1000),(){
+    Future.delayed(const Duration(milliseconds: 750),(){
       FirebaseDBOperations.ANIMATION_CONTROLLER.forward();
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();

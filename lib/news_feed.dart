@@ -44,6 +44,8 @@ import 'LiveIconWidget.dart';
 import 'NotificationIconWidget.dart';
 import 'SwipeBackButton.dart';
 import 'article_jam_page.dart';
+import 'custom/TutorialBox.dart';
+import 'custom/constants/Constants.dart';
 import 'custom/create_jam_bottom_sheet.dart';
 import 'custom/helper/image_uploader.dart';
 import 'custom/rounded_button.dart';
@@ -97,6 +99,7 @@ class _NewsFeedState extends State<NewsFeed>
   final Duration refreshInterval = const Duration(minutes: 15);
 
   bool loadAnimation = false;
+  bool showDrumJoinConfirmation = true;
 
   String selectedBandID = "For You";
 
@@ -488,6 +491,8 @@ class _NewsFeedState extends State<NewsFeed>
     getBandsCards();
     requestPermissions();
 
+    getSharedPreferences();
+
   }
 
   void getBandsCards() async {
@@ -791,9 +796,33 @@ class _NewsFeedState extends State<NewsFeed>
         ConnectToChannel.channelID == "") {
       Vibrate.feedback(FeedbackType.success);
       try {
-        joinOpenDrumm(articleBands.elementAt(previousIndex));
-      } catch (e) {}
-      return true;
+        if(showDrumJoinConfirmation) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return TutorialBox(
+                boxType: BOX_TYPE_CONFIRM,
+                sharedPreferenceKey: CONFIRM_JOIN_SHARED_PREF,
+                tutorialImageAsset: "images/audio-waves.png",
+                tutorialMessage: TUTORIAL_MESSAGE_JOIN,
+                onConfirm: (){
+                  showDrumJoinConfirmation = false;
+                  //joinOpenDrumm(articleBands.elementAt(previousIndex));
+                  controller?.swipeRight();
+                }, tutorialMessageTitle: TUTORIAL_MESSAGE_JOIN_TITLE,
+              );
+            },
+          );
+          return false;
+        }
+        else{
+          joinOpenDrumm(articleBands.elementAt(previousIndex));
+          return true;
+        }
+      } catch (e) {
+        return false;
+      }
+
     } else {
       showBottomSheet(
           context: context,
@@ -1157,6 +1186,7 @@ class _NewsFeedState extends State<NewsFeed>
 
   void initialiseSwipeAnimation() {
     bool repeated = false;
+    double rotationEndDegree = 2.5;
     FirebaseDBOperations.ANIMATION_CONTROLLER = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
@@ -1165,8 +1195,10 @@ class _NewsFeedState extends State<NewsFeed>
       if (status == AnimationStatus.completed) {
         FirebaseDBOperations.ANIMATION_CONTROLLER.reverse();
       } else if (status == AnimationStatus.dismissed) {
-        if(!repeated)
+        if(!repeated) {
+
           FirebaseDBOperations.ANIMATION_CONTROLLER.forward();
+        }
         else
           FirebaseDBOperations.ANIMATION_CONTROLLER.dispose();
         repeated = true;
@@ -1176,7 +1208,12 @@ class _NewsFeedState extends State<NewsFeed>
 
     slideAnimation = Tween<double>(begin: 0.0, end: 10.0) // Slide movement
         .animate(CurvedAnimation(parent: FirebaseDBOperations.ANIMATION_CONTROLLER, curve: Curves.easeInOut,reverseCurve: Curves.easeInOutBack));
-    rotationAnimation = Tween<double>(begin: 0.0, end: 2.5) // Rotation in degrees
+    rotationAnimation = Tween<double>(begin: 0.0, end: rotationEndDegree) // Rotation in degrees
         .animate(CurvedAnimation(parent: FirebaseDBOperations.ANIMATION_CONTROLLER, curve: Curves.easeInOut,reverseCurve: Curves.easeInOutBack));
+  }
+
+  void getSharedPreferences() async {
+    SharedPreferences sharedPref = await SharedPreferences.getInstance();
+    showDrumJoinConfirmation = sharedPref.getBool(CONFIRM_JOIN_SHARED_PREF)??true;
   }
 }
