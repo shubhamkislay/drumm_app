@@ -10,6 +10,7 @@ class TutorialBox extends StatelessWidget {
   String tutorialImageAsset;
   String sharedPreferenceKey;
   String boxType;
+  bool? autoUpdate = false;
   VoidCallback? onConfirm;
   TutorialBox(
       {Key? key,
@@ -18,11 +19,16 @@ class TutorialBox extends StatelessWidget {
       required this.tutorialImageAsset,
       required this.sharedPreferenceKey,
       required this.boxType,
+        this.autoUpdate,
       this.onConfirm})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    if(autoUpdate??false) {
+      print("AutoUpdating share preference");
+      updateSharedPreference();
+    }
     return AlertDialog(
       backgroundColor: Colors.grey.shade900,
       shape: RoundedRectangleBorder(
@@ -38,17 +44,17 @@ class TutorialBox extends StatelessWidget {
         textAlign: TextAlign.center,
         style: const TextStyle(color: Colors.white, fontSize: 22,fontWeight: FontWeight.bold),
       ),
-      contentPadding: EdgeInsets.all(32),
-      iconPadding: EdgeInsets.all(32),
+      contentPadding: const EdgeInsets.all(32),
+      iconPadding: const EdgeInsets.all(32),
       content: Text(
         tutorialMessage,
         textAlign: TextAlign.center,
         style: const TextStyle(color: Colors.white70, fontSize: 12),
       ),
       actionsAlignment: MainAxisAlignment.spaceEvenly,
-      actionsPadding: EdgeInsets.all(24),
+      actionsPadding: const EdgeInsets.all(24),
       actions: [
-        GestureDetector(
+        if(boxType == BOX_TYPE_CONFIRM) GestureDetector(
           onTap: () {
             Navigator.pop(context);
           },
@@ -70,7 +76,11 @@ class TutorialBox extends StatelessWidget {
         GestureDetector(
           onTap: () {
             updateSharedPreference();
-            onConfirm!();
+            try {
+              onConfirm!();
+            }catch(e){
+              print("You've not set onConfirm callback");
+            }
             Navigator.pop(context);
           },
           child: Container(

@@ -4,6 +4,7 @@ import 'package:drumm_app/SettingsPage.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:drumm_app/custom/helper/connect_channel.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
@@ -36,8 +37,11 @@ class _UserProfilePageState extends State<UserProfilePage>
   bool followed = false;
   bool fromSearch=false;
 
+
   @override
   Widget build(BuildContext context) {
+
+    print("User background image ${modifyImageUrl(drummer?.imageUrl ??"","100x100")}");
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(

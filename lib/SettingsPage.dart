@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:drumm_app/main.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
@@ -40,6 +41,12 @@ class _SettingsPageState extends State<SettingsPage> {
     // Add your logout logic here
     if (ConnectToChannel.engineInitialized) ConnectToChannel.disposeEngine();
 
+
+    try {
+      FirebaseFirestore.instance.clearPersistence();
+    }catch(e){
+      "Error clearing persistence because $e";
+    }
     FirebaseAuth.instance.signOut().then((value) {
       removedPreferences();
       Navigator.pushAndRemoveUntil(context,

@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:ogg_opus_player/ogg_opus_player.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -36,6 +37,7 @@ import 'article_band.dart';
 import 'jam.dart';
 
 double curve = 4;
+var unescape = HtmlUnescape();
 
 class HomeItem extends StatefulWidget {
   ArticleBand articleBand;
@@ -174,6 +176,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
   Widget build(BuildContext context) {
     bool muteAudio = false;
     int imageUrlLength = widget.article.imageUrl?.length ?? 0;
+
     // if(source.toLowerCase() =='youtube') {
     //   FirebaseDBOperations.youtubeController =
     //       YoutubePlayerController(
@@ -230,9 +233,6 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                                 fit: BoxFit.contain),
                           ),
                         ),
-                        const SizedBox(
-                          width: 4,
-                        ),
                         Expanded(
                           child: GestureDetector(
                             onTap: () {
@@ -240,35 +240,29 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                               widget.joinDrumm(widget.articleBand);
                             },
                             child: Container(
-                              height: 120,
+                              height: 110,
                               alignment: Alignment.center,
-                              padding: const EdgeInsets.all(16),
+                              padding: const EdgeInsets.symmetric(vertical: 18,horizontal: 6),
                               child: AutoSizeText(
-                                "\"${widget.article.question}\"" ?? "",
-                                textAlign: TextAlign.left,
-                                maxFontSize: 36,
+                                "\"${unescape.convert(widget.article.question??"")}\"" ?? "",
+                                textAlign: TextAlign.center,
+                                maxFontSize: 24,
                                 minFontSize: 5,
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 28,
+                                  fontSize: 24,
                                   fontFamily: APP_FONT_BOLD,
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 4,
-                        ),
                         GestureDetector(
                           onTap: () {
                             Vibrate.feedback(FeedbackType.selection);
                             generateLink();
                           },
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 2),
-                            child: ShareWidget(),
-                          ),
+                          child: const ShareWidget(),
                         ),
                       ],
                     ),
@@ -402,7 +396,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                     },
                     child: (imageUrlLength > 0)
                         ? Text(
-                            widget.article.title ?? "",
+                      unescape.convert(widget.article.title??""),
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               color: Colors.white,
@@ -412,7 +406,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                             ),
                           )
                         : Text(
-                            widget.article.title ?? "",
+                      unescape.convert(widget.article.title??""),
                             textAlign: TextAlign.start,
                             style: TextStyle(
                               color: Colors.white,
@@ -551,17 +545,17 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  const Text(
+                                children: const [
+                                  Text(
                                     "Read",
                                     style: TextStyle(
                                       fontSize: 12,
                                     ),
                                   ),
-                                  const SizedBox(
+                                  SizedBox(
                                     width: 4,
                                   ),
-                                  const Icon(
+                                  Icon(
                                     Icons.arrow_forward_ios_rounded,
                                     size: 14,
                                   ),
@@ -576,10 +570,10 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                           height: 16,
                         ),
                         ExpandableText(
-                          (widget.source.toLowerCase() =='youtube')? widget.article.title??"": (widget.article.description != null)
-                              ? "${widget.article.description}"
+                          (widget.source.toLowerCase() =='youtube')? unescape.convert(widget.article.title??""): (widget.article.description != null)
+                              ? unescape.convert(widget.article.description??"")
                               : (widget.article.content != null)
-                                  ? "${widget.article.content}"
+                                  ? unescape.convert(widget.article.content??"")
                                   : "",
                           textAlign: TextAlign.left,
                           style: TextStyle(
@@ -637,16 +631,16 @@ class _HomeFeedDataState extends State<HomeFeedData> {
     }
     Jam jam = Jam();
     jam.broadcast = false;
-    jam.title = widget.article?.title;
+    jam.title = unescape.convert(widget.article?.title??"");
     jam.bandId = widget.article?.category;
     jam.jamId = widget.article?.jamId;
     jam.articleId = widget.article?.articleId;
     jam.startedBy = widget.article?.source;
     jam.imageUrl = imageUrl;
     if (widget.article?.question != null) {
-      jam.question = widget.article?.question;
+      jam.question = unescape.convert(widget.article?.question??"");
     } else {
-      jam.question = widget.article?.title;
+      jam.question = unescape.convert(widget.article?.title??"");
     }
     jam.count = 1;
     jam.membersID = [];
@@ -659,7 +653,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
         canonicalIdentifier: 'flutter/branch',
         title: "Drop-in Audio discussion on Drumm",
         imageUrl: imageUrl,
-        contentDescription: '${widget.article?.title}',
+        contentDescription: '${unescape.convert(widget.article?.title??"")}',
         contentMetadata: metadata,
         publiclyIndex: true,
         locallyIndex: true,
@@ -688,7 +682,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
       print('GeneratedLink : ${response.result}');
 
       String articleLink =
-          "${(widget.article?.question != null) ? "Drumm: ${widget.article?.question}" : widget.article?.title}\n\nTap to join the discussion on Drumm.\n${response.result}";
+          "${(widget.article?.question != null) ? "Drumm: ${unescape.convert(widget.article?.question??"")}" : unescape.convert(widget.article?.title??"")}\n\nTap to join the discussion on Drumm.\n${response.result}";
 
       Share.share(articleLink);
 

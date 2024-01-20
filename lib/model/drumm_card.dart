@@ -54,6 +54,7 @@ class _DrummCardState extends State<DrummCard> {
             if(widget.jamCallback!=null)
               widget.jamCallback!(widget.jam);
 
+            Navigator.pop(context);
             joinDrumm();
 
           },
@@ -120,8 +121,7 @@ class _DrummCardState extends State<DrummCard> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(3.0),
-                          child: AutoSizeText(
-                            RemoveDuplicate.removeTitleSource(widget.jam.title??""),
+                          child: AutoSizeText(widget.jam.title??"",
                             textAlign: TextAlign.left,
                             overflow: TextOverflow.ellipsis,
                             maxFontSize: 14,

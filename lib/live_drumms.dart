@@ -10,8 +10,11 @@ import 'package:drumm_app/skeleton_band.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'create_band.dart';
+import 'custom/TutorialBox.dart';
+import 'custom/constants/Constants.dart';
 import 'custom/helper/firebase_db_operations.dart';
 import 'model/band.dart';
 import 'model/jam.dart';
@@ -31,6 +34,8 @@ class LiveDrummsState extends State<LiveDrumms>
   List<Jam> openDrumms = [];
   List<DrummCard> openDrummCards = [];
   bool loaded = false;
+
+  bool showLiveALert = true;
 
   @override
   Widget build(BuildContext context) {
@@ -263,9 +268,30 @@ class LiveDrummsState extends State<LiveDrumms>
 
   void initialise() {
     getBandDrumms();
+    getSharedPreferences();
   }
 
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => false;
+
+  void getSharedPreferences() async {
+    SharedPreferences sharedPref = await SharedPreferences.getInstance();
+    showLiveALert = sharedPref.getBool(ALERT_EXPLORE_LIVE_SHARED_PREF)??true;
+    if(showLiveALert) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return TutorialBox(
+            boxType: BOX_TYPE_ALERT,
+            autoUpdate: true,
+            sharedPreferenceKey: ALERT_EXPLORE_LIVE_SHARED_PREF,
+            tutorialImageAsset: "images/logo_background_white.png",
+            tutorialMessage: TUTORIAL_MESSAGE_LIVE,
+            tutorialMessageTitle: TUTORIAL_MESSAGE_LIVE_TITLE,
+          );
+        },
+      );
+    }
+  }
 }

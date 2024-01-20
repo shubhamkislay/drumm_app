@@ -222,6 +222,7 @@ class _OpenArticlePageState extends State<OpenArticlePage> with RouteAware {
         NavigationDelegate(
           onProgress: (int progress) {
             // Update loading bar.
+            if(mounted)
             setState(() {
               _progress = progress;
             });

@@ -45,14 +45,14 @@ class CreateBandState extends State<CreateBand> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(vertical: 42, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 42, horizontal: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.all(24),
+              padding: const EdgeInsets.all(24),
               width: double.maxFinite,
-              child: Text(
+              child: const Text(
                 'Create a Band',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -99,25 +99,25 @@ class CreateBandState extends State<CreateBand> {
                   value: uploadProgress,
                 ),
               ),
-            SizedBox(
+            const SizedBox(
               height: 4,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
               child: Text(
                 "Add hooks",
                 style: TextStyle(fontSize: 18, fontFamily: APP_FONT_MEDIUM),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
               child: Text(
                 "Hooks let your band pick news articles based on the category, which you can use to drumm with your band members",
                 style: TextStyle(
                     fontSize: 10, fontFamily: APP_FONT_MEDIUM, color: Colors.white54),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Padding(
@@ -135,8 +135,9 @@ class CreateBandState extends State<CreateBand> {
                           List<String> tempHooks = selectedHooks;
                           if (tempHooks.contains(hook)) {
                             tempHooks.remove(hook);
-                          } else
+                          } else {
                             tempHooks.add(hook);
+                          }
 
                           setState(() {
                             selectedHooks = tempHooks;
@@ -144,7 +145,7 @@ class CreateBandState extends State<CreateBand> {
                         },
                         child: Container(
                           padding:
-                              EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                              const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
                           decoration: BoxDecoration(
                             color: selectedHooks.contains(hook)
                                 ? Colors.white
@@ -167,9 +168,9 @@ class CreateBandState extends State<CreateBand> {
                     .toList(),
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: TextField(
                 onChanged: (val) {
                   band.name = val;
@@ -184,14 +185,14 @@ class CreateBandState extends State<CreateBand> {
                   iconColor: Colors.white,
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                       color: Colors.white,
                       width: 1.5,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         color: Colors.white12,
                         width: 1,
                       )),
@@ -199,7 +200,7 @@ class CreateBandState extends State<CreateBand> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: TextField(
                 onChanged: (val) {
                   band.description = val;
@@ -211,14 +212,14 @@ class CreateBandState extends State<CreateBand> {
                   hintText: "Enter Band description...",
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16.0),
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                       color: Colors.white,
                       width: 1.5,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                       color: Colors.white12,
                       width: 1,
                     ),
@@ -236,12 +237,12 @@ class CreateBandState extends State<CreateBand> {
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   alignment: Alignment.center,
-                  padding: EdgeInsets.symmetric(horizontal: 0, vertical: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Text(
+                  child: const Text(
                     "Create",
                     style: TextStyle(color: Colors.black, fontFamily: APP_FONT_MEDIUM),
                   ),
@@ -301,15 +302,14 @@ class CreateBandState extends State<CreateBand> {
         storageReference,
         (double progress) {
           // Handle progress updates here
-          print('Upload progress: $progress');
           setState(() {
             uploadProgress = progress;
           });
         },
         (String imageUrl) {
-          print("Uploaded Image: ${imageUrl}");
-          imageURL = imageUrl;
-          band.url = imageUrl;
+          //print("Uploaded Image: ${imageUrl}");
+          imageURL = "$imageUrl&lastupdated=${Timestamp.now().microsecondsSinceEpoch.toString()}";
+          band.url = imageURL;
           readToUpload = true;
         },
         19,
@@ -325,23 +325,25 @@ class CreateBandState extends State<CreateBand> {
     if (readToUpload) {
       String bandName = band.name?.toLowerCase() ?? "";
       String bandDescription = band.description?.toLowerCase() ?? "";
-      if (bandName.length < 3 || bandName.length > 30)
+      if (bandName.length < 3 || bandName.length > 30) {
         AnimatedSnackBar.material(
           'Band name characters should in the range 3-30',
           type: AnimatedSnackBarType.info,
         ).show(context);
-      else if (bandDescription.length < 10 || bandDescription.length > 300)
+      } else if (bandDescription.length < 10 || bandDescription.length > 300) {
         AnimatedSnackBar.material(
           'Band description characters should in the range 30-300',
           type: AnimatedSnackBarType.info,
         ).show(context);
-      else
+      } else {
         createBand(context);
-    } else
+      }
+    } else {
       AnimatedSnackBar.material(
         'Please Upload the image',
         type: AnimatedSnackBarType.info,
       ).show(context);
+    }
   }
 
   void getPrefs() async {

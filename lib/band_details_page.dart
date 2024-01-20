@@ -24,8 +24,11 @@ import 'package:drumm_app/user_profile_page.dart';
 import 'package:flutter_chip_tags/flutter_chip_tags.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ShareWidget.dart';
+import 'custom/TutorialBox.dart';
+import 'custom/constants/Constants.dart';
 import 'model/Drummer.dart';
 import 'model/band.dart';
 import 'profile_page.dart';
@@ -546,6 +549,26 @@ class BandDetailsPageState extends State<BandDetailsPage> {
     );
   }
 
+  void getSharedPreferences() async {
+    SharedPreferences sharedPref = await SharedPreferences.getInstance();
+    bool showBandsAlert = sharedPref.getBool(ALERT_EXPLORE_BANDS_SHARED_PREF)??true;
+    if(showBandsAlert) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return TutorialBox(
+            boxType: BOX_TYPE_ALERT,
+            autoUpdate: true,
+            sharedPreferenceKey: ALERT_EXPLORE_BANDS_SHARED_PREF,
+            tutorialImageAsset: "images/team_active.png",
+            tutorialMessage: TUTORIAL_MESSAGE_BANDS,
+            tutorialMessageTitle: TUTORIAL_MESSAGE_BANDS_TITLE,
+          );
+        },
+      );
+    }
+  }
+
 
   void generateLink() async {
     Band? linkBand = band;
@@ -636,6 +659,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
     getJams(widget.band?.bandId);
     getDrummer(widget.band?.foundedBy ?? "");
     getMembers();
+    getSharedPreferences();
   }
 
   void getJams(String? uid) async {

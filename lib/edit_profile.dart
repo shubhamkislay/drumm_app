@@ -253,9 +253,9 @@ class _EditProfileState extends State<EditProfile> {
           });
         },
         (String imageUrl) {
-          print("Uploaded Image: ${imageUrl}");
-          imageURL = imageUrl;
-          drummer.imageUrl = imageUrl;
+          print("Uploaded Image: ${imageUrl}&lastupdated=${Timestamp.now().microsecondsSinceEpoch.toString()}");
+          imageURL = "$imageUrl&lastupdated=${Timestamp.now().microsecondsSinceEpoch.toString()}";
+          drummer.imageUrl = imageURL;
           setState(() {
             readToUpload = true;
           });

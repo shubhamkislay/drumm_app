@@ -607,8 +607,9 @@ class FirebaseDBOperations {
       fetchedBands = await FirebaseDBOperations.getBandByUser();
 
 
+      List bandCategoryList = [];
     for (Band band in fetchedBands) {
-      bandCategoryList.add(band.bandId ?? "");
+      bandCategoryList.addAll(band.hooks as Iterable );
     }
     if (bandCategoryList.isEmpty) return [];
 
@@ -649,8 +650,9 @@ class FirebaseDBOperations {
       fetchedBands = await FirebaseDBOperations.getBandByUser();
 
 
+      List bandCategoryList = [];
     for (Band band in fetchedBands) {
-      bandCategoryList.add(band.bandId ?? "");
+      bandCategoryList.addAll(band.hooks as Iterable );
     }
     if (bandCategoryList.isEmpty) {
       print("BandIDList is empty");

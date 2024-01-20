@@ -100,6 +100,7 @@ class _NewsFeedState extends State<NewsFeed>
 
   bool loadAnimation = false;
   bool showDrumJoinConfirmation = true;
+  bool showExploreArticlesAlert = true;
 
   String selectedBandID = "For You";
 
@@ -468,7 +469,11 @@ class _NewsFeedState extends State<NewsFeed>
 
   @override
   void dispose() {
-    if (controller != null) controller?.dispose();
+    try {
+      if (controller != null) controller?.dispose();
+    }catch(e){
+
+    }
 
     if (FirebaseDBOperations.ANIMATION_CONTROLLER != null) FirebaseDBOperations.ANIMATION_CONTROLLER.dispose();
 
@@ -740,6 +745,10 @@ class _NewsFeedState extends State<NewsFeed>
     } catch (e) {}
     cleanCache();
 
+
+    /**
+     * Initialise and refersh youtube controller
+     */
     if (currentIndex != null) {
 
       articleTop =
@@ -769,20 +778,6 @@ class _NewsFeedState extends State<NewsFeed>
           topIndex = currentIndex;
         });
 
-    } else {
-      print("The current index is null");
-      // setState(() {
-      //   topIndex = 0;
-      //   try {
-      //     youtubePlayerController.pause();
-      //     youtubePlayerController.dispose();
-      //   }catch(e){
-      //
-      //   }
-      // });
-
-      //initialisedYoutubePlayer = false;
-      //youtubePlayerController.dispose();
     }
 
     try {
@@ -801,18 +796,48 @@ class _NewsFeedState extends State<NewsFeed>
           articleBands.elementAt(previousIndex).article?.articleId);
     } catch (e) {}
 
+
     if (direction == CardSwiperDirection.top ||
         direction == CardSwiperDirection.bottom) return false;
-    if (direction == CardSwiperDirection.left) {
-      //Vibrate.feedback(FeedbackType.selection);
 
-      return true;
+
+    if (direction == CardSwiperDirection.left) {
+
+      try {
+        if(showExploreArticlesAlert) {
+          Vibrate.feedback(FeedbackType.selection);
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return TutorialBox(
+                boxType: BOX_TYPE_ALERT,
+                sharedPreferenceKey: ALERT_EXPLORE_ARTICLES_SHARED_PREF,
+                tutorialImageAsset: "images/google-earth.png",
+                tutorialMessage: TUTORIAL_MESSAGE_EXPLORE,
+                onConfirm: (){
+                  showExploreArticlesAlert = false;
+                  //joinOpenDrumm(articleBands.elementAt(previousIndex));
+                  controller?.swipeLeft();
+                }, tutorialMessageTitle: TUTORIAL_MESSAGE_EXPLORE_TITLE,
+              );
+            },
+          );
+          return false;
+        }
+        else{
+          return true;
+        }
+      } catch (e) {
+        return true;
+      }
+
     }
 
     if (ConnectToChannel.channelID == null ||
         ConnectToChannel.channelID == "") {
-      Vibrate.feedback(FeedbackType.success);
+
       try {
+        Vibrate.feedback(FeedbackType.selection);
         if(showDrumJoinConfirmation) {
           showDialog(
             context: context,
@@ -833,6 +858,7 @@ class _NewsFeedState extends State<NewsFeed>
           return false;
         }
         else{
+          Vibrate.feedback(FeedbackType.success);
           joinOpenDrumm(articleBands.elementAt(previousIndex));
           return true;
         }
@@ -925,6 +951,7 @@ class _NewsFeedState extends State<NewsFeed>
             );
             initialisedYoutubePlayer = true;
         } else {
+          print("Play the url:  ${article?.url}");
           youtubePlayerController
               .load(YoutubePlayer.convertUrlToId(article?.url ?? "") ?? "");
         }
@@ -1204,7 +1231,7 @@ class _NewsFeedState extends State<NewsFeed>
 
   void initialiseSwipeAnimation() {
     bool repeated = false;
-    double rotationEndDegree = 2.5;
+    double rotationEndDegree = 3.5;
     FirebaseDBOperations.ANIMATION_CONTROLLER = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
@@ -1234,5 +1261,6 @@ class _NewsFeedState extends State<NewsFeed>
   void getSharedPreferences() async {
     SharedPreferences sharedPref = await SharedPreferences.getInstance();
     showDrumJoinConfirmation = sharedPref.getBool(CONFIRM_JOIN_SHARED_PREF)??true;
+    showExploreArticlesAlert = sharedPref.getBool(ALERT_EXPLORE_ARTICLES_SHARED_PREF)??true;
   }
 }
