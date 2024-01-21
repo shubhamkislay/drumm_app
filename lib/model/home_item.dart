@@ -412,7 +412,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                               color: Colors.white,
                               fontSize:
                                   (widget.source.toLowerCase() != 'youtube')
-                                      ? 36
+                                      ? 24
                                       : 18,
                               fontFamily: APP_FONT_BOLD,
                               fontWeight: FontWeight.bold,

@@ -80,7 +80,7 @@ class SearchResultPageState extends State<SearchResultPage>
   void getArticles() async {
     if (FirebaseDBOperations.exploreArticles.isEmpty || query != "") {
       List<Article> fetchedArticles = await FirebaseDBOperations.searchArticles(
-          query ?? ""); //getUserBands();
+          query ?? "",0); //getUserBands();
       articles = fetchedArticles;
     } else {
       articles = FirebaseDBOperations.exploreArticles;

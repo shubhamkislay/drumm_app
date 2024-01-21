@@ -56,32 +56,17 @@ class FirebaseDBOperations {
   static List<Band> fetchedBands = [];
   static List<String> bandCategoryList = [];
 
-  static Future<List<Article>> searchArticles(String query) async {
+  static Future<List<Article>> searchArticles(String query,int page) async {
     AlgoliaQuerySnapshot getArticles = await algolia.instance
         .index('articles')
-        .setFacets(['meta'])
+        .setPage(page)
         .setUserToken(FirebaseAuth.instance.currentUser?.uid ?? "")
         .query(query)
-        .setPersonalizationImpact(value: 75)
-        .setHitsPerPage(300)
-        .setEnablePersonalization(enabled: true)
+        .setHitsPerPage(25)
         .getObjects();
 
-    print(
-        "Getting News Feed from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
-    List<Article> filteredList = [];
     List<Article> result =
         List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
-    if (query == "") {
-      List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
-
-      for (Article farticle in result) {
-        if (!seenPosts.contains(farticle.articleId)) {
-          filteredList.add(farticle);
-        }
-      }
-      result = filteredList;
-    }
 
     if (query.isEmpty) exploreArticles = result;
 

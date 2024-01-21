@@ -31,34 +31,54 @@ class _ExplorePageState extends State<ExplorePage>
   List<ArticleImageCard> articleCards = [];
   List<Article> articles = [];
 
+  int page = -1;
   int index = 0;
+  final ScrollController _scrollController = ScrollController();
+  bool showProgress = false;
 
   @override
   void initState() {
     super.initState();
+    populateArticles();
     _tabController = TabController(length: 3, vsync: this);
-    getArticles();
+    _scrollController.addListener(_scrollListener);
+
     //getUserBands();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      setState(() {
+        showProgress = true;
+      });
+      getArticles();
+    }
+  }
+
   void getArticles() async {
-    if(FirebaseDBOperations.exploreArticles.isEmpty) {
-      List<Article> fetchedArticles = await FirebaseDBOperations.searchArticles(
-          query ?? ""); //getUserBands();
-      articles = fetchedArticles;
-    }
-    else {
-      articles = FirebaseDBOperations.exploreArticles;
-    }
+    page += 1;
+
+    List<Article> fetchedArticles =
+        await FirebaseDBOperations.searchArticles(query ?? "", page);
+    articles += fetchedArticles;
+
     setState(() {
-      articleCards =
-          articles.map((article) => ArticleImageCard(article,articles: articles,)).toList();
+      showProgress = false;
+      articleCards = articles
+          .map((article) => ArticleImageCard(
+                article,
+                articles: articles,
+              ))
+          .toList();
+
     });
   }
 
@@ -87,12 +107,13 @@ class _ExplorePageState extends State<ExplorePage>
                 child: Wrap(
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      padding:
+                          const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                       decoration: BoxDecoration(
                           color: Colors.grey.shade900,
                           borderRadius: BorderRadius.circular(2)),
                       child: Row(
-                        children: [Icon(Icons.search), Text("Search")],
+                        children: const [Icon(Icons.search), Text("Search")],
                       ),
                     ),
                   ],
@@ -105,32 +126,62 @@ class _ExplorePageState extends State<ExplorePage>
                   alignment: Alignment.topCenter,
                   child: GridView.custom(
                     shrinkWrap: true,
-                    padding: EdgeInsets.symmetric(horizontal: 2),
+                    controller: _scrollController,
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
                     gridDelegate: SliverQuiltedGridDelegate(
                       crossAxisCount: 3,
                       mainAxisSpacing: 3,
                       crossAxisSpacing: 3,
                       repeatPattern: QuiltedGridRepeatPattern.inverted,
                       pattern: [
-                        QuiltedGridTile(2, 1),
-                        QuiltedGridTile(2, 2),
-                        QuiltedGridTile(1, 2),
-                        QuiltedGridTile(2, 1),
-                        QuiltedGridTile(1, 2),
+                        const QuiltedGridTile(2, 1),
+                        const QuiltedGridTile(2, 2),
+                        const QuiltedGridTile(1, 2),
+                        const QuiltedGridTile(2, 1),
+                        const QuiltedGridTile(1, 2),
                       ],
                     ),
-                    childrenDelegate: (articleCards.length > 0)?SliverChildBuilderDelegate(
-                      childCount: articleCards.length,
-                      (context, index) => articleCards.elementAt(index),
-                    ):SliverChildBuilderDelegate(
-                        (context, index) => Container(color: Colors.grey.shade900,),
-                  ),
+                    childrenDelegate: (articleCards.length > 0)
+                        ? SliverChildBuilderDelegate(
+                            childCount: articleCards.length,
+                            (context, index) => articleCards.elementAt(index),
+                          )
+                        : SliverChildBuilderDelegate(
+                            (context, index) => Container(
+                              color: Colors.grey.shade900,
+                            ),
+                          ),
                   ),
                 ),
               ),
+            if(showProgress)Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+            ),
+
           ],
         ),
       ),
     );
+  }
+
+  void populateArticles() async {
+    if (FirebaseDBOperations.exploreArticles.isEmpty) {
+      getArticles();
+    } else {
+
+      page+=1;
+      articles = FirebaseDBOperations.exploreArticles;
+      setState(() {
+        articleCards = articles
+            .map((article) => ArticleImageCard(
+          article,
+          articles: articles,
+        ))
+            .toList();
+      });
+    }
   }
 }

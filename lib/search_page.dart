@@ -71,7 +71,7 @@ class _SearchPageState extends State<SearchPage>
 
   void getArticles() async {
     List<Article> fetchedArticles = await FirebaseDBOperations.searchArticles(
-        query ?? ""); //getUserBands();
+        query ?? "",0); //getUserBands();
     articles = fetchedArticles;
     setState(() {
       articleCards = articles.map((article) => ArticleImageCard(article)).toList();
@@ -88,7 +88,7 @@ class _SearchPageState extends State<SearchPage>
           return [
             SliverAppBar(
               backgroundColor: Colors.grey.shade900,
-              title: Text(
+              title: const Text(
                 'Search',
                 style: TextStyle(color: Colors.white, fontSize: 24),
                 textAlign: TextAlign.left,
@@ -98,7 +98,7 @@ class _SearchPageState extends State<SearchPage>
               floating: true,
               expandedHeight: 175,
               bottom: PreferredSize(
-                preferredSize: Size(100, 123),
+                preferredSize: const Size(100, 123),
                 child: Column(
                   children: [
                     Container(
@@ -110,7 +110,7 @@ class _SearchPageState extends State<SearchPage>
                         decoration: InputDecoration(
                           fillColor: Colors.black,
                           hintText: 'type here...',
-                          prefixIcon: Icon(Icons.search),
+                          prefixIcon: const Icon(Icons.search),
                           border: InputBorder.none,
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -151,9 +151,9 @@ class _SearchPageState extends State<SearchPage>
                         index = idx;
                       },
                       tabs: [
-                        Tab(text: 'Articles'),
-                        Tab(text: 'People'),
-                        Tab(text: 'Bands'),
+                        const Tab(text: 'Articles'),
+                        const Tab(text: 'People'),
+                        const Tab(text: 'Bands'),
                       ],
                     ),
                   ],
@@ -179,19 +179,19 @@ class _SearchPageState extends State<SearchPage>
                             alignment: Alignment.topCenter,
                             child: GridView.custom(
                               shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              padding: EdgeInsets.symmetric(horizontal: 8),
+                              physics: const NeverScrollableScrollPhysics(),
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
                               gridDelegate: SliverQuiltedGridDelegate(
                                 crossAxisCount: 3,
                                 mainAxisSpacing: 6,
                                 crossAxisSpacing: 6,
                                 repeatPattern: QuiltedGridRepeatPattern.inverted,
                                 pattern: [
-                                  QuiltedGridTile(2, 1),
-                                  QuiltedGridTile(2, 2),
-                                  QuiltedGridTile(1, 2),
-                                  QuiltedGridTile(2, 1),
-                                  QuiltedGridTile(1, 2),
+                                  const QuiltedGridTile(2, 1),
+                                  const QuiltedGridTile(2, 2),
+                                  const QuiltedGridTile(1, 2),
+                                  const QuiltedGridTile(2, 1),
+                                  const QuiltedGridTile(1, 2),
                                 ],
                               ),
                               childrenDelegate: SliverChildBuilderDelegate(
@@ -200,7 +200,7 @@ class _SearchPageState extends State<SearchPage>
                               ),
                             ),
                           ),
-                        SizedBox(
+                        const SizedBox(
                           height: 100,
                         ),
                       ],
@@ -225,12 +225,12 @@ class _SearchPageState extends State<SearchPage>
                                 childAspectRatio: 1,
                                 crossAxisCount: 2, // Number of columns
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.symmetric(horizontal: 4),
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: const EdgeInsets.symmetric(horizontal: 4),
                                 crossAxisSpacing: 12,
                                 children: peopleCards),
                           ),
-                        SizedBox(
+                        const SizedBox(
                           height: 100,
                         ),
                       ],
@@ -255,12 +255,12 @@ class _SearchPageState extends State<SearchPage>
                                 childAspectRatio: 1,
                                 crossAxisCount: 2, // Number of columns
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.symmetric(horizontal: 4),
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: const EdgeInsets.symmetric(horizontal: 4),
                                 crossAxisSpacing: 12,
                                 children: bandCards),
                           ),
-                        SizedBox(
+                        const SizedBox(
                           height: 100,
                         ),
                       ],
