@@ -75,12 +75,12 @@ class _LoginPageState extends State<LoginPage> {
               });
             },
             child: Container(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(20),
               margin:  EdgeInsets.symmetric(horizontal: 32),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   color: Colors.black,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(30),
                   border: Border.all(color: Colors.grey.shade900, width: 2)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -111,12 +111,12 @@ class _LoginPageState extends State<LoginPage> {
 
             },
             child: Container(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(20),
               margin:  EdgeInsets.symmetric(horizontal: 32),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(30),
                   border: Border.all(color: Colors.grey.shade900, width: 2)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

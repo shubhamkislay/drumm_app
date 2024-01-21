@@ -21,6 +21,7 @@ import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
 import 'package:flutter_callkit_incoming/entities/ios_params.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_meta_sdk/flutter_meta_sdk.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:drumm_app/AppleWatchMenu.dart';
 import 'package:drumm_app/InterestPage.dart';
@@ -98,6 +99,7 @@ class _MyAppState extends State<MyApp>
   static FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
   late SharedPreferences prefs;
+  static final metaSdk = FlutterMetaSdk();
 
   @override
   void dispose() {
@@ -115,6 +117,9 @@ class _MyAppState extends State<MyApp>
     //FirebaseDatabase.instance.setPersistenceEnabled(true);
     FirebaseFirestore.instance.settings =
         const Settings(persistenceEnabled: true);
+      metaSdk.logEvent(
+      name: 'Facebook Event initialised',
+    );
 
     _themeManager.addListener(themeListener);
     _themeManager.darkTheme(true);

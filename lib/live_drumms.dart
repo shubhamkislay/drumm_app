@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:drumm_app/SkeletonHomeItem.dart';
 import 'package:drumm_app/custom/create_jam_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -58,7 +59,7 @@ class LiveDrummsState extends State<LiveDrumms>
                         Container(
                           alignment: Alignment.centerLeft,
                           padding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                              const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -68,8 +69,8 @@ class LiveDrummsState extends State<LiveDrumms>
                                   child: GestureDetector(
                                     onTap: () => Navigator.pop(context),
                                     child: Container(
-                                      padding: EdgeInsets.all(4),
-                                      child: Icon(
+                                      padding: const EdgeInsets.all(4),
+                                      child: const Icon(
                                         Icons.keyboard_arrow_down_rounded,
                                         size: 32,
                                       ),
@@ -79,7 +80,7 @@ class LiveDrummsState extends State<LiveDrumms>
                               ),
                               if (false)
                                 Container(
-                                    padding: EdgeInsets.all(2),
+                                    padding: const EdgeInsets.all(2),
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(24),
                                         gradient: LinearGradient(colors: [
@@ -92,11 +93,11 @@ class LiveDrummsState extends State<LiveDrumms>
                                               BorderRadius.circular(24),
                                           color: Colors.grey.shade900,
                                         ),
-                                        child: Icon(Icons.language, size: 42))),
-                              SizedBox(
+                                        child: const Icon(Icons.language, size: 42))),
+                              const SizedBox(
                                 width: 0,
                               ),
-                              AutoSizeText(
+                              const AutoSizeText(
                                 "Live",
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
@@ -116,8 +117,8 @@ class LiveDrummsState extends State<LiveDrumms>
                                 crossAxisCount: 2, // Number of columns
                                 childAspectRatio: 0.8,
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.symmetric(horizontal: 0),
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: const EdgeInsets.symmetric(horizontal: 0),
                                 crossAxisSpacing: 8,
                                 mainAxisSpacing: 8,
                                 children: drummCards),
@@ -126,9 +127,9 @@ class LiveDrummsState extends State<LiveDrumms>
                           Center(
                             child: Container(
                               alignment: Alignment.center,
-                              padding: EdgeInsets.all(32),
+                              padding: const EdgeInsets.all(32),
                               height: MediaQuery.of(context).size.height * 0.7,
-                              child: Text(
+                              child: const Text(
                                 "There are currently no live drumms",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -137,7 +138,7 @@ class LiveDrummsState extends State<LiveDrumms>
                               ),
                             ),
                           ),
-                        SizedBox(
+                        const SizedBox(
                           height: 200,
                         ),
                       ],
@@ -150,14 +151,14 @@ class LiveDrummsState extends State<LiveDrumms>
                   Container(
                     alignment: Alignment.bottomLeft,
                     height: 100,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [Colors.transparent, Colors.black])),
                   ),
               Container(
-                margin: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
                 alignment: Alignment.bottomCenter,
                 child: IconLabelButton(
                   imageAsset: "images/logo_background_white.png",
@@ -168,7 +169,7 @@ class LiveDrummsState extends State<LiveDrumms>
                       context: context,
                       isScrollControlled: true,
                       backgroundColor: COLOR_PRIMARY_DARK,
-                      shape: RoundedRectangleBorder(
+                      shape: const RoundedRectangleBorder(
                         borderRadius:
                             BorderRadius.vertical(top: Radius.circular(0.0)),
                       ),
@@ -177,7 +178,7 @@ class LiveDrummsState extends State<LiveDrumms>
                           padding: EdgeInsets.only(
                               bottom: MediaQuery.of(context).viewInsets.bottom),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.vertical(
+                            borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(0.0)),
                             child:
                                 CreateJam(title: "", bandId: "", imageUrl: ""),
@@ -189,22 +190,7 @@ class LiveDrummsState extends State<LiveDrumms>
                 ),
               ),
               if (drummCards.isEmpty && !loaded)
-                Center(
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                          padding: EdgeInsets.all(36),
-                          child: Lottie.asset('images/wave_drumm.json',
-                              fit: BoxFit.contain, width: double.maxFinite)),
-                      Container(
-                        height: double.infinity,
-                        width: double.infinity,
-                        color: Colors.grey.shade900.withOpacity(0.75),
-                      )
-                    ],
-                  ),
-                ),
+               const SkeletonHomeItem(),
             ],
           ),
         ),

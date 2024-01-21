@@ -9,6 +9,7 @@ import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
+import 'package:flutter_meta_sdk/flutter_meta_sdk.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:share_plus/share_plus.dart';
@@ -23,6 +24,7 @@ import 'custom/helper/image_uploader.dart';
 class SettingsPage extends StatefulWidget {
   @override
   State<SettingsPage> createState() => _SettingsPageState();
+
 }
 
 class _SettingsPageState extends State<SettingsPage> {
@@ -481,10 +483,15 @@ class _SettingsPageState extends State<SettingsPage> {
     // Once signed in, return the UserCredential
     // return await FirebaseAuth.instance.signInWithCredential(credential);
   }
+
+  @override
+  void initState() {
+    var metaSdk = FlutterMetaSdk();
+    metaSdk.logEvent(
+      name: 'Facebook Event initialised',
+    );
+    super.initState();
+  }
 }
 
-void main() {
-  runApp(MaterialApp(
-    home: SettingsPage(),
-  ));
-}
+

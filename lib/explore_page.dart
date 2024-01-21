@@ -13,6 +13,8 @@ import 'package:drumm_app/search_page.dart';
 import 'package:drumm_app/search_result_page.dart';
 
 class ExplorePage extends StatefulWidget {
+  const ExplorePage({super.key});
+
   @override
   _ExplorePageState createState() => _ExplorePageState();
 }
@@ -120,7 +122,7 @@ class _ExplorePageState extends State<ExplorePage>
                 ),
               ),
             ),
-            if (articleCards.length > 0)
+            if (articleCards.isNotEmpty)
               Expanded(
                 child: Container(
                   alignment: Alignment.topCenter,
@@ -141,7 +143,7 @@ class _ExplorePageState extends State<ExplorePage>
                         const QuiltedGridTile(1, 2),
                       ],
                     ),
-                    childrenDelegate: (articleCards.length > 0)
+                    childrenDelegate: (articleCards.isNotEmpty)
                         ? SliverChildBuilderDelegate(
                             childCount: articleCards.length,
                             (context, index) => articleCards.elementAt(index),
@@ -154,8 +156,8 @@ class _ExplorePageState extends State<ExplorePage>
                   ),
                 ),
               ),
-            if(showProgress)Padding(
-              padding: const EdgeInsets.all(8.0),
+            if(showProgress)const Padding(
+              padding: EdgeInsets.all(8.0),
               child: CircularProgressIndicator(
                 color: Colors.white,
               ),

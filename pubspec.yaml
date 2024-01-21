@@ -102,6 +102,7 @@ dependencies:
   youtube_player_flutter: ^8.1.2
   youtube_player_iframe: ^4.0.4
   html_unescape: ^2.0.0
+  flutter_meta_sdk: ^1.0.2
 
 dev_dependencies:
   flutter_test:
