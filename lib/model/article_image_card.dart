@@ -116,7 +116,8 @@ class ArticleImageCard extends StatelessWidget {
 
                               //fontWeight: FontWeight.bold,
                                 fontFamily: APP_FONT_MEDIUM,
-                                color: Colors.white),
+                                color: Colors.white,
+                            ),
                           ),
                         ),
                       ],

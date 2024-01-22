@@ -59,44 +59,114 @@ class OnBoarding extends StatelessWidget {
         skipTextButton: const Text('Skip',style: TextStyle(color: Colors.white,),),
         //trailing: Text('Login'),
         background: [
-          Container(
-            height: MediaQuery.of(context).size.height / 1.75,
-            child: Container(
-              alignment: Alignment.center,
-              child: ClipRRect(
-                  child: Lottie.asset(
-                    'images/breaking_news.json',
-                    height: MediaQuery.of(context).size.height,
-                    fit: BoxFit.cover,
-                  )),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height / 1.75,
-            child: Container(
-              alignment: Alignment.center,
-              child: Lottie.asset('images/wave_drumm.json',
-                  height: MediaQuery.of(context).size.height,
-                  fit: BoxFit.contain),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height / 1.75,
-            child: Container(
-              alignment: Alignment.centerLeft,
-              width: MediaQuery.of(context).size.width,
-              child: Container(
-                alignment: Alignment.centerLeft,
-                child: ClipRRect(
-                    child: Lottie.asset('images/drumm_band.json',
-                        height: MediaQuery.of(context).size.height,
-                        fit: BoxFit.cover,
-                        width: MediaQuery.of(context).size.width,
-                        alignment: Alignment(1, -1))),
+          Stack(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height,
+                child: Image.network("https://firebasestorage.googleapis.com/v0/b/drummapp.appspot.com/o/asset_image%2Fonboarding_news.JPG?alt=media&token=3c3c4d6a-7063-4099-bf96-e31c8883a4b1",fit: BoxFit.cover,height: MediaQuery.of(context).size.height,),
               ),
-            ),
+              Container(
+                height: MediaQuery.of(context).size.height,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Colors.black,
+                      Colors.black.withOpacity(0.65),
+                    ]
+                  )
+                ),
+              ),
+              Container(
+                height: 100,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black,
+                          Colors.black.withOpacity(0.75),
+                          Colors.transparent
+                        ]
+                    )
+                ),
+              ),
+            ],
+          ),
+          Stack(
+            fit: StackFit.passthrough,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height,
+                child: Image.network("https://firebasestorage.googleapis.com/v0/b/drummapp.appspot.com/o/asset_image%2Fonboarding_drumm.PNG?alt=media&token=3c713999-6469-4d0f-943b-47b684fa6e26",fit: BoxFit.cover,height: MediaQuery.of(context).size.height,),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Colors.black,
+                          Colors.black.withOpacity(0.65),
+
+                        ]
+                    )
+                ),
+              ),
+              Container(
+                height: 100,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black,
+                          Colors.black.withOpacity(0.75),
+                          Colors.transparent
+                        ]
+                    )
+                ),
+              ),
+            ],
+          ),
+          Stack(
+            fit: StackFit.passthrough,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height,
+                child: Image.network("https://firebasestorage.googleapis.com/v0/b/drummapp.appspot.com/o/asset_image%2Fonboarding_bands.jpg?alt=media&token=34d97dc5-f31d-4045-af60-044ae1ed28d2",fit: BoxFit.cover,height: MediaQuery.of(context).size.height,),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Colors.black,
+                          Colors.black.withOpacity(0.65),
+
+                        ]
+                    )
+                ),
+              ),
+              Container(
+                height: 100,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black,
+                          Colors.black.withOpacity(0.75),
+                          Colors.transparent
+                        ]
+                    )
+                ),
+              ),
+            ],
           ),
           Container(
             width: MediaQuery.of(context).size.width,
@@ -118,6 +188,7 @@ class OnBoarding extends StatelessWidget {
         pageBodies: [
           Container(
 
+            color: Colors.transparent,
             padding: const EdgeInsets.symmetric(horizontal: 40),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
