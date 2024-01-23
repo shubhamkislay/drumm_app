@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -19,12 +20,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'custom/helper/image_uploader.dart';
 import 'model/band.dart';
 
-class CreateBand extends StatefulWidget {
+class EditBand extends StatefulWidget {
+  Band band;
   @override
-  CreateBandState createState() => CreateBandState();
+  EditBandState createState() => EditBandState();
+
+  EditBand({super.key,
+    required this.band,
+  });
 }
 
-class CreateBandState extends State<CreateBand> {
+class EditBandState extends State<EditBand> {
   List<String> selectedInterests = [];
 
   int minInterests = 1;
@@ -36,12 +42,21 @@ class CreateBandState extends State<CreateBand> {
   double uploadProgress = 0;
   File? pickedImage;
   Band band = Band();
-  List<String> selectedHooks = [];
+  List selectedHooks = [];
+  bool newSelected = false;
 
-  List<String> hookList = [];
+  List hookList = [];
+
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController descriptionTextController= TextEditingController(
+        text: band.description
+    );
+    TextEditingController nameTextController= TextEditingController(
+        text: band.name
+    );
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
@@ -53,27 +68,27 @@ class CreateBandState extends State<CreateBand> {
               padding: const EdgeInsets.all(24),
               width: double.maxFinite,
               child: const Text(
-                'Create a Band',
+                'Edit your Band',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                    fontFamily: APP_FONT_MEDIUM
-                ),
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: APP_FONT_MEDIUM),
               ),
             ),
             if (pickedImage == null)
-              Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: RoundedButton(
-                  assetPath: "images/add-image.png",
-                  height: 100,
-                  color: Colors.white,
-                  bgColor: Colors.transparent,
-                  onPressed: () {
-                    selectData();
-                  },
+              Container(
+                padding:  const EdgeInsets.all(32.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: GestureDetector(
+                    onTap: (){
+                      selectData();
+                    },
+                    child: CachedNetworkImage(
+                      imageUrl: widget.band.url ?? "",),
+                  ),
                 ),
               ),
             if (pickedImage != null)
@@ -112,9 +127,11 @@ class CreateBandState extends State<CreateBand> {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
               child: Text(
-                "Hooks let your band pick news articles based on the category, which you can use to drumm with your band members",
+                "Hooks let your band pull news articles based on the category, which you can use to drumm with your band members",
                 style: TextStyle(
-                    fontSize: 10, fontFamily: APP_FONT_MEDIUM, color: Colors.white54),
+                    fontSize: 10,
+                    fontFamily: APP_FONT_MEDIUM,
+                    color: Colors.white54),
               ),
             ),
             const SizedBox(
@@ -132,7 +149,7 @@ class CreateBandState extends State<CreateBand> {
                     .map(
                       (hook) => GestureDetector(
                         onTap: () {
-                          List<String> tempHooks = selectedHooks;
+                          List tempHooks = selectedHooks;
                           if (tempHooks.contains(hook)) {
                             tempHooks.remove(hook);
                           } else {
@@ -144,8 +161,8 @@ class CreateBandState extends State<CreateBand> {
                           });
                         },
                         child: Container(
-                          padding:
-                              const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 12),
                           decoration: BoxDecoration(
                             color: selectedHooks.contains(hook)
                                 ? Colors.white
@@ -178,6 +195,7 @@ class CreateBandState extends State<CreateBand> {
                 maxLines: 1,
                 minLines: 1,
                 cursorColor: Colors.white,
+                controller: nameTextController,
                 decoration: InputDecoration(
                   hintText: "Enter Band Name...",
                   labelText: "Band Name",
@@ -208,6 +226,7 @@ class CreateBandState extends State<CreateBand> {
                 maxLines: 10,
                 minLines: 10,
                 keyboardType: TextInputType.text,
+                controller: descriptionTextController,
                 decoration: InputDecoration(
                   hintText: "Enter Band description...",
                   focusedBorder: OutlineInputBorder(
@@ -237,14 +256,16 @@ class CreateBandState extends State<CreateBand> {
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Text(
-                    "Create",
-                    style: TextStyle(color: Colors.black, fontFamily: APP_FONT_MEDIUM),
+                    "Save",
+                    style: TextStyle(
+                        color: Colors.black, fontFamily: APP_FONT_MEDIUM),
                   ),
                 ),
               ),
@@ -258,39 +279,27 @@ class CreateBandState extends State<CreateBand> {
   @override
   void initState() {
     // TODO: implement initState
-    getPrefs();
     bandsRef = FirebaseFirestore.instance.collection("bands").doc();
     getHooks();
 
-    // Add a new document with an automatically generated push
-    String pushId = bandsRef.id;
-    bandID = pushId;
-    band.bandId = bandID;
+    setState(() {
+      selectedHooks = widget.band.hooks??[];
+      band = widget.band;
+    });
     super.initState();
   }
 
-  void createBand(BuildContext context) async {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // await prefs.setBool('isOnboarded', true);
-    // await prefs.setStringList('interestList', interestList);
-    band.foundedBy = getCurrentUserID();
-    band.count = "1";
-    band.visibility = "public";
-    band.hooks = selectedHooks;
-    band.creationTime = Timestamp.now();
+  void saveBand(BuildContext context) async {
 
-    FirebaseDBOperations.createBand(band).then((value) {
-      if (value) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => BandDetailsPage(
-              band: band,
-            ),
-          ),
-        );
-      }
-    });
+
+    band.hooks = selectedHooks;
+
+    await FirebaseFirestore.instance
+        .collection("bands")
+        .doc(band.bandId)
+        .set(band.toJson(), SetOptions(merge: true));
+
+    Navigator.pop(context);
   }
 
   void selectData() {
@@ -301,14 +310,17 @@ class CreateBandState extends State<CreateBand> {
     uploadPicture(
         storageReference,
         (double progress) {
+
           // Handle progress updates here
           setState(() {
             uploadProgress = progress;
+            newSelected = true;
           });
         },
         (String imageUrl) {
           //print("Uploaded Image: ${imageUrl}");
-          imageURL = "$imageUrl&lastupdated=${Timestamp.now().microsecondsSinceEpoch.toString()}";
+          imageURL =
+              "$imageUrl&lastupdated=${Timestamp.now().microsecondsSinceEpoch.toString()}";
           band.url = imageURL;
           readToUpload = true;
         },
@@ -322,38 +334,39 @@ class CreateBandState extends State<CreateBand> {
   }
 
   void validateData() {
-    if (readToUpload) {
+    if (readToUpload || !newSelected) {
       String bandName = band.name?.toLowerCase() ?? "";
       String bandDescription = band.description?.toLowerCase() ?? "";
       if (bandName.length < 3 || bandName.length > 30) {
-        AnimatedSnackBar.material(
-          'Band name characters should in the range 3-30',
-          type: AnimatedSnackBarType.info,
-        ).show(context);
+        setState(() {
+          AnimatedSnackBar.material(
+            'Band name characters should in the range 3-30',
+            type: AnimatedSnackBarType.info,
+          ).show(context);
+        });
+
       } else if (bandDescription.length < 10 || bandDescription.length > 1000) {
-        AnimatedSnackBar.material(
-          'Band description characters should in the range 30-1000. It is currently of size ${bandDescription.length}',
-          type: AnimatedSnackBarType.info,
-        ).show(context);
+        setState(() {
+          AnimatedSnackBar.material(
+            'Band description characters should in the range 30-1000. It is currently of size ${bandDescription.length}',
+            type: AnimatedSnackBarType.info,
+          ).show(context);
+        });
+
       } else {
-        createBand(context);
+        saveBand(context);
       }
     } else {
-      AnimatedSnackBar.material(
-        'Please Upload the image',
-        type: AnimatedSnackBarType.info,
-      ).show(context);
+      setState(() {
+        AnimatedSnackBar.material(
+          'Please Upload the image',
+          type: AnimatedSnackBarType.info,
+        ).show(context);
+      });
+
     }
   }
 
-  void getPrefs() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    // List<String> userInterests = prefs.getStringList('interestList')!;
-    username = prefs.getString("username")!;
-    // setState(() {
-    //   selectedInterests = userInterests;
-    // });
-  }
 
   void getHooks() async {
     List<String> bandHooks = await FirebaseDBOperations.getBandHooks();

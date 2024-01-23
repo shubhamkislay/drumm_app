@@ -26,6 +26,7 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'EditBand.dart';
 import 'ShareWidget.dart';
 import 'custom/TutorialBox.dart';
 import 'custom/constants/Constants.dart';
@@ -135,15 +136,19 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      AutoSizeText(
-                                        "${band?.name}",
-                                        maxFontSize: 42,
-                                        minFontSize: 24,
-                                        style: const TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            fontFamily: APP_FONT_BOLD,
-                                            fontWeight: FontWeight.bold),
-                                        maxLines: 4,
+                                      Row(
+                                        children: [
+                                          AutoSizeText(
+                                            "${band?.name}",
+                                            maxFontSize: 42,
+                                            minFontSize: 24,
+                                            style: const TextStyle(
+                                                overflow: TextOverflow.ellipsis,
+                                                fontFamily: APP_FONT_BOLD,
+                                                fontWeight: FontWeight.bold),
+                                            maxLines: 4,
+                                          ),
+                                        ],
                                       ),
                                       const SizedBox(
                                         height: 2,
@@ -186,33 +191,6 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                                       //Text("${widget.band?.badges}"),
                                     ],
                                   ),
-                                  if (false)
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey.shade900,
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 24, vertical: 8),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            "${band?.count}",
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 24),
-                                          ),
-                                          const SizedBox(
-                                            height: 2,
-                                          ),
-                                          const Icon(
-                                            Icons.people,
-                                            size: 18,
-                                          )
-                                        ],
-                                      ),
-                                    )
                                 ],
                               ),
                             ),
@@ -223,6 +201,7 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                   const SizedBox(
                     height: 12,
                   ),
+
                   Wrap(
                     runSpacing: 8.0,
                     crossAxisAlignment: WrapCrossAlignment.center,
@@ -291,6 +270,48 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                           style: TextStyle(
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
+                      ),
+                    ),
+                  if(band?.foundedBy==FirebaseAuth.instance.currentUser?.uid)
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditBand(
+                              band: widget.band??Band(),
+                            ),
+                          ),
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            margin: const EdgeInsets.symmetric(horizontal: 20),
+                            decoration: BoxDecoration(
+                                color: COLOR_PRIMARY_DARK,
+                                borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.grey.shade900,width: 3),
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                    "Edit"
+                                ),
+                                SizedBox(width: 8,),
+                                Icon(
+                                  Icons.edit,
+                                  size: 20,
+                                ),
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                        ],
                       ),
                     ),
                   if (joined)

@@ -158,7 +158,7 @@ class _SettingsPageState extends State<SettingsPage> {
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(30),
                   border: Border.all(color: Colors.white, width: 1)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -248,7 +248,7 @@ class _SettingsPageState extends State<SettingsPage> {
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   color: Colors.black,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(30),
                   border: Border.all(
                       color: Colors.redAccent.withOpacity(0.25), width: 2)),
               child: Row(
