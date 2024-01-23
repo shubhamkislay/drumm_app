@@ -69,13 +69,6 @@ PODS:
     - Flutter
     - nanopb (< 2.30910.0, >= 2.30908.0)
   - CryptoSwift (1.8.0)
-  - FBAEMKit (16.3.1):
-    - FBSDKCoreKit_Basics (= 16.3.1)
-  - FBAudienceNetwork (6.14.0)
-  - FBSDKCoreKit (16.3.1):
-    - FBAEMKit (= 16.3.1)
-    - FBSDKCoreKit_Basics (= 16.3.1)
-  - FBSDKCoreKit_Basics (16.3.1)
   - Firebase/Analytics (10.12.0):
     - Firebase/Core
   - Firebase/Auth (10.12.0):
@@ -222,10 +215,6 @@ PODS:
     - OrderedSet (~> 5.0)
   - flutter_local_notifications (0.0.1):
     - Flutter
-  - flutter_meta_sdk (1.0.0):
-    - FBAudienceNetwork
-    - FBSDKCoreKit
-    - Flutter
   - flutter_native_splash (0.0.1):
     - Flutter
   - flutter_vibrate (0.0.1):
@@ -367,7 +356,6 @@ DEPENDENCIES:
   - flutter_callkit_incoming (from `.symlinks/plugins/flutter_callkit_incoming/ios`)
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
-  - flutter_meta_sdk (from `.symlinks/plugins/flutter_meta_sdk/ios`)
   - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
   - flutter_vibrate (from `.symlinks/plugins/flutter_vibrate/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
@@ -401,10 +389,6 @@ SPEC REPOS:
     - AWSPolly
     - BranchSDK
     - CryptoSwift
-    - FBAEMKit
-    - FBAudienceNetwork
-    - FBSDKCoreKit
-    - FBSDKCoreKit_Basics
     - Firebase
     - FirebaseAnalytics
     - FirebaseAppCheckInterop
@@ -471,8 +455,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_inappwebview/ios"
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
-  flutter_meta_sdk:
-    :path: ".symlinks/plugins/flutter_meta_sdk/ios"
   flutter_native_splash:
     :path: ".symlinks/plugins/flutter_native_splash/ios"
   flutter_vibrate:
@@ -532,10 +514,6 @@ SPEC CHECKSUMS:
   BranchSDK: 8b25eda1d9e82778d476edc1026e385cf58c56b6
   cloud_firestore: 85d66b543b25130c45258412a39e851e230186e7
   CryptoSwift: 52aaf3fce7337552863b1d952e408085f0e65030
-  FBAEMKit: 6c7b5eb77c96861bb59e040842c6e55bf39512ce
-  FBAudienceNetwork: 4d6223a9a88a22e9dca8c9e6c1829a8745b86228
-  FBSDKCoreKit: 5e4dd478947ab1bcc887e8cfadeae0727af1a942
-  FBSDKCoreKit_Basics: cd7b5f5d1e8868c26706917919d058999ca672c3
   Firebase: 07150e75d142fb9399f6777fa56a187b17f833a0
   firebase_analytics: 3bdcd8b68b7b8ccf28bbcdcfb994309f6232f873
   firebase_auth: 097a2440d40bed75f4dfe4cb91b4d98349509b47
@@ -563,7 +541,6 @@ SPEC CHECKSUMS:
   flutter_callkit_incoming: 417dd1b46541cdd5d855ad795ccbe97d1c18155e
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
-  flutter_meta_sdk: 4b8a7c8df465323f82c1d096144d3c0ba012077b
   flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
   flutter_vibrate: 9f4c2ab57008965f78969472367c329dd77eb801
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
@@ -596,6 +573,6 @@ SPEC CHECKSUMS:
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
   webview_flutter_wkwebview: 2e2d318f21a5e036e2c3f26171342e95908bd60a
 
-PODFILE CHECKSUM: bd8d1204e512cfab5b2f31a839edae8fa85eab2c
+PODFILE CHECKSUM: 00d91d850fecc09172054c1a9b39a63e64b1e5ec
 
 COCOAPODS: 1.12.0

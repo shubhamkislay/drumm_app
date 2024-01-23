@@ -70,19 +70,7 @@
 				<string>drumm</string>
 			</array>
 		</dict>
-		<dict>
-              <key>CFBundleURLSchemes</key>
-              <array>
-                <string>fb394925589674993</string>
-              </array>
-        </dict>
 	</array>
-    <key>FacebookAppID</key>
-    <string>394925589674993</string>
-    <key>FacebookClientToken</key>
-    <string>6ab978ecd53e33eb5635e2b3e9f612b3</string>
-    <key>FacebookDisplayName</key>
-    <string>Drumm</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
