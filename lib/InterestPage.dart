@@ -129,7 +129,7 @@ class _InterestsPageState extends State<InterestsPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(vertical: 42, horizontal: 16),
+        padding: EdgeInsets.symmetric(vertical: 42, horizontal: 4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -208,7 +208,7 @@ class _InterestsPageState extends State<InterestsPage> {
                 runSpacing: 8.0,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 runAlignment: WrapAlignment.spaceBetween,
-                spacing: 42,
+                spacing: 12,
                 alignment: WrapAlignment.spaceEvenly,
                 children: bands
                     .map(
@@ -229,9 +229,9 @@ class _InterestsPageState extends State<InterestsPage> {
                                 ),
 
                                 child: Container(
-                                    height: 125,
-                                    width: 125,
-                                    margin: EdgeInsets.all(2),
+                                    height: 160,
+                                    width: 150,
+                                    margin: EdgeInsets.all(1),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(20),
                                       child: CachedNetworkImage(

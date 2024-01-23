@@ -9,7 +9,6 @@ import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
-import 'package:flutter_meta_sdk/flutter_meta_sdk.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:share_plus/share_plus.dart';
@@ -486,10 +485,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   void initState() {
-    var metaSdk = FlutterMetaSdk();
-    metaSdk.logEvent(
-      name: 'Facebook Event initialised',
-    );
     super.initState();
   }
 }

@@ -23,8 +23,8 @@ class OnBoarding extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double textSize = 28;
-    Color offText = Colors.white.withOpacity(0.6);
+    double textSize = 32;
+    Color offText = Colors.grey;
     return MaterialApp(
       color: Colors.black,
       debugShowCheckedModeBanner: false,
@@ -99,7 +99,7 @@ class OnBoarding extends StatelessWidget {
             children: [
               Container(
                 height: MediaQuery.of(context).size.height,
-                child: Image.network("https://firebasestorage.googleapis.com/v0/b/drummapp.appspot.com/o/asset_image%2Fonboarding_drumm.PNG?alt=media&token=3c713999-6469-4d0f-943b-47b684fa6e26",fit: BoxFit.cover,height: MediaQuery.of(context).size.height,),
+                child: Image.network("https://firebasestorage.googleapis.com/v0/b/drummapp.appspot.com/o/asset_image%2Fonboarding_people.png?alt=media&token=0391f610-0e59-4351-84de-8ed00cf697ee",fit: BoxFit.cover,height: MediaQuery.of(context).size.height,),
               ),
               Container(
                 height: MediaQuery.of(context).size.height,
@@ -187,110 +187,122 @@ class OnBoarding extends StatelessWidget {
         speed: 1.8,
         pageBodies: [
           Container(
-
             color: Colors.transparent,
-            padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                RichText(
-                  text: TextSpan(
-                    text: 'Discover ',
-                    style: TextStyle(
-                        fontFamily: APP_FONT_MEDIUM,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: textSize),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: 'Breaking ',
-                        style: TextStyle(
-                            fontFamily: APP_FONT_MEDIUM,
-                            color: offText,
-                            fontWeight: FontWeight.normal,
-                            fontSize: textSize),
-                      ),
-                      TextSpan(
-                        text: 'News',
-                        style: TextStyle(
-                            fontFamily: APP_FONT_MEDIUM,
-                            color: offText,
-                            fontWeight: FontWeight.normal,
-                            fontSize: textSize),
-                      ),
-                    ],
+            child: Container(
+
+              height: MediaQuery.of(context).size.height/2,
+              color: Colors.transparent,
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                      text: 'Discover ',
+                      style: TextStyle(
+                          fontFamily: APP_FONT_MEDIUM,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: textSize),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Breaking ',
+                          style: TextStyle(
+                              fontFamily: APP_FONT_MEDIUM,
+                              color: offText,
+                              fontWeight: FontWeight.normal,
+                              fontSize: textSize),
+                        ),
+                        TextSpan(
+                          text: 'News',
+                          style: TextStyle(
+                              fontFamily: APP_FONT_MEDIUM,
+                              color: offText,
+                              fontWeight: FontWeight.normal,
+                              fontSize: textSize),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 32,
-                ),
-              ],
+                  const SizedBox(
+                    height: 32,
+                  ),
+                ],
+              ),
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                RichText(
-                  text: TextSpan(
-                    text: 'Drumm',
-                    style: TextStyle(
-                        fontFamily: APP_FONT_MEDIUM,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: textSize),
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: ' with the community',
-                          style: TextStyle(
-                            color: offText,
-                            fontWeight: FontWeight.normal,
-                            fontSize: textSize,
-                            fontFamily: APP_FONT_MEDIUM,
-                            fontStyle: FontStyle.normal,
-                          )),
-                    ],
+            color: Colors.transparent,
+            child: Container(
+              height: MediaQuery.of(context).size.height/2,
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                      text: 'Drumm',
+                      style: TextStyle(
+                          fontFamily: APP_FONT_MEDIUM,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: textSize),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: ' with the community',
+                            style: TextStyle(
+                              color: offText,
+                              fontWeight: FontWeight.normal,
+                              fontSize: textSize,
+                              fontFamily: APP_FONT_MEDIUM,
+                              fontStyle: FontStyle.normal,
+                            )),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 32,
-                ),
-              ],
+                  const SizedBox(
+                    height: 32,
+                  ),
+                ],
+              ),
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                RichText(
-                  text: TextSpan(
-                    text: 'Join ',
-                    style: TextStyle(
-                        fontFamily: APP_FONT_MEDIUM, color: offText, fontSize: textSize),
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: 'Bands',
-                          style: TextStyle(
-                            fontFamily: APP_FONT_MEDIUM,
-                            fontSize: textSize,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          )),
-                      TextSpan(
-                          text: ' of Shared Passions',
-                          style: TextStyle(
-                            color: offText,
-                            fontFamily: APP_FONT_MEDIUM,
-                          )),
-                    ],
+            color: Colors.transparent,
+            child: Container(
+              height: MediaQuery.of(context).size.height/2,
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                      text: 'Join ',
+                      style: TextStyle(
+                          fontFamily: APP_FONT_MEDIUM, color: offText, fontSize: textSize),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: 'Bands',
+                            style: TextStyle(
+                              fontFamily: APP_FONT_MEDIUM,
+                              fontSize: textSize,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            )),
+                        TextSpan(
+                            text: ' of Shared Passions',
+                            style: TextStyle(
+                              color: offText,
+                              fontFamily: APP_FONT_MEDIUM,
+                            )),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 32,
-                ),
-              ],
+                  const SizedBox(
+                    height: 32,
+                  ),
+                ],
+              ),
             ),
           ),
           Container(

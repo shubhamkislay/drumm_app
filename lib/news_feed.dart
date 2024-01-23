@@ -231,15 +231,10 @@ class _NewsFeedState extends State<NewsFeed>
                     fit: StackFit.loose,
                     children: [
                       AnimatedBuilder(
-                        builder: (context,child) {// adjust slide value as needed
-                          double slideValue = 50 * FirebaseDBOperations.ANIMATION_CONTROLLER.value;
-                          // return Transform.translate(
-                          //   offset: Offset(slideValue, 0.0), // Horizontal slide
-                          //   child:
-
+                        builder: (context,child) {
                           return  Transform.rotate(
-                              angle: rotationAnimation.value * (2.417 / 180), // Convert to radians
-                              origin: Offset(0, 1500), // Adjust as needed for rotation origin
+                              angle: rotationAnimation.value * (2.417 / 180),
+                              origin: const Offset(0, 1500),
                               child: child,
                             //),
                           );
@@ -290,7 +285,7 @@ class _NewsFeedState extends State<NewsFeed>
                                         queryID: queryID,
                                         isContainerVisible: false,
                                         openArticle: (article) {
-                                          openArticlePage(article, index);
+                                          openArticlePage(article);
                                         },
                                         updateList: (article) {},
                                         undo: () {
@@ -605,7 +600,7 @@ class _NewsFeedState extends State<NewsFeed>
         bandsCards: bandsCards);
   }
 
-  void openArticlePage(Article? article, int index) async {
+  void openArticlePage(Article? article) async {
     var returnData = await Navigator.push<Article?>(
       context,
       MaterialPageRoute(
@@ -737,6 +732,13 @@ class _NewsFeedState extends State<NewsFeed>
     CardSwiperDirection direction,
   ) {
     //return true;
+    if (direction == CardSwiperDirection.bottom) return false;
+
+    if (direction == CardSwiperDirection.top){
+      openArticlePage(articleBands.elementAt(previousIndex).article ?? Article());
+      return false;
+    }
+
     undoIndex = currentIndex ?? 0;
     try {
       //audioPlayer.stop();
@@ -797,8 +799,7 @@ class _NewsFeedState extends State<NewsFeed>
     } catch (e) {}
 
 
-    if (direction == CardSwiperDirection.top ||
-        direction == CardSwiperDirection.bottom) return false;
+
 
 
     if (direction == CardSwiperDirection.left) {

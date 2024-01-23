@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
               });
             },
             child: Container(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.symmetric(horizontal: 24,vertical: 16),
               margin:  EdgeInsets.symmetric(horizontal: 32),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
@@ -111,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
 
             },
             child: Container(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.symmetric(horizontal: 24,vertical: 16),
               margin:  EdgeInsets.symmetric(horizontal: 32),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
