@@ -38,7 +38,7 @@ class OnBoarding extends StatelessWidget {
         ),
         pageBackgroundColor: Colors.black,
         finishButtonStyle:  FinishButtonStyle(
-          backgroundColor: Colors.grey.shade900,
+          backgroundColor: COLOR_PRIMARY_DARK,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(50.0),
@@ -73,7 +73,7 @@ class OnBoarding extends StatelessWidget {
                     end: Alignment.topCenter,
                     colors: [
                       Colors.black,
-                      Colors.black.withOpacity(0.65),
+                      Colors.black.withOpacity(0.35),
                     ]
                   )
                 ),
@@ -86,7 +86,7 @@ class OnBoarding extends StatelessWidget {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.black,
-                          Colors.black.withOpacity(0.75),
+                          Colors.black.withOpacity(0.35),
                           Colors.transparent
                         ]
                     )
@@ -109,7 +109,7 @@ class OnBoarding extends StatelessWidget {
                         end: Alignment.topCenter,
                         colors: [
                           Colors.black,
-                          Colors.black.withOpacity(0.65),
+                          Colors.black.withOpacity(0.35),
 
                         ]
                     )
@@ -123,7 +123,7 @@ class OnBoarding extends StatelessWidget {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.black,
-                          Colors.black.withOpacity(0.75),
+                          Colors.black.withOpacity(0.35),
                           Colors.transparent
                         ]
                     )
@@ -146,7 +146,7 @@ class OnBoarding extends StatelessWidget {
                         end: Alignment.topCenter,
                         colors: [
                           Colors.black,
-                          Colors.black.withOpacity(0.65),
+                          Colors.black.withOpacity(0.35),
 
                         ]
                     )
@@ -160,7 +160,7 @@ class OnBoarding extends StatelessWidget {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.black,
-                          Colors.black.withOpacity(0.75),
+                          Colors.black.withOpacity(0.35),
                           Colors.transparent
                         ]
                     )
