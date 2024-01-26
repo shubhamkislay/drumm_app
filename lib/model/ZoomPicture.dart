@@ -3,7 +3,7 @@ import 'package:pinch_zoom/pinch_zoom.dart';
 
 class ZoomPicture extends StatelessWidget {
   String url;
-   ZoomPicture({Key? key,required this.url}) : super(key: key);
+  ZoomPicture({Key? key, required this.url}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,22 +12,23 @@ class ZoomPicture extends StatelessWidget {
       body: Stack(
         alignment: Alignment.topLeft,
         children: [
-          Expanded(
-            child: PinchZoom(
-              child: Image.network(url),
-              maxScale: 10,
-            ),
+          PinchZoom(
+            maxScale: 10,
+            child: Image.network(url),
           ),
           SafeArea(
             child: Container(
               alignment: Alignment.topLeft,
-              padding: EdgeInsets.all(12),
+              padding: const EdgeInsets.all(12),
               width: double.maxFinite,
               child: GestureDetector(
-                onTap: (){
-                  Navigator.pop(context);
-                },
-                  child: Icon(Icons.close_rounded,size: 32,)),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Icon(
+                    Icons.close_rounded,
+                    size: 32,
+                  )),
             ),
           ),
         ],
