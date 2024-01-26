@@ -10,6 +10,7 @@ import 'package:drumm_app/theme/theme_manager.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -276,6 +277,12 @@ class _LoginPageState extends State<LoginPage> {
     final data =
     await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
+    try{
+      FirebaseMessaging.instance.deleteToken();
+    }catch(e){
+
+    }
+
 
 
 
@@ -316,6 +323,12 @@ class _LoginPageState extends State<LoginPage> {
     String? uid = auth.currentUser?.uid;
     final data =
     await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+    try{
+      FirebaseMessaging.instance.deleteToken();
+    }catch(e){
+
+    }
 
     // if (userCredential.user?.displayName == null ||
     //     (userCredential.user?.displayName != null && userCredential.user!.displayName!.isEmpty)) {

@@ -32,6 +32,7 @@ import '../custom/instagram_date_time_widget.dart';
 import '../custom/rounded_button.dart';
 import '../theme/theme_constants.dart';
 import 'package:http/http.dart' as http;
+import 'ZoomPicture.dart';
 import 'article.dart';
 import 'article_band.dart';
 import 'jam.dart';
@@ -172,6 +173,8 @@ class _HomeFeedDataState extends State<HomeFeedData> {
 
   StreamController<String> controllerInitSession = StreamController<String>();
 
+  double imageHeight = 275;
+
   @override
   Widget build(BuildContext context) {
     bool muteAudio = false;
@@ -284,41 +287,54 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                         ),
                       ]),
                   child: (widget.source.toLowerCase() != 'youtube') ?
-                  CachedNetworkImage(
-                          imageUrl: widget.article.imageUrl ?? "",
-                          placeholder: (context, imageUrl) {
-                            String imageUrl = widget.article.imageUrl ?? "";
-                            return Container(
-                              height: (imageUrlLength > 0) ? 200 : 0,
-                              width: double.infinity,
-                              // padding: const EdgeInsets.all(32),
-                              decoration: const BoxDecoration(
-                                color: Colors.transparent,
-                                // borderRadius: BorderRadius.circular(curve - 4),
-                              ),
-                              child: Image.asset(
-                                "images/logo_background_white.png",
-                                color: Colors.white.withOpacity(0.1),
-                              ),
-                            );
-                          },
-                          errorWidget: (context, url, error) {
-                            return Container(
-                              height: 0,
-                              width: double.infinity,
-                              //padding: const EdgeInsets.all(32),
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(curve - 4),
-                              ),
-                              child: Image.asset(
-                                "images/logo_background_white.png",
-                                color: Colors.white.withOpacity(0.1),
-                              ),
-                            );
-                          },
-                          fit: BoxFit.cover,
-                        )
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) => ZoomPicture(url: widget.article.imageUrl??"https://placekitten.com/640/360"),
+                          transitionDuration: Duration(seconds: 0),
+                          reverseTransitionDuration: Duration(seconds: 0),
+                        ),
+                      );
+                    },
+                    child: CachedNetworkImage(
+                            imageUrl: widget.article.imageUrl ?? "",
+                            height: imageHeight,
+                            placeholder: (context, imageUrl) {
+                              String imageUrl = widget.article.imageUrl ?? "";
+                              return Container(
+                                height: (imageUrlLength > 0) ? imageHeight : 0,
+                                width: double.infinity,
+                                // padding: const EdgeInsets.all(32),
+                                decoration: const BoxDecoration(
+                                  color: Colors.transparent,
+                                  // borderRadius: BorderRadius.circular(curve - 4),
+                                ),
+                                child: Image.asset(
+                                  "images/logo_background_white.png",
+                                  color: Colors.white.withOpacity(0.1),
+                                ),
+                              );
+                            },
+                            errorWidget: (context, url, error) {
+                              return Container(
+                                height: 0,
+                                width: double.infinity,
+                                //padding: const EdgeInsets.all(32),
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(curve - 4),
+                                ),
+                                child: Image.asset(
+                                  "images/logo_background_white.png",
+                                  color: Colors.white.withOpacity(0.1),
+                                ),
+                              );
+                            },
+                            fit: BoxFit.cover,
+                          ),
+                  )
                       : (widget.onTop)
                           ? YoutubePlayer(
                               controller: widget.youtubePlayerController,

@@ -4,6 +4,7 @@ import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:drumm_app/custom/create_jam_bottom_sheet.dart';
 import 'package:drumm_app/notification_item.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:drumm_app/custom/icon_button.dart';
@@ -106,10 +107,10 @@ class NotificationWidgetState extends State<NotificationWidget>
                               ),
                               const Expanded(
                                 child: AutoSizeText(
-                                  "Notifications from other drummers",
+                                  "Notifications",
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
-                                    fontSize: 16.0,
+                                    fontSize: 24.0,
                                     fontFamily: APP_FONT_MEDIUM,
                                     //fontFamily: 'alata',
                                     fontWeight: FontWeight.bold,
@@ -321,7 +322,12 @@ class NotificationWidgetState extends State<NotificationWidget>
     } else {
       notiPref.setBool("notify", false);
       notify = false;
-      FirebaseDBOperations.unSubscribeToUserBands();
+      try {
+        FirebaseMessaging.instance.deleteToken();
+        FirebaseMessaging.instance.getToken().then((token) => FirebaseDBOperations.updateDrummerToken(token??""));
+      }catch(e){
+      }
+      //FirebaseDBOperations.unSubscribeToUserBands();
     }
   }
 }

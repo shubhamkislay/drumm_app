@@ -7,6 +7,7 @@ import 'package:crypto/crypto.dart';
 import 'package:drumm_app/main.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
@@ -40,7 +41,17 @@ class _SettingsPageState extends State<SettingsPage> {
   // Function to handle logout
   void _logout() {
     // Add your logout logic here
-    if (ConnectToChannel.engineInitialized) ConnectToChannel.disposeEngine();
+    try {
+      if (ConnectToChannel.engineInitialized) ConnectToChannel.disposeEngine();
+    }catch(e){
+
+    }
+
+    try{
+      FirebaseMessaging.instance.deleteToken();
+    }catch(e){
+
+    }
 
 
     try {
@@ -60,6 +71,12 @@ class _SettingsPageState extends State<SettingsPage> {
     try {
       if (ConnectToChannel.engineInitialized) ConnectToChannel.disposeEngine();
     } catch (e) {}
+
+    try {
+      FirebaseMessaging.instance.deleteToken();
+    }catch(e){
+
+    }
 
     FirebaseAuth.instance.currentUser?.delete().then((value) {
       removedPreferences();
