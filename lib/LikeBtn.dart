@@ -35,7 +35,7 @@ class _LikeBtnState extends State<LikeBtn> {
           ),
           child: Image.asset(
             widget.article.liked??false
-                ? 'images/liked.png'
+                ? 'images/heart_like.png'
                 : 'images/like_btn.png',
             height: 20,
             color: widget.article.liked??false

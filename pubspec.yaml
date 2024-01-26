@@ -211,6 +211,8 @@ flutter:
     - images/volume-off.png
     - images/volume-on.png
     - images/read-more.png
+    - images/heart_like.png
+    - images/heart_unlike.png
   #   - images/a_dot_ham.jpeg
 
   fonts:
