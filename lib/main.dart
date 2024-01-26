@@ -428,14 +428,165 @@ class _MyAppState extends State<MyApp>
         "Drummer ID: ${drummerID}\nUID: ${FirebaseAuth.instance.currentUser?.uid}");
 
     if (drummerID != FirebaseAuth.instance.currentUser?.uid) {
-      addToNotification(message);
+      bool existNotification = await notificationExists(message);
       Drummer drummer = await FirebaseDBOperations.getDrummer(drummerID);
       String drummerImage = drummer.imageUrl ?? "";
 
       Vibrate.feedback(FeedbackType.light);
       if (context == null) throw Exception();
-      if (jam.jamId != ConnectToChannel.channelID) {
-        setState(() {
+      if(!existNotification) {
+        if (jam.jamId != ConnectToChannel.channelID) {
+          setState(() {
+            AnimatedSnackBar(
+                builder: ((context) {
+                  return Wrap(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(colors: [
+                            Colors.grey.shade900,
+                            Colors.grey.shade900
+                          ]),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: COLOR_PRIMARY_DARK,
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ClipRRect(
+                                      borderRadius: BorderRadius.circular(4),
+                                      child: CachedNetworkImage(
+                                        imageUrl: drummerImage,
+                                        fit: BoxFit.cover,
+                                        width: 20,
+                                        height: 20,
+                                      )),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      if (jam.jamId !=
+                                          ConnectToChannel.channelID) {
+                                        joinRoom(jam, open, false);
+                                        FirebaseDBOperations
+                                            .sendNotificationToTopic(
+                                            jam, false, open);
+                                      }
+                                    },
+                                    child: Text(
+                                      "${drummer.username} joined the drumm",
+                                      textAlign: TextAlign.center,
+                                      maxLines: 1,
+                                      softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          ClipRRect(
+                                              borderRadius:
+                                              BorderRadius.circular(16),
+                                              child: CachedNetworkImage(
+                                                imageUrl: jam.imageUrl ?? "",
+                                                fit: BoxFit.cover,
+                                                width: 72,
+                                                height: 72,
+                                              )),
+                                          const SizedBox(
+                                            width: 4,
+                                          ),
+                                          Expanded(
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  if (jam.jamId !=
+                                                      ConnectToChannel
+                                                          .channelID) {
+                                                    joinRoom(jam, open, false);
+                                                    FirebaseDBOperations
+                                                        .sendNotificationToTopic(
+                                                        jam, false, open);
+                                                  }
+                                                },
+                                                child: Text(
+                                                  "${jam.title}",
+                                                  textAlign: TextAlign.center,
+                                                  maxLines: 3,
+                                                  softWrap: true,
+                                                  overflow: TextOverflow
+                                                      .ellipsis,
+                                                ),
+                                              )),
+                                          const SizedBox(
+                                            width: 4,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (jam.jamId !=
+                                        ConnectToChannel.channelID) {
+                                      joinRoom(jam, open, false);
+                                      FirebaseDBOperations
+                                          .sendNotificationToTopic(
+                                          jam, false, open);
+                                    }
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Drop in",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+                duration: const Duration(seconds: 8),
+                mobileSnackBarPosition: MobileSnackBarPosition.bottom)
+                .show(context);
+          });
+        }
+        else {
           AnimatedSnackBar(
               builder: ((context) {
                 return Wrap(
@@ -474,103 +625,18 @@ class _MyAppState extends State<MyApp>
                                 const SizedBox(
                                   width: 4,
                                 ),
-                                GestureDetector(
-                                  onTap: () {
-                                    if (jam.jamId !=
-                                        ConnectToChannel.channelID) {
-                                      joinRoom(jam, open, false);
-                                      FirebaseDBOperations
-                                          .sendNotificationToTopic(
-                                          jam, false, open);
-                                    }
-                                  },
-                                  child: Text(
-                                    "${drummer.username} joined the drumm",
-                                    textAlign: TextAlign.center,
-                                    maxLines: 1,
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                Text(
+                                  "${drummer.username} joined the drumm",
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                  softWrap: true,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(
                                   width: 4,
                                 ),
                               ],
                             ),
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        ClipRRect(
-                                            borderRadius:
-                                            BorderRadius.circular(16),
-                                            child: CachedNetworkImage(
-                                              imageUrl: jam.imageUrl ?? "",
-                                              fit: BoxFit.cover,
-                                              width: 72,
-                                              height: 72,
-                                            )),
-                                        const SizedBox(
-                                          width: 4,
-                                        ),
-                                        Expanded(
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                if (jam.jamId !=
-                                                    ConnectToChannel.channelID) {
-                                                  joinRoom(jam, open, false);
-                                                  FirebaseDBOperations
-                                                      .sendNotificationToTopic(
-                                                      jam, false, open);
-                                                }
-                                              },
-                                              child: Text(
-                                                "${jam.title}",
-                                                textAlign: TextAlign.center,
-                                                maxLines: 3,
-                                                softWrap: true,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            )),
-                                        const SizedBox(
-                                          width: 4,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  if (jam.jamId !=
-                                      ConnectToChannel.channelID) {
-                                    joinRoom(jam, open, false);
-                                    FirebaseDBOperations
-                                        .sendNotificationToTopic(
-                                        jam, false, open);
-                                  }
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text(
-                                    "Drop in",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              )
-                            ],
                           ),
                         ],
                       ),
@@ -581,69 +647,7 @@ class _MyAppState extends State<MyApp>
               duration: const Duration(seconds: 8),
               mobileSnackBarPosition: MobileSnackBarPosition.bottom)
               .show(context);
-        });
-
-      } else {
-        AnimatedSnackBar(
-                builder: ((context) {
-                  return Wrap(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: [
-                            Colors.grey.shade900,
-                            Colors.grey.shade900
-                          ]),
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: COLOR_PRIMARY_DARK,
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ClipRRect(
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: CachedNetworkImage(
-                                        imageUrl: drummerImage,
-                                        fit: BoxFit.cover,
-                                        width: 20,
-                                        height: 20,
-                                      )),
-                                  const SizedBox(
-                                    width: 4,
-                                  ),
-                                  Text(
-                                    "${drummer.username} joined the drumm",
-                                    textAlign: TextAlign.center,
-                                    maxLines: 1,
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(
-                                    width: 4,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  );
-                }),
-                duration: const Duration(seconds: 8),
-                mobileSnackBarPosition: MobileSnackBarPosition.bottom)
-            .show(context);
+        }
       }
     }
   }
@@ -654,6 +658,19 @@ class _MyAppState extends State<MyApp>
     notifications ??= [];
     notifications.add(remoteMessageToJson(message));
     notiPref.setStringList("notifications", notifications);
+  }
+
+  Future<bool> notificationExists(RemoteMessage message) async {
+    SharedPreferences notiPref = await SharedPreferences.getInstance();
+    List<String>? notifications = notiPref.getStringList("notifications");
+    notifications ??= [];
+    if(!notifications.contains(remoteMessageToJson(message))) {
+      notifications.add(remoteMessageToJson(message));
+      notiPref.setStringList("notifications", notifications);
+      return false;
+    }else{
+      return true;
+    }
   }
 
   String remoteMessageToJson(RemoteMessage remoteMessage) {
