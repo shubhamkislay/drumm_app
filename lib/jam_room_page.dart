@@ -469,8 +469,10 @@ class _JamRoomPageState extends State<JamRoomPage> {
       micMute = ConnectToChannel.getMuteState();
     });
 
-    if (widget.jam.articleId != null)
+    if (widget.jam.articleId != null) {
       getArticle(widget.jam.articleId);
+      FirebaseDBOperations.updateJoined(widget.jam.articleId);
+    }
     else
       print("Article ID is null ${widget.jam.articleId}");
 

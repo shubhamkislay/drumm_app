@@ -488,6 +488,30 @@ class FirebaseDBOperations {
     }
   }
 
+  static Future<bool> updateJoined(String? articleID) async {
+    final String currentUserID = getCurrentUserID();
+    // final DocumentReference articleRef =
+    // FirebaseFirestore.instance.collection("articles").doc(articleID);
+    final DocumentReference userLikeRef = FirebaseFirestore.instance
+        .collection("userActivity")
+        .doc(currentUserID)
+        .collection("joined")
+        .doc(articleID);
+
+    try {
+      final WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      // batch.update(articleRef, {'likes': FieldValue.increment(1)});
+      batch.set(userLikeRef, {'joined': true});
+
+      await batch.commit();
+      return true;
+    } catch (error) {
+      print("Error updating joined status: $error");
+      return false;
+    }
+  }
+
   static Future<List<String>> fetchSeenList() async {
     final String currentUserID = getCurrentUserID();
     try {
