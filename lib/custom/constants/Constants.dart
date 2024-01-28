@@ -21,3 +21,7 @@ const TUTORIAL_MESSAGE_LIVE = "Check out the drumms that are live and tap to joi
 const ALERT_EXPLORE_BANDS_SHARED_PREF = "explorebands";
 const TUTORIAL_MESSAGE_BANDS_TITLE = "Welcome to Bands!";
 const TUTORIAL_MESSAGE_BANDS = "A band is a community with similar interests. Here, you can check out the drumms that are currently active for the band. You can also join open drumm to connect with your band members without drumming a particular article";
+
+
+
+const double CURVE = 18;

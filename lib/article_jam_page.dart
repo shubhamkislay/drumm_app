@@ -17,6 +17,7 @@ import 'package:drumm_app/model/jam_image_card.dart';
 import 'package:drumm_app/open_article_page.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 
+import 'JamQuestionButton.dart';
 import 'model/article.dart';
 
 class ArticleJamPage extends StatefulWidget {
@@ -30,6 +31,7 @@ class ArticleJamPage extends StatefulWidget {
 class ArticleJamPageState extends State<ArticleJamPage> {
   String profileImageUrl = "";
   Article? article = Article();
+  String question = "";
 
   double curve = 24;
 
@@ -213,72 +215,77 @@ class ArticleJamPageState extends State<ArticleJamPage> {
             width: double.infinity,
             alignment: /*jamImageCards.isNotEmpty ?*/
                 Alignment.bottomCenter, //:Alignment.center,
-            margin: EdgeInsets.symmetric(horizontal: 0, vertical: 32),
+            margin: EdgeInsets.symmetric(horizontal: 12, vertical: 32),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                IconLabelButton(
-                  label: 'Join Open Drumm',
-                  onPressed: () {
-                    Jam jam = Jam();
-                    jam.broadcast = false;
-                    jam.title = widget.article?.title;
-                    jam.bandId = widget.article?.category;
-                    jam.jamId = widget.article?.jamId;
-                    jam.articleId = widget.article?.articleId;
-                    jam.startedBy = widget.article?.source;
-                    jam.imageUrl = widget.article?.imageUrl;
-                    if (widget.article?.question != null)
-                      jam.question = widget.article?.question;
-                    else
-                      jam.question = widget.article?.title;
-                    jam.count = 1;
-                    jam.membersID = [];
-                    jam.lastActive = Timestamp.now();
+                Flexible(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(32),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DrummQuestionButton(
+                        label: question,
+                        onPressed: () {
+                          Jam jam = Jam();
+                          jam.broadcast = false;
+                          jam.title = widget.article?.title;
+                          jam.bandId = widget.article?.category;
+                          jam.jamId = widget.article?.jamId;
+                          jam.articleId = widget.article?.articleId;
+                          jam.startedBy = widget.article?.source;
+                          jam.imageUrl = widget.article?.imageUrl;
+                          if (widget.article?.question != null)
+                            jam.question = widget.article?.question;
+                          else
+                            jam.question = widget.article?.title;
+                          jam.count = 1;
+                          jam.membersID = [];
+                          jam.lastActive = Timestamp.now();
 
-                    //FirebaseDBOperations.createOpenDrumm(jam);
-                    FirebaseDBOperations.addMemberToJam(jam.jamId ?? "",
-                            FirebaseAuth.instance.currentUser?.uid ?? "", true)
-                        .then((value) {
-                      print("Added the member ${value}");
-                      if (!value) {
-                        FirebaseDBOperations.createOpenDrumm(jam);
-                        FirebaseDBOperations.sendNotificationToTopic(
-                            jam, false, true);
-                      }
-                    });
+                          //FirebaseDBOperations.createOpenDrumm(jam);
+                          FirebaseDBOperations.addMemberToJam(jam.jamId ?? "",
+                              FirebaseAuth.instance.currentUser?.uid ?? "", true)
+                              .then((value) {
+                            print("Added the member ${value}");
+                            if (!value) {
+                              FirebaseDBOperations.createOpenDrumm(jam);
+                              FirebaseDBOperations.sendNotificationToTopic(
+                                  jam, false, true);
+                            }
+                          });
 
-                    Navigator.pop(context);
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: COLOR_PRIMARY_DARK,
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(0.0)),
-                      ),
-                      builder: (BuildContext context) {
-                        return Padding(
-                          padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(0.0)),
-                            child: JamRoomPage(
-                              jam: jam,
-                              open: true,
+                          Navigator.pop(context);
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: COLOR_PRIMARY_DARK,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(0.0)),
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  imageAsset: 'images/audio-waves.png',
-                  height: 40,
+                            builder: (BuildContext context) {
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(0.0)),
+                                  child: JamRoomPage(
+                                    jam: jam,
+                                    open: true,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        imageAsset: 'images/audio-waves.png',
+                      ),
+                    ),
+                  ),
                 ),
-                SizedBox(width: 8),
-                Text("or"),
                 SizedBox(width: 8),
                 GestureDetector(
                   onTap: () {
@@ -291,7 +298,7 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                       backgroundColor: COLOR_PRIMARY_DARK,
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(0.0)),
+                        BorderRadius.vertical(top: Radius.circular(0.0)),
                       ),
                       builder: (BuildContext context) {
                         return Padding(
@@ -301,7 +308,7 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                             borderRadius: BorderRadius.vertical(
                                 top: Radius.circular(0.0)),
                             child: CreateJam(
-                              question: widget.article?.question,
+                                question: widget.article?.question,
                                 jamId: widget.article?.jamId,
                                 title: widget.article?.title,
                                 articleId: widget.article?.articleId,
@@ -316,7 +323,7 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                     padding: EdgeInsets.all(8),
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Color(COLOR_PRIMARY_VAL)),
+                        color: Colors.grey.shade900),
                   ),
                 )
               ],
@@ -374,6 +381,12 @@ class ArticleJamPageState extends State<ArticleJamPage> {
     // TODO: implement initState
     super.initState();
     article = widget.article;
+    String qsn = widget.article?.question??"";
+    setState(() {
+      question = ((qsn.length>0)?qsn:widget.article?.title??"")!;
+    });
+
+
     getArticleJams(widget.article?.articleId);
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import '../article_jam_page.dart';
 import '../custom/ai_summary.dart';
+import '../custom/constants/Constants.dart';
 import '../custom/helper/firebase_db_operations.dart';
 import '../custom/helper/remove_duplicate.dart';
 import '../custom/instagram_date_time_widget.dart';
@@ -34,28 +35,27 @@ class _HomeItemState extends State<LiveDrummCard> {
   Color iconBGColor = Colors.grey.shade900;
   double iconHeight = 64;
   double sizedBoxedHeight = 12;
-  double curve = 10;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: joinDrumm,
       child: ClipRRect(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(curve),
-          topRight: Radius.circular(curve),
+          topLeft: Radius.circular(CURVE),
+          topRight: Radius.circular(CURVE),
         ),
         child: Container(
           decoration: BoxDecoration(
               color: COLOR_PRIMARY_DARK,
-              borderRadius: BorderRadius.circular(curve),
+              borderRadius: BorderRadius.circular(CURVE),
               border: Border.all(color: Colors.grey.shade800, width: 1)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(curve),
-                  topRight: Radius.circular(curve),
+                  topLeft: Radius.circular(CURVE),
+                  topRight: Radius.circular(CURVE),
                 ),
                 child: CachedNetworkImage(
                   height: 125,

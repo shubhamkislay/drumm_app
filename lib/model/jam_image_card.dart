@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:flutter/material.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/custom/helper/remove_duplicate.dart';
@@ -57,7 +58,7 @@ class _JamImageCardState extends State<JamImageCard> {
       },
       child: (widget.jam.imageUrl != null)
           ? ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(CURVE),
         child: Stack(
           children: [
             CachedNetworkImage(

@@ -24,6 +24,7 @@ import '../ShareWidget.dart';
 import '../SoundPlayWidget.dart';
 import '../article_jam_page.dart';
 import '../custom/ai_summary.dart';
+import '../custom/constants/Constants.dart';
 import '../custom/helper/connect_channel.dart';
 import '../custom/helper/firebase_db_operations.dart';
 import '../custom/helper/image_uploader.dart';
@@ -37,7 +38,7 @@ import 'article.dart';
 import 'article_band.dart';
 import 'jam.dart';
 
-double curve = 4;
+
 var unescape = HtmlUnescape();
 
 class HomeItem extends StatefulWidget {
@@ -101,7 +102,7 @@ class _HomeItemState extends State<HomeItem> {
         // color: Colors
         //     .black, //COLOR_PRIMARY_DARK, //Color(0xff012036FF)
         color: Colors.black, //.withOpacity(0.0),
-        borderRadius: BorderRadius.circular(curve),
+        borderRadius: BorderRadius.circular(CURVE),
         border: Border.all(color: Colors.grey.shade900, width: 2.5),
       ),
       child: Stack(
@@ -199,8 +200,8 @@ class _HomeFeedDataState extends State<HomeFeedData> {
         onRefresh: widget.onRefresh,
         child: ClipRRect(
           borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(curve),
-              topRight: Radius.circular(curve)),
+              topLeft: Radius.circular(CURVE),
+              topRight: Radius.circular(CURVE)),
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             physics: const AlwaysScrollableScrollPhysics(),
@@ -212,10 +213,15 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                   Container(
                     width: double.maxFinite,
                     padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    margin: EdgeInsets.all(2),
                     alignment: Alignment.centerLeft,
                     decoration: BoxDecoration(
-                      //color: Colors.grey.shade900.withOpacity(0.65),
+                        //color: Colors.grey.shade900.withOpacity(0.65),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(CURVE - 4),
+                          topRight: Radius.circular(CURVE - 4),
+                        ),
                         gradient: LinearGradient(colors: [
                           Colors.indigo,
                           Colors.blue.shade700,
@@ -245,15 +251,17 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                             child: Container(
                               height: 110,
                               alignment: Alignment.center,
-                              padding: const EdgeInsets.symmetric(vertical: 18,horizontal: 6),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 14, horizontal: 6),
                               child: AutoSizeText(
-                                "\"${unescape.convert(widget.article.question??"")}\"" ?? "",
+                                "\"${unescape.convert(widget.article.question ?? "")}\"" ??
+                                    "",
                                 textAlign: TextAlign.center,
-                                maxFontSize: 24,
+                                maxFontSize: 32,
                                 minFontSize: 5,
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 24,
+                                  fontSize: 32,
                                   fontFamily: APP_FONT_BOLD,
                                 ),
                               ),
@@ -271,12 +279,12 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                     ),
                   ),
                 const SizedBox(
-                  height: 3,
+                  height: 1,
                 ),
                 Container(
-                  // padding: const EdgeInsets.all(6.0),
+                   padding: const EdgeInsets.symmetric(horizontal: 2),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(curve),
+                      borderRadius: BorderRadius.circular(CURVE),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.15), // Shadow color
@@ -286,21 +294,25 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                           spreadRadius: 0, // Spread radius
                         ),
                       ]),
-                  child: (widget.source.toLowerCase() != 'youtube') ?
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation1, animation2) => ZoomPicture(url: widget.article.imageUrl??"https://placekitten.com/640/360"),
-                          transitionDuration: Duration(seconds: 0),
-                          reverseTransitionDuration: Duration(seconds: 0),
-                        ),
-                      );
-                    },
-                    child: CachedNetworkImage(
+                  child: (widget.source.toLowerCase() != 'youtube')
+                      ? GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (context, animation1,
+                                        animation2) =>
+                                    ZoomPicture(
+                                        url: widget.article.imageUrl ??
+                                            "https://placekitten.com/640/360"),
+                                transitionDuration: Duration(seconds: 0),
+                                reverseTransitionDuration: Duration(seconds: 0),
+                              ),
+                            );
+                          },
+                          child: CachedNetworkImage(
                             imageUrl: widget.article.imageUrl ?? "",
-                            height: imageHeight,
+                            height: (imageUrlLength > 0) ? imageHeight : 0,
                             placeholder: (context, imageUrl) {
                               String imageUrl = widget.article.imageUrl ?? "";
                               return Container(
@@ -324,7 +336,8 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                                 //padding: const EdgeInsets.all(32),
                                 decoration: BoxDecoration(
                                   color: Colors.black,
-                                  borderRadius: BorderRadius.circular(curve - 4),
+                                  borderRadius:
+                                      BorderRadius.circular(CURVE - 4),
                                 ),
                                 child: Image.asset(
                                   "images/logo_background_white.png",
@@ -334,53 +347,66 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                             },
                             fit: BoxFit.cover,
                           ),
-                  )
+                        )
                       : (widget.onTop)
                           ? YoutubePlayer(
                               controller: widget.youtubePlayerController,
-                    bottomActions: [
-                      ProgressBar(
-                        isExpanded: true,
-                        colors: const ProgressBarColors(
-                          playedColor: Colors.white70,
-                          bufferedColor: Colors.white24,
-                          handleColor: Colors.transparent,
-                          backgroundColor: Colors.white12
-                        ),
-                      ),
-                    ],
-                    actionsPadding: const EdgeInsets.all(0),
-                    topActions: [
-                      Expanded(child: Container()),
-                      VolumeButton(youtubePlayerController: widget.youtubePlayerController)
-                    ],
-                    thumbnail: Image.network(
-                      YoutubePlayer.getThumbnail(videoId: convertUrlToId(widget.article.url??"")??""),
-                      fit: BoxFit.cover,
-                      loadingBuilder: (_, child, progress) =>
-                      progress == null
-                          ? child
-                          : Container(color: Colors.transparent),
-                      errorBuilder: (context, _, __) => Image.network(
-                        YoutubePlayer.getThumbnail(videoId: convertUrlToId(widget.article.url??"")??""),
-                        fit: BoxFit.cover,
-                        loadingBuilder: (_, child, progress) =>
-                        progress == null
-                            ? child
-                            : Container(color: Colors.black),
-                        errorBuilder: (context, _, __) => Container(),
-                      ),
-                    ),
+                              bottomActions: [
+                                ProgressBar(
+                                  isExpanded: true,
+                                  colors: const ProgressBarColors(
+                                      playedColor: Colors.white70,
+                                      bufferedColor: Colors.white24,
+                                      handleColor: Colors.transparent,
+                                      backgroundColor: Colors.white12),
+                                ),
+                              ],
+                              actionsPadding: const EdgeInsets.all(0),
+                              topActions: [
+                                Expanded(child: Container()),
+                                VolumeButton(
+                                    youtubePlayerController:
+                                        widget.youtubePlayerController)
+                              ],
+                              thumbnail: Image.network(
+                                YoutubePlayer.getThumbnail(
+                                    videoId: convertUrlToId(
+                                            widget.article.url ?? "") ??
+                                        ""),
+                                fit: BoxFit.cover,
+                                loadingBuilder: (_, child, progress) =>
+                                    progress == null
+                                        ? child
+                                        : Container(color: Colors.transparent),
+                                errorBuilder: (context, _, __) => Image.network(
+                                  YoutubePlayer.getThumbnail(
+                                      videoId: convertUrlToId(
+                                              widget.article.url ?? "") ??
+                                          ""),
+                                  fit: BoxFit.cover,
+                                  loadingBuilder: (_, child, progress) =>
+                                      progress == null
+                                          ? child
+                                          : Container(color: Colors.black),
+                                  errorBuilder: (context, _, __) => Container(),
+                                ),
+                              ),
                             )
                           : Image.network(
-                    YoutubePlayer.getThumbnail(videoId: convertUrlToId(widget.article.url??"")??""),
+                              YoutubePlayer.getThumbnail(
+                                  videoId: convertUrlToId(
+                                          widget.article.url ?? "") ??
+                                      ""),
                               fit: BoxFit.cover,
                               loadingBuilder: (_, child, progress) =>
                                   progress == null
                                       ? child
                                       : Container(color: Colors.transparent),
                               errorBuilder: (context, _, __) => Image.network(
-                                YoutubePlayer.getThumbnail(videoId: convertUrlToId(widget.article.url??"")??""),
+                                YoutubePlayer.getThumbnail(
+                                    videoId: convertUrlToId(
+                                            widget.article.url ?? "") ??
+                                        ""),
                                 fit: BoxFit.cover,
                                 loadingBuilder: (_, child, progress) =>
                                     progress == null
@@ -412,24 +438,24 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                     },
                     child: (imageUrlLength > 0)
                         ? Text(
-                      unescape.convert(widget.article.title??""),
+                            unescape.convert(widget.article.title ?? ""),
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 18,
+                              fontSize: 16.75,
                               fontFamily: APP_FONT_BOLD,
                               fontWeight: FontWeight.bold,
                             ),
                           )
                         : Text(
-                      unescape.convert(widget.article.title??""),
+                            unescape.convert(widget.article.title ?? ""),
                             textAlign: TextAlign.start,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize:
                                   (widget.source.toLowerCase() != 'youtube')
                                       ? 24
-                                      : 18,
+                                      : 16.75,
                               fontFamily: APP_FONT_BOLD,
                               fontWeight: FontWeight.bold,
                               //fontWeight: FontWeight.bold,
@@ -438,58 +464,62 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                   ),
                 ),
                 Container(
-                  alignment: Alignment.center,
+                  alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.only(
                       left: 10, top: 0, bottom: 4, right: 10),
                   color: COLOR_PRIMARY_DARK,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(widget.source,
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.8),
-                            fontSize: 13,
-                            fontFamily: APP_FONT_MEDIUM,
-                          )),
-                      const Text(" • "),
-                      InstagramDateTimeWidget(publishedAt: widget.publishedAt),
-                      const Text(" • "),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BandDetailsPage(
-                                  band: widget.articleBand.band,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(widget.source,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 13,
+                              fontFamily: APP_FONT_MEDIUM,
+                            )),
+                        const Text(" • "),
+                        InstagramDateTimeWidget(publishedAt: widget.publishedAt),
+                        const Text(" • "),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BandDetailsPage(
+                                    band: widget.articleBand.band,
+                                  ),
+                                ));
+                          },
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 6),
+                            //margin: const EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade900
+                                  .withOpacity(0.85), //.withOpacity(0.8),
+                              //border: Border.all(color: Colors.grey.shade900.withOpacity(0.85),width: 2.5),
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  widget.articleBand.band?.name ?? "",
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                  ),
                                 ),
-                              ));
-                        },
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 6),
-                          //margin: const EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade900
-                                .withOpacity(0.85), //.withOpacity(0.8),
-                            //border: Border.all(color: Colors.grey.shade900.withOpacity(0.85),width: 2.5),
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
-                                widget.articleBand.band?.name ?? "",
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 Container(
@@ -552,7 +582,8 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                                   horizontal: 8, vertical: 6),
                               //margin: const EdgeInsets.symmetric(horizontal: 10),
                               decoration: BoxDecoration(
-                                color: Colors.grey.shade900.withOpacity(0.85), //.withOpacity(0.8),
+                                color: Colors.grey.shade900
+                                    .withOpacity(0.85), //.withOpacity(0.8),
                                 border: Border.all(
                                     color:
                                         Colors.grey.shade900.withOpacity(0.85),
@@ -576,7 +607,6 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                                     size: 14,
                                   ),
                                   //Image.asset("images/read-more.png",color: Colors.white,height: 18,),
-
                                 ],
                               ),
                             ),
@@ -586,11 +616,15 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                           height: 16,
                         ),
                         ExpandableText(
-                          (widget.source.toLowerCase() =='youtube')? unescape.convert(widget.article.title??""): (widget.article.description != null)
-                              ? unescape.convert(widget.article.description??"")
-                              : (widget.article.content != null)
-                                  ? unescape.convert(widget.article.content??"")
-                                  : "",
+                          (widget.source.toLowerCase() == 'youtube')
+                              ? unescape.convert(widget.article.title ?? "")
+                              : (widget.article.description != null)
+                                  ? unescape
+                                      .convert(widget.article.description ?? "")
+                                  : (widget.article.content != null)
+                                      ? unescape
+                                          .convert(widget.article.content ?? "")
+                                      : "",
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             fontSize: 14,
@@ -618,6 +652,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
       ),
     );
   }
+
   static String? convertUrlToId(String url, {bool trimWhitespaces = true}) {
     if (!url.contains("http") && (url.length == 11)) return url;
     if (trimWhitespaces) url = url.trim();
@@ -639,24 +674,27 @@ class _HomeFeedDataState extends State<HomeFeedData> {
 
     return null;
   }
+
   void generateLink() async {
     String imageUrl = widget.article?.imageUrl ?? DEFAULT_APP_IMAGE_URL;
-    String source = widget.article?.source??"";
-    if(source.toLowerCase()=="youtube"){
-      imageUrl = YoutubePlayer.getThumbnail(videoId: YoutubePlayer.convertUrlToId(widget.article.url??"")??"");
+    String source = widget.article?.source ?? "";
+    if (source.toLowerCase() == "youtube") {
+      imageUrl = YoutubePlayer.getThumbnail(
+          videoId:
+              YoutubePlayer.convertUrlToId(widget.article.url ?? "") ?? "");
     }
     Jam jam = Jam();
     jam.broadcast = false;
-    jam.title = unescape.convert(widget.article?.title??"");
+    jam.title = unescape.convert(widget.article?.title ?? "");
     jam.bandId = widget.article?.category;
     jam.jamId = widget.article?.jamId;
     jam.articleId = widget.article?.articleId;
     jam.startedBy = widget.article?.source;
     jam.imageUrl = imageUrl;
     if (widget.article?.question != null) {
-      jam.question = unescape.convert(widget.article?.question??"");
+      jam.question = unescape.convert(widget.article?.question ?? "");
     } else {
-      jam.question = unescape.convert(widget.article?.title??"");
+      jam.question = unescape.convert(widget.article?.title ?? "");
     }
     jam.count = 1;
     jam.membersID = [];
@@ -664,12 +702,11 @@ class _HomeFeedDataState extends State<HomeFeedData> {
 
     metadata = BranchContentMetaData()..addCustomMetadata('jam', jam.toJson());
 
-
     buo = BranchUniversalObject(
         canonicalIdentifier: 'flutter/branch',
         title: "Drop-in Audio discussion on Drumm",
         imageUrl: imageUrl,
-        contentDescription: '${unescape.convert(widget.article?.title??"")}',
+        contentDescription: '${unescape.convert(widget.article?.title ?? "")}',
         contentMetadata: metadata,
         publiclyIndex: true,
         locallyIndex: true,
@@ -698,7 +735,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
       print('GeneratedLink : ${response.result}');
 
       String articleLink =
-          "${(widget.article?.question != null) ? "Drumm: ${unescape.convert(widget.article?.question??"")}" : unescape.convert(widget.article?.title??"")}\n\nTap to join the discussion on Drumm.\n${response.result}";
+          "${(widget.article?.question != null) ? "Drumm: ${unescape.convert(widget.article?.question ?? "")}" : unescape.convert(widget.article?.title ?? "")}\n\nTap to join the discussion on Drumm.\n${response.result}";
 
       Share.share(articleLink);
 
@@ -742,7 +779,9 @@ class _VolumeButtonState extends State<VolumeButton> {
         },
         child: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: (muteAudio) ? const Icon(Icons.volume_mute) : const Icon(Icons.volume_up),
+          child: (muteAudio)
+              ? const Icon(Icons.volume_mute)
+              : const Icon(Icons.volume_up),
         ));
   }
 }
@@ -765,10 +804,11 @@ class BottomFade extends StatelessWidget {
                   end: Alignment.topCenter,
                   colors: [
                     Colors.black,
+                    Colors.black,//.withOpacity(0.95),
                     Colors.black.withOpacity(0.85),
                     Colors.transparent
                   ]),
-              borderRadius: BorderRadius.circular(curve),
+              borderRadius: BorderRadius.circular(CURVE),
             ),
           ),
         ],

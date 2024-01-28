@@ -213,6 +213,8 @@ flutter:
     - images/read-more.png
     - images/heart_like.png
     - images/heart_unlike.png
+    - images/discovery_tapped.png
+    - images/discovery.png
   #   - images/a_dot_ham.jpeg
 
   fonts:

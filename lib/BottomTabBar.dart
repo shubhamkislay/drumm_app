@@ -62,9 +62,11 @@ class _BottomTabBarState extends State<BottomTabBar> {
                 color: (currentPage == 1)
                     ? Colors.white
                     : disableColor,
-                width: 26,
-                "images/search_btn.png",
-                height: 26,
+                width: 36,
+                currentPage == 1
+                    ? "images/discovery_tapped.png"
+                    : "images/discovery.png",
+                height: 36,
                 fit: BoxFit.contain,
               ),
             ),

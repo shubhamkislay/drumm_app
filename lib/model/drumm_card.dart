@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:flutter/material.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/custom/helper/remove_duplicate.dart';
@@ -35,7 +36,7 @@ class _DrummCardState extends State<DrummCard> {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(CURVE),
       child: Container(
         width: 100,
         height: 200,
@@ -61,11 +62,11 @@ class _DrummCardState extends State<DrummCard> {
           child: Container(
             padding: EdgeInsets.all(4),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(7),
+              borderRadius: BorderRadius.circular(CURVE-2),
               color: Colors.black,
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(CURVE-4),
               child: Stack(
                 children: [
                   CachedNetworkImage(
@@ -120,7 +121,7 @@ class _DrummCardState extends State<DrummCard> {
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(3.0),
+                          padding: const EdgeInsets.all(6.0),
                           child: AutoSizeText(widget.jam.title??"",
                             textAlign: TextAlign.left,
                             overflow: TextOverflow.ellipsis,

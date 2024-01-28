@@ -11,6 +11,7 @@ import 'package:drumm_app/model/band.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/view_band.dart';
 
+import '../custom/constants/Constants.dart';
 import '../custom/helper/image_uploader.dart';
 
 typedef void BandCallback(Band band);
@@ -36,18 +37,17 @@ class BandImageCardState extends State<BandImageCard> {
 
   @override
   Widget build(BuildContext context) {
-    double curve = 20;
 
     return GestureDetector(
       onTap: () {
         onSelected();
       },
       child:  ClipRRect(
-              borderRadius: BorderRadius.circular(curve),
+              borderRadius: BorderRadius.circular(CURVE),
               child: Container(
                 decoration: BoxDecoration(
                   color: COLOR_PRIMARY_DARK,
-                    borderRadius: BorderRadius.circular(curve),
+                    borderRadius: BorderRadius.circular(CURVE),
                   border: Border.all(color: Colors.grey.shade900, width: 1)
                 ),
                 child: Column(
@@ -56,7 +56,7 @@ class BandImageCardState extends State<BandImageCard> {
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(curve-4),
+                          borderRadius: BorderRadius.circular(CURVE-4),
                           child: CachedNetworkImage(
                               width: double.infinity,
                               height: double.infinity,
