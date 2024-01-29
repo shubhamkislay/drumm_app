@@ -25,3 +25,5 @@ const TUTORIAL_MESSAGE_BANDS = "A band is a community with similar interests. He
 
 
 const double CURVE = 18;
+
+

@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/model/algolia_article.dart';
 import 'package:drumm_app/register_user.dart';
+import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -133,6 +134,13 @@ class _MyAppState extends State<MyApp>
     } catch (e) {}
 
     super.initState();
+
+    // var metaSdk = FlutterMetaSdk();
+    // metaSdk.setAdvertiserTracking(enabled: true);
+    // metaSdk.logEvent(name: "App opened");
+     var facebookAppEvents = FacebookAppEvents();
+     facebookAppEvents.setAdvertiserTracking(enabled: true);
+     facebookAppEvents.logEvent(name: "App initialised.");
   }
 
   void setupForegroundNotification() async {
