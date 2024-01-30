@@ -138,9 +138,12 @@ class _MyAppState extends State<MyApp>
     // var metaSdk = FlutterMetaSdk();
     // metaSdk.setAdvertiserTracking(enabled: true);
     // metaSdk.logEvent(name: "App opened");
+    final args = <String, dynamic>{
+      'fields': "started_event_log",
+    };
      var facebookAppEvents = FacebookAppEvents();
      facebookAppEvents.setAdvertiserTracking(enabled: true);
-     facebookAppEvents.logEvent(name: "App initialised.");
+     facebookAppEvents.logEvent(name: "appinitialised",parameters: args);
   }
 
   void setupForegroundNotification() async {

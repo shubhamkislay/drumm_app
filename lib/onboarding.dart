@@ -1,5 +1,6 @@
 import 'package:drumm_app/LoginPage.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
+import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,13 @@ class OnBoarding extends StatelessWidget {
           ),
         ),
         onFinish: (){
+          final args = <String, dynamic>{
+            'fields': "started_event_log",
+          };
+
+          var facebookAppEvents = FacebookAppEvents();
+          facebookAppEvents.setAdvertiserTracking(enabled: true);
+          facebookAppEvents.logEvent(name: "gettingstarted",parameters: args).then((value) => print("Logged event"));
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
