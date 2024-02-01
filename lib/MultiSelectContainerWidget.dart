@@ -1,3 +1,4 @@
+import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
@@ -9,7 +10,7 @@ class MultiSelectContainerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double multiSelectRadius = 18;
+    double multiSelectRadius = CURVE+3;
 
     return MultiSelectContainer(
       showInListView: true,
@@ -36,27 +37,28 @@ class MultiSelectContainerWidget extends StatelessWidget {
       ),
       itemsDecoration: MultiSelectDecorations(
         decoration: BoxDecoration(
-            color: Colors.grey.shade900.withOpacity(0.75), //Colors.grey.shade900,
-            border: Border.all(
-                color: Colors.grey.shade900.withOpacity(0.5), width: 2.25), //Color(0xff2f2f2f)),
+            color: Colors.grey.shade900,//.withOpacity(0.75), //Colors.grey.shade900,
+            // border: Border.all(
+            //     color: Colors.grey.shade900.withOpacity(0.5), width: 2.25), //Color(0xff2f2f2f)),
             borderRadius: BorderRadius.circular(multiSelectRadius)),
         selectedDecoration: BoxDecoration(
           color: Colors.white,
-            border: Border.all(
-                color: Colors.grey.shade900, width: 2.25),
+            // border: Border.all(
+            //     color: Colors.grey.shade900, width: 2.25),
             borderRadius: BorderRadius.circular(multiSelectRadius)),
       ),
       items: bandsCards,
       textStyles: const MultiSelectTextStyles(
         selectedTextStyle: TextStyle(
           color: Colors.black,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w600,
           fontSize: 13,
           fontFamily: APP_FONT_MEDIUM,
         ),
         textStyle: TextStyle(
           color: Colors.white,
-          fontSize: 12,
+          fontSize: 13,
+          //fontWeight: FontWeight.w500,
           //fontWeight: FontWeight.bold, // FontWeight.w700,
           fontFamily: APP_FONT_MEDIUM,
         ),

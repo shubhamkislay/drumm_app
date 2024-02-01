@@ -2,7 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 
+import 'custom/TutorialBox.dart';
+import 'custom/constants/Constants.dart';
 import 'custom/helper/connect_channel.dart';
 import 'custom/listener/connection_listener.dart';
 import 'jam_room_page.dart';
@@ -95,8 +98,29 @@ class _BottomJamWindowState extends State<BottomJamWindow> {
                 )),
             GestureDetector(
               onTap: () {
-                ConnectToChannel.leaveChannel();
-                FlutterCallkitIncoming.endAllCalls();
+
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return TutorialBox(
+                      boxType: BOX_TYPE_CONFIRM,
+                      sharedPreferenceKey: CONFIRM_JOIN_SHARED_PREF,
+                      tutorialImageAsset: "images/audio-waves.png",
+                      tutorialMessage: LEAVE_DRUMM_CONFIRMATION,
+                      tutorialMessageTitle: LEAVE_DRUMM_TITLE,
+                      confirmColor: Colors.redAccent,
+                      confirmMessage: "Confirm",
+                      onConfirm: (){
+                        Vibrate.feedback(FeedbackType.selection);
+                        ConnectToChannel.leaveChannel();
+                        FlutterCallkitIncoming.endAllCalls();
+
+                      },
+                    );
+                  },
+                );
+
+
               },
               child: Container(
                 margin: EdgeInsets.all(5),

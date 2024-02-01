@@ -56,18 +56,18 @@ class _LiveIconState extends State<LiveIcon> {
               Colors.grey.shade900,
             ])
                 : LinearGradient(colors: [
-              COLOR_PRIMARY_DARK,
-              COLOR_PRIMARY_DARK,
+              Colors.grey.shade900,
+              Colors.grey.shade900,
             ])),
         child: Container(
           padding: EdgeInsets.all(6),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            color: COLOR_PRIMARY_DARK,
+            color: Colors.grey.shade900,
           ),
           child: Image.asset(
             'images/drumm_logo.png',
-            height: 22,
+            height: 18,
             color: Colors.white,
             fit: BoxFit.contain,
           ),

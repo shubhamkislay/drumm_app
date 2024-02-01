@@ -1,8 +1,13 @@
+import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
 
 const TUTORIAL_MESSAGE_JOIN_TITLE = "You're about to start your first drumm!";
 const TUTORIAL_MESSAGE_JOIN = "A notification will be sent to all the band members to join the drumm and discuss the article. You can start or join a drumm either by swiping right on the article or pressing the blue button. Happy drumming!";
 const CONFIRM_JOIN_SHARED_PREF = "drummjoin";
+const JOIN_CONFIRMATION = "Start a drumm";
+const LEAVE_DRUMM_CONFIRMATION = "Are you sure you want to leave the drumm?";
+const LEAVE_DRUMM_TITLE = "Leave Drumm";
+
 
 const BOX_TYPE_CONFIRM = "confirm";
 const BOX_TYPE_ALERT = "alert";
@@ -24,6 +29,21 @@ const TUTORIAL_MESSAGE_BANDS = "A band is a community with similar interests. He
 
 
 
-const double CURVE = 18;
+const double CURVE=4;
+const COLOR_BACKGROUND = COLOR_PRIMARY_DARK;
+
+List<Color> JOIN_COLOR = [Colors.indigo.shade700.withOpacity(0.85),Colors.blue.shade800.withOpacity(0.75)];
+//List<Color> EXPLORE_COLOR = [Colors.orange.shade800,Colors.red.shade800];
+// List<Color> JOIN_COLOR =[
+// Colors.indigo,
+// Colors.blue.shade700,
+// Colors.lightBlue,
+// ];
+
+List<Color> EXPLORE_COLOR =  [
+
+Colors.red,
+Colors.pinkAccent,
+];
 
 

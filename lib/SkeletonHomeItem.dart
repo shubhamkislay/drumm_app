@@ -13,7 +13,7 @@ class SkeletonHomeItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(2.0),
         decoration: BoxDecoration(
-          //color: COLOR_PRIMARY_DARK,
+          color: Colors.black,//COLOR_PRIMARY_DARK,
           borderRadius: BorderRadius.circular(CURVE),
           border: Border.all(color: Colors.grey.shade900.withOpacity(0.75),width: 2.5),
         ),
@@ -21,7 +21,7 @@ class SkeletonHomeItem extends StatelessWidget {
           width: double.maxFinite,
           height: double.maxFinite,
           decoration: BoxDecoration(
-            color: COLOR_PRIMARY_DARK,
+            color: Colors.black,
             borderRadius: BorderRadius.circular(CURVE),
             //border: Border.all(color: Colors.grey.shade900,width: 2.5),
           ),

@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
+import 'custom/constants/Constants.dart';
+
 class SkeletonBand extends StatefulWidget {
   const SkeletonBand({Key? key}) : super(key: key);
 
@@ -134,7 +136,7 @@ class _SkeletonBandState extends State<SkeletonBand> {
     for (int i = 0; i < 4; i++) {
       containerList.add(Container(
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(CURVE),
           child: Stack(
             children: [
               Container(

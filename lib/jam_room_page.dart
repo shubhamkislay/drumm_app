@@ -21,6 +21,8 @@ import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/user_profile_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'custom/TutorialBox.dart';
+import 'custom/constants/Constants.dart';
 import 'custom/rounded_button.dart';
 import 'model/Drummer.dart';
 import 'model/article.dart';
@@ -52,12 +54,15 @@ class _JamRoomPageState extends State<JamRoomPage> {
   Band? band;
 
   bool userJoined = false;
+  bool remoteUserJoined = false;
 
   bool shownWarning = false;
   double curve = 32;
 
+
   @override
   Widget build(BuildContext context) {
+    BuildContext jamRoomContext = context;
     return Container(
       color: COLOR_PRIMARY_DARK, //Colors.black,
       width: double.maxFinite,
@@ -265,7 +270,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                             ],
                           ),
                         ),
-                      if (drummerCards.length > 0 && userJoined)
+                      if (drummerCards.isNotEmpty && userJoined)
                         Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: GridView.count(
@@ -339,53 +344,93 @@ class _JamRoomPageState extends State<JamRoomPage> {
               width: double.infinity,
               alignment: Alignment.bottomCenter,
               margin: EdgeInsets.symmetric(horizontal: 8.0),
-              child: Row(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        ConnectToChannel.leaveChannel();
-                        FlutterCallkitIncoming.endAllCalls();
+                  if(!remoteUserJoined) Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 32),
+                        child: Text("Wait for others to join the drumm",
+                          style: TextStyle(
+                            fontSize: 14
+                          ),),
+                      ),
+                      SizedBox(width: 8,),
+                      SizedBox(
+                        height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator())
 
-                        if(drummerCards.length==1)
-                          FirebaseDBOperations.updateCount(widget.jam.jamId, 0);
+                    ],
 
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                            color: COLOR_PRIMARY_DARK,
-                            border: Border.all(
-                                color: Colors.grey.shade900, width: 1),
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Text(
-                          "Leave Drumm",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontWeight: FontWeight.bold, fontFamily: APP_FONT_MEDIUM,),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return TutorialBox(
+                                  boxType: BOX_TYPE_CONFIRM,
+                                  sharedPreferenceKey: CONFIRM_JOIN_SHARED_PREF,
+                                  tutorialImageAsset: "images/audio-waves.png",
+                                  tutorialMessage: LEAVE_DRUMM_CONFIRMATION,
+                                  tutorialMessageTitle: LEAVE_DRUMM_TITLE,
+                                  confirmColor: Colors.red,
+                                  confirmMessage: "Confirm",
+                                  onConfirm: (){
+                                    ConnectToChannel.leaveChannel();
+                                    FlutterCallkitIncoming.endAllCalls();
+
+                                    if(drummerCards.length==1)
+                                      FirebaseDBOperations.updateCount(widget.jam.jamId, 0);
+
+                                    Navigator.pop(jamRoomContext);
+                                  },
+                                );
+                              },
+                            );
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                                color: COLOR_PRIMARY_DARK,
+                                border: Border.all(
+                                    color: Colors.grey.shade900, width: 1),
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Text(
+                              "Leave Drumm",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontWeight: FontWeight.bold, fontFamily: APP_FONT_MEDIUM,),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  RoundedButton(
-                    height: 48,
-                    padding: 12,
-                    assetPath:
-                        micMute ? "images/mic_off.png" : "images/mic_on.png",
-                    color: Colors.white,
-                    bgColor: micMute ? Colors.grey.shade800 : Colors.blue,
-                    onPressed: () {
-                      setState(() {
-                        Vibrate.feedback(FeedbackType.impact);
-                        if (micMute)
-                          micMute = false;
-                        else
-                          micMute = true;
+                      RoundedButton(
+                        height: 48,
+                        padding: 12,
+                        assetPath:
+                            micMute ? "images/mic_off.png" : "images/mic_on.png",
+                        color: Colors.white,
+                        bgColor: micMute ? Colors.grey.shade800 : Colors.blue,
+                        onPressed: () {
+                          setState(() {
+                            Vibrate.feedback(FeedbackType.impact);
+                            if (micMute)
+                              micMute = false;
+                            else
+                              micMute = true;
 
-                        updateLocalUserMic(micMute);
-                        ConnectToChannel.setMute(micMute);
-                      });
-                    },
+                            updateLocalUserMic(micMute);
+                            ConnectToChannel.setMute(micMute);
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -419,6 +464,12 @@ class _JamRoomPageState extends State<JamRoomPage> {
           // ).show(context);
         },
         (userJoined) {
+          int currUserRid = drummer.rid??0;
+          if(userJoined!=currUserRid){
+            setState(() {
+              remoteUserJoined = true;
+            });
+          }
           addUserToRoom(userJoined);
         },
         (userLeft) {
@@ -463,7 +514,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
     // getLiveDetails();
 
     String startedBy = widget.jam.startedBy ?? "";
-    if (startedBy.length > 0) getDrummer(startedBy);
+    if (startedBy.isNotEmpty) getDrummer(startedBy);
     if (widget.jam.bandId != null) getBand(widget.jam.bandId);
     setState(() {
       micMute = ConnectToChannel.getMuteState();

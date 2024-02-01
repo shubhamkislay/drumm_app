@@ -556,9 +556,10 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                       Vibrate.feedback(FeedbackType.selection);
                       generateLink();
                     },
-                    child: const Padding(
+                    child:  Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: ShareWidget(),
+                      child: ShareWidget(
+                      ),
                     ),
                   ),
                 ),

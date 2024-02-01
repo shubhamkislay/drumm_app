@@ -11,7 +11,10 @@ class TutorialBox extends StatelessWidget {
   String sharedPreferenceKey;
   String boxType;
   bool? autoUpdate = false;
+  String? confirmMessage;
+  Color? confirmColor;
   VoidCallback? onConfirm;
+  VoidCallback? onCancel;
   TutorialBox(
       {Key? key,
       required this.tutorialMessage,
@@ -20,11 +23,16 @@ class TutorialBox extends StatelessWidget {
       required this.sharedPreferenceKey,
       required this.boxType,
         this.autoUpdate,
+        this.confirmMessage,
+        this.confirmColor,
+        this.onCancel,
       this.onConfirm})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    String confirmMsg = confirmMessage ??"Let's Go";
+    Color confirmClr= confirmColor??Colors.blue.shade900;
     if(autoUpdate??false) {
       print("AutoUpdating share preference");
       updateSharedPreference();
@@ -56,6 +64,11 @@ class TutorialBox extends StatelessWidget {
       actions: [
         if(boxType == BOX_TYPE_CONFIRM) GestureDetector(
           onTap: () {
+            try {
+              onCancel!();
+            }catch(e){
+
+            }
             Navigator.pop(context);
           },
           child: Container(
@@ -87,14 +100,10 @@ class TutorialBox extends StatelessWidget {
             padding:
             const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
             decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  Colors.blue.shade600,
-                  Colors.blue.shade700,
-                ]),
+                color: confirmClr,
                 borderRadius: BorderRadius.circular(24)),
-            child: const Text(
-              "Let's Go",
-              style: TextStyle(
+            child:  Text(confirmMsg,
+              style: const TextStyle(
                 fontSize: 14,
                 color: Colors.white,
               ),

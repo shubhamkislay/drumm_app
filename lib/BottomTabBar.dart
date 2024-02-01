@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 
 import 'UserProfileIcon.dart';
+import 'custom/constants/Constants.dart';
 import 'custom/create_jam_bottom_sheet.dart';
 import 'custom/listener/connection_listener.dart';
 
@@ -17,17 +18,20 @@ class BottomTabBar extends StatefulWidget {
 class _BottomTabBarState extends State<BottomTabBar> {
   int currentPage = 0;
   Color disableColor =
-      Colors.grey.shade800;
+      Colors.white;
   double tabsWidthDivision = 8.5;
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: Container(
-        color: Colors.black, //COLOR_PRIMARY_DARK,
+    return Container(
+       //COLOR_PRIMARY_DARK,
+      decoration: const BoxDecoration(
+        color: COLOR_BACKGROUND,
+      ),
+      child: SafeArea(
+        top: false,
         child: TabBar(
           enableFeedback: true,
-          padding: EdgeInsets.only(bottom: 0, top: 8),
+          padding: const EdgeInsets.only(bottom: 0, top: 8),
           overlayColor: MaterialStateProperty.resolveWith<Color>(
                 (Set<MaterialState> states) {
               return Colors.transparent;
@@ -48,11 +52,11 @@ class _BottomTabBarState extends State<BottomTabBar> {
                   color: currentPage == 0
                       ? Colors.white
                       :disableColor,
-                  width: 26,
+                  width: 24,
                   currentPage == 0
                       ? "images/hut_btn_active.png"
                       : "images/hut_btn.png",
-                  height: 26),
+                  height: 24),
             ),
             Container(
               //height: 26,
@@ -62,11 +66,11 @@ class _BottomTabBarState extends State<BottomTabBar> {
                 color: (currentPage == 1)
                     ? Colors.white
                     : disableColor,
-                width: 36,
+                width: 30,
                 currentPage == 1
                     ? "images/discovery_tapped.png"
                     : "images/discovery.png",
-                height: 36,
+                height: 30,
                 fit: BoxFit.contain,
               ),
             ),
@@ -82,9 +86,9 @@ class _BottomTabBarState extends State<BottomTabBar> {
                 child: Image.asset(
                   //color: currentPage == 1 ?  Color(COLOR_PRIMARY_VAL): widget.themeManager.themeMode == ThemeMode.dark ?Colors.white38: Colors.black.withOpacity(0.25),
                     color: disableColor,
-                    width: 30,
+                    width: 28,
                     "images/plus_btn.png",
-                    height: 30),
+                    height: 28),
               ),
             /*
                       Wave Mode icon
@@ -101,11 +105,11 @@ class _BottomTabBarState extends State<BottomTabBar> {
                   color: (currentPage == 3)
                       ? Colors.white
                       : disableColor,
-                  width: 36,
+                  width: 32,
                   currentPage == 3
                       ? "images/team_active.png"
                       : "images/team_inactive.png",
-                  height: 36),
+                  height: 32),
             ),
             UserProfileIcon(),
           ],

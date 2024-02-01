@@ -16,6 +16,7 @@ import 'package:drumm_app/model/article_image_card.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'custom/constants/Constants.dart';
 import 'custom/helper/image_uploader.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -43,7 +44,7 @@ class _UserProfilePageState extends State<UserProfilePage>
 
     print("User background image ${modifyImageUrl(drummer?.imageUrl ??"","100x100")}");
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: COLOR_BACKGROUND,
       body: Stack(
         children: [
           RefreshIndicator(
@@ -73,9 +74,9 @@ class _UserProfilePageState extends State<UserProfilePage>
                               gradient: LinearGradient(
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
-                                  colors: [Colors.transparent,Colors.transparent,Colors.black87,Colors.black]),
+                                  colors: [Colors.transparent,Colors.transparent,COLOR_BACKGROUND,COLOR_BACKGROUND]),
                             ),
-                          ).frosted(blur: 6,frostColor: Colors.black),
+                          ).frosted(blur: 6,frostColor: COLOR_BACKGROUND),
                           Center(
                             child: SizedBox(
                               width: 175,
@@ -134,7 +135,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                                     gradient: LinearGradient(
                                         begin: Alignment.topCenter,
                                         end: Alignment.bottomCenter,
-                                        colors: [Colors.transparent,Colors.black87,Colors.black]),
+                                        colors: [Colors.transparent,Colors.transparent,COLOR_BACKGROUND,COLOR_BACKGROUND]),
                                   ),
                                   alignment: Alignment.center,
                                   width: MediaQuery.of(context).size.width,

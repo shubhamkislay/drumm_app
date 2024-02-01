@@ -32,6 +32,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:lottie/lottie.dart';
 import 'package:ogg_opus_player/ogg_opus_player.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -138,7 +139,7 @@ class _NewsFeedState extends State<NewsFeed>
   String articleTop = "";
   late Article articleOnScreen;
 
-  double multiSelectRadius = 12;
+  double multiSelectRadius = CURVE+2;
 
   bool likedArticle = false;
   double fontSize = 10;
@@ -156,11 +157,18 @@ class _NewsFeedState extends State<NewsFeed>
   DocumentSnapshot<Map<String, dynamic>>? _lastDocument = null;
   DocumentSnapshot<Map<String, dynamic>>? _startDocument = null;
 
+  List<Color> backgroundColor = [Colors.blue.shade900.withOpacity(0.85),Colors.blue.shade900.withOpacity(0.85)];
+  // List<Color> backgroundColor = [
+  //   Colors.indigo,
+  //   Colors.blue.shade700,
+  //   //Colors.lightBlue,
+  // ];
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: COLOR_BACKGROUND,
       body: SafeArea(
         bottom: false,
         child: Padding(
@@ -304,6 +312,7 @@ class _NewsFeedState extends State<NewsFeed>
                                           startDrumming(articleBand);
                                         },
                                         play: false,
+                                        backgroundColor:backgroundColor,
                                         youtubePlayerController:
                                         youtubePlayerController,
                                         onTop: topIndex == index,
@@ -392,6 +401,63 @@ class _NewsFeedState extends State<NewsFeed>
 
     // Refresh your data
     //getNews();
+  }
+
+  void getPalette(String url) async{
+    return;
+    if(url.length<1) {
+      setState(() {
+        backgroundColor = [Colors.black, COLOR_PRIMARY_DARK];
+      });
+      return;
+    }
+    try {
+      PaletteGenerator paletteGenerator = await PaletteGenerator
+          .fromImageProvider(
+        NetworkImage(url),
+        maximumColorCount: 3,
+      ).catchError((e) {}
+      );
+      List<Color> extractedColors = [];
+        extractedColors.add(
+
+            (paletteGenerator.darkMutedColor!=null)? paletteGenerator.darkMutedColor?.color??COLOR_PRIMARY_DARK:
+            (paletteGenerator.darkVibrantColor!=null)? paletteGenerator.darkVibrantColor?.color??COLOR_PRIMARY_DARK:
+            (paletteGenerator.lightVibrantColor!=null)? paletteGenerator.lightVibrantColor?.color.withOpacity(0.5)??COLOR_PRIMARY_DARK:
+            (paletteGenerator.lightMutedColor!=null)? paletteGenerator.lightMutedColor?.color.withOpacity(0.5)??COLOR_PRIMARY_DARK:
+            (paletteGenerator.dominantColor!=null)? paletteGenerator.dominantColor?.color.withOpacity(0.5)??COLOR_PRIMARY_DARK:
+            Colors.grey.shade900);
+      extractedColors.add(
+          (paletteGenerator.dominantColor!=null)? paletteGenerator.dominantColor?.color.withOpacity(0.5)??COLOR_PRIMARY_DARK:
+          (paletteGenerator.lightMutedColor!=null)? paletteGenerator.lightMutedColor?.color.withOpacity(0.5)??COLOR_PRIMARY_DARK:
+          (paletteGenerator.lightVibrantColor!=null)? paletteGenerator.lightVibrantColor?.color.withOpacity(0.5)??COLOR_PRIMARY_DARK:
+          (paletteGenerator.darkVibrantColor!=null)? paletteGenerator.darkVibrantColor?.color??COLOR_PRIMARY_DARK:
+          (paletteGenerator.darkMutedColor!=null)? paletteGenerator.darkMutedColor?.color??COLOR_PRIMARY_DARK:
+          Colors.grey.shade900);
+        //extractedColors.add(paletteGenerator.darkMutedColor?.color??Colors.grey.shade900);
+      //paletteGenerator.
+      List<Color> opacityColor = paletteGenerator.colors.toList();
+      //extractedColors.add(COLOR_PRIMARY_DARK);
+
+
+      for(Color color in opacityColor){
+        //extractedColors.add(color.withOpacity(0.5));
+      }
+
+      if (extractedColors.length >= 2) {
+        setState(() {
+          backgroundColor = paletteGenerator.colors.toList();//extractedColors;
+        });
+      } else {
+        setState(() {
+          backgroundColor = [Colors.black, COLOR_PRIMARY_DARK];
+        });
+      }
+    }catch(e){
+      setState(() {
+        backgroundColor = [Colors.black, COLOR_PRIMARY_DARK];
+      });
+    }
   }
 
   startDrumming(ArticleBand articleBand) {
@@ -666,6 +732,7 @@ class _NewsFeedState extends State<NewsFeed>
         } catch (e) {
           print("Error setting Article $e");
         }
+        getPalette(articleBands.elementAt(0).article?.imageUrl??"");
       });
 
 
@@ -722,6 +789,7 @@ class _NewsFeedState extends State<NewsFeed>
         articleTop = articleBands.elementAt(0).article?.articleId ?? "";
         Article article = articleBands.elementAt(0).article ?? Article();
         playYoutubeVideo(article);
+        getPalette(articleBands.elementAt(0).article?.imageUrl??"");
       });
     }
   }
@@ -738,6 +806,8 @@ class _NewsFeedState extends State<NewsFeed>
       openArticlePage(articleBands.elementAt(previousIndex).article ?? Article());
       return false;
     }
+
+
 
     undoIndex = currentIndex ?? 0;
     try {
@@ -826,6 +896,7 @@ class _NewsFeedState extends State<NewsFeed>
           return false;
         }
         else{
+          getPalette(articleBands.elementAt(currentIndex??0).article?.imageUrl??"");
           return true;
         }
       } catch (e) {
@@ -839,7 +910,6 @@ class _NewsFeedState extends State<NewsFeed>
 
       try {
         Vibrate.feedback(FeedbackType.selection);
-        if(showDrumJoinConfirmation) {
           showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -848,21 +918,23 @@ class _NewsFeedState extends State<NewsFeed>
                 sharedPreferenceKey: CONFIRM_JOIN_SHARED_PREF,
                 tutorialImageAsset: "images/audio-waves.png",
                 tutorialMessage: TUTORIAL_MESSAGE_JOIN,
+                tutorialMessageTitle: showDrumJoinConfirmation ? TUTORIAL_MESSAGE_JOIN_TITLE: JOIN_CONFIRMATION,
                 onConfirm: (){
                   showDrumJoinConfirmation = false;
                   //joinOpenDrumm(articleBands.elementAt(previousIndex));
-                  controller?.swipeRight();
-                }, tutorialMessageTitle: TUTORIAL_MESSAGE_JOIN_TITLE,
+                  //controller?.swipeRight();
+                  Vibrate.feedback(FeedbackType.success);
+                  joinOpenDrumm(articleBands.elementAt(previousIndex));
+                },
+                onCancel: (){
+                  controller?.undo();
+                },
               );
             },
           );
-          return false;
-        }
-        else{
-          Vibrate.feedback(FeedbackType.success);
-          joinOpenDrumm(articleBands.elementAt(previousIndex));
+        getPalette(articleBands.elementAt(currentIndex??0).article?.imageUrl??"");
           return true;
-        }
+
       } catch (e) {
         return false;
       }
@@ -926,6 +998,8 @@ class _NewsFeedState extends State<NewsFeed>
           });
       return false;
     }
+
+
 
     debugPrint(
       'The card $previousIndex was swiped to the ${direction.name}. Now the card $currentIndex is on top',
@@ -1076,6 +1150,7 @@ class _NewsFeedState extends State<NewsFeed>
     debugPrint(
       'The card $currentIndex was undod from the ${direction.name}',
     );
+    getPalette(articleBands.elementAt(currentIndex).article?.imageUrl??"");
     return true;
   }
 

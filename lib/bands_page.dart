@@ -9,6 +9,7 @@ import 'package:drumm_app/skeleton_band.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 
 import 'create_band.dart';
+import 'custom/constants/Constants.dart';
 import 'custom/helper/firebase_db_operations.dart';
 import 'explore_bands_page.dart';
 import 'model/band.dart';
@@ -30,7 +31,7 @@ with AutomaticKeepAliveClientMixin<BandSearchPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: COLOR_BACKGROUND,
       body: Stack(
         children: [
           if(!loaded)

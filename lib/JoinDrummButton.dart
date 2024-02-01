@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 
+import 'custom/constants/Constants.dart';
+
 class JoinDrummButton extends StatelessWidget {
   CardSwiperController? controller;
   JoinDrummButton({Key? key, required this.controller}) : super(key: key);
@@ -30,11 +32,8 @@ class JoinDrummButton extends StatelessWidget {
                   spreadRadius: 2,
                   blurRadius: 4),
             ],
-            gradient: LinearGradient(colors: [
-              Colors.indigo,
-              Colors.blue.shade700,
-              Colors.lightBlue,
-            ]),
+            gradient: LinearGradient(colors: JOIN_COLOR
+            ),
           ),
           child: Image.asset(
             'images/audio-waves.png',

@@ -42,6 +42,7 @@ import 'ask_page.dart';
 import 'band_details_page.dart';
 import 'custom/CustomSwiper.dart';
 import 'custom/bottom_sheet.dart';
+import 'custom/constants/Constants.dart';
 import 'custom/create_jam_bottom_sheet.dart';
 import 'custom/helper/circular_reveal_clipper.dart';
 import 'custom/helper/image_uploader.dart';
@@ -111,7 +112,7 @@ class _LauncherPageState extends State<LauncherPage>
         length: 5, vsync: this, animationDuration: const Duration(milliseconds: 0));
     FirebaseDBOperations.searchArticles("",0);
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: COLOR_BACKGROUND,
       body: Stack(
         children: [
           FrostedBottomBar(

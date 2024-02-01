@@ -46,6 +46,7 @@ import 'package:scroll_app_bar/scroll_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
+import 'custom/constants/Constants.dart';
 import 'custom/drumm_app_bar.dart';
 import 'package:http/http.dart' as http;
 
@@ -390,6 +391,7 @@ class _MyAppState extends State<MyApp>
       darkTheme: darkTheme,
       debugShowCheckedModeBanner: false,
       themeMode: _themeManager.themeMode,
+      color: COLOR_BACKGROUND,
       home: SplashScreen(
         observer: observer,
         analytics: analytics,

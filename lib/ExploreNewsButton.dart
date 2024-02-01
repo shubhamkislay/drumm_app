@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 
+import 'custom/constants/Constants.dart';
+
 class ExploreNewsButton extends StatelessWidget {
   CardSwiperController? controller;
   ExploreNewsButton({Key? key, this.controller}) : super(key: key);
@@ -30,11 +32,9 @@ class ExploreNewsButton extends StatelessWidget {
                   spreadRadius: 2,
                   blurRadius: 4),
             ],
-            gradient: const LinearGradient(colors: [
-              Colors.orange,
-              Colors.red,
-              Colors.pinkAccent,
-            ]),
+            gradient:  LinearGradient(
+              colors: EXPLORE_COLOR,
+            ),
           ),
           child: Image.asset(
             'images/google-earth.png',
