@@ -492,6 +492,11 @@ class _MyAppState extends State<MyApp>
                                     onTap: () {
                                       if (jam.jamId !=
                                           ConnectToChannel.channelID) {
+                                        try{
+                                          Navigator.pop(ConnectToChannel.jamRoomContext);
+                                        }catch(e){
+
+                                        }
                                         joinRoom(jam, open, false);
                                         FirebaseDBOperations
                                             .sendNotificationToTopic(
@@ -543,6 +548,11 @@ class _MyAppState extends State<MyApp>
                                                   if (jam.jamId !=
                                                       ConnectToChannel
                                                           .channelID) {
+                                                    try{
+                                                      Navigator.pop(ConnectToChannel.jamRoomContext);
+                                                    }catch(e){
+
+                                                    }
                                                     joinRoom(jam, open, false);
                                                     FirebaseDBOperations
                                                         .sendNotificationToTopic(
@@ -570,6 +580,11 @@ class _MyAppState extends State<MyApp>
                                   onTap: () {
                                     if (jam.jamId !=
                                         ConnectToChannel.channelID) {
+                                      try{
+                                        Navigator.pop(ConnectToChannel.jamRoomContext);
+                                      }catch(e){
+
+                                      }
                                       joinRoom(jam, open, false);
                                       FirebaseDBOperations
                                           .sendNotificationToTopic(

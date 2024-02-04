@@ -107,7 +107,7 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
                                 imageUrl: modifyImageUrl(drummer?.imageUrl ??"","300x300"), fit: BoxFit.cover,fadeInCurve: Curves.easeIn,placeholder: (context, url) => Container(color: Colors.grey.shade900,),),
                             ),
                           ),
-                         if(widget.muted) Container(
+                         if(widget.muted&&!widget.talking) Container(
                              alignment: Alignment.bottomRight,
                              padding: EdgeInsets.all(12),
                              child: Container(

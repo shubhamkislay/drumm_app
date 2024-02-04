@@ -28,6 +28,10 @@ class _BottomJamWindowState extends State<BottomJamWindow> {
       child: (userConnected) ?
     GestureDetector(
       onTap: () {
+        try{
+          Navigator.pop(ConnectToChannel.jamRoomContext);
+        }catch(e){
+        }
         showModalBottomSheet(
           context: context,
           isScrollControlled: true,

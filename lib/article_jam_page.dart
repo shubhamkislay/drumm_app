@@ -257,6 +257,11 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                           });
 
                           Navigator.pop(context);
+                          try{
+                            Navigator.pop(ConnectToChannel.jamRoomContext);
+                          }catch(e){
+
+                          }
                           showModalBottomSheet(
                             context: context,
                             isScrollControlled: true,

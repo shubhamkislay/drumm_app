@@ -30,6 +30,7 @@ import 'EditBand.dart';
 import 'ShareWidget.dart';
 import 'custom/TutorialBox.dart';
 import 'custom/constants/Constants.dart';
+import 'custom/helper/connect_channel.dart';
 import 'model/Drummer.dart';
 import 'model/band.dart';
 import 'profile_page.dart';
@@ -465,6 +466,11 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                         });
 
                         Navigator.pop(context);
+                        try{
+                          Navigator.pop(ConnectToChannel.jamRoomContext);
+                        }catch(e){
+
+                        }
                         showModalBottomSheet(
                           context: context,
                           isScrollControlled: true,
