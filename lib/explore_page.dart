@@ -56,6 +56,7 @@ class _ExplorePageState extends State<ExplorePage>
   }
 
   void _scrollListener() {
+    print("${_scrollController.position.pixels}\t\t${_scrollController.position.maxScrollExtent}");
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       setState(() {

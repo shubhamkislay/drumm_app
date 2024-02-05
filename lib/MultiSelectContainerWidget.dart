@@ -51,13 +51,15 @@ class MultiSelectContainerWidget extends StatelessWidget {
       textStyles: const MultiSelectTextStyles(
         selectedTextStyle: TextStyle(
           color: Colors.black,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
           fontSize: 13,
+          wordSpacing: 0.01,
           fontFamily: APP_FONT_MEDIUM,
         ),
         textStyle: TextStyle(
           color: Colors.white,
           fontSize: 13,
+          wordSpacing: 0.01,
           //fontWeight: FontWeight.w500,
           //fontWeight: FontWeight.bold, // FontWeight.w700,
           fontFamily: APP_FONT_MEDIUM,

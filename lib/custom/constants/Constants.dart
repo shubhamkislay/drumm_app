@@ -29,10 +29,14 @@ const TUTORIAL_MESSAGE_BANDS = "A band is a community with similar interests. He
 
 
 
-const double CURVE=4;
+const double CURVE=6;
 const COLOR_BACKGROUND = COLOR_PRIMARY_DARK;
 
-List<Color> JOIN_COLOR = [Colors.indigo.shade700.withOpacity(0.85),Colors.blue.shade800.withOpacity(0.75)];
+List<Color> JOIN_COLOR = [
+  Colors.indigo.shade700.withOpacity(0.85),
+  Colors.blue.shade800.withOpacity(0.75),
+  Colors.blue.shade600,
+];
 //List<Color> EXPLORE_COLOR = [Colors.orange.shade800,Colors.red.shade800];
 // List<Color> JOIN_COLOR =[
 // Colors.indigo,

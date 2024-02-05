@@ -157,7 +157,7 @@ class _NewsFeedState extends State<NewsFeed>
   DocumentSnapshot<Map<String, dynamic>>? _lastDocument = null;
   DocumentSnapshot<Map<String, dynamic>>? _startDocument = null;
 
-  List<Color> backgroundColor = [Colors.blue.shade900.withOpacity(0.85),Colors.blue.shade900.withOpacity(0.85)];
+  List<Color> backgroundColor = JOIN_COLOR;
   // List<Color> backgroundColor = [
   //   Colors.indigo,
   //   Colors.blue.shade700,
