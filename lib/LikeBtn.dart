@@ -7,8 +7,8 @@ import 'model/article.dart';
 
 class LikeBtn extends StatefulWidget {
   Article article;
-  String queryID;
-  LikeBtn({super.key, required this.article, required this.queryID});
+  String? queryID;
+  LikeBtn({super.key, required this.article, this.queryID});
 
   @override
   State<LikeBtn> createState() => _LikeBtnState();
@@ -56,15 +56,6 @@ class _LikeBtnState extends State<LikeBtn> {
       } else {
         FirebaseDBOperations.updateLike(
             widget.article.articleId);
-        ConnectToChannel.insights
-            .convertedObjectsAfterSearch(
-          indexName: 'articles',
-          eventName: 'Liked article',
-          queryID: widget.queryID ?? 'query id',
-          objectIDs: [
-            widget.article.articleId ?? ""
-          ],
-        );
       }
       setState(() {
         if (widget.article.liked??false) {

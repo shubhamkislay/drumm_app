@@ -6,14 +6,24 @@ import 'custom/constants/Constants.dart';
 
 class JoinDrummButton extends StatelessWidget {
   CardSwiperController? controller;
-  JoinDrummButton({Key? key, required this.controller}) : super(key: key);
+  double? height;
+  double? btnPadding;
+  VoidCallback? onTap;
+  JoinDrummButton({Key? key,  this.controller, this.height, this.btnPadding, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    double iconHeight = height??38;
+    double buttonPd = btnPadding??18;
     return GestureDetector(
       onTap: () {
         //Vibrate.feedback(FeedbackType.impact);
         controller?.swipeRight();
+        try{
+          onTap!();
+        }catch(e){
+
+        }
       },
       child: Container(
         decoration: BoxDecoration(
@@ -22,7 +32,7 @@ class JoinDrummButton extends StatelessWidget {
                 color: Colors.grey.shade900,
                 width: 2.5)),
         child: Container(
-          padding: const EdgeInsets.all(18),
+          padding:  EdgeInsets.all(buttonPd),
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(42),
@@ -37,7 +47,7 @@ class JoinDrummButton extends StatelessWidget {
           ),
           child: Image.asset(
             'images/audio-waves.png',
-            height: 38,
+            height: iconHeight,
             color: Colors.white,
             fit: BoxFit.contain,
           ),

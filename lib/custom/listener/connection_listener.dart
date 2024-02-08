@@ -4,6 +4,7 @@ class ConnectionListener {
   static Function(bool,Jam,bool)? onConnectionChanged;
   static Function(bool,Jam,bool)? onConnectionChangedinRoom;
   static Function(bool,Jam,bool)? onConnectionChangedinCard;
+  static Function(bool,Jam,bool)? onConnectionChangedinVerticalHomeFeed;
   static Function(bool,int)? onJoinCallback;
   static Function(int)? onRemoteUserJoinedCallback;
   static Function(int)? onUserLeftCallback;
@@ -24,6 +25,10 @@ class ConnectionListener {
     }
     if (onConnectionChangedinCard != null) {
       onConnectionChangedinCard!(connected,jam!,open);
+      // print("onConnectionChanged is cccalled!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    }
+    if (onConnectionChangedinVerticalHomeFeed != null) {
+      onConnectionChangedinVerticalHomeFeed!(connected,jam!,open);
       // print("onConnectionChanged is cccalled!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
     else{
