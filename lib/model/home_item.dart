@@ -620,14 +620,15 @@ class _HomeFeedDataState extends State<HomeFeedData> {
 
                     GestureDetector(
                       onTap: () {
+
                         Vibrate.feedback(FeedbackType.impact);
                         widget.openArticle(widget.article);
-
                         ConnectToChannel.insights.viewedObjects(
                           indexName: 'articles',
                           eventName: 'Viewed Item',
                           objectIDs: [widget.article.articleId ?? ""],
                         );
+
                       },
                       child: Container(
                         alignment: Alignment.centerLeft,

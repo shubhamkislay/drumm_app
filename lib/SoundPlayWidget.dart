@@ -12,7 +12,13 @@ import 'model/article.dart';
 class SoundPlayWidget extends StatefulWidget {
   Article article;
   bool play;
-  SoundPlayWidget({required this.article, required this.play});
+  double? imageSize;
+  double? paddingSize;
+  Color? backgroundColor;
+  SoundPlayWidget({super.key, required this.article, required this.play,this.imageSize,
+    this.paddingSize,
+    this.backgroundColor,
+  });
 
   @override
   State<SoundPlayWidget> createState() => _SoundPlayWidgetState();
@@ -62,16 +68,16 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
         }
       },
       child: Container(
-        padding: const EdgeInsets.only(left: 0.0,right: 16),
+        padding: const EdgeInsets.only(left: 0.0,right: 0),
         alignment: Alignment.center,
         child: Container(
-          height: 28,
-          width: 28,
+          height: widget.paddingSize??28, //44
+          width: widget.paddingSize??28,
           alignment: Alignment.center,
           //padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            color: Colors.grey.shade900.withOpacity(0.85),
+            color: widget.backgroundColor??Colors.grey.shade900.withOpacity(0.85),
             border: Border.all(color: (widget.play)?Colors.white38:Colors.grey.shade900.withOpacity(0.85),width: 2)
           ),
           child:
@@ -79,16 +85,16 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
            alignment: Alignment.center,
             children: [
               if(status == "loading") SizedBox(
-                height: 26,
-                width: 26,
-                child: CircularProgressIndicator(
+                height: widget.paddingSize??26,
+                width: widget.paddingSize??26,
+                child: const CircularProgressIndicator(
                   color: Colors.white38,
                   strokeWidth: 2,
                 ),
               ),
               Image.asset(
                 (status == "playing" && widget.play) ? 'images/volume-on.png' :'images/volume-off.png',
-                height: 12,
+                height: widget.imageSize??12,//20
                 color: Colors.white,
                 fit: BoxFit.contain,
               ),

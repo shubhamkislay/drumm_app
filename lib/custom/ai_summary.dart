@@ -14,7 +14,7 @@ class AISummary {
 
     final requestBody = {
       "model": "gpt-3.5-turbo-instruct",
-      'prompt': 'Summarize the following news in less than 30 words. Remember that the total words should be less than 30. : $newsArticle',
+      'prompt': 'Summarize the following news in less than 60 words. Remember that the total words should be less than 60. : $newsArticle',
       'max_tokens': 200, // Adjust the summary length as needed
       'temperature':
           0.7, // Adjust the temperature for generating diverse responses

@@ -59,8 +59,10 @@ import 'BottomJamWindow.dart';
 import 'JoinDrummButton.dart';
 import 'LikeBtn.dart';
 import 'ShareWidget.dart';
+import 'SoundPlayWidget.dart';
 import 'SwipeBackButton.dart';
 import 'band_details_page.dart';
+import 'custom/DrummBottomDialog.dart';
 import 'custom/TutorialBox.dart';
 import 'custom/ai_summary.dart';
 import 'custom/bottom_sheet.dart';
@@ -70,6 +72,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'model/ZoomPicture.dart';
 import 'model/article_band.dart';
+import 'model/home_item.dart';
 
 String getCurrentUserID() {
   final User? user = FirebaseAuth.instance.currentUser;
@@ -184,7 +187,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
 
   ArticleBand? articleOnTop = ArticleBand();
 
-  double borderCurve = 14;
+  double borderCurve = 18;
 
   @override
   Widget build(BuildContext context) {
@@ -201,7 +204,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                     Expanded(
                       child: Container(
 
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             color: Colors.black,
                           borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(24),
@@ -211,135 +214,149 @@ class HomeFeedPageState extends State<HomeFeedPage>
                         child: getNewsArticles(), //listDemoVertical()),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 8,
                     ),
                     SafeArea(
                       top: false,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ArticleDrummButton(
-                              articleOnScreen: articleOnTop?.article??Article()),
-                          const SizedBox(width: 32),
-                          if(!showCurrentDrummWidget)  JoinDrummButton(btnPadding: 12,height: 38,
-                            onTap: (){
-                              Vibrate.feedback(FeedbackType.selection);
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return TutorialBox(
-                                    boxType: BOX_TYPE_CONFIRM,
-                                    sharedPreferenceKey: CONFIRM_JOIN_SHARED_PREF,
-                                    tutorialImageAsset: "images/audio-waves.png",
-                                    tutorialMessage: TUTORIAL_MESSAGE_JOIN,
-                                    tutorialMessageTitle: TUTORIAL_MESSAGE_JOIN_TITLE,
-                                    onConfirm: (){
-                                      ArticleBand? articleBand = ArticleBand();
-                                      articleBand = articleOnTop;
-                                      Vibrate.feedback(FeedbackType.success);
-                                      joinOpenDrumm(articleBand??ArticleBand());
-                                    },
-                                    onCancel: (){
-
-                                    },
-                                  );
-                                },
-                              );
-                            },),
-                          if(showCurrentDrummWidget) GestureDetector(
-                            onTap: (){
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.grey.shade900,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(0.0)),
-                                ),
-                                builder: (BuildContext context) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                        bottom:
-                                        MediaQuery.of(context).viewInsets.bottom),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(0.0)),
-                                      child: JamRoomPage(
-                                        jam: currentJam,
-                                        open: openDrumm,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            child: Container(
+                      right: false,
+                      left: false,
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SoundPlayWidget(
+                              article: articleOnTop?.article??Article(),
+                              backgroundColor:COLOR_BACKGROUND,
+                              imageSize: 18,
+                              paddingSize: 46,
+                              play: false,
+                            ),
+                            Container(
+                              height: 46,
+                              width: 46,
+                              padding: const EdgeInsets.all(2),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(64),
-                                border: Border.all(color: Colors.white,width: 2.5),
+                                color: COLOR_BACKGROUND,
+                                borderRadius: BorderRadius.circular(44),
+                                border: Border.all(color: Colors.grey.shade900,width: 2.5)
                               ),
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.all(2.5),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(56),
-                                      child: CachedNetworkImage(
-                                        imageUrl: currentJam.imageUrl ?? "",
-                                        fit: BoxFit.cover,
-                                        height: 56,
-                                        width: 56,
-                                        errorWidget: (context, url, error) =>
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(42),),
-                                              child: Container(
-                                                padding:  EdgeInsets.all(8),
-                                                margin: const EdgeInsets.all(2),
+                              child: ArticleDrummButton(
+                                iconSize: 44,
+                                  articleOnScreen: articleOnTop?.article??Article()),
+                            ),
+                            if(!showCurrentDrummWidget)  JoinDrummButton(btnPadding: 12,height: 38,
+                              onTap: (){
+                                drumJoinDialog();
+                              },),
+                            if(showCurrentDrummWidget) GestureDetector(
+                              onTap: (){
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.grey.shade900,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(0.0)),
+                                  ),
+                                  builder: (BuildContext context) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                          bottom:
+                                          MediaQuery.of(context).viewInsets.bottom),
+                                      child: ClipRRect(
+                                        borderRadius: const BorderRadius.vertical(
+                                            top: Radius.circular(0.0)),
+                                        child: JamRoomPage(
+                                          jam: currentJam,
+                                          open: openDrumm,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(64),
+                                  border: Border.all(color: Colors.white,width: 2.5),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.all(2.5),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(56),
+                                        child: CachedNetworkImage(
+                                          imageUrl: currentJam.imageUrl ?? "",
+                                          fit: BoxFit.cover,
+                                          height: 56,
+                                          width: 56,
+                                          errorWidget: (context, url, error) =>
+                                              Container(
                                                 decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(42),
-                                                  color: Colors.transparent,
-                                                  //gradient: LinearGradient(colors: JOIN_COLOR),
-                                                ),
-                                                child: Image.asset(
-                                                  'images/audio-waves.png',
-                                                  height: iconHeight,
-                                                  color: Colors.white,
-                                                  fit: BoxFit.contain,
+                                                    borderRadius: BorderRadius.circular(42),),
+                                                child: Container(
+                                                  padding:  const EdgeInsets.all(8),
+                                                  margin: const EdgeInsets.all(2),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(42),
+                                                    color: Colors.transparent,
+                                                    //gradient: LinearGradient(colors: JOIN_COLOR),
+                                                  ),
+                                                  child: Image.asset(
+                                                    'images/audio-waves.png',
+                                                    height: iconHeight,
+                                                    color: Colors.white,
+                                                    fit: BoxFit.contain,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(42),),
-                                    child: Container(
-                                      padding:  EdgeInsets.all(8),
-                                      margin: const EdgeInsets.all(2),
+                                    Container(
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(42),
-                                        color: Colors.transparent,
-                                        //gradient: LinearGradient(colors: JOIN_COLOR),
-                                      ),
-                                      child: Image.asset(
-                                        'images/audio-waves.png',
-                                        height: iconHeight-12,
-                                        color: Colors.white.withOpacity(0.35),
-                                        fit: BoxFit.contain,
+                                        borderRadius: BorderRadius.circular(42),),
+                                      child: Container(
+                                        padding:  const EdgeInsets.all(8),
+                                        margin: const EdgeInsets.all(2),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(42),
+                                          color: Colors.transparent,
+                                          //gradient: LinearGradient(colors: JOIN_COLOR),
+                                        ),
+                                        child: Image.asset(
+                                          'images/audio-waves.png',
+                                          height: iconHeight-12,
+                                          color: Colors.white.withOpacity(0.35),
+                                          fit: BoxFit.contain,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 32),
-                          LikeBtn(
-                              article: Article()),
-                        ],
+                            LikeBtn(
+                                article: Article()),
+                            Container(
+                              height: 46,
+                              width: 46,
+                              decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(44),
+                                  border: Border.all(color: Colors.grey.shade900,width: 2.5)
+                              ),
+                              child: ShareWidget(
+                                article: articleOnTop?.article??Article(),
+                                backgroundColor: COLOR_BACKGROUND,
+                                iconHeight: 22,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     )
                   ],
@@ -978,6 +995,12 @@ class HomeFeedPageState extends State<HomeFeedPage>
                           articleOnTop = articles?.elementAt(value);
                         });
 
+                        try{
+                          FirebaseDBOperations.OggOpus_Player.pause();
+                        }catch(e){
+
+                        }
+
                         // print(
                         //     "Page Changed/////////////////////// ${artcls?.elementAt(value).question}");
                         // if (autoJoinDrumms && !widget.userConnected) {
@@ -1054,23 +1077,24 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                 width: double.maxFinite,
                               ).frosted(
                                   blur: 50,
-                                  frostOpacity: 0.35,
+                                  frostOpacity: 0.075,
                                   frostColor: Colors.grey.shade900),
                               Column(
                                 children: [
                                   Expanded(
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                                      padding: const EdgeInsets.symmetric(horizontal: 16),
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
-                                          SizedBox(height: 48,),
+                                          const SizedBox(height: 48,),
                                           SafeArea(
                                             bottom: false,
                                             child: FadeInContainer(
                                               child: AutoSizeText(
-                                                artcls?.elementAt(index).article?.title ?? "",
+                                                unescape.convert(artcls?.elementAt(index).article?.title ?? ""),
                                                 textAlign: TextAlign.start,
+                                                maxLines: 4,
                                                 style: const TextStyle(
                                                   color: Colors.white,
                                                   fontFamily: APP_FONT_MEDIUM,
@@ -1082,7 +1106,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                           ),
                                           Container(
                                             alignment: Alignment.centerLeft,
-                                            margin: const EdgeInsets.only(top: 8,bottom: 8),
+                                            margin: const EdgeInsets.only(top: 8,bottom: 12),
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
@@ -1124,9 +1148,9 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                                             url: artcls?.elementAt(index).article?.imageUrl ??
                                                                 "https://placekitten.com/640/360"),
                                                     transitionDuration:
-                                                    Duration(seconds: 0),
+                                                    const Duration(seconds: 0),
                                                     reverseTransitionDuration:
-                                                    Duration(seconds: 0),
+                                                    const Duration(seconds: 0),
                                                   ),
                                                 );
                                               },
@@ -1174,36 +1198,46 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                               openArticlePage(artcls?.elementAt(index).article,index);
                                             },
                                             child: Container(
-                                              padding: EdgeInsets.symmetric(vertical: 12,horizontal: borderCurve),
+                                              padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 8),
                                               margin: const EdgeInsets.symmetric(vertical: 12),
                                               width: double.maxFinite,
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(borderCurve),
-                                                color: Colors.white.withOpacity(0.1),
+                                                color: Colors.white.withOpacity(0.05),
                                               ),
-                                              child: ExpandableText(
-                                                (artcls?.elementAt(index).article?.source?.toLowerCase() ==
-                                                    'youtube')
-                                                    ? artcls?.elementAt(index).article?.title ?? "Read Article"
-                                                    : (artcls?.elementAt(index).article?.description != null)
-                                                    ? artcls?.elementAt(index).article?.description ?? "Read Article"
-                                                    : (artcls?.elementAt(index).article?.content != null)
-                                                    ? artcls?.elementAt(index).article?.content ?? "Read Article"
-                                                    : "Read Article",
-                                                textAlign: TextAlign.left,
-                                                maxLines: 3,
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  //overflow: TextOverflow.ellipsis,
-                                                  color: Colors.white70,
-                                                  fontFamily: APP_FONT_LIGHT,
-                                                ),
-                                                expandText: 'Read Article',
-                                                linkColor: Colors.white,
-                                                linkEllipsis: true,
-                                                onLinkTap: (){
-                                                  openArticlePage(artcls?.elementAt(index).article,index);
-                                                },
+                                              child: Row(
+                                                children: [
+                                                  const SizedBox(width:8,),
+                                                  Container(
+                                                    padding: const EdgeInsets.all(4),
+                                                    child: Image.asset(
+                                                        'images/link.png',
+                                                        height: 22,
+                                                        color: Colors.white,
+                                                        fit: BoxFit.contain),
+                                                  ),
+                                                  const SizedBox(width: 10,),
+                                                  Flexible(
+                                                    child: Text(
+                                                      (artcls?.elementAt(index).article?.source?.toLowerCase() ==
+                                                          'youtube')
+                                                          ? artcls?.elementAt(index).article?.title ?? "Read Article"
+                                                          : (artcls?.elementAt(index).article?.description != null)
+                                                          ? artcls?.elementAt(index).article?.description ?? "Read Article"
+                                                          : (artcls?.elementAt(index).article?.content != null)
+                                                          ? artcls?.elementAt(index).article?.content ?? "Read Article"
+                                                          : "Read Article",
+                                                      textAlign: TextAlign.left,
+                                                      maxLines: 2,
+                                                      style: const TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.white,
+                                                        fontFamily: APP_FONT_LIGHT,
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ),
@@ -1223,10 +1257,10 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                       width: double.maxFinite,
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8, vertical: 8),
-                                      margin: EdgeInsets.fromLTRB(12, 0, 12, 12),
+                                      margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                                       alignment: Alignment.centerLeft,
                                       decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(0.1),
+                                        color: Colors.white.withOpacity(0.05),
                                         borderRadius: BorderRadius.circular(borderCurve),
                                         //color: Colors.transparent,
                                         // borderRadius: BorderRadius.only(
@@ -1238,7 +1272,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          SizedBox(width:6,),
+                                          const SizedBox(width:6,),
                                           Container(
                                             padding: const EdgeInsets.all(4),
                                             child: Image.asset(
@@ -1247,18 +1281,18 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                                 color: Colors.white,
                                                 fit: BoxFit.contain),
                                           ),
-                                          SizedBox(width: 6,),
+                                          const SizedBox(width: 6,),
                                           Expanded(
                                             child: Container(
                                               // height: questionHeight,
                                               alignment: Alignment.centerLeft,
                                               padding: const EdgeInsets.symmetric(
                                                   vertical: 4, horizontal: 4),
-                                              child: Text(
+                                              child: const Text(
                                                 "Summarize the article" ??
                                                     "",
                                                 textAlign: TextAlign.left,
-                                                style: const TextStyle(
+                                                style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 14,
                                                   fontFamily: APP_FONT_BOLD,
@@ -1272,55 +1306,60 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                     ),
                                   ),
                                   if (artcls?.elementAt(index).article?.question != null)
-                                    Container(
-                                      width: double.maxFinite,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 8),
-                                      margin: EdgeInsets.fromLTRB(12, 0, 12, 12),
-                                      alignment: Alignment.centerLeft,
-                                      decoration: BoxDecoration(
-                                        //color: Colors.blue,//s.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(borderCurve),
-                                        //color: Colors.transparent,
-                                        // borderRadius: BorderRadius.only(
-                                        //   topLeft: Radius.circular(CURVE),
-                                        //   topRight: Radius.circular(CURVE),
-                                        // ),
-                                        gradient: LinearGradient(colors: JOIN_COLOR),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          SizedBox(width:6,),
-                                        Container(
-                                          padding: const EdgeInsets.all(4),
-                                          child: Image.asset(
-                                              'images/audio-waves.png',
-                                              height: 24,
-                                              color: Colors.white,
-                                              fit: BoxFit.contain),
+                                    GestureDetector(
+                                      onTap: (){
+                                        drumJoinDialog();
+                                      },
+                                      child: Container(
+                                        width: double.maxFinite,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 8),
+                                        margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                                        alignment: Alignment.centerLeft,
+                                        decoration: BoxDecoration(
+                                          //color: Colors.blue,//s.withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(borderCurve),
+                                          //color: Colors.transparent,
+                                          // borderRadius: BorderRadius.only(
+                                          //   topLeft: Radius.circular(CURVE),
+                                          //   topRight: Radius.circular(CURVE),
+                                          // ),
+                                          gradient: LinearGradient(colors: JOIN_COLOR),
                                         ),
-                                          SizedBox(width: 6,),
-                                          Expanded(
-                                            child: Container(
-                                              // height: questionHeight,
-                                              alignment: Alignment.centerLeft,
-                                              padding: const EdgeInsets.symmetric(
-                                                  vertical: 4, horizontal: 4),
-                                              child: Text(
-                                                "\"${artcls?.elementAt(index).article?.question ?? ""}\"" ??
-                                                    "",
-                                                textAlign: TextAlign.left,
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 14,
-                                                    fontFamily: APP_FONT_BOLD,
-                                                    //fontWeight: FontWeight.w400
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            const SizedBox(width:6,),
+                                          Container(
+                                            padding: const EdgeInsets.all(4),
+                                            child: Image.asset(
+                                                'images/audio-waves.png',
+                                                height: 24,
+                                                color: Colors.white,
+                                                fit: BoxFit.contain),
+                                          ),
+                                            const SizedBox(width: 6,),
+                                            Expanded(
+                                              child: Container(
+                                                // height: questionHeight,
+                                                alignment: Alignment.centerLeft,
+                                                padding: const EdgeInsets.symmetric(
+                                                    vertical: 4, horizontal: 4),
+                                                child: Text(
+                                                  unescape.convert("\"${artcls?.elementAt(index).article?.question ?? ""}\"" ??
+                                                      ""),
+                                                  textAlign: TextAlign.left,
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14,
+                                                      fontFamily: APP_FONT_BOLD,
+                                                      //fontWeight: FontWeight.w400
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                 ],
@@ -1651,7 +1690,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
 
 
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    //WidgetsBinding.instance.addObserver(this);
     initToken();
     _lastRefreshTime = DateTime.now();
     refreshFeed();
@@ -1671,13 +1710,13 @@ class HomeFeedPageState extends State<HomeFeedPage>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      // Your code to react to app coming to the foreground in the HomeFeed widget
-      _checkAndScheduleRefresh();
-    } else {
-      refreshList = true;
-      _stopRefreshTimer(); // Stop the timer when the app goes to the background
-    }
+    // if (state == AppLifecycleState.resumed) {
+    //   // Your code to react to app coming to the foreground in the HomeFeed widget
+    //   _checkAndScheduleRefresh();
+    // } else {
+    //   refreshList = true;
+    //   _stopRefreshTimer(); // Stop the timer when the app goes to the background
+    // }
   }
 
   void _checkAndScheduleRefresh() {
@@ -1814,7 +1853,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
   }
 
   void openArticlePage(Article? article, int index) async {
-    var returnData = await Navigator.push<ArticleBand?>(
+    var returnData = await Navigator.push<Article?>(
       context,
       MaterialPageRoute(
         builder: (context) => OpenArticlePage(
@@ -1822,7 +1861,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
         ),
       ),
     );
-    articles[index] = returnData!;
+    articles.elementAt(index).article = returnData!;
     _articlesController.add(articles);
     // print("Return Data ${returnData?.liked}");
   }
@@ -1948,5 +1987,36 @@ class HomeFeedPageState extends State<HomeFeedPage>
         drummer = value;
       });
     });
+  }
+
+  void drumJoinDialog() {
+    Vibrate.feedback(FeedbackType.selection);
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        // return TutorialBox(
+        //   boxType: BOX_TYPE_CONFIRM,
+        //   sharedPreferenceKey: CONFIRM_JOIN_SHARED_PREF,
+        //   tutorialImageAsset: "images/audio-waves.png",
+        //   tutorialMessage: TUTORIAL_MESSAGE_JOIN,
+        //   tutorialMessageTitle: TUTORIAL_MESSAGE_JOIN_TITLE,
+        //   onConfirm: (){
+        //     ArticleBand? articleBand = ArticleBand();
+        //     articleBand = articleOnTop;
+        //     Vibrate.feedback(FeedbackType.success);
+        //     joinOpenDrumm(articleBand??ArticleBand());
+        //   },
+        //   onCancel: (){
+        //
+        //   },
+        // );
+        return DrummBottomDialog(articleBand: articleOnTop, startDrumming: () {
+          ArticleBand? articleBand = ArticleBand();
+          articleBand = articleOnTop;
+          Vibrate.feedback(FeedbackType.success);
+          joinOpenDrumm(articleBand??ArticleBand());
+        },);
+      },
+    );
   }
 }

@@ -32,7 +32,7 @@ class TutorialBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String confirmMsg = confirmMessage ??"Let's Go";
-    Color confirmClr= confirmColor??Colors.blue.shade900;
+    Color confirmClr= confirmColor??Colors.blue.shade800;
     if(autoUpdate??false) {
       print("AutoUpdating share preference");
       updateSharedPreference();
@@ -75,7 +75,7 @@ class TutorialBox extends StatelessWidget {
             padding:
             const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
             decoration: BoxDecoration(
-                color: COLOR_PRIMARY_DARK,
+                color: Colors.white.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(24)),
             child: const Text(
               "Not now",
@@ -101,6 +101,7 @@ class TutorialBox extends StatelessWidget {
             const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
             decoration: BoxDecoration(
                 color: confirmClr,
+                //gradient: LinearGradient(colors: JOIN_COLOR),
                 borderRadius: BorderRadius.circular(24)),
             child:  Text(confirmMsg,
               style: const TextStyle(

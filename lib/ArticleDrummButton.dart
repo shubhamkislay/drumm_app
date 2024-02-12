@@ -7,13 +7,14 @@ import 'custom/rounded_button.dart';
 
 class ArticleDrummButton extends StatelessWidget {
   Article articleOnScreen;
-  ArticleDrummButton({Key? key,required this.articleOnScreen}) : super(key: key);
+  double? iconSize;
+  ArticleDrummButton({Key? key,required this.articleOnScreen, this.iconSize}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return RoundedButton(
       padding: 10,
-      height: 52,
+      height: iconSize??52,
       color: Colors.white,
       bgColor: Colors.transparent,
       onPressed: () {

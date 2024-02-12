@@ -397,7 +397,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                                   tutorialImageAsset: "images/audio-waves.png",
                                   tutorialMessage: LEAVE_DRUMM_CONFIRMATION,
                                   tutorialMessageTitle: LEAVE_DRUMM_TITLE,
-                                  confirmColor: Colors.red,
+                                  confirmColor: Colors.red.shade800,
                                   confirmMessage: "Confirm",
                                   onConfirm: () {
                                     ConnectToChannel.leaveChannel();
