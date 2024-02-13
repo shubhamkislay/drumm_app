@@ -110,7 +110,7 @@ class _LauncherPageState extends State<LauncherPage>
   @override
   Widget build(BuildContext context) {
     tabController = TabController(
-        length: 5, vsync: this, animationDuration: const Duration(milliseconds: 0));
+        length: 3, vsync: this, animationDuration: const Duration(milliseconds: 0));
     FirebaseDBOperations.searchArticles("",0);
     return Scaffold(
       backgroundColor: COLOR_BACKGROUND,
@@ -139,10 +139,10 @@ class _LauncherPageState extends State<LauncherPage>
                           const NeverScrollableScrollPhysics(), //const BouncingScrollPhysics(),
                       children: [
                         DiscoverHome(),//const NewsFeed(),
-                        ExplorePage(),
+                        //ExplorePage(),
                         SwipePage(),
                         BandSearchPage(),
-                        UserProfilePage(),
+                        //UserProfilePage(),
                         //CustomSwiper(),
 
                       ],

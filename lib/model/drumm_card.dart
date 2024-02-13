@@ -33,114 +33,119 @@ class DrummCard extends StatefulWidget {
 }
 
 class _DrummCardState extends State<DrummCard> {
+  double curve = 20;
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(CURVE),
-      child: Container(
-        width: 100,
-        height: 200,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.grey.shade900,
-              Colors.grey.shade900
-            ]
-          )
-        ),
-        padding: EdgeInsets.all(2),
-        child: GestureDetector(
-          onTap: () {
-            //Navigator.pop(context);
-            if(widget.jamCallback!=null)
-              widget.jamCallback!(widget.jam);
+      borderRadius: BorderRadius.circular(curve),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Container(
+          width: 100,
+          height: 200,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(curve),
+            gradient: LinearGradient(
+              colors: [
+                Colors.grey.shade900,
+                Colors.grey.shade900
+              ]
+            )
+          ),
+          padding: EdgeInsets.all(2),
+          child: GestureDetector(
+            onTap: () {
+              //Navigator.pop(context);
+              if(widget.jamCallback!=null)
+                widget.jamCallback!(widget.jam);
 
-            //Navigator.pop(context);
-            joinDrumm();
+              //Navigator.pop(context);
+              joinDrumm();
 
-          },
-          child: Container(
-            padding: EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(CURVE-2),
-              color: Colors.black,
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(CURVE-4),
-              child: Stack(
-                children: [
-                  CachedNetworkImage(
-                    height: double.maxFinite,
-                      width: double.maxFinite,
-                      placeholder: (context, url) => Container(color: Colors.grey.shade900,),
-                      errorWidget: (context,url,error) => Container(color: COLOR_PRIMARY_DARK,),
-                      imageUrl: widget.jam.imageUrl ?? "", fit: BoxFit.cover),
-                  Container(
-                    alignment: Alignment.bottomLeft,
-                    padding: EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            end: Alignment.bottomCenter,
-                            begin: Alignment.topCenter,
-                            colors: [
-                              // Colors.grey.shade900.withOpacity(0.75),
-                              Colors.transparent,
-                              //Colors.black87,
-                              Colors.grey.shade900
-                              //RandomColorBackground.generateRandomVibrantColor()
-                                  .withOpacity(0.85),
-                            ]
-                        )
-                    ),
-                    //RandomColorBackground.generateRandomVibrantColor().withOpacity(0.55),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Wrap(
-                          children: [
-                           if(false) Container(
-                              padding: EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.grey.shade700.withOpacity(0.75)
+            },
+            child: Container(
+              padding: EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(curve-2),
+                color: Colors.black,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(curve-4),
+                child: Stack(
+                  children: [
+                    CachedNetworkImage(
+                      height: double.maxFinite,
+                        width: double.maxFinite,
+                        placeholder: (context, url) => Container(color: Colors.grey.shade900,),
+                        errorWidget: (context,url,error) => Container(color: COLOR_PRIMARY_DARK,),
+                        imageUrl: widget.jam.imageUrl ?? "", fit: BoxFit.cover),
+                    Container(
+                      alignment: Alignment.bottomLeft,
+                      padding: EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              end: Alignment.bottomCenter,
+                              begin: Alignment.topCenter,
+                              colors: [
+                                // Colors.grey.shade900.withOpacity(0.75),
+                                Colors.transparent,
+                                //Colors.black87,
+                                Colors.grey.shade900
+                                //RandomColorBackground.generateRandomVibrantColor()
+                                    .withOpacity(0.85),
+                              ]
+                          )
+                      ),
+                      //RandomColorBackground.generateRandomVibrantColor().withOpacity(0.55),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Wrap(
+                            children: [
+                             if(false) Container(
+                                padding: EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.grey.shade700.withOpacity(0.75)
+                                ),
+                                child: AutoSizeText(
+                                  "${widget.jam.count} joined",
+                                  textAlign: TextAlign.left,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  minFontSize: 8,
+                                  style: TextStyle(
+                                      fontSize: 8,
+                                      //fontWeight: FontWeight.bold,
+                                      fontFamily: APP_FONT_MEDIUM,
+                                      color: Colors.white),
+                                ),
                               ),
-                              child: AutoSizeText(
-                                "${widget.jam.count} joined",
-                                textAlign: TextAlign.left,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                                minFontSize: 8,
-                                style: TextStyle(
-                                    fontSize: 8,
-                                    //fontWeight: FontWeight.bold,
-                                    fontFamily: APP_FONT_MEDIUM,
-                                    color: Colors.white),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: AutoSizeText(widget.jam.title??"",
-                            textAlign: TextAlign.left,
-                            overflow: TextOverflow.ellipsis,
-                            maxFontSize: 14,
-                            maxLines: 3,
-                            minFontSize: 8,
-
-                            style: TextStyle(
-                                overflow: TextOverflow.ellipsis,
-
-                                fontFamily: APP_FONT_MEDIUM,
-                                //fontWeight: FontWeight.bold,
-                                color: Colors.white),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
+                          Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: AutoSizeText(widget.jam.title??"",
+                              textAlign: TextAlign.left,
+                              overflow: TextOverflow.ellipsis,
+                              maxFontSize: 14,
+                              maxLines: 3,
+                              minFontSize: 8,
+
+                              style: TextStyle(
+                                  overflow: TextOverflow.ellipsis,
+
+                                  fontFamily: APP_FONT_MEDIUM,
+                                  //fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),

@@ -4,8 +4,10 @@ import '../theme/theme_constants.dart';
 
 class InstagramDateTimeWidget extends StatelessWidget {
   final String publishedAt;
+  double? textSize;
+  FontWeight? fontWeight;
 
-  const InstagramDateTimeWidget({required this.publishedAt});
+  InstagramDateTimeWidget({required this.publishedAt, this.textSize, this.fontWeight});
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +18,9 @@ class InstagramDateTimeWidget extends StatelessWidget {
       formattedDateTime,
       textAlign: TextAlign.end,
       style: TextStyle(
-        fontSize: 12,
+        fontSize: textSize??12,
         fontFamily: APP_FONT_MEDIUM,
+        fontWeight: fontWeight??FontWeight.normal,
         color: Colors.white.withOpacity(0.8),
       ),
     );

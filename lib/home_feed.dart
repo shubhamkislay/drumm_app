@@ -1952,7 +1952,9 @@ class HomeFeedPageState extends State<HomeFeedPage>
     FirebaseDBOperations.addMemberToJam(aBand.article?.jamId ?? "",
         FirebaseAuth.instance.currentUser?.uid ?? "", true)
         .then((value) {
+      print("Added the member ${value}");
       if (!value) {
+        print("Creating drumm///////////////////////////////////////");
         FirebaseDBOperations.createOpenDrumm(jam);
       }
 

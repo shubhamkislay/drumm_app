@@ -615,10 +615,16 @@ class FirebaseDBOperations {
     //if (fetchedBands.isEmpty)
       fetchedBands = await FirebaseDBOperations.getBandByUser();
 
+    DateTime currentTime = DateTime.now();
+
+    // Calculate the time one minute ago
+    DateTime oneMinuteAgo = currentTime.subtract(Duration(minutes: 1));
+
 
       List bandCategoryList = [];
     for (Band band in fetchedBands) {
-      bandCategoryList.addAll(band.hooks as Iterable );
+      //print("${band.name}");
+      bandCategoryList.add(band.bandId);
     }
     if (bandCategoryList.isEmpty) return [];
 
@@ -626,17 +632,22 @@ class FirebaseDBOperations {
         .collection('openDrumm')
         .where('bandId', whereIn: bandCategoryList)
         .where('broadcast', isEqualTo: false)
+        .where('lastActive', isGreaterThanOrEqualTo: Timestamp.fromDate(oneMinuteAgo))
+        //.where('lastActive', isLessThanOrEqualTo: Timestamp.fromDate(currentTime))
         // .where('count', isGreaterThan: 0)
         .get();
 
     List<Jam> fetchedList =
         List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+
+    print("Jams list size ${fetchedList.length} ///////////////////////// ");
     List<Jam> filterList = [];
     for (Jam jam in fetchedList) {
-      if (isTimestampWithin1Minute(jam.lastActive ?? Timestamp.now())) {
+      //if (isTimestampWithin1Minute(jam.lastActive ?? Timestamp.now())) {
         filterList.add(jam);
-      }
+      //}
     }
+    print("Filtered list size ${filterList.length} ///////////////////////// ");
 
     return filterList;
   }

@@ -19,7 +19,7 @@ class _BottomTabBarState extends State<BottomTabBar> {
   int currentPage = 0;
   Color disableColor =
       Colors.white;
-  double tabsWidthDivision = 8.5;
+  double tabsWidthDivision = 4;// for 5 tabs 8.5;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -52,13 +52,15 @@ class _BottomTabBarState extends State<BottomTabBar> {
                   color: currentPage == 0
                       ? Colors.white
                       :disableColor,
-                  width: 24,
+                  width: 30,
                   currentPage == 0
-                      ? "images/hut_btn_active.png"
-                      : "images/hut_btn.png",
-                  height: 24),
+                      ? "images/discover_home_active.png"
+                      : "images/discover_home_inactive.png",
+                      // ? "images/hut_btn_active.png"
+                      // : "images/hut_btn.png",
+                  height: 30),
             ),
-            Container(
+           if(false) Container(
               //height: 26,
               width: MediaQuery.of(context).size.width /
                   tabsWidthDivision,
@@ -66,11 +68,12 @@ class _BottomTabBarState extends State<BottomTabBar> {
                 color: (currentPage == 1)
                     ? Colors.white
                     : disableColor,
-                width: 30,
+                width: 32,
+                height: 32,
                 currentPage == 1
-                    ? "images/discovery_tapped.png"
-                    : "images/discovery.png",
-                height: 30,
+                    ? "images/discover_home_active.png"
+                    : "images/discover_home_inactive.png",
+
                 fit: BoxFit.contain,
               ),
             ),
@@ -102,21 +105,21 @@ class _BottomTabBarState extends State<BottomTabBar> {
               //     vertical: iconPadding, horizontal: iconPadding),
               child: Image.asset(
                   alignment: Alignment.bottomCenter,
-                  color: (currentPage == 3)
+                  color: (currentPage == 2)
                       ? Colors.white
                       : disableColor,
-                  width: 32,
-                  currentPage == 3
+                  width: 34,
+                  currentPage == 2
                       ? "images/team_active.png"
                       : "images/team_inactive.png",
-                  height: 32),
+                  height: 34),
             ),
-            UserProfileIcon(),
+           if(false) UserProfileIcon(),
           ],
           onTap: (index) {
             Vibrate.feedback(FeedbackType.selection);
             if (index !=
-                2 //2 This should be 2 for Wave Mode. Currently it's commented
+                1 //2 This should be 2 for Wave Mode. Currently it's commented
             ) {
               setState(() {
               if (currentPage == 0 && index == 0) {

@@ -53,6 +53,7 @@ import 'custom/TutorialBox.dart';
 import 'custom/constants/Constants.dart';
 import 'custom/create_jam_bottom_sheet.dart';
 import 'custom/helper/image_uploader.dart';
+import 'custom/instagram_date_time_widget.dart';
 import 'custom/rounded_button.dart';
 import 'custom/transparent_slider.dart';
 import 'jam_room_page.dart';
@@ -95,7 +96,7 @@ class _DiscoverHomeState extends State<DiscoverHome>
   late MultiSelectContainerWidget multiSelectContainer;
   List<MultiSelectCard<dynamic>> bandsCards = [];
   Drummer drummer = Drummer();
-  double horizontalPadding = 6;
+  double horizontalPadding = 10;
   List<ArticleImageCard> articleCards = [];
   late String loadingAnimation;
   final String LOADING_ASSET = "images/pulse_white.json";
@@ -239,13 +240,16 @@ class _DiscoverHomeState extends State<DiscoverHome>
                               children: [
                                 Container(
                                   padding:
-                                  const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                                  const EdgeInsets.symmetric(vertical: 9, horizontal: 16),
                                   decoration: BoxDecoration(
                                       color: Colors.grey.shade900,
                                       //border: Border.all(color: Colors.grey.shade900),
                                       borderRadius: BorderRadius.circular(16)),
                                   child: Row(
-                                    children: const [Icon(Icons.search), Text("Search drumms")],
+                                    children:  [
+                                      Image.asset("images/search_button.png",color: Colors.white38,width: 16),
+                                      SizedBox(width: 8,),
+                                      Text("Search drumms",style: TextStyle(color: Colors.white38),)],
                                   ),
                                 ),
                               ],
@@ -283,14 +287,16 @@ class _DiscoverHomeState extends State<DiscoverHome>
                             ),
                           ),
                           const SizedBox(
-                            height: 16,
+                            height: 12,
                           ),
                           Container(
-                            height: 200,
+                            height: 225,
+
                             child: PageView(
                               scrollDirection: Axis.horizontal,
                               //shrinkWrap: true,
                               children: drummCards,
+
                               //itemCount: drummCards.length,
 
 
@@ -346,10 +352,34 @@ class _DiscoverHomeState extends State<DiscoverHome>
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                             width: double.maxFinite,
-                            child: Text(
-                              "What's new",
-                              style:
-                              TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                            child: Row(
+                              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "What's new",
+                                  style:
+                                  TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                                ),
+                                Expanded(child: Container()),
+                                if(articleBands.isNotEmpty)
+                                  Icon(Icons.refresh_rounded,size: 16,color: Colors.white54),
+                                SizedBox(width: 2,),
+                                if(articleBands.isNotEmpty)
+                                Text(
+                                  "Last Updated",
+                                  style:
+                                  TextStyle( fontSize: 13,color: Colors.white54),
+                                ),
+                                SizedBox(width: 6,),
+                                if(articleBands.isNotEmpty)
+                                InstagramDateTimeWidget(
+                                  fontWeight: FontWeight.w700,
+                                  textSize: 13,
+                                    publishedAt: articleBands
+                                        ?.elementAt(0).article?.publishedAt.toString() ??
+                                        ""),
+                              ],
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -367,12 +397,12 @@ class _DiscoverHomeState extends State<DiscoverHome>
                             GridView.custom(
                               shrinkWrap: true,
                               //controller: _scrollController,
-                              padding: EdgeInsets.symmetric(horizontal: horizontalPadding+2),
+                              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                               physics: NeverScrollableScrollPhysics(),
                               gridDelegate: SliverQuiltedGridDelegate(
                                 crossAxisCount: 3,
-                                mainAxisSpacing: 8,
-                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 7,
+                                crossAxisSpacing: 7,
                                 repeatPattern: QuiltedGridRepeatPattern.inverted,
                                 pattern: [
                                   //grid 1
@@ -875,207 +905,6 @@ class _DiscoverHomeState extends State<DiscoverHome>
     }
   }
 
-  bool _onSwipe(
-    int previousIndex,
-    int? currentIndex,
-    CardSwiperDirection direction,
-  ) {
-    //return true;
-    if (direction == CardSwiperDirection.bottom) return false;
-
-    if (direction == CardSwiperDirection.top) {
-      openArticlePage(
-          articleBands.elementAt(previousIndex).article ?? Article());
-      return false;
-    }
-
-    undoIndex = currentIndex ?? 0;
-    try {
-      //audioPlayer.stop();
-      FirebaseDBOperations.OggOpus_Player.pause();
-      FirebaseDBOperations.OggOpus_Player.dispose();
-    } catch (e) {}
-    cleanCache();
-
-    /**
-     * Initialise and refersh youtube controller
-     */
-    if (currentIndex != null) {
-      articleTop =
-          articleBands.elementAt(currentIndex).article?.articleId ?? "";
-      Article article =
-          articleBands.elementAt(currentIndex).article ?? Article();
-      print("onSwipe item ${article.title}");
-
-      if (currentIndex == articleBands.length - 1) {
-        youtubePlayerController = YoutubePlayerController(
-          initialVideoId:
-              YoutubePlayer.convertUrlToId(article?.url ?? "") ?? "",
-          flags: const YoutubePlayerFlags(
-            autoPlay: true,
-            mute: false,
-            loop: true,
-            hideThumbnail: false,
-            controlsVisibleAtStart: false,
-          ),
-        );
-      } else {
-        playYoutubeVideo(article);
-      }
-
-      setState(() {
-        topIndex = currentIndex;
-      });
-    }
-
-    try {
-      player.dispose();
-    } catch (e) {}
-    setState(() {
-      //undoIndex = currentIndex ?? 0;
-      if (currentIndex != null) {
-        articleOnScreen =
-            articleBands.elementAt(currentIndex).article ?? Article();
-      }
-    });
-
-    try {
-      FirebaseDBOperations.updateSeen(
-          articleBands.elementAt(previousIndex).article?.articleId);
-    } catch (e) {}
-
-    if (direction == CardSwiperDirection.left) {
-      try {
-        if (showExploreArticlesAlert) {
-          Vibrate.feedback(FeedbackType.selection);
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return TutorialBox(
-                boxType: BOX_TYPE_ALERT,
-                sharedPreferenceKey: ALERT_EXPLORE_ARTICLES_SHARED_PREF,
-                tutorialImageAsset: "images/google-earth.png",
-                tutorialMessage: TUTORIAL_MESSAGE_EXPLORE,
-                onConfirm: () {
-                  showExploreArticlesAlert = false;
-                  //joinOpenDrumm(articleBands.elementAt(previousIndex));
-                  controller?.swipeLeft();
-                },
-                tutorialMessageTitle: TUTORIAL_MESSAGE_EXPLORE_TITLE,
-              );
-            },
-          );
-          return false;
-        } else {
-          getPalette(
-              articleBands.elementAt(currentIndex ?? 0).article?.imageUrl ??
-                  "");
-          return true;
-        }
-      } catch (e) {
-        return true;
-      }
-    }
-
-    if (ConnectToChannel.channelID == null ||
-        ConnectToChannel.channelID == "") {
-      try {
-        Vibrate.feedback(FeedbackType.selection);
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return TutorialBox(
-              boxType: BOX_TYPE_CONFIRM,
-              sharedPreferenceKey: CONFIRM_JOIN_SHARED_PREF,
-              tutorialImageAsset: "images/audio-waves.png",
-              tutorialMessage: TUTORIAL_MESSAGE_JOIN,
-              tutorialMessageTitle: showDrumJoinConfirmation
-                  ? TUTORIAL_MESSAGE_JOIN_TITLE
-                  : JOIN_CONFIRMATION,
-              onConfirm: () {
-                showDrumJoinConfirmation = false;
-                //joinOpenDrumm(articleBands.elementAt(previousIndex));
-                //controller?.swipeRight();
-                Vibrate.feedback(FeedbackType.success);
-                joinOpenDrumm(articleBands.elementAt(previousIndex));
-              },
-              onCancel: () {
-                controller?.undo();
-              },
-            );
-          },
-        );
-        getPalette(
-            articleBands.elementAt(currentIndex ?? 0).article?.imageUrl ?? "");
-        return true;
-      } catch (e) {
-        return false;
-      }
-    } else {
-      showBottomSheet(
-          context: context,
-          builder: (context) {
-            return Container(
-              height: 200,
-              width: double.maxFinite,
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.grey.shade900),
-              child: Column(
-                children: [
-                  const Text(
-                      "You are currently in a drumm already. Do you want to still join this drumm?"),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                          try {
-                            joinOpenDrumm(
-                                articleBands.elementAt(previousIndex));
-                          } catch (e) {}
-                        },
-                        child: const Text(
-                          "Yes",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          "No",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            );
-          });
-      return false;
-    }
-
-    debugPrint(
-      'The card $previousIndex was swiped to the ${direction.name}. Now the card $currentIndex is on top',
-    );
-    return true;
-  }
 
   void playYoutubeVideo(Article article) {
     print("Playing youtube video ${article.title}");
@@ -1103,121 +932,6 @@ class _DiscoverHomeState extends State<DiscoverHome>
         print("Error playing video because $e");
       }
     }
-  }
-
-  // void playYoutube(Article article){
-  //   if (article.source?.toLowerCase() == 'youtube') {
-  //     try {
-  //       if (!initialisedYoutubePlayer) {
-  //         youtubePlayerController = YoutubePlayerController(
-  //           onWebResourceError: (e){
-  //             print("Error loading video beccause $e");
-  //           },
-  //
-  //           params: YoutubePlayerParams(
-  //             loop: true,
-  //             mute: false,
-  //             showControls: false,
-  //             showVideoAnnotations: false,
-  //             playsInline: true,
-  //             showFullscreenButton: false,
-  //           ),
-  //         );
-  //         youtubePlayerController.loadVideoById(videoId:convertUrlToId(article?.url ?? "")??"");
-  //
-  //         youtubePlayerController.listen((event) {
-  //           print("Event: ${event}");
-  //         },onError: (e){
-  //           print("Error playing video because $e");
-  //         });
-  //         initialisedYoutubePlayer = true;
-  //       } else {
-  //         //youtubePlayerController.close();
-  //         youtubePlayerController.loadVideoById(videoId:convertUrlToId(article?.url ?? "")??"").then((value) {
-  //           print("Error playing video");
-  //         },onError: (e){
-  //           print("Error playing video because $e");
-  //         });
-  //       }
-  //     } catch (e) {
-  //       print("Error playing video because $e");
-  //     }
-  //   } else {
-  //     // FirebaseDBOperations.youtubeController = YoutubePlayerController(
-  //     //   initialVideoId: YoutubePlayer.convertUrlToId(
-  //     //       "https://www.youtube.com/watch?v=d8jFqvDn3o8") ??
-  //     //       "d8jFqvDn3o8",
-  //     //   flags: const YoutubePlayerFlags(
-  //     //     autoPlay: false,
-  //     //     mute: false,
-  //     //     controlsVisibleAtStart: false,
-  //     //   ),
-  //     // );
-  //   }
-  // }
-
-  static String? convertUrlToId(String url, {bool trimWhitespaces = true}) {
-    if (!url.contains("http") && (url.length == 11)) return url;
-    if (trimWhitespaces) url = url.trim();
-
-    for (var exp in [
-      RegExp(
-          r"^https:\/\/(?:www\.|m\.)?youtube\.com\/watch\?v=([_\-a-zA-Z0-9]{11}).*$"),
-      RegExp(
-          r"^https:\/\/(?:music\.)?youtube\.com\/watch\?v=([_\-a-zA-Z0-9]{11}).*$"),
-      RegExp(
-          r"^https:\/\/(?:www\.|m\.)?youtube\.com\/shorts\/([_\-a-zA-Z0-9]{11}).*$"),
-      RegExp(
-          r"^https:\/\/(?:www\.|m\.)?youtube(?:-nocookie)?\.com\/embed\/([_\-a-zA-Z0-9]{11}).*$"),
-      RegExp(r"^https:\/\/youtu\.be\/([_\-a-zA-Z0-9]{11}).*$")
-    ]) {
-      Match? match = exp.firstMatch(url);
-      if (match != null && match.groupCount >= 1) return match.group(1);
-    }
-
-    return null;
-  }
-
-  bool _onUndo(
-    int? previousIndex,
-    int currentIndex,
-    CardSwiperDirection direction,
-  ) {
-    undoIndex = currentIndex;
-    setState(() {
-      topIndex = currentIndex;
-    });
-    print("undo tapped ${currentIndex}");
-    articleTop =
-        articleBands.elementAt(currentIndex ?? 0).article?.articleId ?? "";
-    Article article = articleBands.elementAt(currentIndex).article ?? Article();
-    print("_onUndo item ${article.title}");
-
-    if (previousIndex == articleBands.length - 1) {
-      youtubePlayerController = YoutubePlayerController(
-        initialVideoId: YoutubePlayer.convertUrlToId(article?.url ?? "") ?? "",
-        flags: const YoutubePlayerFlags(
-          autoPlay: true,
-          mute: false,
-          loop: true,
-          hideThumbnail: false,
-          controlsVisibleAtStart: false,
-        ),
-      );
-    } else {
-      playYoutubeVideo(article);
-    }
-
-    setState(() {
-      //undoIndex = currentIndex;
-      articleOnScreen =
-          articleBands.elementAt(currentIndex ?? 0).article ?? Article();
-    });
-    debugPrint(
-      'The card $currentIndex was undod from the ${direction.name}',
-    );
-    getPalette(articleBands.elementAt(currentIndex).article?.imageUrl ?? "");
-    return true;
   }
 
   void getArticlesForBand(Band bandSelected) async {
