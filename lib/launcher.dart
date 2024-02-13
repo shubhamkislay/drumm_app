@@ -35,6 +35,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'BottomJamWindow.dart';
 import 'BottomTabBar.dart';
+import 'DiscoverHome.dart';
 import 'InterestPage.dart';
 import 'TutorialScreen.dart';
 import 'UserProfileIcon.dart';
@@ -137,7 +138,7 @@ class _LauncherPageState extends State<LauncherPage>
                       physics:
                           const NeverScrollableScrollPhysics(), //const BouncingScrollPhysics(),
                       children: [
-                        const NewsFeed(),
+                        DiscoverHome(),//const NewsFeed(),
                         ExplorePage(),
                         SwipePage(),
                         BandSearchPage(),

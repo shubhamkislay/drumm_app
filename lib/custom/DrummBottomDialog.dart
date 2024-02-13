@@ -27,13 +27,13 @@ class DrummBottomDialog extends StatefulWidget {
 
 class _DrummBottomDialogState extends State<DrummBottomDialog> {
   List<Container> memberCards = [];
-  double drummerSize = 32;
+  double drummerSize = 30;
   @override
   Widget build(BuildContext context) {
     BuildContext thisContext = context;
     return Container(
-      padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.all(12),
+      decoration: const BoxDecoration(
         color: COLOR_PRIMARY_DARK,
         //borderRadius: BorderRadius.only(topRight: Radius.circular(16),topLeft: Radius.circular(12)),
       ),
@@ -55,7 +55,7 @@ class _DrummBottomDialogState extends State<DrummBottomDialog> {
                         .withOpacity(0.075),
                     borderRadius: BorderRadius.circular(24)
                   ),
-                  padding:  EdgeInsets.all(4),
+                  padding:  const EdgeInsets.all(4),
                   child: GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: const Icon(
@@ -63,7 +63,7 @@ class _DrummBottomDialogState extends State<DrummBottomDialog> {
                     ),
                   ),
                 ),
-                SizedBox(width: 8,),
+                const SizedBox(width: 8,),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -116,8 +116,8 @@ class _DrummBottomDialogState extends State<DrummBottomDialog> {
                   ),
                 ),
 
-                SizedBox(
-                  height: 12,
+                const SizedBox(
+                  height: 16,
                 ),
                 Container(
                   alignment: Alignment.center,
@@ -127,15 +127,15 @@ class _DrummBottomDialogState extends State<DrummBottomDialog> {
                     "\"${widget.articleBand?.article?.question??widget.articleBand?.article?.title}\"",
                     maxLines: 2,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontFamily: APP_FONT_MEDIUM,
-                        fontSize: 24,
+                        fontSize: 26,
 
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 36,
+                const SizedBox(
+                  height: 16,
                 ),
                 SizedBox(
                   height: drummerSize,
@@ -151,13 +151,13 @@ class _DrummBottomDialogState extends State<DrummBottomDialog> {
                 ),
               ],
             ),
-            SizedBox(height: 12,),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+            const SizedBox(height: 12,),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24),
               child: Text("A notification will be send to all the band members",style: TextStyle(color: Colors.white30,fontSize: 12),),
             ),
             SwipeButton.expand(
-              thumbPadding: EdgeInsets.all(4),
+              thumbPadding: const EdgeInsets.all(4),
               height: 64,
               thumb: Padding(
                 padding: const EdgeInsets.all(12.0),
@@ -168,7 +168,7 @@ class _DrummBottomDialogState extends State<DrummBottomDialog> {
                 ),
               ),
               borderRadius: BorderRadius.circular(22),
-              child: Text(
+              child: const Text(
                 "Swipe right to start drumming",
                 style: TextStyle(
                   color: Colors.white,

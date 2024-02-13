@@ -8,7 +8,8 @@ import 'custom/rounded_button.dart';
 import 'model/Drummer.dart';
 
 class UserProfileIcon extends StatefulWidget {
-  const UserProfileIcon({Key? key}) : super(key: key);
+  double? iconSize;
+  UserProfileIcon({Key? key, this.iconSize}) : super(key: key);
 
   @override
   State<UserProfileIcon> createState() => _UserProfileIconState();
@@ -31,8 +32,8 @@ class _UserProfileIconState extends State<UserProfileIcon> {
             borderRadius: BorderRadius.circular(17),
             clipBehavior: Clip.hardEdge,
             child: CachedNetworkImage(
-                width: 30,
-                height: 30,
+                width: widget.iconSize??30,
+                height: widget.iconSize??30,
                 imageUrl: modifyImageUrl(
                     drummer.imageUrl ?? "", "100x100"),
                 fit: BoxFit.cover),

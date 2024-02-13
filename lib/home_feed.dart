@@ -349,10 +349,12 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                   borderRadius: BorderRadius.circular(44),
                                   border: Border.all(color: Colors.grey.shade900,width: 2.5)
                               ),
-                              child: ShareWidget(
-                                article: articleOnTop?.article??Article(),
-                                backgroundColor: COLOR_BACKGROUND,
-                                iconHeight: 22,
+                              child: Center(
+                                child: ShareWidget(
+                                  article: articleOnTop?.article??Article(),
+                                  backgroundColor: COLOR_BACKGROUND,
+                                  iconHeight: 18,
+                                ),
                               ),
                             ),
                           ],
@@ -975,7 +977,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
           // print("Size of the articles ${artcls.length}");
 
           return ClipRRect(
-            borderRadius: BorderRadius.circular(borderCurve+4),
+            borderRadius: BorderRadius.circular(borderCurve+2),
             child: Container(
               decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -1076,8 +1078,8 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                 height: double.maxFinite,
                                 width: double.maxFinite,
                               ).frosted(
-                                  blur: 50,
-                                  frostOpacity: 0.075,
+                                  blur: 75,
+                                  frostOpacity: 0.25,//0.35,
                                   frostColor: Colors.grey.shade900),
                               Column(
                                 children: [
@@ -1094,7 +1096,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                               child: AutoSizeText(
                                                 unescape.convert(artcls?.elementAt(index).article?.title ?? ""),
                                                 textAlign: TextAlign.start,
-                                                maxLines: 4,
+                                                maxLines: 5,
                                                 style: const TextStyle(
                                                   color: Colors.white,
                                                   fontFamily: APP_FONT_MEDIUM,
@@ -1362,6 +1364,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                         ),
                                       ),
                                     ),
+                                  SizedBox(height: 4,),
                                 ],
                               ),
                             ],

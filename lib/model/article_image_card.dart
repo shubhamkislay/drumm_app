@@ -52,7 +52,7 @@ class ArticleImageCard extends StatelessWidget {
       },
       child: (article.imageUrl != null)
           ? ClipRRect(
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(12),
               child: Stack(
                 children: [
                   CachedNetworkImage(

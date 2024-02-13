@@ -86,9 +86,9 @@ class _BottomTabBarState extends State<BottomTabBar> {
                 child: Image.asset(
                   //color: currentPage == 1 ?  Color(COLOR_PRIMARY_VAL): widget.themeManager.themeMode == ThemeMode.dark ?Colors.white38: Colors.black.withOpacity(0.25),
                     color: disableColor,
-                    width: 36,
+                    width: 26,
                     'images/audio-waves.png',//"images/plus_btn.png",
-                    height: 36),
+                    height: 26),
               ),
             /*
                       Wave Mode icon

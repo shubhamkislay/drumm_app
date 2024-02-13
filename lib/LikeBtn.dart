@@ -26,7 +26,7 @@ class _LikeBtnState extends State<LikeBtn> {
             borderRadius: BorderRadius.circular(42),
             border: Border.all(color: Colors.grey.shade900,width: 2.25)),
         child: Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(10),
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(42),
@@ -37,7 +37,7 @@ class _LikeBtnState extends State<LikeBtn> {
             widget.article.liked??false
                 ? 'images/heart_like.png'
                 : 'images/like_btn.png',
-            height: 20,
+            height: 18,
             color: widget.article.liked??false
                 ? Colors.red
                 : Colors.white,

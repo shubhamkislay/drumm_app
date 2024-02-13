@@ -55,7 +55,7 @@ class _DrummCardState extends State<DrummCard> {
             if(widget.jamCallback!=null)
               widget.jamCallback!(widget.jam);
 
-            Navigator.pop(context);
+            //Navigator.pop(context);
             joinDrumm();
 
           },

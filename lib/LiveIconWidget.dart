@@ -2,6 +2,7 @@ import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 
+import 'custom/constants/Constants.dart';
 import 'custom/helper/firebase_db_operations.dart';
 import 'live_drumms.dart';
 import 'model/jam.dart';
@@ -47,7 +48,7 @@ class _LiveIconState extends State<LiveIcon> {
         );
       },
       child: Container(
-        padding: EdgeInsets.all(2.5),
+        padding: EdgeInsets.all(2),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
             gradient: (liveDrummsExist)
@@ -63,7 +64,7 @@ class _LiveIconState extends State<LiveIcon> {
           padding: EdgeInsets.all(6),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            color: Colors.grey.shade900,
+            color: COLOR_BACKGROUND,
           ),
           child: Image.asset(
             'images/drumm_logo.png',

@@ -219,6 +219,8 @@ flutter:
     - images/discovery_tapped.png
     - images/discovery.png
     - images/link.png
+    - images/like_post.png
+    - images/liked_post.png
   # - images/a_dot_ham.jpeg
 
   fonts:

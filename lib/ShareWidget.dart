@@ -138,7 +138,7 @@ class ShareWidgetDesign extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
-          padding:  EdgeInsets.all(iconHeight!/24 +8),
+          padding:  EdgeInsets.all(iconHeight!/24 +12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
             color: backgroundColor??Colors.grey.shade900.withOpacity(0.35),

@@ -32,8 +32,6 @@ class LiveDrummsState extends State<LiveDrumms>
   List<DrummCard> userDrummCards = [];
   List<Band> bands = [];
   List<Jam> drumms = [];
-  List<Jam> openDrumms = [];
-  List<DrummCard> openDrummCards = [];
   bool loaded = false;
 
   bool showLiveALert = true;
@@ -228,22 +226,6 @@ class LiveDrummsState extends State<LiveDrumms>
     });
   }
 
-  Future<void> getOpenDrumms() async {
-    List<Jam> fetchedDrumms =
-        await FirebaseDBOperations.getOpenDrummsFromBands(); //getUserBands();
-    openDrumms = fetchedDrumms;
-    openDrummCards = openDrumms.map((jam) {
-      return DrummCard(
-        jam,
-        open: true,
-      );
-    }).toList();
-
-    setState(() {
-      drummCards = drummCards + openDrummCards;
-      loaded = true;
-    });
-  }
 
   @override
   void initState() {
