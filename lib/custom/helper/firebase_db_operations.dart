@@ -154,7 +154,7 @@ class FirebaseDBOperations {
           .where('country', isEqualTo: 'in')
           .where('source', isNotEqualTo: null)
           .orderBy("publishedAt", descending: true)
-          .limitToLast(15);
+          .limitToLast(25);
       if (_startDocument != null) {
         query = query.endBeforeDocument(_startDocument);
       }
@@ -165,7 +165,7 @@ class FirebaseDBOperations {
           .where('country', isEqualTo: 'in')
           .where('source', isNotEqualTo: null)
           .orderBy("publishedAt", descending: true)
-          .limit(15);
+          .limit(25);
 
       if (_lastDocument != null) {
         query = query.startAfterDocument(_lastDocument!);
@@ -210,7 +210,7 @@ class FirebaseDBOperations {
           .where('country', isEqualTo: 'in')
           .where('source', isNotEqualTo: null)
           .orderBy("publishedAt", descending: true)
-          .limitToLast(15);
+          .limitToLast(25);
       if (_startDocument != null) {
         query = query.endBeforeDocument(_startDocument);
       }
@@ -221,7 +221,7 @@ class FirebaseDBOperations {
           .where('country', isEqualTo: 'in')
           .where('source', isNotEqualTo: null)
           .orderBy("publishedAt", descending: true)
-          .limit(15);
+          .limit(25);
 
       if (_lastDocument != null) {
         query = query.startAfterDocument(_lastDocument!);

@@ -1078,8 +1078,8 @@ class HomeFeedPageState extends State<HomeFeedPage>
                                 height: double.maxFinite,
                                 width: double.maxFinite,
                               ).frosted(
-                                  blur: 75,
-                                  frostOpacity: 0.25,//0.35,
+                                  blur: 25,
+                                  frostOpacity: 0.15,//0.35,
                                   frostColor: Colors.grey.shade900),
                               Column(
                                 children: [

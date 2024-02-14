@@ -6,8 +6,9 @@ class InstagramDateTimeWidget extends StatelessWidget {
   final String publishedAt;
   double? textSize;
   FontWeight? fontWeight;
+  Color? fontColor;
 
-  InstagramDateTimeWidget({required this.publishedAt, this.textSize, this.fontWeight});
+  InstagramDateTimeWidget({required this.publishedAt, this.textSize, this.fontWeight, this.fontColor});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class InstagramDateTimeWidget extends StatelessWidget {
         fontSize: textSize??12,
         fontFamily: APP_FONT_MEDIUM,
         fontWeight: fontWeight??FontWeight.normal,
-        color: Colors.white.withOpacity(0.8),
+        color: fontColor??Colors.white.withOpacity(0.8),
       ),
     );
   }
