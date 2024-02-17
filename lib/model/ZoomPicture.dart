@@ -3,7 +3,8 @@ import 'package:pinch_zoom/pinch_zoom.dart';
 
 class ZoomPicture extends StatelessWidget {
   String url;
-  ZoomPicture({Key? key, required this.url}) : super(key: key);
+  String? articleId;
+  ZoomPicture({Key? key, required this.url, this.articleId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,8 @@ class ZoomPicture extends StatelessWidget {
         children: [
           PinchZoom(
             maxScale: 10,
-            child: Image.network(url),
+            child: Hero(tag: articleId??"",
+            child: Image.network(url)),
           ),
           SafeArea(
             child: Container(

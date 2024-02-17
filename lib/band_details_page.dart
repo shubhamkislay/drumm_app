@@ -104,9 +104,12 @@ class BandDetailsPageState extends State<BandDetailsPage> {
                               height: 200,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(4),
-                                child: CachedNetworkImage(
-                                  imageUrl:modifyImageUrl(band?.url ?? "","500x500"),
-                                  fit: BoxFit.cover,
+                                child: Hero(
+                                  tag: band?.url ?? "",
+                                  child: CachedNetworkImage(
+                                    imageUrl:modifyImageUrl(band?.url ?? "","300x300"),
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),

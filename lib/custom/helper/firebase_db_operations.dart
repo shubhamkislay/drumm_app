@@ -154,7 +154,7 @@ class FirebaseDBOperations {
           .where('country', isEqualTo: 'in')
           .where('source', isNotEqualTo: null)
           .orderBy("publishedAt", descending: true)
-          .limitToLast(25);
+          .limitToLast(10);
       if (_startDocument != null) {
         query = query.endBeforeDocument(_startDocument);
       }
@@ -165,7 +165,7 @@ class FirebaseDBOperations {
           .where('country', isEqualTo: 'in')
           .where('source', isNotEqualTo: null)
           .orderBy("publishedAt", descending: true)
-          .limit(25);
+          .limit(10);
 
       if (_lastDocument != null) {
         query = query.startAfterDocument(_lastDocument!);

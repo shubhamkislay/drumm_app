@@ -11,6 +11,8 @@ import 'package:drumm_app/model/band_card.dart';
 import 'package:drumm_app/model/band_image_card.dart';
 import 'package:drumm_app/model/people_card.dart';
 
+import 'model/article_band.dart';
+
 class SearchPage extends StatefulWidget {
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -73,8 +75,20 @@ class _SearchPageState extends State<SearchPage>
     List<Article> fetchedArticles = await FirebaseDBOperations.searchArticles(
         query ?? "",0); //getUserBands();
     articles = fetchedArticles;
+    List<ArticleBand> fetchedArticleBand =  [];
+    List<Band> bandList = await FirebaseDBOperations.getBandByUser();
+    for (Article article in fetchedArticles) {
+      for (Band band in bandList) {
+        List hooks = band.hooks ?? [];
+        if (hooks.contains(article.category)) {
+          ArticleBand articleBand = ArticleBand(article: article, band: band);
+          fetchedArticleBand.add(articleBand);
+          break;
+        }
+      }
+    }
     setState(() {
-      articleCards = articles.map((article) => ArticleImageCard(article)).toList();
+      articleCards = fetchedArticleBand.map((articleBand) => ArticleImageCard(articleBand)).toList();
     });
   }
 

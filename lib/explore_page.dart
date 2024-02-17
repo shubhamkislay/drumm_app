@@ -12,6 +12,8 @@ import 'package:drumm_app/model/people_card.dart';
 import 'package:drumm_app/search_page.dart';
 import 'package:drumm_app/search_result_page.dart';
 
+import 'model/article_band.dart';
+
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
 
@@ -75,12 +77,12 @@ class _ExplorePageState extends State<ExplorePage>
 
     setState(() {
       showProgress = false;
-      articleCards = articles
-          .map((article) => ArticleImageCard(
-                article,
-                articles: articles,
-              ))
-          .toList();
+      // articleCards = articles
+      //     .map((article) => ArticleImageCard(
+      //           article,
+      //           articles: articles,
+      //         ))
+      //     .toList();
 
     });
   }
@@ -175,13 +177,27 @@ class _ExplorePageState extends State<ExplorePage>
       getArticles();
     } else {
 
+
+
       page+=1;
       articles = FirebaseDBOperations.exploreArticles;
+      List<ArticleBand> fetchedArticleBand =  [];
+      List<Band> bandList = await FirebaseDBOperations.getBandByUser();
+      for (Article article in articles) {
+        for (Band band in bandList) {
+          List hooks = band.hooks ?? [];
+          if (hooks.contains(article.category)) {
+            ArticleBand articleBand = ArticleBand(article: article, band: band);
+            fetchedArticleBand.add(articleBand);
+            break;
+          }
+        }
+      }
       setState(() {
-        articleCards = articles
-            .map((article) => ArticleImageCard(
-          article,
-          articles: articles,
+        articleCards = fetchedArticleBand
+            .map((articleBand) => ArticleImageCard(
+          articleBand,
+          articleBands: fetchedArticleBand,
         ))
             .toList();
       });

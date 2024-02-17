@@ -12,6 +12,7 @@ import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/view_band.dart';
 
 import '../custom/constants/Constants.dart';
+import '../custom/helper/BottomUpPageRoute.dart';
 import '../custom/helper/image_uploader.dart';
 
 typedef void BandCallback(Band band);
@@ -57,21 +58,24 @@ class BandImageCardState extends State<BandImageCard> {
                         padding: const EdgeInsets.all(5.0),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(CURVE-4),
-                          child: CachedNetworkImage(
-                              width: double.infinity,
-                              height: double.infinity,
-                              imageUrl:modifyImageUrl(widget.band.url ?? "","300x300"),
-                              errorWidget:(context,url,error){
-                                return Container(color:COLOR_PRIMARY_DARK);
-                              },
-                              placeholder: (context, imageUrl) {
-                                return Container(
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  color: Colors.transparent,
-                                );
-                              },
-                              fit: BoxFit.cover),
+                          child: Hero(
+                            tag: widget.band.url??"",
+                            child: CachedNetworkImage(
+                                width: double.infinity,
+                                height: double.infinity,
+                                imageUrl:modifyImageUrl(widget.band.url ?? "","300x300"),
+                                errorWidget:(context,url,error){
+                                  return Container(color:COLOR_PRIMARY_DARK);
+                                },
+                                placeholder: (context, imageUrl) {
+                                  return Container(
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    color: Colors.transparent,
+                                  );
+                                },
+                                fit: BoxFit.cover),
+                          ),
                         ),
                       ),
                     ),
@@ -135,7 +139,7 @@ class BandImageCardState extends State<BandImageCard> {
     if (!widget.onlySelectable!) {
       Navigator.push(
           context,
-          MaterialPageRoute(
+          NoAnimationCupertinoPageRoute(
             builder: (context) =>
                 BandDetailsPage(
                   band: widget.band,

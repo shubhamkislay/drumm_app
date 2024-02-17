@@ -102,16 +102,19 @@ class _DrummBottomDialogState extends State<DrummBottomDialog> {
                   padding: const EdgeInsets.all(4.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(24),
-                    child: CachedNetworkImage(
-                      width: 100,
-                      height: 100,
-                      imageUrl: widget.articleBand?.article?.imageUrl ??
-                          "", //widget.article?.imageUrl ?? "",
-                      fit: BoxFit.cover,
-                      alignment: Alignment.topCenter,
-                      errorWidget: (context, url, error) {
-                        return Container(color: COLOR_PRIMARY_DARK);
-                      },
+                    child: Hero(
+                      tag: widget.articleBand?.article?.articleId??"",
+                      child: CachedNetworkImage(
+                        width: 100,
+                        height: 100,
+                        imageUrl: widget.articleBand?.article?.imageUrl ??
+                            "", //widget.article?.imageUrl ?? "",
+                        fit: BoxFit.cover,
+                        alignment: Alignment.topCenter,
+                        errorWidget: (context, url, error) {
+                          return Container(color: COLOR_PRIMARY_DARK);
+                        },
+                      ),
                     ),
                   ),
                 ),

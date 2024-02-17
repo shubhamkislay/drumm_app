@@ -466,18 +466,6 @@ class _UserProfilePageState extends State<UserProfilePage>
     //getNews();
   }
 
-  void getArticles(String? uid) async {
-    List<Article> fetchedArticles =
-        await FirebaseDBOperations.getArticlesByUser(
-            uid ?? ""); //getUserBands();
-    articles = fetchedArticles;
-
-    setState(() {
-      articleCards =
-          articles.map((article) => ArticleImageCard(article)).toList();
-    });
-  }
-
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
