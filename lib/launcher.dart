@@ -73,7 +73,7 @@ class LauncherPage extends StatefulWidget {
 
 class _LauncherPageState extends State<LauncherPage>
     with TickerProviderStateMixin {
-  GlobalKey<HomeFeedPageState> homeFeedKey = GlobalKey<HomeFeedPageState>();
+  GlobalKey<DiscoverHomeState> discoverHomeKey = GlobalKey<DiscoverHomeState>();
 
   BranchContentMetaData metadata = BranchContentMetaData();
   BranchLinkProperties lp = BranchLinkProperties();
@@ -138,7 +138,7 @@ class _LauncherPageState extends State<LauncherPage>
                       physics:
                           const NeverScrollableScrollPhysics(), //const BouncingScrollPhysics(),
                       children: [
-                        DiscoverHome(),//const NewsFeed(),
+                        DiscoverHome(key: discoverHomeKey,),//const NewsFeed(),
                         //ExplorePage(),
                         SwipePage(),
                         BandSearchPage(),
@@ -154,7 +154,7 @@ class _LauncherPageState extends State<LauncherPage>
                 const SizedBox(height: 80), //Wave Mode it was 88
               ],
             ),
-            child: BottomTabBar(tabController: tabController,),
+            child: BottomTabBar(tabController: tabController, refreshDiscover: () { refreshHomePage(); },),
           ),
           TutotrialManager(),
         ],
@@ -366,7 +366,8 @@ class _LauncherPageState extends State<LauncherPage>
   }
 
   void refreshHomePage() {
-    homeFeedKey.currentState?.getToTop();
+    print("Trying to call disccoverHomeKey");
+    discoverHomeKey.currentState?.getToTop();
   }
 }
 

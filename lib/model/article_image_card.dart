@@ -86,7 +86,7 @@ class ArticleImageCard extends StatelessWidget {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(14),
                       color:
-                          Colors.grey.shade800.withOpacity(0.15)
+                          Colors.grey.withOpacity(0.15)
                       ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
@@ -115,7 +115,7 @@ class ArticleImageCard extends StatelessWidget {
                                   begin: Alignment.topCenter,
                                   colors: [
                                 Colors.transparent,
-                                Colors.black.withOpacity(0.75),
+                                    Colors.black.withOpacity(0.70),
                                 Colors.black,//.withOpacity(0.95),
                                 //RandomColorBackground.generateRandomVibrantColor()
                               ])),
@@ -142,8 +142,8 @@ class ArticleImageCard extends StatelessWidget {
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(8),
-                                            color: Colors.grey.shade700
-                                                .withOpacity(0.35),
+                                            color: Colors.grey.shade800
+                                                .withOpacity(0.45),
                                           ),
                                           child: Hero(
                                             tag: "${articleBand.band?.name} ${articleBand.article?.articleId}",
@@ -166,78 +166,80 @@ class ArticleImageCard extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: AutoSizeText(
-                                          unescape.convert(articleBand.article?.meta ??
-                                              articleBand.article?.title ??
-                                              ""),
-                                          textAlign: TextAlign.left,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxFontSize: 15,
-                                          maxLines: 3,
-                                          minFontSize: 11,
-                                          style: const TextStyle(
-                                              overflow:
-                                                  TextOverflow.ellipsis,
-                                              fontSize: 15,
-                                              //fontWeight: FontWeight.bold,
-                                              fontFamily: APP_FONT_MEDIUM,
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 4,
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                    children: [
-                                      Flexible(
-                                        child: Container(
-                                          padding: const EdgeInsets.only(
-                                              left: 4, bottom: 4),
-                                          decoration: BoxDecoration(
-                                              //borderRadius: BorderRadius.circular(12),
-                                              //color: Colors.grey.shade900.withOpacity(0.35),
-                                              ),
+                              Flexible(
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(4.0),
                                           child: AutoSizeText(
-                                            "${articleBand.article?.source}",
+                                            unescape.convert(articleBand.article?.meta ??
+                                                articleBand.article?.title ??
+                                                ""),
                                             textAlign: TextAlign.left,
                                             overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            minFontSize: 8,
+                                            maxFontSize: 17,
+                                            maxLines: 4,
+                                            minFontSize: 10,
                                             style: const TextStyle(
-                                                fontSize: 10,
-                                                fontFamily: APP_FONT_MEDIUM,
+                                                overflow:
+                                                    TextOverflow.ellipsis,
+                                                fontSize: 17,
                                                 //fontWeight: FontWeight.bold,
-                                                color: Colors.white70),
+                                                fontFamily: APP_FONT_MEDIUM,
+                                                color: Colors.white),
                                           ),
                                         ),
-                                      ),
-                                      const Text(" • "),
-                                      Container(
-                                        padding: const EdgeInsets.only(
-                                            right: 4, bottom: 4),
-                                        child: InstagramDateTimeWidget(
-                                          textSize: 10,
-                                          fontColor: Colors.white70,
-                                          publishedAt: articleBand.article?.publishedAt
-                                              .toString()??"",
+                                        SizedBox(
+                                          height: 4,
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Flexible(
+                                          child: Container(
+                                            padding: const EdgeInsets.only(
+                                                left: 4, bottom: 4),
+                                            decoration: BoxDecoration(
+                                                //borderRadius: BorderRadius.circular(12),
+                                                //color: Colors.grey.shade900.withOpacity(0.35),
+                                                ),
+                                            child: AutoSizeText(
+                                              "${articleBand.article?.source}",
+                                              textAlign: TextAlign.left,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                              minFontSize: 8,
+                                              style: const TextStyle(
+                                                  fontSize: 10,
+                                                  fontFamily: APP_FONT_MEDIUM,
+                                                  //fontWeight: FontWeight.bold,
+                                                  color: Colors.white70),
+                                            ),
+                                          ),
+                                        ),
+                                        const Text(" • "),
+                                        Container(
+                                          padding: const EdgeInsets.only(
+                                              right: 4, bottom: 4),
+                                          child: InstagramDateTimeWidget(
+                                            textSize: 10,
+                                            fontColor: Colors.white70,
+                                            publishedAt: articleBand.article?.publishedAt
+                                                .toString()??"",
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -260,12 +262,12 @@ class ArticleImageCard extends StatelessWidget {
                         unescape.convert(articleBand.article?.meta ?? articleBand.article?.title ?? ""),
                         textAlign: TextAlign.left,
                         overflow: TextOverflow.ellipsis,
-                        maxFontSize: 14,
+                        maxFontSize: 17,
                         maxLines: 3,
-                        minFontSize: 12,
+                        minFontSize: 10,
                         style: const TextStyle(
                             overflow: TextOverflow.ellipsis,
-                            fontSize: 14,
+                            fontSize: 17,
                             //fontWeight: FontWeight.bold,
                             fontFamily: APP_FONT_MEDIUM,
                             color: Colors.white),

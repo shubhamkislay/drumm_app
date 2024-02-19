@@ -381,6 +381,7 @@ class ArticleReelsState extends State<ArticleReels>
                           ),
                         ),
                         SizedBox(width: 4,),
+                        if(articleOnTop?.band!=null)
                         GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -589,7 +590,7 @@ class ArticleReelsState extends State<ArticleReels>
                                       bottom: false,
                                       child: FadeInContainer(
                                         child: AutoSizeText(
-                                          unescape.convert(widget.preloadList?.elementAt(index).article?.title ?? ""),
+                                          unescape.convert(widget.preloadList?.elementAt(index).article?.title?? ""),
                                           textAlign: TextAlign.start,
                                           maxLines: 5,
                                           style: const TextStyle(
@@ -1185,23 +1186,8 @@ class ArticleReelsState extends State<ArticleReels>
     bandList = await FirebaseDBOperations.getBandByUser();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // if (state == AppLifecycleState.resumed) {
-    //   // Your code to react to app coming to the foreground in the HomeFeed widget
-    //   _checkAndScheduleRefresh();
-    // } else {
-    //   refreshList = true;
-    //   _stopRefreshTimer(); // Stop the timer when the app goes to the background
-    // }
-  }
-
   void _checkAndScheduleRefresh() {
-    // AnimatedSnackBar.material(
-    //     'Checking refresh',
-    //     type: AnimatedSnackBarType.info,
-    //     mobileSnackBarPosition: MobileSnackBarPosition.top
-    // ).show(context);
+
     final now = DateTime.now();
     if (now.difference(_lastRefreshTime!) >= refreshInterval) {
       // Call your refresh() function if it hasn't been called within the refreshInterval
@@ -1217,25 +1203,11 @@ class ArticleReelsState extends State<ArticleReels>
   void refreshFeed() async{
     if (widget.preloadList == null) {
       getArticlesData(true);
-      // AnimatedSnackBar.material(
-      //     'Refreshed List',
-      //     type: AnimatedSnackBarType.success,
-      //     mobileSnackBarPosition: MobileSnackBarPosition.top
-      // ).show(context);
+
     } else {
       //List<Article> fetchedList = widget.preloadList ?? [];
       List<ArticleBand> fetchedArticleBand = widget.preloadList ?? [];
       bandList = await FirebaseDBOperations.getBandByUser();
-      // for (Article article in fetchedList) {
-      //   for (Band band in bandList) {
-      //     List hooks = band.hooks ?? [];
-      //     if (hooks.contains(article.category)) {
-      //       ArticleBand articleBand = ArticleBand(article: article, band: band);
-      //       fetchedArticleBand.add(articleBand);
-      //       break;
-      //     }
-      //   }
-      // }
       setState(() {
         articleOnTop = fetchedArticleBand.elementAt(widget.articlePosition??0);
         fromSearch = true;
@@ -1477,22 +1449,6 @@ class ArticleReelsState extends State<ArticleReels>
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        // return TutorialBox(
-        //   boxType: BOX_TYPE_CONFIRM,
-        //   sharedPreferenceKey: CONFIRM_JOIN_SHARED_PREF,
-        //   tutorialImageAsset: "images/audio-waves.png",
-        //   tutorialMessage: TUTORIAL_MESSAGE_JOIN,
-        //   tutorialMessageTitle: TUTORIAL_MESSAGE_JOIN_TITLE,
-        //   onConfirm: (){
-        //     ArticleBand? articleBand = ArticleBand();
-        //     articleBand = articleOnTop;
-        //     Vibrate.feedback(FeedbackType.success);
-        //     joinOpenDrumm(articleBand??ArticleBand());
-        //   },
-        //   onCancel: (){
-        //
-        //   },
-        // );
         return DrummBottomDialog(articleBand: articleOnTop, startDrumming: () {
           ArticleBand? articleBand = ArticleBand();
           articleBand = articleOnTop;

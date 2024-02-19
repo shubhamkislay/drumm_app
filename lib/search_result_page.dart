@@ -236,29 +236,14 @@ class SearchResultPageState extends State<SearchResultPage>
                                     padding:
                                         const EdgeInsets.symmetric(horizontal: 4),
                                     gridDelegate: SliverQuiltedGridDelegate(
-                                      crossAxisCount: 3,
+                                      crossAxisCount: 4,
                                       mainAxisSpacing: 8,
                                       crossAxisSpacing: 8,
                                       repeatPattern:
                                           QuiltedGridRepeatPattern.inverted,
                                       pattern: [
-                                        const QuiltedGridTile(1, 1),
                                         const QuiltedGridTile(2, 2),
-                                        const QuiltedGridTile(1, 1),
-
-                                        //grid 2
-                                        const QuiltedGridTile(1, 2),
-                                        const QuiltedGridTile(1, 1),
-                                        const QuiltedGridTile(1, 1),
-                                        const QuiltedGridTile(1, 2),
-
-                                        //grid 3
-                                        const QuiltedGridTile(2, 3),
-
-                                        //grid 4
-                                        const QuiltedGridTile(1, 1),
                                         const QuiltedGridTile(2, 2),
-                                        const QuiltedGridTile(1, 1),
                                       ],
                                     ),
                                     childrenDelegate:

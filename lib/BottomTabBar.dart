@@ -2,6 +2,7 @@ import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 
+import 'DiscoverHome.dart';
 import 'UserProfileIcon.dart';
 import 'custom/constants/Constants.dart';
 import 'custom/create_jam_bottom_sheet.dart';
@@ -9,7 +10,8 @@ import 'custom/listener/connection_listener.dart';
 
 class BottomTabBar extends StatefulWidget {
   TabController tabController;
-  BottomTabBar({required this.tabController});
+  VoidCallback refreshDiscover;
+  BottomTabBar({required this.tabController,required this.refreshDiscover});
 
   @override
   State<BottomTabBar> createState() => _BottomTabBarState();
@@ -123,11 +125,12 @@ class _BottomTabBarState extends State<BottomTabBar> {
             ) {
               setState(() {
               if (currentPage == 0 && index == 0) {
-                print("Calling refresh $currentPage");
+                //print("Calling refresh $currentPage");
                 //refreshHomePage();
+                widget.refreshDiscover();
               }
               currentPage = index;
-              print("CurrentPage $currentPage");
+              //print("CurrentPage $currentPage");
               });
             } else {
               widget.tabController.animateTo(currentPage);
@@ -161,6 +164,7 @@ class _BottomTabBarState extends State<BottomTabBar> {
       ),
     );
   }
+
 
   @override
   void dispose() {

@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:collection';
+import 'package:blur/blur.dart';
 import 'package:drumm_app/MultiSelectContainerWidget.dart';
 import 'package:drumm_app/model/article_image_card.dart';
 import 'package:drumm_app/search_result_page.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -35,10 +37,10 @@ class DiscoverHome extends StatefulWidget {
   const DiscoverHome({Key? key}) : super(key: key);
 
   @override
-  State<DiscoverHome> createState() => _DiscoverHomeState();
+  State<DiscoverHome> createState() => DiscoverHomeState();
 }
 
-class _DiscoverHomeState extends State<DiscoverHome>
+class DiscoverHomeState extends State<DiscoverHome>
     with AutomaticKeepAliveClientMixin<DiscoverHome>, TickerProviderStateMixin {
   List<Article> articles = [];
   List<ArticleBand> articleBands = [];
@@ -132,234 +134,389 @@ class _DiscoverHomeState extends State<DiscoverHome>
       backgroundColor: COLOR_BACKGROUND,
       body: SafeArea(
         bottom: false,
+        top: true,
         child: Container(
           height: double.maxFinite,
           width: double.maxFinite,
           padding: const EdgeInsets.symmetric(horizontal: 0),
-          child: SingleChildScrollView(
+          child: CustomScrollView(
             controller: _scrollController,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
+              slivers: [
+                SliverPadding(
                   padding: EdgeInsets.symmetric(
                       vertical: 2, horizontal: horizontalPadding),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(36),
-                            border: Border.all(
-                                color: Colors.grey.shade900, width: 2),
-                          ),
-                          child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => UserProfilePage(
-                                        fromSearch: true,
-                                      ),
-                                    ));
-                              },
-                              child: UserProfileIcon(
-                                iconSize: 32,
-                              ))),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                pageBuilder:
-                                    (context, animation1, animation2) =>
-                                        SearchResultPage(),
-                                transitionDuration: Duration.zero,
-                                reverseTransitionDuration: Duration.zero,
-                              ),
-                            );
-                          },
-                          child: Wrap(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 9, horizontal: 16),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                        // Build your content here
+                        // Example:
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
                                 decoration: BoxDecoration(
-                                    color: Colors.grey.shade900,
-                                    //border: Border.all(color: Colors.grey.shade900),
-                                    borderRadius: BorderRadius.circular(16)),
-                                child: Row(
-                                  children: [
-                                    Image.asset("images/search_button.png",
-                                        color: Colors.white38, width: 16),
-                                    const SizedBox(
-                                      width: 8,
+                                  borderRadius: BorderRadius.circular(36),
+                                  border: Border.all(
+                                      color: Colors.grey.shade900, width: 2),
+                                ),
+                                child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => UserProfilePage(
+                                              fromSearch: true,
+                                            ),
+                                          ));
+                                    },
+                                    child: UserProfileIcon(
+                                      iconSize: 32,
+                                    ))),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder:
+                                          (context, animation1, animation2) =>
+                                          SearchResultPage(),
+                                      transitionDuration: Duration.zero,
+                                      reverseTransitionDuration: Duration.zero,
                                     ),
-                                    const Text(
-                                      "Search drumms",
-                                      style: TextStyle(color: Colors.white38),
-                                    )
+                                  );
+                                },
+                                child: Wrap(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 9, horizontal: 16),
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey.shade900,
+                                          //border: Border.all(color: Colors.grey.shade900),
+                                          borderRadius: BorderRadius.circular(16)),
+                                      child: Row(
+                                        children: [
+                                          Image.asset("images/search_button.png",
+                                              color: Colors.white38, width: 16),
+                                          const SizedBox(
+                                            width: 8,
+                                          ),
+                                          const Text(
+                                            "Search drumms",
+                                            style: TextStyle(color: Colors.white38),
+                                          )
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      const LiveIcon(),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      const NotificationIcon(),
-                    ],
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            const LiveIcon(),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            const NotificationIcon(),
+                          ],
+                        );
+                      },
+                      childCount: 1, // Adjust the child count as per your content
+                    ),
                   ),
                 ),
-                Column(
-                  children: [
-                    if (drummCards.isNotEmpty)
-                      Column(
-                        children: [
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: horizontalPadding),
-                            width: double.maxFinite,
-                            child: const Text(
-                              "Live Drumms",
+                if (drummCards.isNotEmpty)
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: 2, horizontal: 0),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                          // Build your content here
+                          // Example:
+                          return Column(
+                            children: [
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: horizontalPadding),
+                                width: double.maxFinite,
+                                child: const Text(
+                                  "Live Drumms",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 20),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              Container(
+                                height: 225,
+                                child: PageView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: drummCards,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                        childCount: 1, // Adjust the child count as per your content
+                      ),
+                    ),
+                  ),
+                SliverAppBar(
+                  backgroundColor: COLOR_BACKGROUND.withOpacity(0.9),
+                  floating: true,
+                  pinned: true,
+                  toolbarHeight: 102,
+                  snap: true,
+                  elevation: 10,
+                  automaticallyImplyLeading: false,
+                  flexibleSpace: Column(
+                    children: [
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: horizontalPadding),
+                        width: double.maxFinite,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "What's new",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 20),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          Container(
-                            height: 225,
-                            child: PageView(
-                              scrollDirection: Axis.horizontal,
-                              children: drummCards,
+                            Expanded(child: Container()),
+                            if (articleBands.isNotEmpty)
+                              const Icon(Icons.refresh_rounded,
+                                  size: 16, color: Colors.white38),
+                            const SizedBox(
+                              width: 2,
                             ),
+                            if (articleBands.isNotEmpty)
+                              const Text(
+                                "Freshness",
+                                style: TextStyle(
+                                    fontSize: 13, color: Colors.white38),
+                              ),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            if (articleBands.isNotEmpty)
+                              InstagramDateTimeWidget(
+                                  fontColor: Colors.white38,
+                                  textSize: 12,
+                                  publishedAt: articleBands
+                                      .elementAt(0)
+                                      .article
+                                      ?.publishedAt
+                                      .toString() ??
+                                      ""),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      if (bandsCards.isNotEmpty)
+                        Container(
+                          //color: COLOR_BACKGROUND,
+                            alignment: Alignment.centerLeft,
+                            padding: EdgeInsets.only(
+                              left: horizontalPadding,
+                              right: horizontalPadding,
+                            ),
+                            height: 30,
+                            child: multiSelectContainer),
+                      const SizedBox(height: 12),
+                    ],
+                  ),
+                ),
+              if(false)  Column(
+                  children: [
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: horizontalPadding),
+                      width: double.maxFinite,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "What's new",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
                           ),
+                          Expanded(child: Container()),
+                          if (articleBands.isNotEmpty)
+                            const Icon(Icons.refresh_rounded,
+                                size: 16, color: Colors.white38),
+                          const SizedBox(
+                            width: 2,
+                          ),
+                          if (articleBands.isNotEmpty)
+                            const Text(
+                              "Freshness",
+                              style: TextStyle(
+                                  fontSize: 13, color: Colors.white38),
+                            ),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          if (articleBands.isNotEmpty)
+                            InstagramDateTimeWidget(
+                                fontColor: Colors.white38,
+                                textSize: 12,
+                                publishedAt: articleBands
+                                    .elementAt(0)
+                                    .article
+                                    ?.publishedAt
+                                    .toString() ??
+                                    ""),
                         ],
                       ),
-                    Column(
-                      children: [
-                        const SizedBox(height: 16),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: horizontalPadding),
-                          width: double.maxFinite,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text(
-                                "What's new",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
-                              ),
-                              Expanded(child: Container()),
-                              if (articleBands.isNotEmpty)
-                                const Icon(Icons.refresh_rounded,
-                                    size: 16, color: Colors.white38),
-                              const SizedBox(
-                                width: 2,
-                              ),
-                              if (articleBands.isNotEmpty)
-                                const Text(
-                                  "Freshness",
-                                  style: TextStyle(
-                                      fontSize: 13, color: Colors.white38),
-                                ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              if (articleBands.isNotEmpty)
-                                InstagramDateTimeWidget(
-                                    fontColor: Colors.white38,
-                                    textSize: 12,
-                                    publishedAt: articleBands
-                                            .elementAt(0)
-                                            .article
-                                            ?.publishedAt
-                                            .toString() ??
-                                        ""),
-                            ],
+                    ),
+                    const SizedBox(height: 16),
+                    if (bandsCards.isNotEmpty)
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          padding: EdgeInsets.only(
+                            left: horizontalPadding,
+                            right: horizontalPadding,
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        if (bandsCards.isNotEmpty)
-                          Container(
-                              alignment: Alignment.centerLeft,
-                              padding: EdgeInsets.only(
-                                left: horizontalPadding,
-                                right: horizontalPadding,
-                              ),
-                              height: 30,
-                              child: multiSelectContainer),
-                        const SizedBox(height: 12),
-                        GridView.custom(
+                          height: 30,
+                          child: multiSelectContainer),
+                    const SizedBox(height: 12),
+
+
+                    GridView.custom(
+                      shrinkWrap: true,
+                      //controller: _scrollController,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: horizontalPadding),
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverQuiltedGridDelegate(
+                        crossAxisCount: 4,
+                        mainAxisSpacing: 6,
+                        crossAxisSpacing: 6,
+                        repeatPattern: QuiltedGridRepeatPattern.inverted,
+                        pattern: [
+                          const QuiltedGridTile(2, 4),
+
+                          const QuiltedGridTile(3, 2),
+                          const QuiltedGridTile(2, 2),
+                          const QuiltedGridTile(3, 2),
+                          const QuiltedGridTile(2, 2),
+
+
+                          const QuiltedGridTile(2, 4),
+
+                          const QuiltedGridTile(2, 2),
+                          const QuiltedGridTile(3, 2),
+                          const QuiltedGridTile(3, 2),
+                          const QuiltedGridTile(2, 2),
+
+                        ],
+                      ),
+                      childrenDelegate: (articleCards.isNotEmpty)
+                          ? SliverChildBuilderDelegate(
+                        childCount: articleCards.length,
+                            (context, index) =>
+                            articleCards.elementAt(index),
+                      )
+                          : SliverChildBuilderDelegate(
+                        childCount: 10,
+                            (context, index) =>
+                        //     Container(
+                        //   decoration: BoxDecoration(
+                        //       color: Colors.grey.shade900,
+                        //       borderRadius:
+                        //           BorderRadius.circular(16)),
+                        // ),
+                        loadingCards.elementAt(index),
+                      ),
+                    ),
+                  ],
+                ),
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(
+                      vertical: 2, horizontal: 0),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                        // Build your content here
+                        // Example:
+                        return GridView.custom(
                           shrinkWrap: true,
                           //controller: _scrollController,
                           padding: EdgeInsets.symmetric(
                               horizontal: horizontalPadding),
                           physics: const NeverScrollableScrollPhysics(),
                           gridDelegate: SliverQuiltedGridDelegate(
-                            crossAxisCount: 4,
-                            mainAxisSpacing: 6,
-                            crossAxisSpacing: 6,
+                            crossAxisCount: 5,
+                            mainAxisSpacing: 8,
+                            crossAxisSpacing: 8,
                             repeatPattern: QuiltedGridRepeatPattern.inverted,
                             pattern: [
-                              const QuiltedGridTile(2, 4),
+                              // const QuiltedGridTile(2, 4),
+                              //
+                              // const QuiltedGridTile(3, 2),
+                              // const QuiltedGridTile(2, 2),
+                              // const QuiltedGridTile(3, 2),
+                              // const QuiltedGridTile(3, 2),
+                              // const QuiltedGridTile(3, 2),
+                              // const QuiltedGridTile(2, 2),
+                              //
+                              //
+                              // const QuiltedGridTile(2, 4),
+                              //
+                              // const QuiltedGridTile(2, 2),
+                              // const QuiltedGridTile(3, 2),
+                              // const QuiltedGridTile(3, 2),
+                              // const QuiltedGridTile(3, 2),
+                              // const QuiltedGridTile(3, 2),
+                              // const QuiltedGridTile(2, 2),
 
-                              const QuiltedGridTile(3, 2),
-                              const QuiltedGridTile(2, 2),
-                              const QuiltedGridTile(3, 2),
-                              const QuiltedGridTile(2, 2),
-
-
-                              const QuiltedGridTile(2, 4),
-
-                              const QuiltedGridTile(2, 2),
+                              const QuiltedGridTile(4, 3),
                               const QuiltedGridTile(3, 2),
                               const QuiltedGridTile(3, 2),
-                              const QuiltedGridTile(2, 2),
+                              const QuiltedGridTile(2, 3),
 
                             ],
                           ),
                           childrenDelegate: (articleCards.isNotEmpty)
                               ? SliverChildBuilderDelegate(
-                                  childCount: articleCards.length,
-                                  (context, index) =>
-                                      articleCards.elementAt(index),
-                                )
+                            childCount: articleCards.length,
+                                (context, index) =>
+                                articleCards.elementAt(index),
+                          )
                               : SliverChildBuilderDelegate(
-                                  childCount: 10,
-                                  (context, index) =>
-                                  //     Container(
-                                  //   decoration: BoxDecoration(
-                                  //       color: Colors.grey.shade900,
-                                  //       borderRadius:
-                                  //           BorderRadius.circular(16)),
-                                  // ),
-                                  loadingCards.elementAt(index),
-                                ),
-                        ),
-                      ],
-                    )
-                  ],
+                            childCount: 10,
+                                (context, index) =>
+                            //     Container(
+                            //   decoration: BoxDecoration(
+                            //       color: Colors.grey.shade900,
+                            //       borderRadius:
+                            //           BorderRadius.circular(16)),
+                            // ),
+                            loadingCards.elementAt(index),
+                          ),
+                        );
+                      },
+                      childCount: 1, // Adjust the child count as per your content
+                    ),
+                  ),
                 ),
               ],
-            ),
+
           ),
         ),
       ),
@@ -404,7 +561,7 @@ class _DiscoverHomeState extends State<DiscoverHome>
   }
   void _scrollListener() {
 
-    double threshold = 200.0; // Adjust as needed
+    double threshold = 250.0; // Adjust as needed
     double maxScrollExtent = _scrollController.position.maxScrollExtent;
     double currentScrollPosition = _scrollController.position.pixels;
     double remainingScrollDistance = maxScrollExtent - currentScrollPosition;
@@ -424,7 +581,13 @@ class _DiscoverHomeState extends State<DiscoverHome>
       } // Pass true to fetch more articles
     }
   }
-
+  void getToTop() {
+    //getBandDrumms();
+    print("Okay");
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _scrollController.animateTo(0, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+    });
+  }
   void getBandsCards() async {
     mulList.clear();
 
@@ -528,9 +691,11 @@ class _DiscoverHomeState extends State<DiscoverHome>
             initialisedYoutubePlayer = false;
             if (selectedBandID == "For You") {
               getArticles(false);
+
             } else {
               getArticlesForBands(selectedBand, false);
             }
+            getToTop();
           });
         },
         bandsCards: bandsCards);

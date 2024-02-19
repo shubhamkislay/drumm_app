@@ -27,7 +27,7 @@ class NoAnimationCupertinoPageRoute<T> extends CupertinoPageRoute<T> {
       Animation<double> secondaryAnimation) {
     return ScaleTransition(
       scale: Tween<double>(
-        begin: 0.25,
+        begin: 0.75,
         end: 1.0,
       ).animate(animation),
       child: builder(context),
