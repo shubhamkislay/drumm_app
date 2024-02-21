@@ -10,6 +10,7 @@ import 'package:drumm_app/model/Drummer.dart';
 import 'package:drumm_app/model/band.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/view_band.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import '../custom/constants/Constants.dart';
 import '../custom/helper/BottomUpPageRoute.dart';
@@ -139,7 +140,7 @@ class BandImageCardState extends State<BandImageCard> {
     if (!widget.onlySelectable!) {
       Navigator.push(
           context,
-          NoAnimationCupertinoPageRoute(
+          SwipeablePageRoute(
             builder: (context) =>
                 BandDetailsPage(
                   band: widget.band,

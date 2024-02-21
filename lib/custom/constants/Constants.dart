@@ -50,4 +50,25 @@ Colors.red,
 Colors.pinkAccent,
 ];
 
+Color getCategoryColor(String category) {
+  switch (category.toLowerCase()) {
+    case 'business':
+      return Colors.deepOrangeAccent;
+    case 'sports':
+      return Colors.indigoAccent;
+    case 'technology':
+      return Colors.tealAccent;
+    case 'health':
+      return Colors.amberAccent;
+    case 'science':
+      return Colors.deepPurpleAccent;
+    case 'politics':
+      return Colors.pinkAccent;
+    case 'entertainment':
+      return Colors.limeAccent;
+    default:
+      return Colors.grey; // default color for unknown category
+  }
+}
+
 

@@ -16,6 +16,7 @@ import 'package:drumm_app/model/jam.dart';
 import 'package:drumm_app/model/jam_image_card.dart';
 import 'package:drumm_app/open_article_page.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'JamQuestionButton.dart';
 import 'model/article.dart';
@@ -53,7 +54,7 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                     onTap: () {
                       Navigator.push(
                           context,
-                          MaterialPageRoute(
+                          SwipeablePageRoute(
                               builder: (context) => OpenArticlePage(
                                     article: article ?? Article(),
                                   )));

@@ -12,15 +12,35 @@ class RandomColorBackground extends StatefulWidget {
 
   RandomColorBackground({required this.setColor});
 
-  static Color generateRandomVibrantColor() {
+  static Color generateRandomVibrantColor(
+      {double blueHueMin = 200,
+        double blueHueMax = 250,
+        double greenHueMin = 120,
+        double greenHueMax = 180,
+        double redHueMin = 0,
+        double redHueMax = 30}) {
     final Random random = Random();
+    double blueHue =
+        blueHueMin + random.nextDouble() * (blueHueMax - blueHueMin);
+    double greenHue =
+        greenHueMin + random.nextDouble() * (greenHueMax - greenHueMin);
+    double redHue =
+        redHueMin + random.nextDouble() * (redHueMax - redHueMin);
 
-    // Generate a random hue between 0 and 360
-    final double hue = random.nextDouble() * 360;
+    final Color blueColor = HSLColor.fromAHSL(1.0, blueHue, 1.0, 0.5).toColor();
+    final Color greenColor =
+    HSLColor.fromAHSL(1.0, greenHue, 1.0, 0.5).toColor();
+    final Color redColor =
+    HSLColor.fromAHSL(1.0, redHue, 1.0, 0.5).toColor();
 
-    final Color darkerVibrantColor = HSLColor.fromAHSL(1.0, hue, 1.0, 0.2).toColor();
-
-    return darkerVibrantColor;
+    // Randomly choose between blue, green, and red
+    int randomIndex = random.nextInt(3);
+    if (randomIndex == 0)
+      return blueColor;
+    else if (randomIndex == 1)
+      return greenColor;
+    else
+      return redColor;
   }
 
 }

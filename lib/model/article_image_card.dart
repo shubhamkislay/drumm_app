@@ -13,6 +13,7 @@ import 'package:drumm_app/home_feed.dart';
 import 'package:drumm_app/model/article.dart';
 import 'package:drumm_app/model/question.dart';
 import 'package:drumm_app/open_article_page.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import '../custom/helper/BottomUpPageRoute.dart';
 import '../theme/theme_constants.dart';
@@ -48,7 +49,7 @@ class ArticleImageCard extends StatelessWidget {
               if (articleBands == null)
                 Navigator.push(
                     context,
-                    MaterialPageRoute(
+                    SwipeablePageRoute(
                       builder: (context) => OpenArticlePage(
                         article: articleBand.article??Article(),
                       ),
@@ -68,7 +69,7 @@ class ArticleImageCard extends StatelessWidget {
 
                 Navigator.push(
                   context,
-                  NoAnimationCupertinoPageRoute(
+                  SwipeablePageRoute(
                     builder: (context) => ArticleReels(
                       preloadList: articleBands,
                       articlePosition: articleBands?.indexOf(articleBand)??0,
@@ -85,26 +86,28 @@ class ArticleImageCard extends StatelessWidget {
                   padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(14),
-                      color:
-                          Colors.grey.withOpacity(0.15)
+                      color:Colors.grey.shade900.withOpacity(0.75)
                       ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Stack(
                       children: [
-                        Hero(
-                          tag: articleBands?.elementAt(articleBands?.indexOf(articleBand)??0).article?.articleId??"",
-                          child: CachedNetworkImage(
-                              width: double.infinity,
-                              height: double.infinity,
-                              errorWidget: (context, url, error) {
-                                return Container();
-                              },
-                              placeholder: (context, url) => Container(
-                                    color: Colors.grey.shade900,
-                                  ),
-                              imageUrl: articleBand.article?.imageUrl ?? "",
-                              fit: BoxFit.cover),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 36),
+                          child: Hero(
+                            tag: articleBands?.elementAt(articleBands?.indexOf(articleBand)??0).article?.articleId??"",
+                            child: CachedNetworkImage(
+                                width: double.infinity,
+                                height: double.infinity,
+                                errorWidget: (context, url, error) {
+                                  return Container();
+                                },
+                                placeholder: (context, url) => Container(
+                                      color: Colors.grey.shade900,
+                                    ),
+                                imageUrl: articleBand.article?.imageUrl ?? "",
+                                fit: BoxFit.cover),
+                          ),
                         ),
                         Container(
                           alignment: Alignment.bottomLeft,
@@ -115,9 +118,9 @@ class ArticleImageCard extends StatelessWidget {
                                   begin: Alignment.topCenter,
                                   colors: [
                                 Colors.transparent,
-                                    Colors.black.withOpacity(0.70),
-                                Colors.black,//.withOpacity(0.95),
-                                //RandomColorBackground.generateRandomVibrantColor()
+                                    Colors.black.withOpacity(0.65),
+                                    Colors.black,
+                                Colors.black,
                               ])),
                           //RandomColorBackground.generateRandomVibrantColor().withOpacity(0.55),
                           child: Column(
@@ -142,8 +145,7 @@ class ArticleImageCard extends StatelessWidget {
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(8),
-                                            color: Colors.grey.shade800
-                                                .withOpacity(0.45),
+                                            color: Colors.grey.shade900.withOpacity(0.5)
                                           ),
                                           child: Hero(
                                             tag: "${articleBand.band?.name} ${articleBand.article?.articleId}",
@@ -182,13 +184,13 @@ class ArticleImageCard extends StatelessWidget {
                                                 ""),
                                             textAlign: TextAlign.left,
                                             overflow: TextOverflow.ellipsis,
-                                            maxFontSize: 17,
-                                            maxLines: 4,
+                                            maxFontSize: 16,
+                                            maxLines: 3,
                                             minFontSize: 10,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                                 overflow:
                                                     TextOverflow.ellipsis,
-                                                fontSize: 17,
+                                                fontSize: 16,
                                                 //fontWeight: FontWeight.bold,
                                                 fontFamily: APP_FONT_MEDIUM,
                                                 color: Colors.white),
@@ -253,24 +255,122 @@ class ArticleImageCard extends StatelessWidget {
                     width: MediaQuery.of(context).size.width,
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(14),
                       color: Colors.grey.shade900,
+                      //border: Border.all(color: Colors.blueGrey.withOpacity(0.15,),width: 2,)
+
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
-                      child: AutoSizeText(
-                        unescape.convert(articleBand.article?.meta ?? articleBand.article?.title ?? ""),
-                        textAlign: TextAlign.left,
-                        overflow: TextOverflow.ellipsis,
-                        maxFontSize: 17,
-                        maxLines: 3,
-                        minFontSize: 10,
-                        style: const TextStyle(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          if(articleBand.article?.source!=null)
+                          Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    child: Container(
+                                      padding:
+                                      const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4),
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(8),
+                                        color: Colors.white
+                                            .withOpacity(0.1),
+                                      ),
+                                      child: Hero(
+                                        tag: "${articleBand.band?.name} ${articleBand.article?.articleId}",
+                                        child: AutoSizeText(
+                                          "${articleBand.band?.name}",
+                                          textAlign: TextAlign.left,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          minFontSize: 8,
+                                          style: const TextStyle(
+                                              fontSize: 8,
+                                              fontFamily: APP_FONT_MEDIUM,
+                                              //fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 4,),
+                          AutoSizeText(
+                            unescape.convert(articleBand.article?.meta ?? articleBand.article?.title ?? ""),
+                            textAlign: TextAlign.left,
                             overflow: TextOverflow.ellipsis,
-                            fontSize: 17,
-                            //fontWeight: FontWeight.bold,
-                            fontFamily: APP_FONT_MEDIUM,
-                            color: Colors.white),
+                            maxFontSize: 24,
+                            maxLines: 3,
+                            minFontSize: 10,
+                            style: const TextStyle(
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: 24,
+                                //fontWeight: FontWeight.bold,
+                                fontFamily: APP_FONT_MEDIUM,
+                                color: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          if(articleBand.article?.source!=null)
+                          Flexible(
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: Container(
+                                    padding: const EdgeInsets.only(
+                                        left: 4, bottom: 4),
+                                    decoration: BoxDecoration(
+                                      //borderRadius: BorderRadius.circular(12),
+                                      //color: Colors.grey.shade900.withOpacity(0.35),
+                                    ),
+                                    child: AutoSizeText(
+                                      "${articleBand.article?.source??""}",
+                                      textAlign: TextAlign.left,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      minFontSize: 8,
+                                      style: const TextStyle(
+                                          fontSize: 10,
+                                          fontFamily: APP_FONT_MEDIUM,
+                                          //fontWeight: FontWeight.bold,
+                                          color: Colors.white70),
+                                    ),
+                                  ),
+                                ),
+                                const Text(" • "),
+                               Flexible(
+                                 child: Container(
+                                    padding: const EdgeInsets.only(
+                                        right: 4, bottom: 4),
+                                    child: InstagramDateTimeWidget(
+                                      textSize: 10,
+                                      fontColor: Colors.white70,
+                                      publishedAt: articleBand.article?.publishedAt
+                                          .toString()??"",
+                                    ),
+                                  ),
+                               ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

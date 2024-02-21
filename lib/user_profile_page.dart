@@ -15,6 +15,7 @@ import 'package:drumm_app/model/article.dart';
 import 'package:drumm_app/model/article_image_card.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'custom/constants/Constants.dart';
 import 'custom/helper/image_uploader.dart';
@@ -498,7 +499,7 @@ class _UserProfilePageState extends State<UserProfilePage>
   }
 
   void openSettingsPage() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+    Navigator.push(context, SwipeablePageRoute(builder: (context) => SettingsPage()));
 
   }
 }

@@ -53,6 +53,7 @@ import 'package:async/async.dart';
 import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'ArticleDrummButton.dart';
 import 'BottomJamWindow.dart';
@@ -386,7 +387,7 @@ class ArticleReelsState extends State<ArticleReels>
                           onTap: () {
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(
+                                SwipeablePageRoute(
                                   builder: (context) => BandDetailsPage(
                                     band: articleOnTop?.band,
                                   ),
@@ -1308,14 +1309,20 @@ class ArticleReelsState extends State<ArticleReels>
   void openArticlePage(Article? article, int index) async {
     var returnData = await Navigator.push<Article?>(
       context,
-      MaterialPageRoute(
+      SwipeablePageRoute(
         builder: (context) => OpenArticlePage(
           article: article ?? Article(),
         ),
       ),
     );
-    articles.elementAt(index).article = returnData!;
-    _articlesController.add(articles);
+    try {
+      articles
+          .elementAt(index)
+          .article = returnData!;
+      _articlesController.add(articles);
+    }catch(e){
+
+    }
     // print("Return Data ${returnData?.liked}");
   }
 

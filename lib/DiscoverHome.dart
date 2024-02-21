@@ -41,7 +41,7 @@ class DiscoverHome extends StatefulWidget {
 }
 
 class DiscoverHomeState extends State<DiscoverHome>
-    with AutomaticKeepAliveClientMixin<DiscoverHome>, TickerProviderStateMixin {
+    with AutomaticKeepAliveClientMixin<DiscoverHome>, TickerProviderStateMixin, WidgetsBindingObserver  {
   List<Article> articles = [];
   List<ArticleBand> articleBands = [];
   late CardSwiperController? controller;
@@ -107,6 +107,7 @@ class DiscoverHomeState extends State<DiscoverHome>
   double curve = 26;
 
   int undoIndex = 0;
+  bool showNewArticleWidget = false;
 
   int topIndex = 0;
 
@@ -139,384 +140,318 @@ class DiscoverHomeState extends State<DiscoverHome>
           height: double.maxFinite,
           width: double.maxFinite,
           padding: const EdgeInsets.symmetric(horizontal: 0),
-          child: CustomScrollView(
-            controller: _scrollController,
-              slivers: [
-                SliverPadding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: 2, horizontal: horizontalPadding),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                        // Build your content here
-                        // Example:
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(36),
-                                  border: Border.all(
-                                      color: Colors.grey.shade900, width: 2),
+          child: Stack(
+            children: [
+              CustomScrollView(
+                controller: _scrollController,
+                  slivers: [
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 2, horizontal: horizontalPadding),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                            // Build your content here
+                            // Example:
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(36),
+                                      border: Border.all(
+                                          color: Colors.grey.shade900, width: 2),
+                                    ),
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => UserProfilePage(
+                                                  fromSearch: true,
+                                                ),
+                                              ));
+                                        },
+                                        child: UserProfileIcon(
+                                          iconSize: 32,
+                                        ))),
+                                const SizedBox(
+                                  width: 8,
                                 ),
-                                child: GestureDetector(
+                                Expanded(
+                                  child: GestureDetector(
                                     onTap: () {
                                       Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => UserProfilePage(
-                                              fromSearch: true,
-                                            ),
-                                          ));
+                                        context,
+                                        PageRouteBuilder(
+                                          pageBuilder:
+                                              (context, animation1, animation2) =>
+                                              SearchResultPage(),
+                                          transitionDuration: Duration.zero,
+                                          reverseTransitionDuration: Duration.zero,
+                                        ),
+                                      );
                                     },
-                                    child: UserProfileIcon(
-                                      iconSize: 32,
-                                    ))),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    PageRouteBuilder(
-                                      pageBuilder:
-                                          (context, animation1, animation2) =>
-                                          SearchResultPage(),
-                                      transitionDuration: Duration.zero,
-                                      reverseTransitionDuration: Duration.zero,
-                                    ),
-                                  );
-                                },
-                                child: Wrap(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 9, horizontal: 16),
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey.shade900,
-                                          //border: Border.all(color: Colors.grey.shade900),
-                                          borderRadius: BorderRadius.circular(16)),
-                                      child: Row(
-                                        children: [
-                                          Image.asset("images/search_button.png",
-                                              color: Colors.white38, width: 16),
-                                          const SizedBox(
-                                            width: 8,
+                                    child: Wrap(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 9, horizontal: 16),
+                                          decoration: BoxDecoration(
+                                              color: Colors.grey.shade900,
+                                              //border: Border.all(color: Colors.grey.shade900),
+                                              borderRadius: BorderRadius.circular(16)),
+                                          child: Row(
+                                            children: [
+                                              Image.asset("images/search_button.png",
+                                                  color: Colors.white38, width: 16),
+                                              const SizedBox(
+                                                width: 8,
+                                              ),
+                                              const Text(
+                                                "Search drumms",
+                                                style: TextStyle(color: Colors.white38),
+                                              )
+                                            ],
                                           ),
-                                          const Text(
-                                            "Search drumms",
-                                            style: TextStyle(color: Colors.white38),
-                                          )
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            const LiveIcon(),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            const NotificationIcon(),
-                          ],
-                        );
-                      },
-                      childCount: 1, // Adjust the child count as per your content
-                    ),
-                  ),
-                ),
-                if (drummCards.isNotEmpty)
-                  SliverPadding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: 2, horizontal: 0),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                          // Build your content here
-                          // Example:
-                          return Column(
-                            children: [
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: horizontalPadding),
-                                width: double.maxFinite,
-                                child: const Text(
-                                  "Live Drumms",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold, fontSize: 20),
+                                const SizedBox(
+                                  width: 8,
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 12,
-                              ),
-                              Container(
-                                height: 225,
-                                child: PageView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: drummCards,
+                                const LiveIcon(),
+                                const SizedBox(
+                                  width: 8,
                                 ),
-                              ),
-                            ],
-                          );
-                        },
-                        childCount: 1, // Adjust the child count as per your content
-                      ),
-                    ),
-                  ),
-                SliverAppBar(
-                  backgroundColor: COLOR_BACKGROUND.withOpacity(0.9),
-                  floating: true,
-                  pinned: true,
-                  toolbarHeight: 102,
-                  snap: true,
-                  elevation: 10,
-                  automaticallyImplyLeading: false,
-                  flexibleSpace: Column(
-                    children: [
-                      const SizedBox(height: 16),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: horizontalPadding),
-                        width: double.maxFinite,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "What's new",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                            ),
-                            Expanded(child: Container()),
-                            if (articleBands.isNotEmpty)
-                              const Icon(Icons.refresh_rounded,
-                                  size: 16, color: Colors.white38),
-                            const SizedBox(
-                              width: 2,
-                            ),
-                            if (articleBands.isNotEmpty)
-                              const Text(
-                                "Freshness",
-                                style: TextStyle(
-                                    fontSize: 13, color: Colors.white38),
-                              ),
-                            const SizedBox(
-                              width: 4,
-                            ),
-                            if (articleBands.isNotEmpty)
-                              InstagramDateTimeWidget(
-                                  fontColor: Colors.white38,
-                                  textSize: 12,
-                                  publishedAt: articleBands
-                                      .elementAt(0)
-                                      .article
-                                      ?.publishedAt
-                                      .toString() ??
-                                      ""),
-                          ],
+                                const NotificationIcon(),
+                              ],
+                            );
+                          },
+                          childCount: 1, // Adjust the child count as per your content
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      if (bandsCards.isNotEmpty)
-                        Container(
-                          //color: COLOR_BACKGROUND,
-                            alignment: Alignment.centerLeft,
-                            padding: EdgeInsets.only(
-                              left: horizontalPadding,
-                              right: horizontalPadding,
-                            ),
-                            height: 30,
-                            child: multiSelectContainer),
-                      const SizedBox(height: 12),
-                    ],
-                  ),
-                ),
-              if(false)  Column(
-                  children: [
-                    const SizedBox(height: 16),
-                    Container(
+                    ),
+                    if (drummCards.isNotEmpty)
+                      SliverPadding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 2, horizontal: 0),
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                              // Build your content here
+                              // Example:
+                              return Column(
+                                children: [
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: horizontalPadding),
+                                    width: double.maxFinite,
+                                    child: const Text(
+                                      "Live Drumms",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold, fontSize: 20),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 12,
+                                  ),
+                                  Container(
+                                    height: 225,
+                                    child: PageView(
+                                      scrollDirection: Axis.horizontal,
+                                      children: drummCards,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                            childCount: 1, // Adjust the child count as per your content
+                          ),
+                        ),
+                      ),
+
+                    SliverPadding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: horizontalPadding),
-                      width: double.maxFinite,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                          vertical: 2, horizontal: 0),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                            // Build your content here
+                            // Example:
+                            return Column(
+                              children: [
+                                const SizedBox(height: 12),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: horizontalPadding),
+                                  width: double.maxFinite,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        "What's new",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold, fontSize: 20),
+                                      ),
+                                      Expanded(child: Container()),
+                                      if (articleBands.isNotEmpty)
+                                        const Icon(Icons.refresh_rounded,
+                                            size: 16, color: Colors.white38),
+                                      const SizedBox(
+                                        width: 2,
+                                      ),
+                                      if (articleBands.isNotEmpty)
+                                        const Text(
+                                          "Freshness",
+                                          style: TextStyle(
+                                              fontSize: 13, color: Colors.white38),
+                                        ),
+                                      const SizedBox(
+                                        width: 4,
+                                      ),
+                                      if (articleBands.isNotEmpty)
+                                        InstagramDateTimeWidget(
+                                            fontColor: Colors.white38,
+                                            textSize: 12,
+                                            publishedAt: articleBands
+                                                .elementAt(0)
+                                                .article
+                                                ?.publishedAt
+                                                .toString() ??
+                                                ""),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                          childCount: 1, // Adjust the child count as per your content
+                        ),
+                      ),
+                    ),
+                    SliverAppBar(
+                      backgroundColor: COLOR_BACKGROUND.withOpacity(0.9),
+                      floating: true,
+                      pinned: true,
+                      toolbarHeight: 58,
+                      snap: true,
+                      elevation: 10,
+                      automaticallyImplyLeading: false,
+                      flexibleSpace: Column(
                         children: [
-                          const Text(
-                            "What's new",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                          Expanded(child: Container()),
-                          if (articleBands.isNotEmpty)
-                            const Icon(Icons.refresh_rounded,
-                                size: 16, color: Colors.white38),
-                          const SizedBox(
-                            width: 2,
-                          ),
-                          if (articleBands.isNotEmpty)
-                            const Text(
-                              "Freshness",
-                              style: TextStyle(
-                                  fontSize: 13, color: Colors.white38),
-                            ),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          if (articleBands.isNotEmpty)
-                            InstagramDateTimeWidget(
-                                fontColor: Colors.white38,
-                                textSize: 12,
-                                publishedAt: articleBands
-                                    .elementAt(0)
-                                    .article
-                                    ?.publishedAt
-                                    .toString() ??
-                                    ""),
+                          const SizedBox(height: 16),
+                          if (bandsCards.isNotEmpty)
+                            Container(
+                              //color: COLOR_BACKGROUND,
+                                alignment: Alignment.centerLeft,
+                                padding: EdgeInsets.only(
+                                  left: horizontalPadding,
+                                  right: horizontalPadding,
+                                ),
+                                height: 30,
+                                child: multiSelectContainer),
+                          const SizedBox(height: 12),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    if (bandsCards.isNotEmpty)
-                      Container(
-                          alignment: Alignment.centerLeft,
-                          padding: EdgeInsets.only(
-                            left: horizontalPadding,
-                            right: horizontalPadding,
-                          ),
-                          height: 30,
-                          child: multiSelectContainer),
-                    const SizedBox(height: 12),
-
-
-                    GridView.custom(
-                      shrinkWrap: true,
-                      //controller: _scrollController,
+                    SliverPadding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: horizontalPadding),
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverQuiltedGridDelegate(
-                        crossAxisCount: 4,
-                        mainAxisSpacing: 6,
-                        crossAxisSpacing: 6,
-                        repeatPattern: QuiltedGridRepeatPattern.inverted,
-                        pattern: [
-                          const QuiltedGridTile(2, 4),
+                          vertical: 2, horizontal: 0),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                            // Build your content here
+                            // Example:
+                            return GridView.custom(
+                              shrinkWrap: true,
+                              //controller: _scrollController,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: horizontalPadding),
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate: SliverQuiltedGridDelegate(
+                                crossAxisCount: 5,
+                                mainAxisSpacing: 8,
+                                crossAxisSpacing: 8,
+                                repeatPattern: QuiltedGridRepeatPattern.inverted,
+                                pattern: [
+                                  const QuiltedGridTile(4, 3),
+                                  const QuiltedGridTile(3, 2),
+                                  const QuiltedGridTile(3, 2),
+                                  const QuiltedGridTile(2, 3),
 
-                          const QuiltedGridTile(3, 2),
-                          const QuiltedGridTile(2, 2),
-                          const QuiltedGridTile(3, 2),
-                          const QuiltedGridTile(2, 2),
-
-
-                          const QuiltedGridTile(2, 4),
-
-                          const QuiltedGridTile(2, 2),
-                          const QuiltedGridTile(3, 2),
-                          const QuiltedGridTile(3, 2),
-                          const QuiltedGridTile(2, 2),
-
-                        ],
-                      ),
-                      childrenDelegate: (articleCards.isNotEmpty)
-                          ? SliverChildBuilderDelegate(
-                        childCount: articleCards.length,
-                            (context, index) =>
-                            articleCards.elementAt(index),
-                      )
-                          : SliverChildBuilderDelegate(
-                        childCount: 10,
-                            (context, index) =>
-                        //     Container(
-                        //   decoration: BoxDecoration(
-                        //       color: Colors.grey.shade900,
-                        //       borderRadius:
-                        //           BorderRadius.circular(16)),
-                        // ),
-                        loadingCards.elementAt(index),
+                                ],
+                              ),
+                              childrenDelegate: (articleCards.isNotEmpty)
+                                  ? SliverChildBuilderDelegate(
+                                childCount: articleCards.length,
+                                    (context, index) =>
+                                    articleCards.elementAt(index),
+                              )
+                                  : SliverChildBuilderDelegate(
+                                childCount: 10,
+                                    (context, index) =>
+                                //     Container(
+                                //   decoration: BoxDecoration(
+                                //       color: Colors.grey.shade900,
+                                //       borderRadius:
+                                //           BorderRadius.circular(16)),
+                                // ),
+                                loadingCards.elementAt(index),
+                              ),
+                            );
+                          },
+                          childCount: 1, // Adjust the child count as per your content
+                        ),
                       ),
                     ),
                   ],
-                ),
-                SliverPadding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: 2, horizontal: 0),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                        // Build your content here
-                        // Example:
-                        return GridView.custom(
-                          shrinkWrap: true,
-                          //controller: _scrollController,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: horizontalPadding),
-                          physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate: SliverQuiltedGridDelegate(
-                            crossAxisCount: 5,
-                            mainAxisSpacing: 8,
-                            crossAxisSpacing: 8,
-                            repeatPattern: QuiltedGridRepeatPattern.inverted,
-                            pattern: [
-                              // const QuiltedGridTile(2, 4),
-                              //
-                              // const QuiltedGridTile(3, 2),
-                              // const QuiltedGridTile(2, 2),
-                              // const QuiltedGridTile(3, 2),
-                              // const QuiltedGridTile(3, 2),
-                              // const QuiltedGridTile(3, 2),
-                              // const QuiltedGridTile(2, 2),
-                              //
-                              //
-                              // const QuiltedGridTile(2, 4),
-                              //
-                              // const QuiltedGridTile(2, 2),
-                              // const QuiltedGridTile(3, 2),
-                              // const QuiltedGridTile(3, 2),
-                              // const QuiltedGridTile(3, 2),
-                              // const QuiltedGridTile(3, 2),
-                              // const QuiltedGridTile(2, 2),
 
-                              const QuiltedGridTile(4, 3),
-                              const QuiltedGridTile(3, 2),
-                              const QuiltedGridTile(3, 2),
-                              const QuiltedGridTile(2, 3),
+              ),
+              if(showNewArticleWidget)
+                Container(
+                  width: double.maxFinite,
+                  alignment: Alignment.bottomCenter,
+                  margin: EdgeInsets.only(bottom: 12),
+                  child: GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        showNewArticleWidget = false;
+                        getToTop();
 
-                            ],
-                          ),
-                          childrenDelegate: (articleCards.isNotEmpty)
-                              ? SliverChildBuilderDelegate(
-                            childCount: articleCards.length,
-                                (context, index) =>
-                                articleCards.elementAt(index),
-                          )
-                              : SliverChildBuilderDelegate(
-                            childCount: 10,
-                                (context, index) =>
-                            //     Container(
-                            //   decoration: BoxDecoration(
-                            //       color: Colors.grey.shade900,
-                            //       borderRadius:
-                            //           BorderRadius.circular(16)),
-                            // ),
-                            loadingCards.elementAt(index),
-                          ),
-                        );
-                      },
-                      childCount: 1, // Adjust the child count as per your content
+                        _lastDocument =null;
+                        _startDocument = null;
+
+                        if (selectedBandID == "For You") {
+                          getArticles(false);
+                        } else {
+                          getArticlesForBands(selectedBand, false);
+                        }
+                      });
+
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 8,horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text("New articles available",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                            color: Colors.white
+                        ),),
                     ),
                   ),
                 ),
-              ],
-
+            ],
           ),
         ),
       ),
@@ -525,6 +460,7 @@ class DiscoverHomeState extends State<DiscoverHome>
 
   @override
   void dispose() {
+
     try {
       if (controller != null) controller?.dispose();
     } catch (e) {}
@@ -532,7 +468,7 @@ class DiscoverHomeState extends State<DiscoverHome>
     if (FirebaseDBOperations.ANIMATION_CONTROLLER != null) {
       FirebaseDBOperations.ANIMATION_CONTROLLER.dispose();
     }
-
+    WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
   }
 
@@ -542,6 +478,7 @@ class DiscoverHomeState extends State<DiscoverHome>
     loadingAnimation = LOADING_ASSET;
     controller = CardSwiperController();
     super.initState();
+    WidgetsBinding.instance?.addObserver(this);
 
     for(int i = 0;i<10;i++){
       loadingCards.add(ArticleImageCard(ArticleBand(),loading: false,));
@@ -585,7 +522,7 @@ class DiscoverHomeState extends State<DiscoverHome>
     //getBandDrumms();
     print("Okay");
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      _scrollController.animateTo(0, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+      _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
     });
   }
   void getBandsCards() async {
@@ -695,7 +632,10 @@ class DiscoverHomeState extends State<DiscoverHome>
             } else {
               getArticlesForBands(selectedBand, false);
             }
-            getToTop();
+            setState(() {
+              showNewArticleWidget = false;
+            });
+            //getToTop();
           });
         },
         bandsCards: bandsCards);
@@ -711,8 +651,11 @@ class DiscoverHomeState extends State<DiscoverHome>
         _startDocument, _lastDocument, reverse);
     List<Article> articleFetched = algoliaArticles?.articles ??
         []; //await FirebaseDBOperations.getArticlesByBands();
-    _lastDocument = algoliaArticles?.getLastDocument();
+
+    if(_lastDocument==null)
     _startDocument = algoliaArticles?.getStartDocument();
+
+    _lastDocument = algoliaArticles?.getLastDocument();
 
     if (articleFetched.isEmpty) {
       setState(() {
@@ -884,5 +827,46 @@ class DiscoverHomeState extends State<DiscoverHome>
         sharedPref.getBool(CONFIRM_JOIN_SHARED_PREF) ?? true;
     showExploreArticlesAlert =
         sharedPref.getBool(ALERT_EXPLORE_ARTICLES_SHARED_PREF) ?? true;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      // Call checkForNewArticles whenever the app is resumed
+      print("On Resume Discover Home");
+      checkFreshArticles();
+      // checkForNewArticles();
+    }
+
+
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Call checkForNewArticles whenever dependencies change
+    print("On Resume Discover Home didChangeDependencies");
+    // Delay the call to checkForNewArticles to ensure the widget is fully attached
+  }
+
+  void checkFreshArticles() async {
+    late AlgoliaArticles freshArticle;
+
+    if (selectedBandID == "For You") {
+      freshArticle = await FirebaseDBOperations.getArticlesData(
+          null, null, false);
+
+    } else {
+      freshArticle = await FirebaseDBOperations.getArticlesDataForBand(
+          null, null, false, selectedBand);
+    }
+
+    if(_startDocument?.data()!["articleId"]!=freshArticle?.getStartDocument()?.data()!["articleId"]) {
+      print("New Articles fetched");
+      setState(() {
+        showNewArticleWidget = true;
+      });
+    }
   }
 }

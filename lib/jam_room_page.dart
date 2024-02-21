@@ -20,6 +20,7 @@ import 'package:drumm_app/profile_page.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/user_profile_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'custom/TutorialBox.dart';
 import 'custom/constants/Constants.dart';
@@ -95,7 +96,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
                     onTap: () {
                       Navigator.push(
                           context,
-                          MaterialPageRoute(
+                          SwipeablePageRoute(
                               builder: (context) => OpenArticlePage(
                                     article: article ?? Article(),
                                   )));
