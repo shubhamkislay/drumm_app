@@ -71,6 +71,7 @@ import 'custom/create_drumm_widget.dart';
 import 'custom/helper/AudioChannelWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'custom/helper/CustomPageViewPhysics.dart';
 import 'model/ZoomPicture.dart';
 import 'model/article_band.dart';
 import 'model/home_item.dart';
@@ -490,6 +491,7 @@ class ArticleReelsState extends State<ArticleReels>
                 },
                 itemCount: widget.preloadList?.length,
                 scrollDirection: Axis.vertical,
+                physics: const CustomPageViewScrollPhysics(),
                 itemBuilder: (BuildContext context, int index) {
                   if (!articleIDs
                       .contains(widget.preloadList?.elementAt(index).article?.articleId)) {
@@ -510,7 +512,7 @@ class ArticleReelsState extends State<ArticleReels>
                       fit: (isContainerVisible)
                           ? BoxFit.cover
                           : BoxFit.cover,
-                      alignment: Alignment.center,
+                      alignment: Alignment.topCenter,
                       width: double.maxFinite,
                       height: double.maxFinite,
                       imageUrl:
@@ -581,30 +583,71 @@ class ArticleReelsState extends State<ArticleReels>
                         Column(
                           children: [
                             Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Container(
+                                //padding: const EdgeInsets.symmetric(horizontal: 16),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    const SizedBox(height: 48,),
-                                    SafeArea(
-                                      bottom: false,
+                                    //const SizedBox(height: 48,),
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          Navigator.push(
+                                            context,
+                                            PageRouteBuilder(
+                                              pageBuilder: (context, animation1,
+                                                  animation2) =>
+                                                  ZoomPicture(
+                                                      articleId: widget.preloadList?.elementAt(index).article?.articleId,
+                                                      url: widget.preloadList?.elementAt(index).article?.imageUrl ??
+                                                          "https://placekitten.com/640/360"),
+                                              transitionDuration:
+                                              const Duration(seconds: 0),
+                                              reverseTransitionDuration:
+                                              const Duration(seconds: 0),
+                                            ),
+                                          );
+                                        },
+                                        child: Stack(
+                                          children: [
+                                            articleWidget,
+                                          Container(
+                                            alignment: Alignment.bottomLeft,
+                                            padding: const EdgeInsets.all(4),
+                                            decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                    begin: Alignment.bottomCenter,
+                                                    end: Alignment.topCenter,
+                                                    colors: [
+                                                      Colors.transparent,
+                                                      Colors.black.withOpacity(0.15),
+                                                      //Colors.black,
+                                                      Colors.black.withOpacity(0.65),
+                                                    ])),),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12,),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12),
                                       child: FadeInContainer(
                                         child: AutoSizeText(
                                           unescape.convert(widget.preloadList?.elementAt(index).article?.title?? ""),
                                           textAlign: TextAlign.start,
-                                          maxLines: 5,
+                                          maxLines: 4,
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontFamily: APP_FONT_MEDIUM,
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 24,
+                                            fontSize: 20,
                                           ),
                                         ),
                                       ),
                                     ),
                                     Container(
                                       alignment: Alignment.centerLeft,
+                                      padding: const EdgeInsets.symmetric(horizontal: 12),
                                       margin: const EdgeInsets.only(top: 8,bottom: 12),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -635,38 +678,14 @@ class ArticleReelsState extends State<ArticleReels>
                                         ],
                                       ),
                                     ),
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          Navigator.push(
-                                            context,
-                                            PageRouteBuilder(
-                                              pageBuilder: (context, animation1,
-                                                  animation2) =>
-                                                  ZoomPicture(
-                                                    articleId: widget.preloadList?.elementAt(index).article?.articleId,
-                                                      url: widget.preloadList?.elementAt(index).article?.imageUrl ??
-                                                          "https://placekitten.com/640/360"),
-                                              transitionDuration:
-                                              const Duration(seconds: 0),
-                                              reverseTransitionDuration:
-                                              const Duration(seconds: 0),
-                                            ),
-                                          );
-                                        },
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(borderCurve),
-                                          child: articleWidget,
-                                        ),
-                                      ),
-                                    ),
+
                                     if(true)GestureDetector(
                                       onTap: (){
                                         openArticlePage(widget.preloadList?.elementAt(index).article,index);
                                       },
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 8),
-                                        margin: const EdgeInsets.symmetric(vertical: 12),
+                                        margin: const EdgeInsets.symmetric(vertical: 12,horizontal: 12),
                                         width: double.maxFinite,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(borderCurve),
@@ -724,7 +743,7 @@ class ArticleReelsState extends State<ArticleReels>
                                 width: double.maxFinite,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 8),
-                                margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                                margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
                                 alignment: Alignment.centerLeft,
                                 decoration: BoxDecoration(
                                   color: Colors.white.withOpacity(0.05),
@@ -781,7 +800,7 @@ class ArticleReelsState extends State<ArticleReels>
                                   width: double.maxFinite,
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 8, vertical: 8),
-                                  margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                                  margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
                                   alignment: Alignment.centerLeft,
                                   decoration: BoxDecoration(
                                     //color: Colors.blue,//s.withOpacity(0.1),

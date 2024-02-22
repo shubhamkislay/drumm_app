@@ -44,339 +44,429 @@ class ArticleImageCard extends StatelessWidget {
               color: Colors.grey.shade900,
             ),
           )
-        : GestureDetector(
-            onTap: () {
-              if (articleBands == null)
-                Navigator.push(
-                    context,
-                    SwipeablePageRoute(
-                      builder: (context) => OpenArticlePage(
-                        article: articleBand.article??Article(),
-                      ),
-                    ));
-              else {
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (context) => ArticleReels(
-                //         preloadList: articleBands,
-                //         articlePosition: articleBands?.indexOf(articleBand)??0,
-                //         userConnected: false,
-                //         scrollController: ScrollController(),
-                //         tag: articleBands?.elementAt(articleBands?.indexOf(articleBand)??0).article?.articleId??"",
-                //       ),
-                //     ));
-
-                Navigator.push(
-                  context,
-                  SwipeablePageRoute(
-                    builder: (context) => ArticleReels(
-                      preloadList: articleBands,
-                      articlePosition: articleBands?.indexOf(articleBand)??0,
-                      userConnected: false,
-                      scrollController: ScrollController(),
-                      tag: articleBands?.elementAt(articleBands?.indexOf(articleBand)??0).article?.articleId??"",
-                    ),
-                  ),
-                );
-              }
-            },
-            child: (articleBand.article?.imageUrl != null)
-                ? Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      color:Colors.grey.shade900.withOpacity(0.75)
-                      ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Stack(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 36),
-                          child: Hero(
-                            tag: articleBands?.elementAt(articleBands?.indexOf(articleBand)??0).article?.articleId??"",
-                            child: CachedNetworkImage(
-                                width: double.infinity,
-                                height: double.infinity,
-                                errorWidget: (context, url, error) {
-                                  return Container();
-                                },
-                                placeholder: (context, url) => Container(
-                                      color: Colors.grey.shade900,
-                                    ),
-                                imageUrl: articleBand.article?.imageUrl ?? "",
-                                fit: BoxFit.cover),
+        : LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            double maxHeight = constraints.maxHeight / 2.5;
+            return GestureDetector(
+                onTap: () {
+                  if (articleBands == null)
+                    Navigator.push(
+                        context,
+                        SwipeablePageRoute(
+                          builder: (context) => OpenArticlePage(
+                            article: articleBand.article ?? Article(),
                           ),
+                        ));
+                  else {
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) => ArticleReels(
+                    //         preloadList: articleBands,
+                    //         articlePosition: articleBands?.indexOf(articleBand)??0,
+                    //         userConnected: false,
+                    //         scrollController: ScrollController(),
+                    //         tag: articleBands?.elementAt(articleBands?.indexOf(articleBand)??0).article?.articleId??"",
+                    //       ),
+                    //     ));
+
+                    Navigator.push(
+                      context,
+                      SwipeablePageRoute(
+                        builder: (context) => ArticleReels(
+                          preloadList: articleBands,
+                          articlePosition: articleBands?.indexOf(articleBand) ?? 0,
+                          userConnected: false,
+                          scrollController: ScrollController(),
+                          tag: articleBands
+                                  ?.elementAt(
+                                      articleBands?.indexOf(articleBand) ?? 0)
+                                  .article
+                                  ?.articleId ??
+                              "",
                         ),
-                        Container(
-                          alignment: Alignment.bottomLeft,
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  end: Alignment.bottomCenter,
-                                  begin: Alignment.topCenter,
-                                  colors: [
-                                Colors.transparent,
-                                    Colors.black.withOpacity(0.65),
-                                    Colors.black,
-                                Colors.black,
-                              ])),
-                          //RandomColorBackground.generateRandomVibrantColor().withOpacity(0.55),
-                          child: Column(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                      ),
+                    );
+                  }
+                },
+                child: (articleBand.article?.imageUrl != null)
+                    ? Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            color: Colors.grey.shade900.withOpacity(0.25)),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Stack(
                             children: [
-                             Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                    children: [
-                                      Flexible(
-                                        child: Container(
-                                          padding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 8,
-                                                  vertical: 4),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            color: Colors.grey.shade900.withOpacity(0.5)
-                                          ),
-                                          child: Hero(
-                                            tag: "${articleBand.band?.name} ${articleBand.article?.articleId}",
-                                            child: AutoSizeText(
-                                              "${articleBand.band?.name}",
-                                              textAlign: TextAlign.left,
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 2,
-                                              minFontSize: 8,
-                                              style: const TextStyle(
-                                                  fontSize: 8,
-                                                  fontFamily: APP_FONT_MEDIUM,
-                                                  //fontWeight: FontWeight.bold,
-                                                  color: Colors.white),
+                              Hero(
+                                tag: articleBands
+                                        ?.elementAt(articleBands
+                                                ?.indexOf(articleBand) ??
+                                            0)
+                                        .article
+                                        ?.articleId ??
+                                    "",
+                                child: CachedNetworkImage(
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    errorWidget: (context, url, error) {
+                                      return Container();
+                                    },
+                                    placeholder: (context, url) =>
+                                        Container(
+                                          color: Colors.grey.shade900,
+                                        ),
+                                    imageUrl:
+                                        articleBand.article?.imageUrl ??
+                                            "",
+                                    alignment: Alignment.topCenter,
+                                    fit: BoxFit.cover),
+                              ),
+                             if(false) Container(
+                                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                color: Colors.black,
+                                width: double.maxFinite,
+                                child: AutoSizeText(
+                                  unescape.convert(articleBand.article?.meta ??
+                                      articleBand.article?.title ??
+                                      ""),
+                                  textAlign: TextAlign.left,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxFontSize: 15,
+                                  maxLines: 3,
+                                  minFontSize: 10,
+                                  style: TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                      fontSize: 15,
+                                      //fontWeight: FontWeight.bold,
+                                      fontFamily: APP_FONT_MEDIUM,
+                                      color: Colors.white),
+                                ),
+                              ),
+                              if(false)  Container(
+                                color: Colors.black,
+                                padding: const EdgeInsets.fromLTRB(8, 2, 8, 8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Flexible(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            //borderRadius: BorderRadius.circular(12),
+                                            // color: Colors.black,
                                             ),
+                                        child: AutoSizeText(
+                                          "${articleBand.article?.source}",
+                                          textAlign: TextAlign.left,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          minFontSize: 8,
+                                          style: const TextStyle(
+                                              fontSize: 10,
+                                              fontFamily: APP_FONT_MEDIUM,
+                                              //fontWeight: FontWeight.bold,
+                                              color: Colors.white70),
+                                        ),
+                                      ),
+                                    ),
+                                    const Text(" • "),
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                          right: 4, bottom: 4),
+                                      child: InstagramDateTimeWidget(
+                                        textSize: 10,
+                                        fontColor: Colors.white70,
+                                        publishedAt: articleBand
+                                                .article?.publishedAt
+                                                .toString() ??
+                                            "",
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (true)
+                                Container(
+                                  alignment: Alignment.bottomLeft,
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                          end: Alignment.bottomCenter,
+                                          begin: Alignment.topCenter,
+                                          colors: [
+                                        Colors.transparent,
+                                        Colors.black.withOpacity(0.65),
+                                        //Colors.black,
+                                        Colors.black,
+                                      ])),
+                                  //RandomColorBackground.generateRandomVibrantColor().withOpacity(0.55),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Flexible(
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                          horizontal: 8,
+                                                          vertical: 4),
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(8),
+                                                      color: Colors.grey.shade900
+                                                          .withOpacity(0.5)),
+                                                  child: Hero(
+                                                    tag:
+                                                        "${articleBand.band?.name} ${articleBand.article?.articleId}",
+                                                    child: AutoSizeText(
+                                                      "${articleBand.band?.name}",
+                                                      textAlign: TextAlign.left,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 2,
+                                                      minFontSize: 8,
+                                                      style: const TextStyle(
+                                                          fontSize: 8,
+                                                          fontFamily:
+                                                              APP_FONT_MEDIUM,
+                                                          //fontWeight: FontWeight.bold,
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
+                                        ],
+                                      ),
+                                      Flexible(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Container(
+                                                  alignment: Alignment.bottomLeft,
+                                                  padding:
+                                                      const EdgeInsets.all(4.0),
+                                                  height: maxHeight,
+                                                  child: AutoSizeText(
+                                                    unescape.convert(
+                                                        articleBand.article?.meta ??
+                                                            articleBand
+                                                                .article?.title ??
+                                                            ""),
+                                                    textAlign: TextAlign.left,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxFontSize: 17,
+                                                    maxLines: 3,
+                                                    minFontSize: 12,
+                                                    style: TextStyle(
+                                                        overflow:
+                                                            TextOverflow.ellipsis,
+                                                        fontSize: 17,
+                                                        //fontWeight: FontWeight.bold,
+                                                        fontFamily: APP_FONT_MEDIUM,
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 4,
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Flexible(
+                                                  child: Container(
+                                                    padding: const EdgeInsets.only(
+                                                        left: 4, bottom: 4),
+                                                    decoration: BoxDecoration(
+                                                        //borderRadius: BorderRadius.circular(12),
+                                                        //color: Colors.grey.shade900.withOpacity(0.35),
+                                                        ),
+                                                    child: AutoSizeText(
+                                                      "${articleBand.article?.source}",
+                                                      textAlign: TextAlign.left,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 2,
+                                                      minFontSize: 8,
+                                                      style: const TextStyle(
+                                                          fontSize: 10,
+                                                          fontFamily:
+                                                              APP_FONT_MEDIUM,
+                                                          //fontWeight: FontWeight.bold,
+                                                          color: Colors.white70),
+                                                    ),
+                                                  ),
+                                                ),
+                                                const Text(" • "),
+                                                Container(
+                                                  padding: const EdgeInsets.only(
+                                                      right: 4, bottom: 4),
+                                                  child: InstagramDateTimeWidget(
+                                                    textSize: 10,
+                                                    fontColor: Colors.white70,
+                                                    publishedAt: articleBand
+                                                            .article?.publishedAt
+                                                            .toString() ??
+                                                        "",
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
                                   ),
-                                ],
-                              ),
-                              Flexible(
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                )
+                            ],
+                          ),
+                        ),
+                      )
+                    : Container(
+                        alignment: Alignment.center,
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: Colors.grey.shade900,
+                          //border: Border.all(color: Colors.blueGrey.withOpacity(0.15,),width: 2,)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              if (articleBand.article?.source != null)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Column(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(4.0),
-                                          child: AutoSizeText(
-                                            unescape.convert(articleBand.article?.meta ??
-                                                articleBand.article?.title ??
-                                                ""),
-                                            textAlign: TextAlign.left,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxFontSize: 16,
-                                            maxLines: 3,
-                                            minFontSize: 10,
-                                            style: TextStyle(
-                                                overflow:
-                                                    TextOverflow.ellipsis,
-                                                fontSize: 16,
-                                                //fontWeight: FontWeight.bold,
-                                                fontFamily: APP_FONT_MEDIUM,
-                                                color: Colors.white),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 4,
-                                        ),
-                                      ],
-                                    ),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Flexible(
                                           child: Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 4, bottom: 4),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 4),
                                             decoration: BoxDecoration(
-                                                //borderRadius: BorderRadius.circular(12),
-                                                //color: Colors.grey.shade900.withOpacity(0.35),
-                                                ),
-                                            child: AutoSizeText(
-                                              "${articleBand.article?.source}",
-                                              textAlign: TextAlign.left,
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 2,
-                                              minFontSize: 8,
-                                              style: const TextStyle(
-                                                  fontSize: 10,
-                                                  fontFamily: APP_FONT_MEDIUM,
-                                                  //fontWeight: FontWeight.bold,
-                                                  color: Colors.white70),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              color: Colors.white.withOpacity(0.1),
                                             ),
-                                          ),
-                                        ),
-                                        const Text(" • "),
-                                        Container(
-                                          padding: const EdgeInsets.only(
-                                              right: 4, bottom: 4),
-                                          child: InstagramDateTimeWidget(
-                                            textSize: 10,
-                                            fontColor: Colors.white70,
-                                            publishedAt: articleBand.article?.publishedAt
-                                                .toString()??"",
+                                            child: Hero(
+                                              tag:
+                                                  "${articleBand.band?.name} ${articleBand.article?.articleId}",
+                                              child: AutoSizeText(
+                                                "${articleBand.band?.name}",
+                                                textAlign: TextAlign.left,
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 2,
+                                                minFontSize: 8,
+                                                style: const TextStyle(
+                                                    fontSize: 8,
+                                                    fontFamily: APP_FONT_MEDIUM,
+                                                    //fontWeight: FontWeight.bold,
+                                                    color: Colors.white),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
                                   ],
                                 ),
+                              SizedBox(
+                                height: 4,
                               ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                )
-                : Container(
-                    alignment: Alignment.center,
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      color: Colors.grey.shade900,
-                      //border: Border.all(color: Colors.blueGrey.withOpacity(0.15,),width: 2,)
-
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          if(articleBand.article?.source!=null)
-                          Column(
-                            crossAxisAlignment:
-                            CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                    child: Container(
-                                      padding:
-                                      const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(8),
-                                        color: Colors.white
-                                            .withOpacity(0.1),
-                                      ),
-                                      child: Hero(
-                                        tag: "${articleBand.band?.name} ${articleBand.article?.articleId}",
-                                        child: AutoSizeText(
-                                          "${articleBand.band?.name}",
-                                          textAlign: TextAlign.left,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                          minFontSize: 8,
-                                          style: const TextStyle(
-                                              fontSize: 8,
-                                              fontFamily: APP_FONT_MEDIUM,
-                                              //fontWeight: FontWeight.bold,
-                                              color: Colors.white),
+                              AutoSizeText(
+                                unescape.convert(articleBand.article?.meta ??
+                                    articleBand.article?.title ??
+                                    ""),
+                                textAlign: TextAlign.left,
+                                overflow: TextOverflow.ellipsis,
+                                maxFontSize: 24,
+                                maxLines: 3,
+                                minFontSize: 10,
+                                style: const TextStyle(
+                                    overflow: TextOverflow.ellipsis,
+                                    fontSize: 24,
+                                    //fontWeight: FontWeight.bold,
+                                    fontFamily: APP_FONT_MEDIUM,
+                                    color: Colors.white),
+                              ),
+                              SizedBox(
+                                height: 4,
+                              ),
+                              if (articleBand.article?.source != null)
+                                Flexible(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Flexible(
+                                        child: Container(
+                                          padding: const EdgeInsets.only(
+                                              left: 4, bottom: 4),
+                                          decoration: BoxDecoration(
+                                              //borderRadius: BorderRadius.circular(12),
+                                              //color: Colors.grey.shade900.withOpacity(0.35),
+                                              ),
+                                          child: AutoSizeText(
+                                            "${articleBand.article?.source ?? ""}",
+                                            textAlign: TextAlign.left,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 2,
+                                            minFontSize: 8,
+                                            style: const TextStyle(
+                                                fontSize: 10,
+                                                fontFamily: APP_FONT_MEDIUM,
+                                                //fontWeight: FontWeight.bold,
+                                                color: Colors.white70),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 4,),
-                          AutoSizeText(
-                            unescape.convert(articleBand.article?.meta ?? articleBand.article?.title ?? ""),
-                            textAlign: TextAlign.left,
-                            overflow: TextOverflow.ellipsis,
-                            maxFontSize: 24,
-                            maxLines: 3,
-                            minFontSize: 10,
-                            style: const TextStyle(
-                                overflow: TextOverflow.ellipsis,
-                                fontSize: 24,
-                                //fontWeight: FontWeight.bold,
-                                fontFamily: APP_FONT_MEDIUM,
-                                color: Colors.white),
-                          ),
-                          SizedBox(
-                            height: 4,
-                          ),
-                          if(articleBand.article?.source!=null)
-                          Flexible(
-                            child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.start,
-                              children: [
-                                Flexible(
-                                  child: Container(
-                                    padding: const EdgeInsets.only(
-                                        left: 4, bottom: 4),
-                                    decoration: BoxDecoration(
-                                      //borderRadius: BorderRadius.circular(12),
-                                      //color: Colors.grey.shade900.withOpacity(0.35),
-                                    ),
-                                    child: AutoSizeText(
-                                      "${articleBand.article?.source??""}",
-                                      textAlign: TextAlign.left,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                      minFontSize: 8,
-                                      style: const TextStyle(
-                                          fontSize: 10,
-                                          fontFamily: APP_FONT_MEDIUM,
-                                          //fontWeight: FontWeight.bold,
-                                          color: Colors.white70),
-                                    ),
+                                      const Text(" • "),
+                                      Flexible(
+                                        child: Container(
+                                          padding: const EdgeInsets.only(
+                                              right: 4, bottom: 4),
+                                          child: InstagramDateTimeWidget(
+                                            textSize: 10,
+                                            fontColor: Colors.white70,
+                                            publishedAt: articleBand
+                                                    .article?.publishedAt
+                                                    .toString() ??
+                                                "",
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const Text(" • "),
-                               Flexible(
-                                 child: Container(
-                                    padding: const EdgeInsets.only(
-                                        right: 4, bottom: 4),
-                                    child: InstagramDateTimeWidget(
-                                      textSize: 10,
-                                      fontColor: Colors.white70,
-                                      publishedAt: articleBand.article?.publishedAt
-                                          .toString()??"",
-                                    ),
-                                  ),
-                               ),
-                              ],
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-          );
+              );
+          }
+        );
     return returnWidget;
   }
 }
-
-

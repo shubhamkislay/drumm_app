@@ -4,6 +4,7 @@ import 'package:blur/blur.dart';
 import 'package:drumm_app/MultiSelectContainerWidget.dart';
 import 'package:drumm_app/model/article_image_card.dart';
 import 'package:drumm_app/search_result_page.dart';
+import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -26,6 +27,7 @@ import 'UserProfileIcon.dart';
 import 'custom/constants/Constants.dart';
 import 'custom/helper/image_uploader.dart';
 import 'custom/instagram_date_time_widget.dart';
+import 'live_drumms.dart';
 import 'model/Drummer.dart';
 import 'model/algolia_article.dart';
 import 'model/article.dart';
@@ -249,14 +251,45 @@ class DiscoverHomeState extends State<DiscoverHome>
                                   const SizedBox(
                                     height: 16,
                                   ),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: horizontalPadding),
-                                    width: double.maxFinite,
-                                    child: const Text(
-                                      "Live Drumms",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold, fontSize: 20),
+                                  GestureDetector(
+                                    onTap: (){
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        backgroundColor: COLOR_PRIMARY_DARK,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(0.0)),
+                                        ),
+                                        builder: (BuildContext context) {
+                                          return Padding(
+                                            padding: EdgeInsets.only(
+                                                bottom: MediaQuery.of(context)
+                                                    .viewInsets
+                                                    .bottom),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.vertical(
+                                                  top: Radius.circular(0.0)),
+                                              child: LiveDrumms(),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: horizontalPadding),
+                                          child: const Text(
+                                            "Live now",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold, fontSize: 20),
+                                          ),
+                                        ),
+                                        Icon(Icons.arrow_forward_ios_rounded,size: 16,)
+                                      ],
                                     ),
                                   ),
                                   const SizedBox(
@@ -382,9 +415,20 @@ class DiscoverHomeState extends State<DiscoverHome>
                                 repeatPattern: QuiltedGridRepeatPattern.inverted,
                                 pattern: [
                                   const QuiltedGridTile(4, 3),
+                                  const QuiltedGridTile(2, 2),
                                   const QuiltedGridTile(3, 2),
-                                  const QuiltedGridTile(3, 2),
-                                  const QuiltedGridTile(2, 3),
+
+                                  const QuiltedGridTile(3, 3),
+                                  const QuiltedGridTile(2, 2),
+                                  // const QuiltedGridTile(5, 3),
+                                  // const QuiltedGridTile(3, 2),
+
+                                  // const QuiltedGridTile(3, 3),
+                                  // const QuiltedGridTile(3, 2),
+                                  // const QuiltedGridTile(3, 2),
+                                  // const QuiltedGridTile(3, 3),
+                                  //const QuiltedGridTile(3, 3),
+                                  //const QuiltedGridTile(2, 2),
 
                                 ],
                               ),
@@ -591,6 +635,7 @@ class DiscoverHomeState extends State<DiscoverHome>
   }
 
   Future<void> getBandDrumms() async {
+    drummCards.clear();
     List<Jam> fetchedDrumms =
         await FirebaseDBOperations.getDrummsFromBands(); //getUserBands();
     List<Jam> broadcastJams = await FirebaseDBOperations.getBroadcastJams();
@@ -836,6 +881,7 @@ class DiscoverHomeState extends State<DiscoverHome>
       // Call checkForNewArticles whenever the app is resumed
       print("On Resume Discover Home");
       checkFreshArticles();
+      getBandDrumms();
       // checkForNewArticles();
     }
 
