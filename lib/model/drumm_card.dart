@@ -47,8 +47,9 @@ class _DrummCardState extends State<DrummCard> {
             borderRadius: BorderRadius.circular(curve),
             gradient: LinearGradient(
               colors: [
-                Colors.grey.shade900,
-                Colors.grey.shade900
+                Colors.blue.shade700,
+                Colors.grey.shade700,
+
               ]
             )
           ),
@@ -67,7 +68,7 @@ class _DrummCardState extends State<DrummCard> {
               padding: EdgeInsets.all(4),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(curve-2),
-                color: Colors.black,
+                color: COLOR_BACKGROUND,
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(curve-4),

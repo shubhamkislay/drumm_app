@@ -85,17 +85,17 @@ String getCurrentUserID() {
 class ArticleReels extends StatefulWidget {
   ArticleReels(
       {Key? key,
-        this.title,
-        this.preloadList,
-        this.themeManager,
-        this.analytics,
-        this.observer,
-        this.articlePosition,
-        required this.tag,
-        required this.lastDocument,
-        required this.selectedBandId,
-        required this.userConnected,
-        required this.scrollController})
+      this.title,
+      this.preloadList,
+      this.themeManager,
+      this.analytics,
+      this.observer,
+      this.articlePosition,
+      required this.tag,
+      required this.lastDocument,
+      required this.selectedBandId,
+      required this.userConnected,
+      required this.scrollController})
       : super(key: key);
   String? title;
   String tag;
@@ -135,7 +135,7 @@ class ArticleReelsState extends State<ArticleReels>
 
   DocumentSnapshot<Map<String, dynamic>>? _lastDocument = null;
   final StreamController<List<ArticleBand>> _articlesController =
-  StreamController<List<ArticleBand>>();
+      StreamController<List<ArticleBand>>();
   int _currentPage = 0;
   int _pageSize = 25;
 
@@ -174,7 +174,7 @@ class ArticleReelsState extends State<ArticleReels>
   List<Jam> openDrumms = [];
 
   List<DrummCard> openDrummCards =
-  []; //Colors.white.withOpacity(0.1); // Number of documents to fetch per page
+      []; //Colors.white.withOpacity(0.1); // Number of documents to fetch per page
 
   // Choose from any of these available methods
 
@@ -184,7 +184,7 @@ class ArticleReelsState extends State<ArticleReels>
 
   bool refreshList = true;
 
-  double questionHeight=90;
+  double questionHeight = 90;
 
   List<Color> backgroundColor = JOIN_COLOR;
 
@@ -199,7 +199,6 @@ class ArticleReelsState extends State<ArticleReels>
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: COLOR_BACKGROUND,
       body: Column(
@@ -211,14 +210,12 @@ class ArticleReelsState extends State<ArticleReels>
                   children: [
                     Expanded(
                       child: Container(
-
                         decoration: const BoxDecoration(
                             color: Colors.black,
                             borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(24),
                               bottomRight: Radius.circular(24),
-                            )
-                        ),
+                            )),
                         child: getNewsArticles(), //listDemoVertical()),
                       ),
                     ),
@@ -235,8 +232,8 @@ class ArticleReelsState extends State<ArticleReels>
                           //crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             SoundPlayWidget(
-                              article: articleOnTop?.article??Article(),
-                              backgroundColor:COLOR_BACKGROUND,
+                              article: articleOnTop?.article ?? Article(),
+                              backgroundColor: COLOR_BACKGROUND,
                               imageSize: 18,
                               paddingSize: 46,
                               play: false,
@@ -248,118 +245,136 @@ class ArticleReelsState extends State<ArticleReels>
                               decoration: BoxDecoration(
                                   color: COLOR_BACKGROUND,
                                   borderRadius: BorderRadius.circular(44),
-                                  border: Border.all(color: Colors.grey.shade900,width: 2.5)
-                              ),
+                                  border: Border.all(
+                                      color: Colors.grey.shade900, width: 2.5)),
                               child: ArticleDrummButton(
                                   iconSize: 44,
-                                  articleOnScreen: articleOnTop?.article??Article()),
+                                  articleOnScreen:
+                                      articleOnTop?.article ?? Article()),
                             ),
-                            if(!showCurrentDrummWidget)  JoinDrummButton(btnPadding: 12,height: 38,
-                              onTap: (){
-                                drumJoinDialog();
-                              },),
-                            if(showCurrentDrummWidget) GestureDetector(
-                              onTap: (){
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.grey.shade900,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(0.0)),
-                                  ),
-                                  builder: (BuildContext context) {
-                                    return Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom:
-                                          MediaQuery.of(context).viewInsets.bottom),
-                                      child: ClipRRect(
-                                        borderRadius: const BorderRadius.vertical(
-                                            top: Radius.circular(0.0)),
-                                        child: JamRoomPage(
-                                          jam: currentJam,
-                                          open: openDrumm,
+                            if (!showCurrentDrummWidget)
+                              JoinDrummButton(
+                                btnPadding: 12,
+                                height: 38,
+                                onTap: () {
+                                  drumJoinDialog();
+                                },
+                              ),
+                            if (showCurrentDrummWidget)
+                              GestureDetector(
+                                onTap: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.grey.shade900,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(0.0)),
+                                    ),
+                                    builder: (BuildContext context) {
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              const BorderRadius.vertical(
+                                                  top: Radius.circular(0.0)),
+                                          child: JamRoomPage(
+                                            jam: currentJam,
+                                            open: openDrumm,
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(64),
-                                  border: Border.all(color: Colors.white,width: 2.5),
-                                ),
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.all(2.5),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(56),
-                                        child: CachedNetworkImage(
-                                          imageUrl: currentJam.imageUrl ?? "",
-                                          fit: BoxFit.cover,
-                                          height: 56,
-                                          width: 56,
-                                          errorWidget: (context, url, error) =>
-                                              Container(
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(64),
+                                    border: Border.all(
+                                        color: Colors.white, width: 2.5),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.all(2.5),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(56),
+                                          child: CachedNetworkImage(
+                                            imageUrl: currentJam.imageUrl ?? "",
+                                            fit: BoxFit.cover,
+                                            height: 56,
+                                            width: 56,
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(42),
+                                              ),
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(8),
+                                                margin: const EdgeInsets.all(2),
                                                 decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(42),),
-                                                child: Container(
-                                                  padding:  const EdgeInsets.all(8),
-                                                  margin: const EdgeInsets.all(2),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(42),
-                                                    color: Colors.transparent,
-                                                    //gradient: LinearGradient(colors: JOIN_COLOR),
-                                                  ),
-                                                  child: Image.asset(
-                                                    'images/audio-waves.png',
-                                                    height: iconHeight,
-                                                    color: Colors.white,
-                                                    fit: BoxFit.contain,
-                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(42),
+                                                  color: Colors.transparent,
+                                                  //gradient: LinearGradient(colors: JOIN_COLOR),
+                                                ),
+                                                child: Image.asset(
+                                                  'images/audio-waves.png',
+                                                  height: iconHeight,
+                                                  color: Colors.white,
+                                                  fit: BoxFit.contain,
                                                 ),
                                               ),
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(42),),
-                                      child: Container(
-                                        padding:  const EdgeInsets.all(8),
-                                        margin: const EdgeInsets.all(2),
+                                      Container(
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(42),
-                                          color: Colors.transparent,
-                                          //gradient: LinearGradient(colors: JOIN_COLOR),
+                                          borderRadius:
+                                              BorderRadius.circular(42),
                                         ),
-                                        child: Image.asset(
-                                          'images/audio-waves.png',
-                                          height: iconHeight-12,
-                                          color: Colors.white.withOpacity(0.35),
-                                          fit: BoxFit.contain,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(8),
+                                          margin: const EdgeInsets.all(2),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(42),
+                                            color: Colors.transparent,
+                                            //gradient: LinearGradient(colors: JOIN_COLOR),
+                                          ),
+                                          child: Image.asset(
+                                            'images/audio-waves.png',
+                                            height: iconHeight - 12,
+                                            color:
+                                                Colors.white.withOpacity(0.35),
+                                            fit: BoxFit.contain,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            LikeBtn(
-                                article: Article()),
+                            LikeBtn(article: Article()),
                             Container(
                               height: 46,
                               width: 46,
                               decoration: BoxDecoration(
                                   color: Colors.black,
                                   borderRadius: BorderRadius.circular(44),
-                                  border: Border.all(color: Colors.grey.shade900,width: 2.5)
-                              ),
+                                  border: Border.all(
+                                      color: Colors.grey.shade900, width: 2.5)),
                               child: Center(
                                 child: ShareWidget(
-                                  article: articleOnTop?.article??Article(),
+                                  article: articleOnTop?.article ?? Article(),
                                   backgroundColor: COLOR_BACKGROUND,
                                   iconHeight: 18,
                                 ),
@@ -371,12 +386,28 @@ class ArticleReelsState extends State<ArticleReels>
                     )
                   ],
                 ),
+                IgnorePointer(
+                  child: Container(
+                    alignment: Alignment.topCenter,
+                    height: 200,
+                    //padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [
+                          Colors.transparent,
+                          //Colors.black,
+                          Colors.grey.shade900.withOpacity(0.75),
+                        ])),
+                  ),
+                ),
                 if (fromSearch)
                   SafeArea(
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
+                        Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: GestureDetector(
                             onTap: () => Navigator.pop(context),
@@ -386,36 +417,38 @@ class ArticleReelsState extends State<ArticleReels>
                             ),
                           ),
                         ),
-                        SizedBox(width: 4,),
-                        if(articleOnTop?.band!=null)
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                SwipeablePageRoute(
-                                  builder: (context) => BandDetailsPage(
-                                    band: articleOnTop?.band,
-                                  ),
-                                ));
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 8),
-                            //margin: const EdgeInsets.symmetric(horizontal: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.white
-                                  .withOpacity(0.1), //.withOpacity(0.8),
-                              //border: Border.all(color: Colors.grey.shade900.withOpacity(0.85),width: 2.5),
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            child: Text(
-                              articleOnTop?.band?.name ?? "",
-                              style: const TextStyle(
-                                fontSize: 12,
+                        SizedBox(
+                          width: 4,
+                        ),
+                        if (articleOnTop?.band != null)
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  SwipeablePageRoute(
+                                    builder: (context) => BandDetailsPage(
+                                      band: articleOnTop?.band,
+                                    ),
+                                  ));
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 8),
+                              //margin: const EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white
+                                    .withOpacity(0.1), //.withOpacity(0.8),
+                                //border: Border.all(color: Colors.grey.shade900.withOpacity(0.85),width: 2.5),
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              child: Text(
+                                articleOnTop?.band?.name ?? "",
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                ),
                               ),
                             ),
                           ),
-                        ),
                       ],
                     ),
                   ),
@@ -429,7 +462,8 @@ class ArticleReelsState extends State<ArticleReels>
 
   void preloadNextPageImage(int nextPageIndex) async {
     if (_preloadedImages.length <= nextPageIndex) {
-      final nextPageImageUrl = widget.preloadList?.elementAt(nextPageIndex)?.article?.imageUrl;
+      final nextPageImageUrl =
+          widget.preloadList?.elementAt(nextPageIndex)?.article?.imageUrl;
       if (nextPageImageUrl != null && nextPageImageUrl.isNotEmpty) {
         final preloadedImage = NetworkImage(nextPageImageUrl);
         precacheImage(preloadedImage, context);
@@ -455,16 +489,12 @@ class ArticleReelsState extends State<ArticleReels>
     return true;
   }
 
-
   Widget getNewsArticles() {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(borderCurve+2),
+      borderRadius: BorderRadius.circular(borderCurve + 2),
       child: Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                colors: backgroundColor
-            )
-        ),
+        decoration:
+            BoxDecoration(gradient: LinearGradient(colors: backgroundColor)),
         child: Stack(
           children: [
             PageView.builder(
@@ -475,12 +505,10 @@ class ArticleReelsState extends State<ArticleReels>
                   articleOnTop = widget.preloadList?.elementAt(value);
                 });
 
-                try{
+                try {
                   FirebaseDBOperations.OggOpus_Player.pause();
-                }catch(e){
-
-                }
-                int articleSize = widget.preloadList?.length??0;
+                } catch (e) {}
+                int articleSize = widget.preloadList?.length ?? 0;
 
                 if (value == articleSize - 1) {
                   getArticlesData(false);
@@ -494,44 +522,43 @@ class ArticleReelsState extends State<ArticleReels>
               scrollDirection: Axis.vertical,
               physics: const CustomPageViewScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
-                if (!articleIDs
-                    .contains(widget.preloadList?.elementAt(index).article?.articleId)) {
-                  articleIDs.add(widget.preloadList?.elementAt(index).article?.articleId);
+                if (!articleIDs.contains(
+                    widget.preloadList?.elementAt(index).article?.articleId)) {
+                  articleIDs.add(
+                      widget.preloadList?.elementAt(index).article?.articleId);
                   checkIfUserLiked(index);
                 }
 
-                if (widget.preloadList?.elementAt(index).article?.imageUrl == null) {
-                  fetchMissingImageUrls(widget.preloadList!.elementAt(index).article??Article(), index);
-                  imageSet.add(widget.preloadList?.elementAt(index).article?.articleId ?? "");
+                if (widget.preloadList?.elementAt(index).article?.imageUrl ==
+                    null) {
+                  fetchMissingImageUrls(
+                      widget.preloadList!.elementAt(index).article ?? Article(),
+                      index);
+                  imageSet.add(
+                      widget.preloadList?.elementAt(index).article?.articleId ??
+                          "");
                   // print("Contains article ${artcls?.elementAt(index).articleId} ${imageSet.contains(artcls?.elementAt(index).articleId)}");
                 }
 
                 Widget articleWidget = Hero(
-                    tag: widget.preloadList?.elementAt(index).article?.articleId ?? "",
-                    child: CachedNetworkImage(
+                  tag: widget.preloadList
+                          ?.elementAt(index)
+                          .article
+                          ?.articleId ??
+                      "",
+                  child: CachedNetworkImage(
                     fadeInDuration: const Duration(milliseconds: 0),
-                    fit: (isContainerVisible)
-                        ? BoxFit.cover
-                        : BoxFit.cover,
-                    alignment: Alignment.topCenter,
+                    fit: (isContainerVisible) ? BoxFit.cover : BoxFit.cover,
+                    alignment: Alignment.center,
                     width: double.maxFinite,
                     height: double.maxFinite,
-                    imageUrl:
-                    widget.preloadList?.elementAt(index).article?.imageUrl ?? "",
+                    imageUrl: widget.preloadList
+                            ?.elementAt(index)
+                            .article
+                            ?.imageUrl ??
+                        "",
                     progressIndicatorBuilder:
                         (context, url, downloadProgress) {
-                      return  ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          color: Colors.grey.shade900.withOpacity(0.25),
-                          height: 200,
-                          padding: const EdgeInsets.all(48),
-                        ),
-                      );
-                    },
-                    errorWidget: (context, url, error) {
-
-
                       return ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: Container(
@@ -541,203 +568,268 @@ class ArticleReelsState extends State<ArticleReels>
                         ),
                       );
                     },
-                ),
-                  );
-
+                    errorWidget: (context, url, error) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          color: Colors.grey.shade900.withOpacity(0.25),
+                          height: 200,
+                          padding: const EdgeInsets.all(48),
+                        ),
+                      );
+                    },
+                  ),
+                );
 
                 return Container(
-                  height:double.maxFinite,
+                  height: double.maxFinite,
                   width: double.maxFinite,
                   color: Colors.transparent,
                   child: Stack(
                     children: [
-                      Positioned.fill(
-                        child: CachedNetworkImage(
-                          fadeInDuration: const Duration(milliseconds: 0),
-                          fit: BoxFit.cover,
-                          alignment: Alignment.center,
-                          width: double.infinity,
-                          height: double.infinity,
-                          imageUrl: widget.preloadList?.elementAt(index).article?.imageUrl ?? "",
-                          errorWidget: (context, url, error) {
-                            //     Image.asset(
-                            //   "images/logo_background_white.png",
-                            //   color: Colors.grey.shade900
-                            //       .withOpacity(0.5), //(COLOR_PRIMARY_VAL),
-                            //   width: 35,
-                            //   height: 35,
-                            // ),
+                      if (true)
+                        Positioned.fill(
+                          child: CachedNetworkImage(
+                            fadeInDuration: const Duration(milliseconds: 0),
+                            fit: BoxFit.cover,
+                            alignment: Alignment.center,
+                            width: double.infinity,
+                            height: double.infinity,
+                            imageUrl: widget.preloadList
+                                    ?.elementAt(index)
+                                    .article
+                                    ?.imageUrl ??
+                                "",
+                            errorWidget: (context, url, error) {
+                              //     Image.asset(
+                              //   "images/logo_background_white.png",
+                              //   color: Colors.grey.shade900
+                              //       .withOpacity(0.5), //(COLOR_PRIMARY_VAL),
+                              //   width: 35,
+                              //   height: 35,
+                              // ),
 
-                            return Container(
-                              color: Colors.transparent,
-                            );
-                          },
+                              return Container(
+                                color: Colors.transparent,
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                      Container(
-                        height: double.maxFinite,
-                        width: double.maxFinite,
-                      ).frosted(
-                          blur: 20,
-                          frostOpacity: 0.35,//0.35,
-                          frostColor: Colors.black),
+                      if (true)
+                        Container(
+                          height: double.maxFinite,
+                          width: double.maxFinite,
+                        ).frosted(
+                            blur: 20,
+                            frostOpacity: 0.35, //0.35,
+                            frostColor: Colors.black),
                       Column(
                         children: [
                           Expanded(
-                            child: Container(
-                              //padding: const EdgeInsets.symmetric(horizontal: 16),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  //const SizedBox(height: 48,),
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: (){
-                                        Navigator.push(
-                                          context,
-                                          PageRouteBuilder(
-                                            pageBuilder: (context, animation1,
-                                                animation2) =>
-                                                ZoomPicture(
-                                                    articleId: widget.preloadList?.elementAt(index).article?.articleId,
-                                                    url: widget.preloadList?.elementAt(index).article?.imageUrl ??
-                                                        "https://placekitten.com/640/360"),
-                                            transitionDuration:
-                                            const Duration(seconds: 0),
-                                            reverseTransitionDuration:
-                                            const Duration(seconds: 0),
-                                          ),
-                                        );
-                                      },
-                                      child: Stack(
-                                        children: [
-                                          articleWidget,
-                                        Container(
-                                          alignment: Alignment.bottomLeft,
-                                          padding: const EdgeInsets.all(4),
-                                          decoration: BoxDecoration(
-                                              gradient: LinearGradient(
-                                                  begin: Alignment.bottomCenter,
-                                                  end: Alignment.topCenter,
-                                                  colors: [
-                                                    Colors.transparent,
-                                                    Colors.black.withOpacity(0.15),
-                                                    //Colors.black,
-                                                    Colors.black.withOpacity(0.65),
-                                                  ])),),
-                                        ],
-                                      ),
-                                    ),
+                            flex: 8,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation1,
+                                        animation2) =>
+                                        ZoomPicture(
+                                            articleId: widget
+                                                .preloadList
+                                                ?.elementAt(index)
+                                                .article
+                                                ?.articleId,
+                                            url: widget.preloadList
+                                                ?.elementAt(index)
+                                                .article
+                                                ?.imageUrl ??
+                                                "https://placekitten.com/640/360"),
+                                    transitionDuration:
+                                    const Duration(seconds: 0),
+                                    reverseTransitionDuration:
+                                    const Duration(seconds: 0),
                                   ),
-                                  const SizedBox(height: 12,),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                                    child: FadeInContainer(
-                                      child: AutoSizeText(
-                                        unescape.convert(widget.preloadList?.elementAt(index).article?.title?? ""),
-                                        textAlign: TextAlign.start,
-                                        maxLines: 4,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: APP_FONT_MEDIUM,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ),
+                                );
+                              },
+                              child: articleWidget,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12),
+                              child: FadeInContainer(
+                                child: AutoSizeText(
+                                  unescape.convert(widget.preloadList
+                                      ?.elementAt(index)
+                                      .article
+                                      ?.meta ??
+                                      widget.preloadList
+                                          ?.elementAt(index)
+                                          .article
+                                          ?.title ??
+                                      ""),
+                                  textAlign: TextAlign.start,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: APP_FONT_MEDIUM,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 48
                                   ),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                                    margin: const EdgeInsets.only(top: 8,bottom: 12),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: Row(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                  widget.preloadList?.elementAt(index).article?.source ?? "",
-                                                  style: TextStyle(
-                                                    color:
-                                                    Colors.white.withOpacity(0.8),
-                                                    fontSize: 13,
-                                                    fontFamily: APP_FONT_MEDIUM,
-                                                  )),
-                                              const Text(" • "),
-                                              InstagramDateTimeWidget(
-                                                  publishedAt: widget.preloadList
-                                                      ?.elementAt(index).article?.publishedAt.toString() ??
-                                                      ""),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  if(true)GestureDetector(
-                                    onTap: (){
-                                      openArticlePage(widget.preloadList?.elementAt(index).article,index);
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 8),
-                                      margin: const EdgeInsets.symmetric(vertical: 12,horizontal: 12),
-                                      width: double.maxFinite,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(borderCurve),
-                                        color: Colors.white.withOpacity(0.05),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          const SizedBox(width:8,),
-                                          Container(
-                                            padding: const EdgeInsets.all(4),
-                                            child: Image.asset(
-                                                'images/link.png',
-                                                height: 22,
-                                                color: Colors.white,
-                                                fit: BoxFit.contain),
-                                          ),
-                                          const SizedBox(width: 10,),
-                                          Flexible(
-                                            child: Text(
-                                              (widget.preloadList?.elementAt(index).article?.source?.toLowerCase() ==
-                                                  'youtube')
-                                                  ? widget.preloadList?.elementAt(index).article?.title ?? "Read Article"
-                                                  : (widget.preloadList?.elementAt(index).article?.description != null)
-                                                  ? widget.preloadList?.elementAt(index).article?.description ?? "Read Article"
-                                                  : (widget.preloadList?.elementAt(index).article?.content != null)
-                                                  ? widget.preloadList?.elementAt(index).article?.content ?? "Read Article"
-                                                  : "Read Article",
-                                              textAlign: TextAlign.left,
-                                              maxLines: 2,
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.white,
-                                                fontFamily: APP_FONT_LIGHT,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-
-                                ],
+                                ),
                               ),
                             ),
                           ),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12),
+                            margin: const EdgeInsets.only(
+                                top: 8, bottom: 12),
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: [
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          widget.preloadList
+                                              ?.elementAt(index)
+                                              .article
+                                              ?.source ??
+                                              "",
+                                          style: TextStyle(
+                                            color: Colors.white
+                                                .withOpacity(0.8),
+                                            fontSize: 16,
+                                            fontFamily: APP_FONT_MEDIUM,
+                                          )),
+                                      const Text(
+                                        " • ",
+                                      ),
+                                      InstagramDateTimeWidget(
+                                        publishedAt: widget.preloadList
+                                            ?.elementAt(index)
+                                            .article
+                                            ?.publishedAt
+                                            .toString() ??
+                                            "",
+                                        textSize: 16,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          if (true)
+                            GestureDetector(
+                              onTap: () {
+                                openArticlePage(
+                                    widget.preloadList
+                                        ?.elementAt(index)
+                                        .article,
+                                    index);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 8),
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 12),
+                                width: double.maxFinite,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      borderCurve),
+                                  color: Colors.white.withOpacity(0.05),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.all(4),
+                                      child: Image.asset(
+                                          'images/link.png',
+                                          height: 22,
+                                          color: Colors.white,
+                                          fit: BoxFit.contain),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        (widget.preloadList
+                                            ?.elementAt(index)
+                                            .article
+                                            ?.source
+                                            ?.toLowerCase() ==
+                                            'youtube')
+                                            ? widget.preloadList
+                                            ?.elementAt(index)
+                                            .article
+                                            ?.title ??
+                                            "Read Article"
+                                            : (widget.preloadList
+                                            ?.elementAt(
+                                            index)
+                                            .article
+                                            ?.description !=
+                                            null)
+                                            ? widget.preloadList
+                                            ?.elementAt(
+                                            index)
+                                            .article
+                                            ?.description ??
+                                            "Read Article"
+                                            : (widget.preloadList
+                                            ?.elementAt(
+                                            index)
+                                            .article
+                                            ?.content !=
+                                            null)
+                                            ? widget.preloadList
+                                            ?.elementAt(
+                                            index)
+                                            .article
+                                            ?.content ??
+                                            "Read Article"
+                                            : "Read Article",
+                                        textAlign: TextAlign.left,
+                                        maxLines: 2,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.white,
+                                          fontFamily: APP_FONT_LIGHT,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           GestureDetector(
                             onTap: () {
                               AISummary.showBottomSheet(
                                   context,
-                                  widget.preloadList!.elementAt(index).article ?? Article(),
+                                  widget.preloadList!
+                                          .elementAt(index)
+                                          .article ??
+                                      Article(),
                                   Colors.transparent);
                             },
                             child: Container(
@@ -748,7 +840,8 @@ class ArticleReelsState extends State<ArticleReels>
                               alignment: Alignment.centerLeft,
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.05),
-                                borderRadius: BorderRadius.circular(borderCurve),
+                                borderRadius:
+                                    BorderRadius.circular(borderCurve),
                                 //color: Colors.transparent,
                                 // borderRadius: BorderRadius.only(
                                 //   topLeft: Radius.circular(CURVE),
@@ -759,16 +852,19 @@ class ArticleReelsState extends State<ArticleReels>
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const SizedBox(width:6,),
+                                  const SizedBox(
+                                    width: 6,
+                                  ),
                                   Container(
                                     padding: const EdgeInsets.all(4),
-                                    child: Image.asset(
-                                        'images/sparkles.png',
+                                    child: Image.asset('images/sparkles.png',
                                         height: 24,
                                         color: Colors.white,
                                         fit: BoxFit.contain),
                                   ),
-                                  const SizedBox(width: 6,),
+                                  const SizedBox(
+                                    width: 6,
+                                  ),
                                   Expanded(
                                     child: Container(
                                       // height: questionHeight,
@@ -776,8 +872,7 @@ class ArticleReelsState extends State<ArticleReels>
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 4, horizontal: 4),
                                       child: const Text(
-                                        "Summarize the article" ??
-                                            "",
+                                        "Summarize the article" ?? "",
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                           color: Colors.white,
@@ -792,20 +887,26 @@ class ArticleReelsState extends State<ArticleReels>
                               ),
                             ),
                           ),
-                          if (widget.preloadList?.elementAt(index).article?.question != null)
+                          if (widget.preloadList
+                                  ?.elementAt(index)
+                                  .article
+                                  ?.question !=
+                              null)
                             GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 drumJoinDialog();
                               },
                               child: Container(
                                 width: double.maxFinite,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 8),
-                                margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                                margin:
+                                    const EdgeInsets.fromLTRB(12, 0, 12, 12),
                                 alignment: Alignment.centerLeft,
                                 decoration: BoxDecoration(
                                   //color: Colors.blue,//s.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(borderCurve),
+                                  borderRadius:
+                                      BorderRadius.circular(borderCurve),
                                   //color: Colors.transparent,
                                   // borderRadius: BorderRadius.only(
                                   //   topLeft: Radius.circular(CURVE),
@@ -816,7 +917,9 @@ class ArticleReelsState extends State<ArticleReels>
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const SizedBox(width:6,),
+                                    const SizedBox(
+                                      width: 6,
+                                    ),
                                     Container(
                                       padding: const EdgeInsets.all(4),
                                       child: Image.asset(
@@ -825,7 +928,9 @@ class ArticleReelsState extends State<ArticleReels>
                                           color: Colors.white,
                                           fit: BoxFit.contain),
                                     ),
-                                    const SizedBox(width: 6,),
+                                    const SizedBox(
+                                      width: 6,
+                                    ),
                                     Expanded(
                                       child: Container(
                                         // height: questionHeight,
@@ -833,8 +938,9 @@ class ArticleReelsState extends State<ArticleReels>
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 4, horizontal: 4),
                                         child: Text(
-                                          unescape.convert("\"${widget.preloadList?.elementAt(index).article?.question ?? ""}\"" ??
-                                              ""),
+                                          unescape.convert(
+                                              "\"${widget.preloadList?.elementAt(index).article?.question ?? ""}\"" ??
+                                                  ""),
                                           textAlign: TextAlign.left,
                                           style: const TextStyle(
                                             color: Colors.white,
@@ -849,7 +955,9 @@ class ArticleReelsState extends State<ArticleReels>
                                 ),
                               ),
                             ),
-                          SizedBox(height: 4,),
+                          SizedBox(
+                            height: 4,
+                          ),
                         ],
                       ),
                     ],
@@ -869,16 +977,16 @@ class ArticleReelsState extends State<ArticleReels>
       // List<String> userInterests = prefs.getStringList('interestList')!;
       // print("List of interests as per prefs $userInterests");
       List<dynamic> bandCategoryList = [];
-      if(widget.selectedBandId == "For You") {
+      if (widget.selectedBandId == "For You") {
         List<Band> fetchedBands = await FirebaseDBOperations.getBandByUser();
 
         for (Band band in fetchedBands) {
           bandCategoryList.addAll(band.hooks ?? []);
         }
         if (fetchedBands.length < 1) bandCategoryList.add("general");
-      }
-      else{
-        Band selectedBand = await FirebaseDBOperations.getBand(widget.selectedBandId??"");
+      } else {
+        Band selectedBand =
+            await FirebaseDBOperations.getBand(widget.selectedBandId ?? "");
         bandCategoryList.addAll(selectedBand.hooks ?? []);
       }
 
@@ -901,7 +1009,7 @@ class ArticleReelsState extends State<ArticleReels>
 
       if (snapshot.docs.isNotEmpty) {
         List<Article> newArticles =
-        snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+            snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
         _lastDocument =
             snapshot.docs.last; // Save the last document for the next page
 
@@ -914,7 +1022,8 @@ class ArticleReelsState extends State<ArticleReels>
           for (Band band in bandList) {
             List hooks = band.hooks ?? [];
             if (hooks.contains(article.category)) {
-              ArticleBand articleBand = ArticleBand(article: article, band: band);
+              ArticleBand articleBand =
+                  ArticleBand(article: article, band: band);
               newArticlesBands.add(articleBand);
               break;
             }
@@ -929,7 +1038,6 @@ class ArticleReelsState extends State<ArticleReels>
           setState(() {
             articleOnTop = updatedArticles.elementAt(0);
           });
-
 
           _articlesController.add(updatedArticles);
           //_pageController.jumpToPage(0);
@@ -946,8 +1054,6 @@ class ArticleReelsState extends State<ArticleReels>
             widget.preloadList?.addAll(newArticlesBands);
           });
           //_articlesController.add(updatedArticles);
-
-
         }
 
         // print(
@@ -1026,14 +1132,13 @@ class ArticleReelsState extends State<ArticleReels>
     });
   }
 
-  void jumpToArticle(){
+  void jumpToArticle() {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       if (_pageController.hasClients) {
         //do your stuff here
         //if (_pageController.page != 0) {
-        _pageController.jumpToPage(widget.articlePosition??0);
+        _pageController.jumpToPage(widget.articlePosition ?? 0);
         //}
-
       }
     });
     //_pageController.jumpToPage(widget.articlePosition??0);
@@ -1080,17 +1185,18 @@ class ArticleReelsState extends State<ArticleReels>
         .doc(article.articleId)
         .set(imageMap(), SetOptions(merge: true));
   }
+
   void listenToJamState() {
-    ConnectionListener.onConnectionChangedinVerticalHomeFeed = (connected, jam, open) {
+    ConnectionListener.onConnectionChangedinVerticalHomeFeed =
+        (connected, jam, open) {
       // Handle the channelID change here
       // print("onConnectionChanged called in Launcher");
-      if(mounted)
+      if (mounted)
         setState(() {
           // Update the UI with the new channelID
           openDrumm = open;
           currentJam = jam;
           showCurrentDrummWidget = connected;
-
         });
     };
   }
@@ -1112,14 +1218,14 @@ class ArticleReelsState extends State<ArticleReels>
       }
     }
     final double itemExtent =
-    100.0; // Adjust this value based on your item's height
+        100.0; // Adjust this value based on your item's height
     final int targetIndex = 4; // Index of the item you want to track
 
     final int firstVisibleIndex =
-    (widget.scrollController.offset / itemExtent).floor();
+        (widget.scrollController.offset / itemExtent).floor();
     final int lastVisibleIndex = ((widget.scrollController.offset +
-        widget.scrollController.position.viewportDimension) /
-        itemExtent)
+                widget.scrollController.position.viewportDimension) /
+            itemExtent)
         .ceil();
 
     if (targetIndex >= firstVisibleIndex && targetIndex <= lastVisibleIndex) {
@@ -1130,43 +1236,60 @@ class ArticleReelsState extends State<ArticleReels>
     // print("Scroll Position changing ${widget.scrollController.position}");
   }
 
-  void getPalette(String url) async{
-    if(url.length<1) {
+  void getPalette(String url) async {
+    if (url.length < 1) {
       //setState(() {
       backgroundColor = [Colors.black, COLOR_PRIMARY_DARK];
       //});
       return;
     }
     try {
-      PaletteGenerator paletteGenerator = await PaletteGenerator
-          .fromImageProvider(
+      PaletteGenerator paletteGenerator =
+          await PaletteGenerator.fromImageProvider(
         NetworkImage(url),
         maximumColorCount: 3,
-      ).catchError((e) {}
-      );
+      ).catchError((e) {});
       List<Color> extractedColors = [];
-      extractedColors.add(
-
-          (paletteGenerator.darkMutedColor!=null)? paletteGenerator.darkMutedColor?.color??COLOR_PRIMARY_DARK:
-          (paletteGenerator.darkVibrantColor!=null)? paletteGenerator.darkVibrantColor?.color??COLOR_PRIMARY_DARK:
-          (paletteGenerator.lightVibrantColor!=null)? paletteGenerator.lightVibrantColor?.color.withOpacity(0.5)??COLOR_PRIMARY_DARK:
-          (paletteGenerator.lightMutedColor!=null)? paletteGenerator.lightMutedColor?.color.withOpacity(0.5)??COLOR_PRIMARY_DARK:
-          (paletteGenerator.dominantColor!=null)? paletteGenerator.dominantColor?.color.withOpacity(0.5)??COLOR_PRIMARY_DARK:
-          Colors.grey.shade900);
-      extractedColors.add(
-          (paletteGenerator.dominantColor!=null)? paletteGenerator.dominantColor?.color.withOpacity(0.5)??COLOR_PRIMARY_DARK:
-          (paletteGenerator.lightMutedColor!=null)? paletteGenerator.lightMutedColor?.color.withOpacity(0.5)??COLOR_PRIMARY_DARK:
-          (paletteGenerator.lightVibrantColor!=null)? paletteGenerator.lightVibrantColor?.color.withOpacity(0.5)??COLOR_PRIMARY_DARK:
-          (paletteGenerator.darkVibrantColor!=null)? paletteGenerator.darkVibrantColor?.color??COLOR_PRIMARY_DARK:
-          (paletteGenerator.darkMutedColor!=null)? paletteGenerator.darkMutedColor?.color??COLOR_PRIMARY_DARK:
-          Colors.grey.shade900);
+      extractedColors.add((paletteGenerator.darkMutedColor != null)
+          ? paletteGenerator.darkMutedColor?.color ?? COLOR_PRIMARY_DARK
+          : (paletteGenerator.darkVibrantColor != null)
+              ? paletteGenerator.darkVibrantColor?.color ?? COLOR_PRIMARY_DARK
+              : (paletteGenerator.lightVibrantColor != null)
+                  ? paletteGenerator.lightVibrantColor?.color
+                          .withOpacity(0.5) ??
+                      COLOR_PRIMARY_DARK
+                  : (paletteGenerator.lightMutedColor != null)
+                      ? paletteGenerator.lightMutedColor?.color
+                              .withOpacity(0.5) ??
+                          COLOR_PRIMARY_DARK
+                      : (paletteGenerator.dominantColor != null)
+                          ? paletteGenerator.dominantColor?.color
+                                  .withOpacity(0.5) ??
+                              COLOR_PRIMARY_DARK
+                          : Colors.grey.shade900);
+      extractedColors.add((paletteGenerator.dominantColor != null)
+          ? paletteGenerator.dominantColor?.color.withOpacity(0.5) ??
+              COLOR_PRIMARY_DARK
+          : (paletteGenerator.lightMutedColor != null)
+              ? paletteGenerator.lightMutedColor?.color.withOpacity(0.5) ??
+                  COLOR_PRIMARY_DARK
+              : (paletteGenerator.lightVibrantColor != null)
+                  ? paletteGenerator.lightVibrantColor?.color
+                          .withOpacity(0.5) ??
+                      COLOR_PRIMARY_DARK
+                  : (paletteGenerator.darkVibrantColor != null)
+                      ? paletteGenerator.darkVibrantColor?.color ??
+                          COLOR_PRIMARY_DARK
+                      : (paletteGenerator.darkMutedColor != null)
+                          ? paletteGenerator.darkMutedColor?.color ??
+                              COLOR_PRIMARY_DARK
+                          : Colors.grey.shade900);
       //extractedColors.add(paletteGenerator.darkMutedColor?.color??Colors.grey.shade900);
       //paletteGenerator.
       List<Color> opacityColor = paletteGenerator.colors.toList();
       //extractedColors.add(COLOR_PRIMARY_DARK);
 
-
-      for(Color color in opacityColor){
+      for (Color color in opacityColor) {
         //extractedColors.add(color.withOpacity(0.5));
       }
 
@@ -1179,7 +1302,7 @@ class ArticleReelsState extends State<ArticleReels>
         backgroundColor = [Colors.black, COLOR_PRIMARY_DARK];
         //});
       }
-    }catch(e){
+    } catch (e) {
       //setState(() {
       backgroundColor = [Colors.black, COLOR_PRIMARY_DARK];
       //});
@@ -1194,8 +1317,6 @@ class ArticleReelsState extends State<ArticleReels>
 
     //searchHeadlinesAPI();
 
-
-
     super.initState();
     //WidgetsBinding.instance.addObserver(this);
     initToken();
@@ -1203,7 +1324,7 @@ class ArticleReelsState extends State<ArticleReels>
     _lastDocument = widget.lastDocument;
     refreshFeed();
 
-    _pageController = PageController(initialPage: widget.articlePosition??0);
+    _pageController = PageController(initialPage: widget.articlePosition ?? 0);
     _pageController.addListener(_pageListener);
     widget.scrollController.addListener(_handleScroll);
     // _pageController.addListener(() {
@@ -1221,12 +1342,12 @@ class ArticleReelsState extends State<ArticleReels>
       getArticlesData(false);
     }
   }
-  void getBandsList() async{
+
+  void getBandsList() async {
     bandList = await FirebaseDBOperations.getBandByUser();
   }
 
   void _checkAndScheduleRefresh() {
-
     final now = DateTime.now();
     if (now.difference(_lastRefreshTime!) >= refreshInterval) {
       // Call your refresh() function if it hasn't been called within the refreshInterval
@@ -1239,24 +1360,22 @@ class ArticleReelsState extends State<ArticleReels>
     }
   }
 
-  void refreshFeed() async{
+  void refreshFeed() async {
     if (widget.preloadList == null) {
       getArticlesData(true);
-
     } else {
       //List<Article> fetchedList = widget.preloadList ?? [];
       List<ArticleBand> fetchedArticleBand = widget.preloadList ?? [];
       bandList = await FirebaseDBOperations.getBandByUser();
       setState(() {
-        articleOnTop = fetchedArticleBand.elementAt(widget.articlePosition??0);
+        articleOnTop =
+            fetchedArticleBand.elementAt(widget.articlePosition ?? 0);
         fromSearch = true;
         isContainerVisible = false;
         //_articlesController.add(fetchedArticleBand ?? []);
         print("Article position is ${widget.articlePosition}");
-
       });
       //jumpToArticle();
-
     }
   }
 
@@ -1274,8 +1393,6 @@ class ArticleReelsState extends State<ArticleReels>
     });
   }
 
-
-
   void initToken() {
     requestPermissions();
     getToken();
@@ -1285,7 +1402,7 @@ class ArticleReelsState extends State<ArticleReels>
   void requestPermissions() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     NotificationSettings notificationSettings =
-    await messaging.requestPermission(
+        await messaging.requestPermission(
       announcement: true,
       carPlay: true,
       criticalAlert: true,
@@ -1335,7 +1452,8 @@ class ArticleReelsState extends State<ArticleReels>
   void checkIfUserLiked(int index) async {
     //  print("checkIfUserLiked called for index: $index");
 
-    FirebaseDBOperations.hasLiked(widget.preloadList?.elementAt(index).article?.articleId)
+    FirebaseDBOperations.hasLiked(
+            widget.preloadList?.elementAt(index).article?.articleId)
         .then((value) {
       setState(() {
         widget.preloadList?.elementAt(index).article?.liked = value;
@@ -1354,19 +1472,15 @@ class ArticleReelsState extends State<ArticleReels>
       ),
     );
     try {
-      articles
-          .elementAt(index)
-          .article = returnData!;
+      articles.elementAt(index).article = returnData!;
       _articlesController.add(articles);
-    }catch(e){
-
-    }
+    } catch (e) {}
     // print("Return Data ${returnData?.liked}");
   }
 
   Future<void> getBandDrumms() async {
     List<Jam> fetchedDrumms =
-    await FirebaseDBOperations.getDrummsFromBands(); //getUserBands();
+        await FirebaseDBOperations.getDrummsFromBands(); //getUserBands();
     List<Jam> broadcastJams = await FirebaseDBOperations.getBroadcastJams();
     drumms = broadcastJams + fetchedDrumms;
 
@@ -1387,7 +1501,7 @@ class ArticleReelsState extends State<ArticleReels>
 
   Future<void> getOpenDrumms() async {
     List<Jam> fetchedDrumms =
-    await FirebaseDBOperations.getOpenDrummsFromBands(); //getUserBands();
+        await FirebaseDBOperations.getOpenDrummsFromBands(); //getUserBands();
     openDrumms = fetchedDrumms;
 
     setState(() {
@@ -1413,10 +1527,10 @@ class ArticleReelsState extends State<ArticleReels>
       builder: (BuildContext context) {
         return Padding(
           padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: ClipRRect(
             borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(0.0)),
+                const BorderRadius.vertical(top: Radius.circular(0.0)),
             child: JamRoomPage(
               jam: jam,
               open: open,
@@ -1426,6 +1540,7 @@ class ArticleReelsState extends State<ArticleReels>
       },
     );
   }
+
   void joinOpenDrumm(ArticleBand aBand) {
     Jam jam = Jam();
     jam.broadcast = false;
@@ -1445,7 +1560,7 @@ class ArticleReelsState extends State<ArticleReels>
     jam.membersID = [];
     //FirebaseDBOperations.createOpenDrumm(jam);
     FirebaseDBOperations.addMemberToJam(aBand.article?.jamId ?? "",
-        FirebaseAuth.instance.currentUser?.uid ?? "", true)
+            FirebaseAuth.instance.currentUser?.uid ?? "", true)
         .then((value) {
       print("Added the member ${value}");
       if (!value) {
@@ -1466,10 +1581,10 @@ class ArticleReelsState extends State<ArticleReels>
       builder: (BuildContext context) {
         return Padding(
           padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: ClipRRect(
             borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(0.0)),
+                const BorderRadius.vertical(top: Radius.circular(0.0)),
             child: JamRoomPage(
               jam: jam,
               open: true,
@@ -1494,12 +1609,15 @@ class ArticleReelsState extends State<ArticleReels>
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return DrummBottomDialog(articleBand: articleOnTop, startDrumming: () {
-          ArticleBand? articleBand = ArticleBand();
-          articleBand = articleOnTop;
-          Vibrate.feedback(FeedbackType.success);
-          joinOpenDrumm(articleBand??ArticleBand());
-        },);
+        return DrummBottomDialog(
+          articleBand: articleOnTop,
+          startDrumming: () {
+            ArticleBand? articleBand = ArticleBand();
+            articleBand = articleOnTop;
+            Vibrate.feedback(FeedbackType.success);
+            joinOpenDrumm(articleBand ?? ArticleBand());
+          },
+        );
       },
     );
   }

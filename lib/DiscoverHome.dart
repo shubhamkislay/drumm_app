@@ -130,6 +130,7 @@ class DiscoverHomeState extends State<DiscoverHome>
   List<ArticleImageCard> loadingCards=[];
 
   List<ArticleImageCard> bufferingCards = [];
+  late PageController _pageController ;
 
   @override
   Widget build(BuildContext context) {
@@ -302,7 +303,9 @@ class DiscoverHomeState extends State<DiscoverHome>
                                     ),
                                     Container(
                                       height: 225,
+                                      alignment: Alignment.centerLeft,
                                       child: PageView(
+                                        controller: _pageController,
                                         scrollDirection: Axis.horizontal,
                                         children: drummCards,
                                       ),
@@ -526,6 +529,7 @@ class DiscoverHomeState extends State<DiscoverHome>
   void initState() {
     // TODO: implement initState
     loadingAnimation = LOADING_ASSET;
+    _pageController = PageController();
     controller = CardSwiperController();
     super.initState();
     WidgetsBinding.instance?.addObserver(this);
