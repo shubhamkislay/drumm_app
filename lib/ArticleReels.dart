@@ -92,15 +92,19 @@ class ArticleReels extends StatefulWidget {
         this.observer,
         this.articlePosition,
         required this.tag,
+        required this.lastDocument,
+        required this.selectedBandId,
         required this.userConnected,
         required this.scrollController})
       : super(key: key);
   String? title;
   String tag;
   int? articlePosition;
+  String selectedBandId;
   ThemeManager? themeManager;
   final ScrollController scrollController;
   FirebaseAnalytics? analytics;
+  DocumentSnapshot<Map<String, dynamic>>? lastDocument;
   FirebaseAnalyticsObserver? observer;
   final bool userConnected;
   List<ArticleBand>? preloadList;
@@ -463,281 +467,335 @@ class ArticleReelsState extends State<ArticleReels>
         ),
         child: Stack(
           children: [
-            RefreshIndicator(
-              onRefresh: _refreshData,
-              triggerMode: RefreshIndicatorTriggerMode.anywhere,
-              child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: (value) {
-                  currentVisiblePageIndex = value;
-                  setState(() {
-                    articleOnTop = widget.preloadList?.elementAt(value);
-                  });
+            PageView.builder(
+              controller: _pageController,
+              onPageChanged: (value) {
+                currentVisiblePageIndex = value;
+                setState(() {
+                  articleOnTop = widget.preloadList?.elementAt(value);
+                });
 
-                  try{
-                    FirebaseDBOperations.OggOpus_Player.pause();
-                  }catch(e){
+                try{
+                  FirebaseDBOperations.OggOpus_Player.pause();
+                }catch(e){
 
-                  }
-                  int articleSize = widget.preloadList?.length??0;
+                }
+                int articleSize = widget.preloadList?.length??0;
 
-                  if (value == articleSize - 1) {
-                    getArticlesData(false);
-                  }
-                  //Prefetch the next page image
-                  if (value != articleSize - 1) {
-                    preloadNextPageImage(value + 1);
-                  }
-                },
-                itemCount: widget.preloadList?.length,
-                scrollDirection: Axis.vertical,
-                physics: const CustomPageViewScrollPhysics(),
-                itemBuilder: (BuildContext context, int index) {
-                  if (!articleIDs
-                      .contains(widget.preloadList?.elementAt(index).article?.articleId)) {
-                    articleIDs.add(widget.preloadList?.elementAt(index).article?.articleId);
-                    checkIfUserLiked(index);
-                  }
+                if (value == articleSize - 1) {
+                  getArticlesData(false);
+                }
+                //Prefetch the next page image
+                if (value != articleSize - 1) {
+                  preloadNextPageImage(value + 1);
+                }
+              },
+              itemCount: widget.preloadList?.length,
+              scrollDirection: Axis.vertical,
+              physics: const CustomPageViewScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) {
+                if (!articleIDs
+                    .contains(widget.preloadList?.elementAt(index).article?.articleId)) {
+                  articleIDs.add(widget.preloadList?.elementAt(index).article?.articleId);
+                  checkIfUserLiked(index);
+                }
 
-                  if (widget.preloadList?.elementAt(index).article?.imageUrl == null) {
-                    fetchMissingImageUrls(widget.preloadList!.elementAt(index).article??Article(), index);
-                    imageSet.add(widget.preloadList?.elementAt(index).article?.articleId ?? "");
-                    // print("Contains article ${artcls?.elementAt(index).articleId} ${imageSet.contains(artcls?.elementAt(index).articleId)}");
-                  }
+                if (widget.preloadList?.elementAt(index).article?.imageUrl == null) {
+                  fetchMissingImageUrls(widget.preloadList!.elementAt(index).article??Article(), index);
+                  imageSet.add(widget.preloadList?.elementAt(index).article?.articleId ?? "");
+                  // print("Contains article ${artcls?.elementAt(index).articleId} ${imageSet.contains(artcls?.elementAt(index).articleId)}");
+                }
 
-                  Widget articleWidget = Hero(
-                      tag: widget.preloadList?.elementAt(index).article?.articleId ?? "",
-                      child: CachedNetworkImage(
-                      fadeInDuration: const Duration(milliseconds: 0),
-                      fit: (isContainerVisible)
-                          ? BoxFit.cover
-                          : BoxFit.cover,
-                      alignment: Alignment.topCenter,
-                      width: double.maxFinite,
-                      height: double.maxFinite,
-                      imageUrl:
-                      widget.preloadList?.elementAt(index).article?.imageUrl ?? "",
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) {
-                        return  ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            color: Colors.grey.shade900.withOpacity(0.25),
-                            height: 200,
-                            padding: const EdgeInsets.all(48),
-                          ),
-                        );
-                      },
-                      errorWidget: (context, url, error) {
-
-
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            color: Colors.grey.shade900.withOpacity(0.25),
-                            height: 200,
-                            padding: const EdgeInsets.all(48),
-                          ),
-                        );
-                      },
-                  ),
-                    );
-
-
-                  return Container(
-                    height:double.maxFinite,
+                Widget articleWidget = Hero(
+                    tag: widget.preloadList?.elementAt(index).article?.articleId ?? "",
+                    child: CachedNetworkImage(
+                    fadeInDuration: const Duration(milliseconds: 0),
+                    fit: (isContainerVisible)
+                        ? BoxFit.cover
+                        : BoxFit.cover,
+                    alignment: Alignment.topCenter,
                     width: double.maxFinite,
-                    color: Colors.transparent,
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: CachedNetworkImage(
-                            fadeInDuration: const Duration(milliseconds: 0),
-                            fit: BoxFit.cover,
-                            alignment: Alignment.center,
-                            width: double.infinity,
-                            height: double.infinity,
-                            imageUrl: widget.preloadList?.elementAt(index).article?.imageUrl ?? "",
-                            errorWidget: (context, url, error) {
-                              //     Image.asset(
-                              //   "images/logo_background_white.png",
-                              //   color: Colors.grey.shade900
-                              //       .withOpacity(0.5), //(COLOR_PRIMARY_VAL),
-                              //   width: 35,
-                              //   height: 35,
-                              // ),
-
-                              return Container(
-                                color: Colors.transparent,
-                              );
-                            },
-                          ),
+                    height: double.maxFinite,
+                    imageUrl:
+                    widget.preloadList?.elementAt(index).article?.imageUrl ?? "",
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) {
+                      return  ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          color: Colors.grey.shade900.withOpacity(0.25),
+                          height: 200,
+                          padding: const EdgeInsets.all(48),
                         ),
-                        Container(
-                          height: double.maxFinite,
-                          width: double.maxFinite,
-                        ).frosted(
-                            blur: 20,
-                            frostOpacity: 0.35,//0.35,
-                            frostColor: Colors.black),
-                        Column(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                //padding: const EdgeInsets.symmetric(horizontal: 16),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    //const SizedBox(height: 48,),
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          Navigator.push(
-                                            context,
-                                            PageRouteBuilder(
-                                              pageBuilder: (context, animation1,
-                                                  animation2) =>
-                                                  ZoomPicture(
-                                                      articleId: widget.preloadList?.elementAt(index).article?.articleId,
-                                                      url: widget.preloadList?.elementAt(index).article?.imageUrl ??
-                                                          "https://placekitten.com/640/360"),
-                                              transitionDuration:
-                                              const Duration(seconds: 0),
-                                              reverseTransitionDuration:
-                                              const Duration(seconds: 0),
-                                            ),
-                                          );
-                                        },
-                                        child: Stack(
-                                          children: [
-                                            articleWidget,
-                                          Container(
-                                            alignment: Alignment.bottomLeft,
-                                            padding: const EdgeInsets.all(4),
-                                            decoration: BoxDecoration(
-                                                gradient: LinearGradient(
-                                                    begin: Alignment.bottomCenter,
-                                                    end: Alignment.topCenter,
-                                                    colors: [
-                                                      Colors.transparent,
-                                                      Colors.black.withOpacity(0.15),
-                                                      //Colors.black,
-                                                      Colors.black.withOpacity(0.65),
-                                                    ])),),
-                                          ],
+                      );
+                    },
+                    errorWidget: (context, url, error) {
+
+
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          color: Colors.grey.shade900.withOpacity(0.25),
+                          height: 200,
+                          padding: const EdgeInsets.all(48),
+                        ),
+                      );
+                    },
+                ),
+                  );
+
+
+                return Container(
+                  height:double.maxFinite,
+                  width: double.maxFinite,
+                  color: Colors.transparent,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: CachedNetworkImage(
+                          fadeInDuration: const Duration(milliseconds: 0),
+                          fit: BoxFit.cover,
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          height: double.infinity,
+                          imageUrl: widget.preloadList?.elementAt(index).article?.imageUrl ?? "",
+                          errorWidget: (context, url, error) {
+                            //     Image.asset(
+                            //   "images/logo_background_white.png",
+                            //   color: Colors.grey.shade900
+                            //       .withOpacity(0.5), //(COLOR_PRIMARY_VAL),
+                            //   width: 35,
+                            //   height: 35,
+                            // ),
+
+                            return Container(
+                              color: Colors.transparent,
+                            );
+                          },
+                        ),
+                      ),
+                      Container(
+                        height: double.maxFinite,
+                        width: double.maxFinite,
+                      ).frosted(
+                          blur: 20,
+                          frostOpacity: 0.35,//0.35,
+                          frostColor: Colors.black),
+                      Column(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              //padding: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  //const SizedBox(height: 48,),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        Navigator.push(
+                                          context,
+                                          PageRouteBuilder(
+                                            pageBuilder: (context, animation1,
+                                                animation2) =>
+                                                ZoomPicture(
+                                                    articleId: widget.preloadList?.elementAt(index).article?.articleId,
+                                                    url: widget.preloadList?.elementAt(index).article?.imageUrl ??
+                                                        "https://placekitten.com/640/360"),
+                                            transitionDuration:
+                                            const Duration(seconds: 0),
+                                            reverseTransitionDuration:
+                                            const Duration(seconds: 0),
+                                          ),
+                                        );
+                                      },
+                                      child: Stack(
+                                        children: [
+                                          articleWidget,
+                                        Container(
+                                          alignment: Alignment.bottomLeft,
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: BoxDecoration(
+                                              gradient: LinearGradient(
+                                                  begin: Alignment.bottomCenter,
+                                                  end: Alignment.topCenter,
+                                                  colors: [
+                                                    Colors.transparent,
+                                                    Colors.black.withOpacity(0.15),
+                                                    //Colors.black,
+                                                    Colors.black.withOpacity(0.65),
+                                                  ])),),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12,),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                                    child: FadeInContainer(
+                                      child: AutoSizeText(
+                                        unescape.convert(widget.preloadList?.elementAt(index).article?.title?? ""),
+                                        textAlign: TextAlign.start,
+                                        maxLines: 4,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: APP_FONT_MEDIUM,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(height: 12,),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                                      child: FadeInContainer(
-                                        child: AutoSizeText(
-                                          unescape.convert(widget.preloadList?.elementAt(index).article?.title?? ""),
-                                          textAlign: TextAlign.start,
-                                          maxLines: 4,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: APP_FONT_MEDIUM,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
+                                  ),
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                                    margin: const EdgeInsets.only(top: 8,bottom: 12),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Row(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                  widget.preloadList?.elementAt(index).article?.source ?? "",
+                                                  style: TextStyle(
+                                                    color:
+                                                    Colors.white.withOpacity(0.8),
+                                                    fontSize: 13,
+                                                    fontFamily: APP_FONT_MEDIUM,
+                                                  )),
+                                              const Text(" • "),
+                                              InstagramDateTimeWidget(
+                                                  publishedAt: widget.preloadList
+                                                      ?.elementAt(index).article?.publishedAt.toString() ??
+                                                      ""),
+                                            ],
                                           ),
                                         ),
-                                      ),
+                                      ],
                                     ),
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                                      margin: const EdgeInsets.only(top: 8,bottom: 12),
+                                  ),
+
+                                  if(true)GestureDetector(
+                                    onTap: (){
+                                      openArticlePage(widget.preloadList?.elementAt(index).article,index);
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 8),
+                                      margin: const EdgeInsets.symmetric(vertical: 12,horizontal: 12),
+                                      width: double.maxFinite,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(borderCurve),
+                                        color: Colors.white.withOpacity(0.05),
+                                      ),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          SingleChildScrollView(
-                                            scrollDirection: Axis.horizontal,
-                                            child: Row(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                    widget.preloadList?.elementAt(index).article?.source ?? "",
-                                                    style: TextStyle(
-                                                      color:
-                                                      Colors.white.withOpacity(0.8),
-                                                      fontSize: 13,
-                                                      fontFamily: APP_FONT_MEDIUM,
-                                                    )),
-                                                const Text(" • "),
-                                                InstagramDateTimeWidget(
-                                                    publishedAt: widget.preloadList
-                                                        ?.elementAt(index).article?.publishedAt.toString() ??
-                                                        ""),
-                                              ],
+                                          const SizedBox(width:8,),
+                                          Container(
+                                            padding: const EdgeInsets.all(4),
+                                            child: Image.asset(
+                                                'images/link.png',
+                                                height: 22,
+                                                color: Colors.white,
+                                                fit: BoxFit.contain),
+                                          ),
+                                          const SizedBox(width: 10,),
+                                          Flexible(
+                                            child: Text(
+                                              (widget.preloadList?.elementAt(index).article?.source?.toLowerCase() ==
+                                                  'youtube')
+                                                  ? widget.preloadList?.elementAt(index).article?.title ?? "Read Article"
+                                                  : (widget.preloadList?.elementAt(index).article?.description != null)
+                                                  ? widget.preloadList?.elementAt(index).article?.description ?? "Read Article"
+                                                  : (widget.preloadList?.elementAt(index).article?.content != null)
+                                                  ? widget.preloadList?.elementAt(index).article?.content ?? "Read Article"
+                                                  : "Read Article",
+                                              textAlign: TextAlign.left,
+                                              maxLines: 2,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.white,
+                                                fontFamily: APP_FONT_LIGHT,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
+                                  ),
 
-                                    if(true)GestureDetector(
-                                      onTap: (){
-                                        openArticlePage(widget.preloadList?.elementAt(index).article,index);
-                                      },
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 8),
-                                        margin: const EdgeInsets.symmetric(vertical: 12,horizontal: 12),
-                                        width: double.maxFinite,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(borderCurve),
-                                          color: Colors.white.withOpacity(0.05),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            const SizedBox(width:8,),
-                                            Container(
-                                              padding: const EdgeInsets.all(4),
-                                              child: Image.asset(
-                                                  'images/link.png',
-                                                  height: 22,
-                                                  color: Colors.white,
-                                                  fit: BoxFit.contain),
-                                            ),
-                                            const SizedBox(width: 10,),
-                                            Flexible(
-                                              child: Text(
-                                                (widget.preloadList?.elementAt(index).article?.source?.toLowerCase() ==
-                                                    'youtube')
-                                                    ? widget.preloadList?.elementAt(index).article?.title ?? "Read Article"
-                                                    : (widget.preloadList?.elementAt(index).article?.description != null)
-                                                    ? widget.preloadList?.elementAt(index).article?.description ?? "Read Article"
-                                                    : (widget.preloadList?.elementAt(index).article?.content != null)
-                                                    ? widget.preloadList?.elementAt(index).article?.content ?? "Read Article"
-                                                    : "Read Article",
-                                                textAlign: TextAlign.left,
-                                                maxLines: 2,
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.white,
-                                                  fontFamily: APP_FONT_LIGHT,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                          ],
+                                ],
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              AISummary.showBottomSheet(
+                                  context,
+                                  widget.preloadList!.elementAt(index).article ?? Article(),
+                                  Colors.transparent);
+                            },
+                            child: Container(
+                              width: double.maxFinite,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 8),
+                              margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                              alignment: Alignment.centerLeft,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(borderCurve),
+                                //color: Colors.transparent,
+                                // borderRadius: BorderRadius.only(
+                                //   topLeft: Radius.circular(CURVE),
+                                //   topRight: Radius.circular(CURVE),
+                                // ),
+                                //gradient: LinearGradient(colors: JOIN_COLOR),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SizedBox(width:6,),
+                                  Container(
+                                    padding: const EdgeInsets.all(4),
+                                    child: Image.asset(
+                                        'images/sparkles.png',
+                                        height: 24,
+                                        color: Colors.white,
+                                        fit: BoxFit.contain),
+                                  ),
+                                  const SizedBox(width: 6,),
+                                  Expanded(
+                                    child: Container(
+                                      // height: questionHeight,
+                                      alignment: Alignment.centerLeft,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 4, horizontal: 4),
+                                      child: const Text(
+                                        "Summarize the article" ??
+                                            "",
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontFamily: APP_FONT_BOLD,
+                                          //fontWeight: FontWeight.w400
                                         ),
                                       ),
                                     ),
-
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
+                          ),
+                          if (widget.preloadList?.elementAt(index).article?.question != null)
                             GestureDetector(
-                              onTap: () {
-                                AISummary.showBottomSheet(
-                                    context,
-                                    widget.preloadList!.elementAt(index).article ?? Article(),
-                                    Colors.transparent);
+                              onTap: (){
+                                drumJoinDialog();
                               },
                               child: Container(
                                 width: double.maxFinite,
@@ -746,14 +804,14 @@ class ArticleReelsState extends State<ArticleReels>
                                 margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
                                 alignment: Alignment.centerLeft,
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.05),
+                                  //color: Colors.blue,//s.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(borderCurve),
                                   //color: Colors.transparent,
                                   // borderRadius: BorderRadius.only(
                                   //   topLeft: Radius.circular(CURVE),
                                   //   topRight: Radius.circular(CURVE),
                                   // ),
-                                  //gradient: LinearGradient(colors: JOIN_COLOR),
+                                  gradient: LinearGradient(colors: JOIN_COLOR),
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -762,7 +820,7 @@ class ArticleReelsState extends State<ArticleReels>
                                     Container(
                                       padding: const EdgeInsets.all(4),
                                       child: Image.asset(
-                                          'images/sparkles.png',
+                                          'images/audio-waves.png',
                                           height: 24,
                                           color: Colors.white,
                                           fit: BoxFit.contain),
@@ -774,11 +832,11 @@ class ArticleReelsState extends State<ArticleReels>
                                         alignment: Alignment.centerLeft,
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 4, horizontal: 4),
-                                        child: const Text(
-                                          "Summarize the article" ??
-                                              "",
+                                        child: Text(
+                                          unescape.convert("\"${widget.preloadList?.elementAt(index).article?.question ?? ""}\"" ??
+                                              ""),
                                           textAlign: TextAlign.left,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 14,
                                             fontFamily: APP_FONT_BOLD,
@@ -791,71 +849,13 @@ class ArticleReelsState extends State<ArticleReels>
                                 ),
                               ),
                             ),
-                            if (widget.preloadList?.elementAt(index).article?.question != null)
-                              GestureDetector(
-                                onTap: (){
-                                  drumJoinDialog();
-                                },
-                                child: Container(
-                                  width: double.maxFinite,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 8),
-                                  margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-                                  alignment: Alignment.centerLeft,
-                                  decoration: BoxDecoration(
-                                    //color: Colors.blue,//s.withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(borderCurve),
-                                    //color: Colors.transparent,
-                                    // borderRadius: BorderRadius.only(
-                                    //   topLeft: Radius.circular(CURVE),
-                                    //   topRight: Radius.circular(CURVE),
-                                    // ),
-                                    gradient: LinearGradient(colors: JOIN_COLOR),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const SizedBox(width:6,),
-                                      Container(
-                                        padding: const EdgeInsets.all(4),
-                                        child: Image.asset(
-                                            'images/audio-waves.png',
-                                            height: 24,
-                                            color: Colors.white,
-                                            fit: BoxFit.contain),
-                                      ),
-                                      const SizedBox(width: 6,),
-                                      Expanded(
-                                        child: Container(
-                                          // height: questionHeight,
-                                          alignment: Alignment.centerLeft,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 4, horizontal: 4),
-                                          child: Text(
-                                            unescape.convert("\"${widget.preloadList?.elementAt(index).article?.question ?? ""}\"" ??
-                                                ""),
-                                            textAlign: TextAlign.left,
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontFamily: APP_FONT_BOLD,
-                                              //fontWeight: FontWeight.w400
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            SizedBox(height: 4,),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                          SizedBox(height: 4,),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -868,12 +868,19 @@ class ArticleReelsState extends State<ArticleReels>
       // SharedPreferences prefs = await SharedPreferences.getInstance();
       // List<String> userInterests = prefs.getStringList('interestList')!;
       // print("List of interests as per prefs $userInterests");
-      List<Band> fetchedBands = await FirebaseDBOperations.getBandByUser();
-      List<String> bandCategoryList = [];
-      for (Band band in fetchedBands) {
-        bandCategoryList.add(band.bandId ?? "");
+      List<dynamic> bandCategoryList = [];
+      if(widget.selectedBandId == "For You") {
+        List<Band> fetchedBands = await FirebaseDBOperations.getBandByUser();
+
+        for (Band band in fetchedBands) {
+          bandCategoryList.addAll(band.hooks ?? []);
+        }
+        if (fetchedBands.length < 1) bandCategoryList.add("general");
       }
-      if (fetchedBands.length < 1) bandCategoryList.add("general");
+      else{
+        Band selectedBand = await FirebaseDBOperations.getBand(widget.selectedBandId??"");
+        bandCategoryList.addAll(selectedBand.hooks ?? []);
+      }
 
       //print("Fetched interesets: ${userInterests.toString()}");
       print("Fetched categories: ${bandCategoryList.toString()}");
@@ -935,9 +942,12 @@ class ArticleReelsState extends State<ArticleReels>
         } else {
           updatedArticles = articles + newArticlesBands;
           setState(() {
-            articleOnTop = updatedArticles.elementAt(0);
+            //articleOnTop = updatedArticles.elementAt(0);
+            widget.preloadList?.addAll(newArticlesBands);
           });
-          _articlesController.add(updatedArticles);
+          //_articlesController.add(updatedArticles);
+
+
         }
 
         // print(
@@ -1190,8 +1200,11 @@ class ArticleReelsState extends State<ArticleReels>
     //WidgetsBinding.instance.addObserver(this);
     initToken();
     _lastRefreshTime = DateTime.now();
+    _lastDocument = widget.lastDocument;
     refreshFeed();
+
     _pageController = PageController(initialPage: widget.articlePosition??0);
+    _pageController.addListener(_pageListener);
     widget.scrollController.addListener(_handleScroll);
     // _pageController.addListener(() {
     //   int initialPage = _pageController.initialPage;
@@ -1202,6 +1215,12 @@ class ArticleReelsState extends State<ArticleReels>
     getCurrentDrummer();
   }
 
+  void _pageListener() {
+    if (_pageController.page == _pageController.page!.ceilToDouble()) {
+      // Load more data
+      getArticlesData(false);
+    }
+  }
   void getBandsList() async{
     bandList = await FirebaseDBOperations.getBandByUser();
   }
@@ -1232,7 +1251,7 @@ class ArticleReelsState extends State<ArticleReels>
         articleOnTop = fetchedArticleBand.elementAt(widget.articlePosition??0);
         fromSearch = true;
         isContainerVisible = false;
-        _articlesController.add(fetchedArticleBand ?? []);
+        //_articlesController.add(fetchedArticleBand ?? []);
         print("Article position is ${widget.articlePosition}");
 
       });

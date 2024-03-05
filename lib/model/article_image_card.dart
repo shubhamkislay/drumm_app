@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/ArticleReels.dart';
 import 'package:drumm_app/HeroAnimation.dart';
 import 'package:drumm_app/custom/constants/Constants.dart';
@@ -24,12 +25,16 @@ class ArticleImageCard extends StatelessWidget {
   final ArticleBand articleBand;
   List<ArticleBand>? articleBands;
   bool? loading;
+  String? selectedBandID;
+  DocumentSnapshot<Map<String, dynamic>>? lastDocument;
 
   ArticleImageCard(
     this.articleBand, {
     Key? key,
     this.loading,
+        this.selectedBandID,
     this.articleBands,
+        this.lastDocument,
   }) : super(key: key);
 
   @override
@@ -75,6 +80,8 @@ class ArticleImageCard extends StatelessWidget {
                       SwipeablePageRoute(
                         builder: (context) => ArticleReels(
                           preloadList: articleBands,
+                          lastDocument: lastDocument,
+                          selectedBandId: selectedBandID??"For You",
                           articlePosition: articleBands?.indexOf(articleBand) ?? 0,
                           userConnected: false,
                           scrollController: ScrollController(),

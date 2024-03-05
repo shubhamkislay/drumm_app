@@ -144,100 +144,177 @@ class DiscoverHomeState extends State<DiscoverHome>
           padding: const EdgeInsets.symmetric(horizontal: 0),
           child: Stack(
             children: [
-              CustomScrollView(
-                controller: _scrollController,
-                  slivers: [
-                    SliverPadding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 2, horizontal: horizontalPadding),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                            // Build your content here
-                            // Example:
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(36),
-                                      border: Border.all(
-                                          color: Colors.grey.shade900, width: 2),
-                                    ),
+              RefreshIndicator(
+                onRefresh: onRefresh,
+                color: Colors.white,
+                strokeWidth: 3,
+                backgroundColor: Colors.grey.shade900.withOpacity(0.75),
+                child: CustomScrollView(
+                  controller: _scrollController,
+                    slivers: [
+                      SliverPadding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 2, horizontal: horizontalPadding),
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                              // Build your content here
+                              // Example:
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(36),
+                                        border: Border.all(
+                                            color: Colors.grey.shade900, width: 2),
+                                      ),
+                                      child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => UserProfilePage(
+                                                    fromSearch: true,
+                                                  ),
+                                                ));
+                                          },
+                                          child: UserProfileIcon(
+                                            iconSize: 32,
+                                          ))),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  Expanded(
                                     child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => UserProfilePage(
-                                                  fromSearch: true,
-                                                ),
-                                              ));
-                                        },
-                                        child: UserProfileIcon(
-                                          iconSize: 32,
-                                        ))),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        PageRouteBuilder(
-                                          pageBuilder:
-                                              (context, animation1, animation2) =>
-                                              SearchResultPage(),
-                                          transitionDuration: Duration.zero,
-                                          reverseTransitionDuration: Duration.zero,
-                                        ),
-                                      );
-                                    },
-                                    child: Wrap(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 9, horizontal: 16),
-                                          decoration: BoxDecoration(
-                                              color: Colors.grey.shade900,
-                                              //border: Border.all(color: Colors.grey.shade900),
-                                              borderRadius: BorderRadius.circular(16)),
-                                          child: Row(
-                                            children: [
-                                              Image.asset("images/search_button.png",
-                                                  color: Colors.white38, width: 16),
-                                              const SizedBox(
-                                                width: 8,
-                                              ),
-                                              const Text(
-                                                "Search drumms",
-                                                style: TextStyle(color: Colors.white38),
-                                              )
-                                            ],
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          PageRouteBuilder(
+                                            pageBuilder:
+                                                (context, animation1, animation2) =>
+                                                SearchResultPage(),
+                                            transitionDuration: Duration.zero,
+                                            reverseTransitionDuration: Duration.zero,
                                           ),
-                                        ),
-                                      ],
+                                        );
+                                      },
+                                      child: Wrap(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 9, horizontal: 16),
+                                            decoration: BoxDecoration(
+                                                color: Colors.grey.shade900,
+                                                //border: Border.all(color: Colors.grey.shade900),
+                                                borderRadius: BorderRadius.circular(16)),
+                                            child: Row(
+                                              children: [
+                                                Image.asset("images/search_button.png",
+                                                    color: Colors.white38, width: 16),
+                                                const SizedBox(
+                                                  width: 8,
+                                                ),
+                                                const Text(
+                                                  "Search drumms",
+                                                  style: TextStyle(color: Colors.white38),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                const LiveIcon(),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                const NotificationIcon(),
-                              ],
-                            );
-                          },
-                          childCount: 1, // Adjust the child count as per your content
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  const LiveIcon(),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  const NotificationIcon(),
+                                ],
+                              );
+                            },
+                            childCount: 1, // Adjust the child count as per your content
+                          ),
                         ),
                       ),
-                    ),
-                    if (drummCards.isNotEmpty)
+                      if (drummCards.isNotEmpty)
+                        SliverPadding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 2, horizontal: 0),
+                          sliver: SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                                  (context, index) {
+                                // Build your content here
+                                // Example:
+                                return Column(
+                                  children: [
+                                    const SizedBox(
+                                      height: 16,
+                                    ),
+                                    GestureDetector(
+                                      onTap: (){
+                                        showModalBottomSheet(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          backgroundColor: COLOR_PRIMARY_DARK,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(0.0)),
+                                          ),
+                                          builder: (BuildContext context) {
+                                            return Padding(
+                                              padding: EdgeInsets.only(
+                                                  bottom: MediaQuery.of(context)
+                                                      .viewInsets
+                                                      .bottom),
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.vertical(
+                                                    top: Radius.circular(0.0)),
+                                                child: LiveDrumms(),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: horizontalPadding),
+                                            child: const Text(
+                                              "Live now",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold, fontSize: 20),
+                                            ),
+                                          ),
+                                          Icon(Icons.arrow_forward_ios_rounded,size: 16,)
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 12,
+                                    ),
+                                    Container(
+                                      height: 225,
+                                      child: PageView(
+                                        scrollDirection: Axis.horizontal,
+                                        children: drummCards,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                              childCount: 1, // Adjust the child count as per your content
+                            ),
+                          ),
+                        ),
+
                       SliverPadding(
                         padding: EdgeInsets.symmetric(
                             vertical: 2, horizontal: 0),
@@ -248,58 +325,46 @@ class DiscoverHomeState extends State<DiscoverHome>
                               // Example:
                               return Column(
                                 children: [
-                                  const SizedBox(
-                                    height: 16,
-                                  ),
-                                  GestureDetector(
-                                    onTap: (){
-                                      showModalBottomSheet(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        backgroundColor: COLOR_PRIMARY_DARK,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(0.0)),
-                                        ),
-                                        builder: (BuildContext context) {
-                                          return Padding(
-                                            padding: EdgeInsets.only(
-                                                bottom: MediaQuery.of(context)
-                                                    .viewInsets
-                                                    .bottom),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.vertical(
-                                                  top: Radius.circular(0.0)),
-                                              child: LiveDrumms(),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: horizontalPadding),
-                                          child: const Text(
-                                            "Live now",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold, fontSize: 20),
-                                          ),
-                                        ),
-                                        Icon(Icons.arrow_forward_ios_rounded,size: 16,)
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 12,
-                                  ),
+                                  const SizedBox(height: 12),
                                   Container(
-                                    height: 225,
-                                    child: PageView(
-                                      scrollDirection: Axis.horizontal,
-                                      children: drummCards,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: horizontalPadding),
+                                    width: double.maxFinite,
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          "What's new",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold, fontSize: 20),
+                                        ),
+                                        Expanded(child: Container()),
+                                        if (articleBands.isNotEmpty)
+                                          const Icon(Icons.refresh_rounded,
+                                              size: 16, color: Colors.white38),
+                                        const SizedBox(
+                                          width: 2,
+                                        ),
+                                        if (articleBands.isNotEmpty)
+                                          const Text(
+                                            "Freshness",
+                                            style: TextStyle(
+                                                fontSize: 13, color: Colors.white38),
+                                          ),
+                                        const SizedBox(
+                                          width: 4,
+                                        ),
+                                        if (articleBands.isNotEmpty)
+                                          InstagramDateTimeWidget(
+                                              fontColor: Colors.white38,
+                                              textSize: 12,
+                                              publishedAt: articleBands
+                                                  .elementAt(0)
+                                                  .article
+                                                  ?.publishedAt
+                                                  .toString() ??
+                                                  ""),
+                                      ],
                                     ),
                                   ),
                                 ],
@@ -309,154 +374,95 @@ class DiscoverHomeState extends State<DiscoverHome>
                           ),
                         ),
                       ),
-
-                    SliverPadding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 2, horizontal: 0),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                            // Build your content here
-                            // Example:
-                            return Column(
-                              children: [
-                                const SizedBox(height: 12),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: horizontalPadding),
-                                  width: double.maxFinite,
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "What's new",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold, fontSize: 20),
-                                      ),
-                                      Expanded(child: Container()),
-                                      if (articleBands.isNotEmpty)
-                                        const Icon(Icons.refresh_rounded,
-                                            size: 16, color: Colors.white38),
-                                      const SizedBox(
-                                        width: 2,
-                                      ),
-                                      if (articleBands.isNotEmpty)
-                                        const Text(
-                                          "Freshness",
-                                          style: TextStyle(
-                                              fontSize: 13, color: Colors.white38),
-                                        ),
-                                      const SizedBox(
-                                        width: 4,
-                                      ),
-                                      if (articleBands.isNotEmpty)
-                                        InstagramDateTimeWidget(
-                                            fontColor: Colors.white38,
-                                            textSize: 12,
-                                            publishedAt: articleBands
-                                                .elementAt(0)
-                                                .article
-                                                ?.publishedAt
-                                                .toString() ??
-                                                ""),
-                                    ],
+                      SliverAppBar(
+                        backgroundColor: COLOR_BACKGROUND.withOpacity(0.9),
+                        floating: true,
+                        pinned: true,
+                        toolbarHeight: 58,
+                        snap: true,
+                        elevation: 10,
+                        automaticallyImplyLeading: false,
+                        flexibleSpace: Column(
+                          children: [
+                            const SizedBox(height: 16),
+                            if (bandsCards.isNotEmpty)
+                              Container(
+                                //color: COLOR_BACKGROUND,
+                                  alignment: Alignment.centerLeft,
+                                  padding: EdgeInsets.only(
+                                    left: horizontalPadding,
+                                    right: horizontalPadding,
                                   ),
-                                ),
-                              ],
-                            );
-                          },
-                          childCount: 1, // Adjust the child count as per your content
+                                  height: 30,
+                                  child: multiSelectContainer),
+                            const SizedBox(height: 12),
+                          ],
                         ),
                       ),
-                    ),
-                    SliverAppBar(
-                      backgroundColor: COLOR_BACKGROUND.withOpacity(0.9),
-                      floating: true,
-                      pinned: true,
-                      toolbarHeight: 58,
-                      snap: true,
-                      elevation: 10,
-                      automaticallyImplyLeading: false,
-                      flexibleSpace: Column(
-                        children: [
-                          const SizedBox(height: 16),
-                          if (bandsCards.isNotEmpty)
-                            Container(
-                              //color: COLOR_BACKGROUND,
-                                alignment: Alignment.centerLeft,
-                                padding: EdgeInsets.only(
-                                  left: horizontalPadding,
-                                  right: horizontalPadding,
+                      SliverPadding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 2, horizontal: 0),
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                              // Build your content here
+                              // Example:
+                              return GridView.custom(
+                                shrinkWrap: true,
+                                //controller: _scrollController,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: horizontalPadding),
+                                physics: const NeverScrollableScrollPhysics(),
+                                gridDelegate: SliverQuiltedGridDelegate(
+                                  crossAxisCount: 5,
+                                  mainAxisSpacing: 8,
+                                  crossAxisSpacing: 8,
+                                  repeatPattern: QuiltedGridRepeatPattern.inverted,
+                                  pattern: [
+                                    const QuiltedGridTile(4, 3),
+                                    const QuiltedGridTile(2, 2),
+                                    const QuiltedGridTile(3, 2),
+
+                                    const QuiltedGridTile(3, 3),
+                                    const QuiltedGridTile(2, 2),
+                                    // const QuiltedGridTile(5, 3),
+                                    // const QuiltedGridTile(3, 2),
+
+                                    // const QuiltedGridTile(3, 3),
+                                    // const QuiltedGridTile(3, 2),
+                                    // const QuiltedGridTile(3, 2),
+                                    // const QuiltedGridTile(3, 3),
+                                    //const QuiltedGridTile(3, 3),
+                                    //const QuiltedGridTile(2, 2),
+
+                                  ],
                                 ),
-                                height: 30,
-                                child: multiSelectContainer),
-                          const SizedBox(height: 12),
-                        ],
-                      ),
-                    ),
-                    SliverPadding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 2, horizontal: 0),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                            // Build your content here
-                            // Example:
-                            return GridView.custom(
-                              shrinkWrap: true,
-                              //controller: _scrollController,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: horizontalPadding),
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate: SliverQuiltedGridDelegate(
-                                crossAxisCount: 5,
-                                mainAxisSpacing: 8,
-                                crossAxisSpacing: 8,
-                                repeatPattern: QuiltedGridRepeatPattern.inverted,
-                                pattern: [
-                                  const QuiltedGridTile(4, 3),
-                                  const QuiltedGridTile(2, 2),
-                                  const QuiltedGridTile(3, 2),
-
-                                  const QuiltedGridTile(3, 3),
-                                  const QuiltedGridTile(2, 2),
-                                  // const QuiltedGridTile(5, 3),
-                                  // const QuiltedGridTile(3, 2),
-
-                                  // const QuiltedGridTile(3, 3),
-                                  // const QuiltedGridTile(3, 2),
-                                  // const QuiltedGridTile(3, 2),
-                                  // const QuiltedGridTile(3, 3),
-                                  //const QuiltedGridTile(3, 3),
-                                  //const QuiltedGridTile(2, 2),
-
-                                ],
-                              ),
-                              childrenDelegate: (articleCards.isNotEmpty)
-                                  ? SliverChildBuilderDelegate(
-                                childCount: articleCards.length,
-                                    (context, index) =>
-                                    articleCards.elementAt(index),
-                              )
-                                  : SliverChildBuilderDelegate(
-                                childCount: 10,
-                                    (context, index) =>
-                                //     Container(
-                                //   decoration: BoxDecoration(
-                                //       color: Colors.grey.shade900,
-                                //       borderRadius:
-                                //           BorderRadius.circular(16)),
-                                // ),
-                                loadingCards.elementAt(index),
-                              ),
-                            );
-                          },
-                          childCount: 1, // Adjust the child count as per your content
+                                childrenDelegate: (articleCards.isNotEmpty)
+                                    ? SliverChildBuilderDelegate(
+                                  childCount: articleCards.length,
+                                      (context, index) =>
+                                      articleCards.elementAt(index),
+                                )
+                                    : SliverChildBuilderDelegate(
+                                  childCount: 10,
+                                      (context, index) =>
+                                  //     Container(
+                                  //   decoration: BoxDecoration(
+                                  //       color: Colors.grey.shade900,
+                                  //       borderRadius:
+                                  //           BorderRadius.circular(16)),
+                                  // ),
+                                  loadingCards.elementAt(index),
+                                ),
+                              );
+                            },
+                            childCount: 1, // Adjust the child count as per your content
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
 
+                ),
               ),
               if(showNewArticleWidget)
                 Container(
@@ -535,6 +541,7 @@ class DiscoverHomeState extends State<DiscoverHome>
         FirebaseAuth.instance.currentUser?.uid ?? "";
     FirebaseDBOperations.lastDocument = null;
     getBandsCards();
+    getArticles(false);
     requestPermissions();
 
     getSharedPreferences();
@@ -569,7 +576,7 @@ class DiscoverHomeState extends State<DiscoverHome>
       _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
     });
   }
-  void getBandsCards() async {
+  Future<bool> getBandsCards() async {
     mulList.clear();
 
     bandList = await FirebaseDBOperations.getBandByUser();
@@ -577,7 +584,8 @@ class DiscoverHomeState extends State<DiscoverHome>
     for (Band band in bandList) {
       bandMap.putIfAbsent(band.bandId ?? "", () => band);
     }
-    getArticles(false);
+
+    //getArticles(false);
 
     Band allBands = Band();
     allBands.name = "For You";
@@ -632,9 +640,10 @@ class DiscoverHomeState extends State<DiscoverHome>
       bandsCards = mulList;
       multiSelectContainer = getMultiSelectWidget(context);
     });
+    return true;
   }
 
-  Future<void> getBandDrumms() async {
+  Future<bool> getBandDrumms() async {
     drummCards.clear();
     List<Jam> fetchedDrumms =
         await FirebaseDBOperations.getDrummsFromBands(); //getUserBands();
@@ -650,6 +659,8 @@ class DiscoverHomeState extends State<DiscoverHome>
       drummCards = drummCards + userDrummCards;
       loaded = true;
     });
+
+    return true;
   }
 
   MultiSelectContainerWidget getMultiSelectWidget(BuildContext bContext) {
@@ -686,7 +697,7 @@ class DiscoverHomeState extends State<DiscoverHome>
         bandsCards: bandsCards);
   }
 
-  void getArticles(bool reverse) async {
+  Future<bool> getArticles(bool reverse) async {
     //setState(() {
     //articles.clear();
     //articleBands.clear();
@@ -740,6 +751,8 @@ class DiscoverHomeState extends State<DiscoverHome>
               ArticleImageCard(
                 article,
                 articleBands: articleBands,
+                  lastDocument:_lastDocument,
+                selectedBandID: selectedBandID,
               ))
               .toList();
           bufferingCards = [];
@@ -760,9 +773,10 @@ class DiscoverHomeState extends State<DiscoverHome>
         });
       }
     }
+    return true;
   }
 
-  void getArticlesForBands(Band selectedBand, bool reverse) async {
+  Future<bool> getArticlesForBands(Band selectedBand, bool reverse) async {
     //articles.clear();
     //articleBands.clear();
     controller = CardSwiperController();
@@ -800,6 +814,8 @@ class DiscoverHomeState extends State<DiscoverHome>
               ArticleImageCard(
                 article,
                 articleBands: articleBands,
+                selectedBandID: selectedBandID,
+                lastDocument: _lastDocument,
               ))
               .toList();
           bufferingCards = [];
@@ -816,6 +832,7 @@ class DiscoverHomeState extends State<DiscoverHome>
         });
       }
     }
+    return true;
   }
 
   void getArticlesForBand(Band bandSelected) async {
@@ -914,5 +931,41 @@ class DiscoverHomeState extends State<DiscoverHome>
         showNewArticleWidget = true;
       });
     }
+  }
+
+  Future<void> onRefresh() async {
+
+
+    // Simulate fetching new data
+    bool loadedCard = await getBandsCards();
+
+
+    _lastDocument = null;
+    _startDocument = null;
+    Vibrate.feedback(FeedbackType.selection);
+    FirebaseDBOperations.lastDocument = null;
+    controller = CardSwiperController();
+    loadAnimation = false;
+    loadingAnimation = LOADING_ASSET;
+    selectedBandID = "For You";
+    setState(() {
+      articles = [];
+      bufferingCards = [];
+      articleBands = [];
+      articleCards = [];
+      articlePage = 0;
+      initialisedYoutubePlayer = false;
+    });
+
+
+    bool loadedBand = await getBandsCards();
+    bool loaded = await getArticles(false);
+    bool loadedDrumms = await getBandDrumms();
+
+
+    setState(() {
+      showNewArticleWidget = false;
+    });
+    //await Future.delayed(Duration(seconds: 2));
   }
 }
