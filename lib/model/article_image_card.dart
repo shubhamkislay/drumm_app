@@ -46,7 +46,8 @@ class ArticleImageCard extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(13),
-              color: Colors.grey.shade900,
+              color: COLOR_BACKGROUND,
+              border: Border.all(color: Colors.grey.shade900,width: 3)
             ),
           )
         : LayoutBuilder(
@@ -98,10 +99,10 @@ class ArticleImageCard extends StatelessWidget {
                 },
                 child: (articleBand.article?.imageUrl != null)
                     ? Container(
-                        padding: const EdgeInsets.all(2),
+                        padding: const EdgeInsets.all(3),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(14),
-                            color: Colors.grey.shade900.withOpacity(0.25)),
+                            color: Colors.grey.shade900,),//.withOpacity(0.75)),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Stack(
@@ -225,13 +226,13 @@ class ArticleImageCard extends StatelessWidget {
                                                 child: Container(
                                                   padding:
                                                       const EdgeInsets.symmetric(
-                                                          horizontal: 8,
+                                                          horizontal: 6,
                                                           vertical: 4),
                                                   decoration: BoxDecoration(
                                                       borderRadius:
                                                           BorderRadius.circular(8),
-                                                      color: Colors.grey.shade900
-                                                          .withOpacity(0.5)),
+                                                      color: Colors.white
+                                                          .withOpacity(0.1)),
                                                   child: Hero(
                                                     tag:
                                                         "${articleBand.band?.name} ${articleBand.article?.articleId}",
@@ -284,7 +285,7 @@ class ArticleImageCard extends StatelessWidget {
                                                         overflow:
                                                             TextOverflow.ellipsis,
                                                         fontSize: 17,
-                                                        //fontWeight: FontWeight.bold,
+                                                        fontWeight: FontWeight.w500,
                                                         fontFamily: APP_FONT_MEDIUM,
                                                         color: Colors.white),
                                                   ),

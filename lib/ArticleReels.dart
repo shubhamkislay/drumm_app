@@ -137,7 +137,7 @@ class ArticleReelsState extends State<ArticleReels>
   final StreamController<List<ArticleBand>> _articlesController =
       StreamController<List<ArticleBand>>();
   int _currentPage = 0;
-  int _pageSize = 25;
+  int _pageSize = 10;
 
   bool noImage = false;
   bool liked = false;
@@ -409,6 +409,7 @@ class ArticleReelsState extends State<ArticleReels>
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
+                          margin: const EdgeInsets.symmetric(vertical: 16),
                           child: GestureDetector(
                             onTap: () => Navigator.pop(context),
                             child: const Icon(
@@ -490,421 +491,337 @@ class ArticleReelsState extends State<ArticleReels>
   }
 
   Widget getNewsArticles() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(borderCurve + 2),
-      child: Container(
-        decoration:
-            BoxDecoration(gradient: LinearGradient(colors: backgroundColor)),
-        child: Stack(
-          children: [
-            PageView.builder(
-              controller: _pageController,
-              onPageChanged: (value) {
-                currentVisiblePageIndex = value;
-                setState(() {
-                  articleOnTop = widget.preloadList?.elementAt(value);
-                });
+    return SafeArea(
+      bottom: false,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(borderCurve + 2),
+        child: Container(
+          decoration:
+              BoxDecoration(gradient: LinearGradient(colors: backgroundColor)),
+          child: Stack(
+            children: [
+              PageView.builder(
+                controller: _pageController,
+                onPageChanged: (value) {
+                  currentVisiblePageIndex = value;
+                  setState(() {
+                    articleOnTop = widget.preloadList?.elementAt(value);
+                  });
 
-                try {
-                  FirebaseDBOperations.OggOpus_Player.pause();
-                } catch (e) {}
-                int articleSize = widget.preloadList?.length ?? 0;
+                  try {
+                    FirebaseDBOperations.OggOpus_Player.pause();
+                  } catch (e) {}
+                  int articleSize = widget.preloadList?.length ?? 0;
 
-                if (value == articleSize - 1) {
-                  getArticlesData(false);
-                }
-                //Prefetch the next page image
-                if (value != articleSize - 1) {
-                  preloadNextPageImage(value + 1);
-                }
-              },
-              itemCount: widget.preloadList?.length,
-              scrollDirection: Axis.vertical,
-              physics: const CustomPageViewScrollPhysics(),
-              itemBuilder: (BuildContext context, int index) {
-                if (!articleIDs.contains(
-                    widget.preloadList?.elementAt(index).article?.articleId)) {
-                  articleIDs.add(
-                      widget.preloadList?.elementAt(index).article?.articleId);
-                  checkIfUserLiked(index);
-                }
+                  print("Article size is $articleSize and current page is $value" );
 
-                if (widget.preloadList?.elementAt(index).article?.imageUrl ==
-                    null) {
-                  fetchMissingImageUrls(
-                      widget.preloadList!.elementAt(index).article ?? Article(),
-                      index);
-                  imageSet.add(
-                      widget.preloadList?.elementAt(index).article?.articleId ??
-                          "");
-                  // print("Contains article ${artcls?.elementAt(index).articleId} ${imageSet.contains(artcls?.elementAt(index).articleId)}");
-                }
+                  if (value >= articleSize - 2) {
+                    getArticlesData(false);
+                  }
+                  //Prefetch the next page image
+                  if (value != articleSize - 1) {
+                    preloadNextPageImage(value + 1);
+                  }
+                },
+                itemCount: widget.preloadList?.length,
+                scrollDirection: Axis.vertical,
+                physics: const CustomPageViewScrollPhysics(),
+                itemBuilder: (BuildContext context, int index) {
+                  if (!articleIDs.contains(
+                      widget.preloadList?.elementAt(index).article?.articleId)) {
+                    articleIDs.add(
+                        widget.preloadList?.elementAt(index).article?.articleId);
+                    checkIfUserLiked(index);
+                  }
 
-                Widget articleWidget = Hero(
-                  tag: widget.preloadList
-                          ?.elementAt(index)
-                          .article
-                          ?.articleId ??
-                      "",
-                  child: CachedNetworkImage(
-                    fadeInDuration: const Duration(milliseconds: 0),
-                    fit: (isContainerVisible) ? BoxFit.cover : BoxFit.cover,
-                    alignment: Alignment.center,
-                    width: double.maxFinite,
-                    height: double.maxFinite,
-                    imageUrl: widget.preloadList
-                            ?.elementAt(index)
-                            .article
-                            ?.imageUrl ??
-                        "",
-                    progressIndicatorBuilder:
-                        (context, url, downloadProgress) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          color: Colors.grey.shade900.withOpacity(0.25),
-                          height: 200,
-                          padding: const EdgeInsets.all(48),
-                        ),
-                      );
-                    },
-                    errorWidget: (context, url, error) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          color: Colors.grey.shade900.withOpacity(0.25),
-                          height: 200,
-                          padding: const EdgeInsets.all(48),
-                        ),
-                      );
-                    },
-                  ),
-                );
+                  if (widget.preloadList?.elementAt(index).article?.imageUrl ==
+                      null) {
+                    fetchMissingImageUrls(
+                        widget.preloadList!.elementAt(index).article ?? Article(),
+                        index);
+                    imageSet.add(
+                        widget.preloadList?.elementAt(index).article?.articleId ??
+                            "");
+                    // print("Contains article ${artcls?.elementAt(index).articleId} ${imageSet.contains(artcls?.elementAt(index).articleId)}");
+                  }
 
-                return Container(
-                  height: double.maxFinite,
-                  width: double.maxFinite,
-                  color: Colors.transparent,
-                  child: Stack(
-                    children: [
-                      if (true)
-                        Positioned.fill(
-                          child: CachedNetworkImage(
-                            fadeInDuration: const Duration(milliseconds: 0),
-                            fit: BoxFit.cover,
-                            alignment: Alignment.center,
-                            width: double.infinity,
-                            height: double.infinity,
-                            imageUrl: widget.preloadList
-                                    ?.elementAt(index)
-                                    .article
-                                    ?.imageUrl ??
-                                "",
-                            errorWidget: (context, url, error) {
-                              //     Image.asset(
-                              //   "images/logo_background_white.png",
-                              //   color: Colors.grey.shade900
-                              //       .withOpacity(0.5), //(COLOR_PRIMARY_VAL),
-                              //   width: 35,
-                              //   height: 35,
-                              // ),
-
-                              return Container(
-                                color: Colors.transparent,
-                              );
-                            },
-                          ),
-                        ),
-                      if (true)
-                        Container(
-                          height: double.maxFinite,
-                          width: double.maxFinite,
-                        ).frosted(
-                            blur: 20,
-                            frostOpacity: 0.35, //0.35,
-                            frostColor: Colors.black),
-                      Column(
-                        children: [
-                          Expanded(
-                            flex: 8,
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder: (context, animation1,
-                                        animation2) =>
-                                        ZoomPicture(
-                                            articleId: widget
-                                                .preloadList
-                                                ?.elementAt(index)
-                                                .article
-                                                ?.articleId,
-                                            url: widget.preloadList
-                                                ?.elementAt(index)
-                                                .article
-                                                ?.imageUrl ??
-                                                "https://placekitten.com/640/360"),
-                                    transitionDuration:
-                                    const Duration(seconds: 0),
-                                    reverseTransitionDuration:
-                                    const Duration(seconds: 0),
-                                  ),
-                                );
-                              },
-                              child: articleWidget,
+                  Widget articleWidget = SafeArea(
+                    bottom: false,
+                    child: Hero(
+                      tag: widget.preloadList
+                              ?.elementAt(index)
+                              .article
+                              ?.articleId ??
+                          "",
+                      child: CachedNetworkImage(
+                        fadeInDuration: const Duration(milliseconds: 0),
+                        fit: (isContainerVisible) ? BoxFit.cover : BoxFit.cover,
+                        alignment: Alignment.center,
+                        width: double.maxFinite,
+                        height: double.maxFinite,
+                        imageUrl: widget.preloadList
+                                ?.elementAt(index)
+                                .article
+                                ?.imageUrl ??
+                            "",
+                        progressIndicatorBuilder:
+                            (context, url, downloadProgress) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              color: Colors.grey.shade900.withOpacity(0.25),
+                              height: 200,
+                              padding: const EdgeInsets.all(48),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12),
-                              child: FadeInContainer(
-                                child: AutoSizeText(
-                                  unescape.convert(widget.preloadList
+                          );
+                        },
+                        errorWidget: (context, url, error) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              color: Colors.grey.shade900.withOpacity(0.25),
+                              height: 100,
+                              padding: const EdgeInsets.all(48),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+
+                  return Container(
+                    height: double.maxFinite,
+                    width: double.maxFinite,
+                    color: Colors.transparent,
+                    child: Stack(
+                      children: [
+                        if (true)
+                          Positioned.fill(
+                            child: CachedNetworkImage(
+                              fadeInDuration: const Duration(milliseconds: 0),
+                              fit: BoxFit.cover,
+                              alignment: Alignment.center,
+                              width: double.infinity,
+                              height: double.infinity,
+                              imageUrl: widget.preloadList
                                       ?.elementAt(index)
                                       .article
-                                      ?.meta ??
-                                      widget.preloadList
-                                          ?.elementAt(index)
-                                          .article
-                                          ?.title ??
-                                      ""),
-                                  textAlign: TextAlign.start,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: APP_FONT_MEDIUM,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 48
-                                  ),
-                                ),
+                                      ?.imageUrl ??
+                                  "",
+                              errorWidget: (context, url, error) {
+                                //     Image.asset(
+                                //   "images/logo_background_white.png",
+                                //   color: Colors.grey.shade900
+                                //       .withOpacity(0.5), //(COLOR_PRIMARY_VAL),
+                                //   width: 35,
+                                //   height: 35,
+                                // ),
+
+                                return Container(
+                                  color: Colors.transparent,
+                                );
+                              },
+                            ),
+                          ),
+                        if (true)
+                          Container(
+                            height: double.maxFinite,
+                            width: double.maxFinite,
+                          ).frosted(
+                              blur: 20,
+                              frostOpacity: 0.65, //0.35,
+                              frostColor: Colors.black),
+                        Column(
+                          children: [
+                            Expanded(
+                              flex: 8,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation1,
+                                          animation2) =>
+                                          ZoomPicture(
+                                              articleId: widget
+                                                  .preloadList
+                                                  ?.elementAt(index)
+                                                  .article
+                                                  ?.articleId,
+                                              url: widget.preloadList
+                                                  ?.elementAt(index)
+                                                  .article
+                                                  ?.imageUrl ??
+                                                  "https://placekitten.com/640/360"),
+                                      transitionDuration:
+                                      const Duration(seconds: 0),
+                                      reverseTransitionDuration:
+                                      const Duration(seconds: 0),
+                                    ),
+                                  );
+                                },
+                                child: articleWidget,
                               ),
                             ),
-                          ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12),
-                            margin: const EdgeInsets.only(
-                                top: 8, bottom: 12),
-                            child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                              children: [
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                          widget.preloadList
-                                              ?.elementAt(index)
-                                              .article
-                                              ?.source ??
-                                              "",
-                                          style: TextStyle(
-                                            color: Colors.white
-                                                .withOpacity(0.8),
-                                            fontSize: 16,
-                                            fontFamily: APP_FONT_MEDIUM,
-                                          )),
-                                      const Text(
-                                        " • ",
-                                      ),
-                                      InstagramDateTimeWidget(
-                                        publishedAt: widget.preloadList
-                                            ?.elementAt(index)
-                                            .article
-                                            ?.publishedAt
-                                            .toString() ??
-                                            "",
-                                        textSize: 16,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                            const SizedBox(
+                              height: 16,
                             ),
-                          ),
-
-                          if (true)
-                            GestureDetector(
-                              onTap: () {
-                                openArticlePage(
-                                    widget.preloadList
-                                        ?.elementAt(index)
-                                        .article,
-                                    index);
-                              },
-                              child: Container(
+                            Expanded(
+                              flex: 2,
+                              child: Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 8),
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 12),
-                                width: double.maxFinite,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      borderCurve),
-                                  color: Colors.white.withOpacity(0.05),
-                                ),
-                                child: Row(
-                                  children: [
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.all(4),
-                                      child: Image.asset(
-                                          'images/link.png',
-                                          height: 22,
-                                          color: Colors.white,
-                                          fit: BoxFit.contain),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Flexible(
-                                      child: Text(
-                                        (widget.preloadList
-                                            ?.elementAt(index)
-                                            .article
-                                            ?.source
-                                            ?.toLowerCase() ==
-                                            'youtube')
-                                            ? widget.preloadList
+                                    horizontal: 12),
+                                child: FadeInContainer(
+                                  child: AutoSizeText(
+                                    unescape.convert(widget.preloadList
+                                        ?.elementAt(index)
+                                        .article
+                                        ?.meta ??
+                                        widget.preloadList
                                             ?.elementAt(index)
                                             .article
                                             ?.title ??
-                                            "Read Article"
-                                            : (widget.preloadList
-                                            ?.elementAt(
-                                            index)
-                                            .article
-                                            ?.description !=
-                                            null)
-                                            ? widget.preloadList
-                                            ?.elementAt(
-                                            index)
-                                            .article
-                                            ?.description ??
-                                            "Read Article"
-                                            : (widget.preloadList
-                                            ?.elementAt(
-                                            index)
-                                            .article
-                                            ?.content !=
-                                            null)
-                                            ? widget.preloadList
-                                            ?.elementAt(
-                                            index)
-                                            .article
-                                            ?.content ??
-                                            "Read Article"
-                                            : "Read Article",
-                                        textAlign: TextAlign.left,
-                                        maxLines: 2,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                          fontFamily: APP_FONT_LIGHT,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                        ""),
+                                    textAlign: TextAlign.start,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: APP_FONT_MEDIUM,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 48
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),
-                          GestureDetector(
-                            onTap: () {
-                              AISummary.showBottomSheet(
-                                  context,
-                                  widget.preloadList!
-                                          .elementAt(index)
-                                          .article ??
-                                      Article(),
-                                  Colors.transparent);
-                            },
-                            child: Container(
-                              width: double.maxFinite,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 8),
-                              margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                            Container(
                               alignment: Alignment.centerLeft,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.05),
-                                borderRadius:
-                                    BorderRadius.circular(borderCurve),
-                                //color: Colors.transparent,
-                                // borderRadius: BorderRadius.only(
-                                //   topLeft: Radius.circular(CURVE),
-                                //   topRight: Radius.circular(CURVE),
-                                // ),
-                                //gradient: LinearGradient(colors: JOIN_COLOR),
-                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12),
+                              margin: const EdgeInsets.only(
+                                  top: 8),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(
-                                    width: 6,
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.all(4),
-                                    child: Image.asset('images/sparkles.png',
-                                        height: 24,
-                                        color: Colors.white,
-                                        fit: BoxFit.contain),
-                                  ),
-                                  const SizedBox(
-                                    width: 6,
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      // height: questionHeight,
-                                      alignment: Alignment.centerLeft,
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 4, horizontal: 4),
-                                      child: const Text(
-                                        "Summarize the article" ?? "",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                          fontFamily: APP_FONT_BOLD,
-                                          //fontWeight: FontWeight.w400
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            widget.preloadList
+                                                ?.elementAt(index)
+                                                .article
+                                                ?.source ??
+                                                "",
+                                            style: TextStyle(
+                                              color: Colors.white
+                                                  .withOpacity(0.8),
+                                              fontSize: 16,
+                                              fontFamily: APP_FONT_MEDIUM,
+                                            )),
+                                        const Text(
+                                          " • ",
                                         ),
-                                      ),
+                                        InstagramDateTimeWidget(
+                                          publishedAt: widget.preloadList
+                                              ?.elementAt(index)
+                                              .article
+                                              ?.publishedAt
+                                              .toString() ??
+                                              "",
+                                          textSize: 16,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ),
-                          if (widget.preloadList
-                                  ?.elementAt(index)
-                                  .article
-                                  ?.question !=
-                              null)
+                            SizedBox(
+                              height: 16,
+                            ),
+                            if (true)
+                              GestureDetector(
+                                onTap: () {
+                                  openArticlePage(
+                                      widget.preloadList
+                                          ?.elementAt(index)
+                                          .article,
+                                      index);
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 8),
+                                  margin: const EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 12),
+                                  width: double.maxFinite,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                        borderCurve),
+                                    color: Colors.white.withOpacity(0.05),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const SizedBox(
+                                        width: 8,
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.all(4),
+                                        child: Image.asset(
+                                            'images/link.png',
+                                            height: 22,
+                                            color: Colors.white,
+                                            fit: BoxFit.contain),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          widget.preloadList
+                                              ?.elementAt(index)
+                                              .article
+                                              ?.title ??
+                                              "Read Article",
+                                          textAlign: TextAlign.left,
+                                          maxLines: 2,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                            fontFamily: APP_FONT_LIGHT,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            SizedBox(
+                              height: 4,
+                            ),
                             GestureDetector(
                               onTap: () {
-                                drumJoinDialog();
+                                AISummary.showBottomSheet(
+                                    context,
+                                    widget.preloadList!
+                                            .elementAt(index)
+                                            .article ??
+                                        Article(),
+                                    Colors.transparent);
                               },
                               child: Container(
                                 width: double.maxFinite,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 8),
-                                margin:
-                                    const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                                margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
                                 alignment: Alignment.centerLeft,
                                 decoration: BoxDecoration(
-                                  //color: Colors.blue,//s.withOpacity(0.1),
+                                  color: Colors.white.withOpacity(0.05),
                                   borderRadius:
                                       BorderRadius.circular(borderCurve),
                                   //color: Colors.transparent,
@@ -912,7 +829,7 @@ class ArticleReelsState extends State<ArticleReels>
                                   //   topLeft: Radius.circular(CURVE),
                                   //   topRight: Radius.circular(CURVE),
                                   // ),
-                                  gradient: LinearGradient(colors: JOIN_COLOR),
+                                  //gradient: LinearGradient(colors: JOIN_COLOR),
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -922,8 +839,7 @@ class ArticleReelsState extends State<ArticleReels>
                                     ),
                                     Container(
                                       padding: const EdgeInsets.all(4),
-                                      child: Image.asset(
-                                          'images/audio-waves.png',
+                                      child: Image.asset('images/sparkles.png',
                                           height: 24,
                                           color: Colors.white,
                                           fit: BoxFit.contain),
@@ -937,14 +853,12 @@ class ArticleReelsState extends State<ArticleReels>
                                         alignment: Alignment.centerLeft,
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 4, horizontal: 4),
-                                        child: Text(
-                                          unescape.convert(
-                                              "\"${widget.preloadList?.elementAt(index).article?.question ?? ""}\"" ??
-                                                  ""),
+                                        child: const Text(
+                                          "Summarize the article" ?? "",
                                           textAlign: TextAlign.left,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 14,
+                                            fontSize: 16,
                                             fontFamily: APP_FONT_BOLD,
                                             //fontWeight: FontWeight.w400
                                           ),
@@ -955,17 +869,89 @@ class ArticleReelsState extends State<ArticleReels>
                                 ),
                               ),
                             ),
-                          SizedBox(
-                            height: 4,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ],
+                            if (widget.preloadList
+                                    ?.elementAt(index)
+                                    .article
+                                    ?.question !=
+                                null)
+                              SizedBox(
+                                height: 4,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  drumJoinDialog();
+                                },
+                                child: Container(
+                                  width: double.maxFinite,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 8),
+                                  margin:
+                                      const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                                  alignment: Alignment.centerLeft,
+                                  decoration: BoxDecoration(
+                                    //color: Colors.blue,//s.withOpacity(0.1),
+                                    borderRadius:
+                                        BorderRadius.circular(borderCurve),
+                                    //color: Colors.transparent,
+                                    // borderRadius: BorderRadius.only(
+                                    //   topLeft: Radius.circular(CURVE),
+                                    //   topRight: Radius.circular(CURVE),
+                                    // ),
+                                    gradient: LinearGradient(colors: JOIN_COLOR),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const SizedBox(
+                                        width: 6,
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.all(4),
+                                        child: Image.asset(
+                                            'images/audio-waves.png',
+                                            height: 24,
+                                            color: Colors.white,
+                                            fit: BoxFit.contain),
+                                      ),
+                                      const SizedBox(
+                                        width: 6,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          // height: questionHeight,
+                                          alignment: Alignment.centerLeft,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 4, horizontal: 4),
+                                          child: Text(
+                                            unescape.convert(
+                                                "\"${widget.preloadList?.elementAt(index).article?.question ?? ""}\"" ??
+                                                    ""),
+                                            textAlign: TextAlign.left,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontFamily: APP_FONT_BOLD,
+                                              //fontWeight: FontWeight.w400
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            SizedBox(
+                              height: 4,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1325,8 +1311,8 @@ class ArticleReelsState extends State<ArticleReels>
     refreshFeed();
 
     _pageController = PageController(initialPage: widget.articlePosition ?? 0);
-    _pageController.addListener(_pageListener);
-    widget.scrollController.addListener(_handleScroll);
+    //_pageController.addListener(_pageListener);
+    //widget.scrollController.addListener(_handleScroll);
     // _pageController.addListener(() {
     //   int initialPage = _pageController.initialPage;
     // });
@@ -1337,9 +1323,11 @@ class ArticleReelsState extends State<ArticleReels>
   }
 
   void _pageListener() {
+    //print("Pagecontroller page is ${_pageController.page}");
     if (_pageController.page == _pageController.page!.ceilToDouble()) {
       // Load more data
-      getArticlesData(false);
+
+      //getArticlesData(false);
     }
   }
 
@@ -1362,7 +1350,7 @@ class ArticleReelsState extends State<ArticleReels>
 
   void refreshFeed() async {
     if (widget.preloadList == null) {
-      getArticlesData(true);
+     // getArticlesData(true);
     } else {
       //List<Article> fetchedList = widget.preloadList ?? [];
       List<ArticleBand> fetchedArticleBand = widget.preloadList ?? [];
@@ -1439,7 +1427,7 @@ class ArticleReelsState extends State<ArticleReels>
   void dispose() {
     // TODO: implement dispose
     _articlesController.close();
-    widget.scrollController.removeListener(_handleScroll);
+   // widget.scrollController.removeListener(_handleScroll);
     widget.scrollController.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();

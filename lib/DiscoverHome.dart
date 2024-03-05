@@ -418,8 +418,8 @@ class DiscoverHomeState extends State<DiscoverHome>
                                 physics: const NeverScrollableScrollPhysics(),
                                 gridDelegate: SliverQuiltedGridDelegate(
                                   crossAxisCount: 5,
-                                  mainAxisSpacing: 8,
-                                  crossAxisSpacing: 8,
+                                  mainAxisSpacing: 12,
+                                  crossAxisSpacing: 12,
                                   repeatPattern: QuiltedGridRepeatPattern.inverted,
                                   pattern: [
                                     const QuiltedGridTile(4, 3),
@@ -535,7 +535,7 @@ class DiscoverHomeState extends State<DiscoverHome>
     WidgetsBinding.instance?.addObserver(this);
 
     for(int i = 0;i<10;i++){
-      loadingCards.add(ArticleImageCard(ArticleBand(),loading: false,));
+      loadingCards.add(ArticleImageCard(ArticleBand(),loading: true,));
     }
 
 
