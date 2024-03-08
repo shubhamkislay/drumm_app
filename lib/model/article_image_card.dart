@@ -39,6 +39,7 @@ class ArticleImageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color colorBorder = Colors.white24;
     Widget returnWidget = (loading ?? false)
         ? Container(
             alignment: Alignment.center,
@@ -46,8 +47,8 @@ class ArticleImageCard extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(13),
-              color: COLOR_BACKGROUND,
-              border: Border.all(color: Colors.grey.shade900,width: 3)
+              color: Colors.grey.shade900,//COLOR_BACKGROUND,
+              border: Border.all(color: colorBorder,width: 3)
             ),
           )
         : LayoutBuilder(
@@ -101,10 +102,11 @@ class ArticleImageCard extends StatelessWidget {
                     ? Container(
                         padding: const EdgeInsets.all(3),
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            color: Colors.grey.shade900,),//.withOpacity(0.75)),
+                            borderRadius: BorderRadius.circular(12),
+                            color: colorBorder,
+                        ),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(10),
                           child: Stack(
                             children: [
                               Hero(

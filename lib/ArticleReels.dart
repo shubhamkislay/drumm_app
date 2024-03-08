@@ -195,7 +195,7 @@ class ArticleReelsState extends State<ArticleReels>
 
   ArticleBand? articleOnTop = ArticleBand();
 
-  double borderCurve = 18;
+  double borderCurve = 10;
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +211,7 @@ class ArticleReelsState extends State<ArticleReels>
                     Expanded(
                       child: Container(
                         decoration: const BoxDecoration(
-                            color: Colors.black,
+                            color: COLOR_BACKGROUND,
                             borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(24),
                               bottomRight: Radius.circular(24),
@@ -386,20 +386,25 @@ class ArticleReelsState extends State<ArticleReels>
                     )
                   ],
                 ),
-                IgnorePointer(
-                  child: Container(
-                    alignment: Alignment.topCenter,
-                    height: 200,
-                    //padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                          Colors.transparent,
-                          //Colors.black,
-                          Colors.grey.shade900.withOpacity(0.75),
-                        ])),
+               if(true) SafeArea(
+                  child: IgnorePointer(
+                    child: Container(
+                      alignment: Alignment.topCenter,
+                      height: 200,
+                      //padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(borderCurve),
+                          gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [
+                            Colors.transparent,
+                            //Colors.black,
+                            Colors.black.withOpacity(0.35),
+                          ]),
+                      ),
+
+                    ),
                   ),
                 ),
                 if (fromSearch)
@@ -556,7 +561,7 @@ class ArticleReelsState extends State<ArticleReels>
                       child: CachedNetworkImage(
                         fadeInDuration: const Duration(milliseconds: 0),
                         fit: (isContainerVisible) ? BoxFit.cover : BoxFit.cover,
-                        alignment: Alignment.center,
+                        alignment: Alignment.topCenter,
                         width: double.maxFinite,
                         height: double.maxFinite,
                         imageUrl: widget.preloadList
@@ -629,12 +634,12 @@ class ArticleReelsState extends State<ArticleReels>
                             width: double.maxFinite,
                           ).frosted(
                               blur: 20,
-                              frostOpacity: 0.65, //0.35,
+                              frostOpacity: 0.35, //0.35,
                               frostColor: Colors.black),
                         Column(
                           children: [
                             Expanded(
-                              flex: 8,
+                              flex: 10,
                               child: GestureDetector(
                                 onTap: () {
                                   Navigator.push(
@@ -664,10 +669,10 @@ class ArticleReelsState extends State<ArticleReels>
                               ),
                             ),
                             const SizedBox(
-                              height: 16,
+                              height: 20,
                             ),
                             Expanded(
-                              flex: 2,
+                              flex: 3,
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12),
@@ -693,12 +698,15 @@ class ArticleReelsState extends State<ArticleReels>
                                 ),
                               ),
                             ),
+                            SizedBox(
+                              height: 8,
+                            ),
                             Container(
                               alignment: Alignment.centerLeft,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 12),
                               margin: const EdgeInsets.only(
-                                  top: 8),
+                                  top: 2),
                               child: Row(
                                 mainAxisAlignment:
                                 MainAxisAlignment.spaceBetween,
@@ -742,7 +750,7 @@ class ArticleReelsState extends State<ArticleReels>
                               ),
                             ),
                             SizedBox(
-                              height: 16,
+                              height: 20,
                             ),
                             if (true)
                               GestureDetector(
@@ -788,7 +796,7 @@ class ArticleReelsState extends State<ArticleReels>
                                               ?.title ??
                                               "Read Article",
                                           textAlign: TextAlign.left,
-                                          maxLines: 2,
+                                          maxLines: 3,
                                           style: const TextStyle(
                                             fontSize: 16,
                                             color: Colors.white,
@@ -802,7 +810,7 @@ class ArticleReelsState extends State<ArticleReels>
                                 ),
                               ),
                             SizedBox(
-                              height: 4,
+                              height: 8,
                             ),
                             GestureDetector(
                               onTap: () {
@@ -875,7 +883,7 @@ class ArticleReelsState extends State<ArticleReels>
                                     ?.question !=
                                 null)
                               SizedBox(
-                                height: 4,
+                                height: 8,
                               ),
                               GestureDetector(
                                 onTap: () {
@@ -1310,7 +1318,7 @@ class ArticleReelsState extends State<ArticleReels>
     _lastDocument = widget.lastDocument;
     refreshFeed();
 
-    _pageController = PageController(initialPage: widget.articlePosition ?? 0);
+    _pageController = PageController(initialPage: widget.articlePosition ?? 0,);
     //_pageController.addListener(_pageListener);
     //widget.scrollController.addListener(_handleScroll);
     // _pageController.addListener(() {

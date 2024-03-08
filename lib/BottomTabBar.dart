@@ -1,6 +1,9 @@
+import 'package:drumm_app/custom/helper/BottomUpPageRoute.dart';
+import 'package:drumm_app/swipe_page.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'DiscoverHome.dart';
 import 'UserProfileIcon.dart';
@@ -134,7 +137,36 @@ class _BottomTabBarState extends State<BottomTabBar> {
               });
             } else {
               widget.tabController.animateTo(currentPage);
-              Vibrate.feedback(FeedbackType.selection);
+              //Vibrate.feedback(FeedbackType.selection);
+
+             // Navigator.push(context, BottomUpPageRoute(builder: (context)=> SwipePage()));
+               //return;
+
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                useSafeArea: true,
+                backgroundColor: COLOR_PRIMARY_DARK,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(0.0)),
+                ),
+                builder: (BuildContext context) {
+                  return Padding(
+                    padding: EdgeInsets.only(
+                        bottom:
+                        MediaQuery.of(context).viewInsets.bottom),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(0.0)),
+                      child: SwipePage(),
+                    ),
+                  );
+                },
+              );
+              return;
+
+
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,

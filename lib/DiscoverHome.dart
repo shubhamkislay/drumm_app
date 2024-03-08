@@ -418,8 +418,8 @@ class DiscoverHomeState extends State<DiscoverHome>
                                 physics: const NeverScrollableScrollPhysics(),
                                 gridDelegate: SliverQuiltedGridDelegate(
                                   crossAxisCount: 5,
-                                  mainAxisSpacing: 12,
-                                  crossAxisSpacing: 12,
+                                  mainAxisSpacing: 10,
+                                  crossAxisSpacing: 10,
                                   repeatPattern: QuiltedGridRepeatPattern.inverted,
                                   pattern: [
                                     const QuiltedGridTile(4, 3),
