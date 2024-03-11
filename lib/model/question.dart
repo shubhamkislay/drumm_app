@@ -1,10 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Question {
   String? query;
   String? uid;
   String? qid;
-  String? category;
+  String? hook;
   List<String>? tags;
-  DateTime? createdTime;
+  Timestamp? createdTime;
 
   Question();
 
@@ -12,7 +14,7 @@ class Question {
     'query': query,
     'uid': uid,
     'qid': qid,
-    'category': category,
+    'hook': hook,
     'tags': tags,
     'createdTime': createdTime
   };
@@ -21,7 +23,7 @@ class Question {
       : query = snapshot.data()['query'],
         uid = snapshot.data()['uid'],
         qid = snapshot.data()['qid'],
-        category = snapshot.data()['category'],
+        hook = snapshot.data()['hook'],
   //tags = snapshot.data()['tags'],
-        createdTime = snapshot.data()['createdTime'].toDate();
+        createdTime =  snapshot.data()['createdTime'];
 }

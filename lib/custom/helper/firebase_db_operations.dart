@@ -538,23 +538,60 @@ class FirebaseDBOperations {
   static Future<List<Question>> getMyQuestions() async {
     print("getQuestionsAsked triggered");
     final uid = FirebaseAuth.instance.currentUser?.uid;
+    DateTime currentTime = DateTime.now();
+
+    // Calculate the time one minute ago
+    DateTime oneDayAgo = currentTime.subtract(Duration(days: 1));
     var data = await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .collection('questions')
+        .where('createdTime', isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
         //.orderBy('createdTime',descending: true)
         .get();
     return List.from(data.docs.map((e) => Question.fromSnapshot(e)));
   }
 
+  static Future<void> postQuestion(Question question) async {
+    try {
+      // Get the current user's UID
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid == null) {
+        throw Exception("User not authenticated");
+      }
+
+      // Prepare the data to be posted
+      Map<String, dynamic> questionData = question.toJson();
+
+      // Post the question to Firestore
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('questions')
+          .doc(question.qid).set(question.toJson()).onError((error, stackTrace) => print('Error posting question: $error'));
+
+      print('Question posted successfully Users/$uid/questions/${question.qid} \n ${question.toJson()}');
+    } catch (error) {
+      print('Error posting question: $error');
+      // Handle error as needed
+    }
+  }
+
   static Future<List<Question>> getQuestionsAsked() async {
     print("getQuestionsAsked triggered");
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> userInterests = prefs.getStringList('interestList')!;
+    //SharedPreferences prefs = await SharedPreferences.getInstance();
+    //List<String> userInterests = prefs.getStringList('interestList')!;
+
+    DateTime currentTime = DateTime.now();
+
+    // Calculate the time one minute ago
+    DateTime oneDayAgo = currentTime.subtract(Duration(days: 1));
 
     var data = await FirebaseFirestore.instance
         .collectionGroup('questions')
-        .where("category", whereIn: userInterests)
+        .where('createdTime', isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
+        .orderBy('createdTime',descending: true)
+        //.where("hook", whereIn: userInterests)
         .get();
 
     return List.from(data.docs.map((e) => Question.fromSnapshot(e)));

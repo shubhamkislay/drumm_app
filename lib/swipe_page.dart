@@ -1,6 +1,9 @@
 
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/custom/rounded_button.dart';
+import 'package:drumm_app/model/question.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 
@@ -294,6 +297,7 @@ class SwipePageState extends State<SwipePage>
                 if(page==2)
                 GestureDetector(
                   onTap: (){
+                    postQuestion();
                     Navigator.pop(context);
                   },
                   child: const Padding(
@@ -322,6 +326,23 @@ class SwipePageState extends State<SwipePage>
         question = questionTextController.text;
       });
     });
+  }
+
+  void postQuestion() async{
+
+    DocumentReference questionRef =
+    FirebaseFirestore.instance.collection("questions").doc();
+    String pushId = questionRef.id;
+
+    Question newQuestion = Question();
+    newQuestion.query = question;
+    newQuestion.hook = selectedHook;
+    newQuestion.uid = FirebaseAuth.instance.currentUser?.uid;
+    newQuestion.createdTime =  Timestamp.now();
+    newQuestion.qid = pushId;
+
+    FirebaseDBOperations.postQuestion(newQuestion);
+
   }
 
 

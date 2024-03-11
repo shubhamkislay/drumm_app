@@ -66,7 +66,7 @@ class DuelCard extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 24),
             width: MediaQuery.of(context).size.width,
             child: Text(
-              "#${question.category}",
+              "#${question.hook}",
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,

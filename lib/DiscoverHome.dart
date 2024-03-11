@@ -29,10 +29,12 @@ import 'custom/helper/image_uploader.dart';
 import 'custom/instagram_date_time_widget.dart';
 import 'live_drumms.dart';
 import 'model/Drummer.dart';
+import 'model/QuestionCard.dart';
 import 'model/algolia_article.dart';
 import 'model/article.dart';
 import 'model/drumm_card.dart';
 import 'model/jam.dart';
+import 'model/question.dart';
 import 'user_profile_page.dart';
 
 class DiscoverHome extends StatefulWidget {
@@ -123,6 +125,8 @@ class DiscoverHomeState extends State<DiscoverHome>
   List<DrummCard> userDrummCards = [];
   List<Band> bands = [];
   List<Jam> drumms = [];
+  List<Question> questions = [];
+  List<QuestionCard> questionCards = [];
   bool loaded = false;
 
   bool showLiveALert = true;
@@ -308,6 +312,81 @@ class DiscoverHomeState extends State<DiscoverHome>
                                         controller: _pageController,
                                         scrollDirection: Axis.horizontal,
                                         children: drummCards,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                              childCount: 1, // Adjust the child count as per your content
+                            ),
+                          ),
+                        ),
+
+                      if (questionCards.isNotEmpty)
+                        SliverPadding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 2, horizontal: 0),
+                          sliver: SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                                  (context, index) {
+                                // Build your content here
+                                // Example:
+                                return Column(
+                                  children: [
+                                    const SizedBox(
+                                      height: 16,
+                                    ),
+                                    GestureDetector(
+                                      onTap: (){
+                                        showModalBottomSheet(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          backgroundColor: COLOR_PRIMARY_DARK,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(0.0)),
+                                          ),
+                                          builder: (BuildContext context) {
+                                            return Padding(
+                                              padding: EdgeInsets.only(
+                                                  bottom: MediaQuery.of(context)
+                                                      .viewInsets
+                                                      .bottom),
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.vertical(
+                                                    top: Radius.circular(0.0)),
+                                                child: LiveDrumms(),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: horizontalPadding),
+                                            child: const Text(
+                                              "From Community",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold, fontSize: 20),
+                                            ),
+                                          ),
+                                          Icon(Icons.arrow_forward_ios_rounded,size: 16,)
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 12,
+                                    ),
+                                    Container(
+                                      height: 120,
+                                      alignment: Alignment.centerLeft,
+                                      child: ListView(
+                                        controller: _pageController,
+                                        scrollDirection: Axis.horizontal,
+                                        children: questionCards,
                                       ),
                                     ),
                                   ],
@@ -550,6 +629,7 @@ class DiscoverHomeState extends State<DiscoverHome>
 
     getSharedPreferences();
     getBandDrumms();
+    getCommunityQuestion();
   }
   void _scrollListener() {
 
@@ -664,6 +744,25 @@ class DiscoverHomeState extends State<DiscoverHome>
       loaded = true;
     });
 
+    return true;
+  }
+
+  Future<bool> getCommunityQuestion() async {
+    questionCards.clear();
+    //getUserBands();
+    questions = await FirebaseDBOperations.getQuestionsAsked();
+    List<QuestionCard> fetchedQuestionCards = questions.map((question) {
+      return QuestionCard(
+        question: question,
+      );
+    }).toList();
+
+    print("Questions list ${fetchedQuestionCards.length}");
+
+    setState(() {
+      questionCards = fetchedQuestionCards;
+      loaded = true;
+    });
     return true;
   }
 
@@ -903,6 +1002,7 @@ class DiscoverHomeState extends State<DiscoverHome>
       print("On Resume Discover Home");
       checkFreshArticles();
       getBandDrumms();
+      getCommunityQuestion();
       // checkForNewArticles();
     }
 
@@ -965,6 +1065,7 @@ class DiscoverHomeState extends State<DiscoverHome>
     bool loadedBand = await getBandsCards();
     bool loaded = await getArticles(false);
     bool loadedDrumms = await getBandDrumms();
+    bool loadedQuestion = await getCommunityQuestion();
 
 
     setState(() {

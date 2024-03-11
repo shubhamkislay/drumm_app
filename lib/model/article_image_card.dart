@@ -39,7 +39,7 @@ class ArticleImageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color colorBorder = Colors.white24;
+    Color colorBorder = Colors.white12;
     Widget returnWidget = (loading ?? false)
         ? Container(
             alignment: Alignment.center,
