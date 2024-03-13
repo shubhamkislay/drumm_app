@@ -39,6 +39,7 @@ class TutorialBox extends StatelessWidget {
     }
     return AlertDialog(
       backgroundColor: Colors.grey.shade900,
+      surfaceTintColor: Colors.grey.shade900,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12)
       ),

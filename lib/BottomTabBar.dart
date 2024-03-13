@@ -1,6 +1,7 @@
 import 'package:drumm_app/custom/helper/BottomUpPageRoute.dart';
 import 'package:drumm_app/swipe_page.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
@@ -23,8 +24,7 @@ class BottomTabBar extends StatefulWidget {
 class _BottomTabBarState extends State<BottomTabBar> {
   int currentPage = 0;
   Color disableColor =
-      Colors.white;
-  double tabsWidthDivision = 4;// for 5 tabs 8.5;
+      Colors.white;// for 5 tabs 8.5;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,25 +34,26 @@ class _BottomTabBarState extends State<BottomTabBar> {
       ),
       child: SafeArea(
         top: false,
+        left: false,
         child: TabBar(
           enableFeedback: true,
-          padding: const EdgeInsets.only(bottom: 0, top: 8),
+          //padding: const EdgeInsets.only(bottom: 0, top: 8),
           overlayColor: MaterialStateProperty.resolveWith<Color>(
                 (Set<MaterialState> states) {
-              return Colors.transparent;
+              return Colors.red;
             },
           ),
           controller: widget.tabController,
+          tabAlignment: TabAlignment.fill,
           indicator: const UnderlineTabIndicator(
             borderSide:
-            BorderSide(color: Colors.transparent, width: 8),
+            BorderSide(color: Colors.transparent, width: 4),
             //insets: EdgeInsets.fromLTRB(16, 0, 16, 8),
           ),
+          dividerColor: Colors.transparent,
           tabs: [
             Container(
-              width: MediaQuery.of(context).size.width /
-                  tabsWidthDivision,
-              padding: EdgeInsets.only(top: 0, left: 0),
+              padding: const EdgeInsets.only(top: 0, left: 0),
               child: Image.asset(
                   color: currentPage == 0
                       ? Colors.white
@@ -67,8 +68,6 @@ class _BottomTabBarState extends State<BottomTabBar> {
             ),
            if(false) Container(
               //height: 26,
-              width: MediaQuery.of(context).size.width /
-                  tabsWidthDivision,
               child: Image.asset(
                 color: (currentPage == 1)
                     ? Colors.white
@@ -84,10 +83,8 @@ class _BottomTabBarState extends State<BottomTabBar> {
             ),
             if (true)
               Container(
-                width: MediaQuery.of(context).size.width /
-                    tabsWidthDivision,
                 padding: const EdgeInsets.all(0.0),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.transparent,
                 ),
@@ -98,13 +95,9 @@ class _BottomTabBarState extends State<BottomTabBar> {
                     'images/audio-waves.png',//"images/plus_btn.png",
                     height: 26),
               ),
-            /*
-                      Wave Mode icon
-                      */
+            /*Wave Mode icon*/
             Container(
-              width: MediaQuery.of(context).size.width /
-                  tabsWidthDivision,
-              padding: EdgeInsets.only(top: 0, right: 0),
+              padding: const EdgeInsets.only(top: 0, right: 0),
               alignment: Alignment.bottomCenter,
               // padding: EdgeInsets.symmetric(
               //     vertical: iconPadding, horizontal: iconPadding),
@@ -147,7 +140,7 @@ class _BottomTabBarState extends State<BottomTabBar> {
                 isScrollControlled: true,
                 useSafeArea: true,
                 backgroundColor: COLOR_PRIMARY_DARK,
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(
                       top: Radius.circular(0.0)),
                 ),
@@ -157,7 +150,7 @@ class _BottomTabBarState extends State<BottomTabBar> {
                         bottom:
                         MediaQuery.of(context).viewInsets.bottom),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.vertical(
+                      borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(0.0)),
                       child: SwipePage(),
                     ),
@@ -171,7 +164,7 @@ class _BottomTabBarState extends State<BottomTabBar> {
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: COLOR_PRIMARY_DARK,
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(
                       top: Radius.circular(0.0)),
                 ),
@@ -181,7 +174,7 @@ class _BottomTabBarState extends State<BottomTabBar> {
                         bottom:
                         MediaQuery.of(context).viewInsets.bottom),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.vertical(
+                      borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(0.0)),
                       child: CreateJam(
                           title: "", bandId: "", imageUrl: ""),
@@ -191,7 +184,7 @@ class _BottomTabBarState extends State<BottomTabBar> {
               );
             }
           },
-          isScrollable: true,
+          isScrollable: false,
         ),
       ),
     );

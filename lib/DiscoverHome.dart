@@ -462,7 +462,9 @@ class DiscoverHomeState extends State<DiscoverHome>
                         pinned: true,
                         toolbarHeight: 58,
                         snap: true,
-                        elevation: 10,
+                        //elevation: 10,
+                        surfaceTintColor: COLOR_BACKGROUND.withOpacity(0.9),
+                        foregroundColor:  COLOR_BACKGROUND.withOpacity(0.9),
                         automaticallyImplyLeading: false,
                         flexibleSpace: Column(
                           children: [
@@ -936,40 +938,6 @@ class DiscoverHomeState extends State<DiscoverHome>
       }
     }
     return true;
-  }
-
-  void getArticlesForBand(Band bandSelected) async {
-    setState(() {
-      articles.clear();
-      articleBands.clear();
-    });
-    controller = CardSwiperController();
-    List<Article> fetchcedArticle =
-        await FirebaseDBOperations.getArticlesByBandID(
-            bandSelected.hooks ?? []);
-
-    List<ArticleBand> fetchedArticleBand = [];
-
-    if (fetchcedArticle.isEmpty) {
-      setState(() {
-        loadingAnimation = NO_FOUND_ASSET;
-        loadAnimation = true;
-      });
-    } else {
-      for (Article article in fetchcedArticle) {
-        ArticleBand articleBand =
-            ArticleBand(article: article, band: bandSelected);
-        fetchedArticleBand.add(articleBand);
-      }
-      setState(() {
-        loadAnimation = false;
-        articles = fetchcedArticle;
-        articleBands = fetchedArticleBand;
-        undoIndex = 0;
-        articleOnScreen = articleBands.elementAt(0).article ?? Article();
-        loadingAnimation = LOADING_ASSET;
-      });
-    }
   }
 
   void requestPermissions() async {

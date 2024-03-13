@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_onboarding_slider/background_final_button.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
 
+import 'DrummOnBoardingSlider.dart';
 import 'custom/transparent_slider.dart';
 
 class TutorialScreen extends StatelessWidget {
@@ -16,7 +17,7 @@ class TutorialScreen extends StatelessWidget {
     return Container(
         //color: Colors.transparent,
       color: Colors.black,
-        child: OnBoardingSlider(
+        child: FlutterOnBoardingSlider(
           headerBackgroundColor: Colors.black,
           pageBackgroundColor: Colors.black,
           controllerColor: Colors.white,

@@ -991,7 +991,7 @@ class ArticleReelsState extends State<ArticleReels>
           .collection('articles')
           .where('category', whereIn: bandCategoryList)
           .where('country', isEqualTo: 'in')
-          .where('source', isNotEqualTo: null)
+          .where('publishedAt', isNotEqualTo: null)
           .orderBy("publishedAt", descending: true)
           .limit(_pageSize);
 

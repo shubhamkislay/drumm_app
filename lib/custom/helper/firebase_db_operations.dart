@@ -152,7 +152,7 @@ class FirebaseDBOperations {
           .collection('articles')
           .where('category', whereIn: bandCategoryList)
           .where('country', isEqualTo: 'in')
-          .where('source', isNotEqualTo: null)
+          .where('publishedAt', isNotEqualTo: null)
           .orderBy("publishedAt", descending: true)
           .limitToLast(10);
       if (_startDocument != null) {
@@ -163,7 +163,8 @@ class FirebaseDBOperations {
           .collection('articles')
           .where('category', whereIn: bandCategoryList)
           .where('country', isEqualTo: 'in')
-          .where('source', isNotEqualTo: null)
+          //.where('source', isNotEqualTo: null)
+          .where('publishedAt', isNotEqualTo: null)
           .orderBy("publishedAt", descending: true)
           .limit(10);
 
@@ -208,9 +209,9 @@ class FirebaseDBOperations {
           .collection('articles')
           .where('category', whereIn: bandCategoryList)
           .where('country', isEqualTo: 'in')
-          .where('source', isNotEqualTo: null)
+          .where('publishedAt', isNotEqualTo: null)
           .orderBy("publishedAt", descending: true)
-          .limitToLast(25);
+          .limitToLast(10);
       if (_startDocument != null) {
         query = query.endBeforeDocument(_startDocument);
       }
@@ -219,9 +220,10 @@ class FirebaseDBOperations {
           .collection('articles')
           .where('category', whereIn: bandCategoryList)
           .where('country', isEqualTo: 'in')
-          .where('source', isNotEqualTo: null)
+          //.where('source', isNotEqualTo: null)
+          .where('publishedAt', isNotEqualTo: null)
           .orderBy("publishedAt", descending: true)
-          .limit(25);
+          .limit(10);
 
       if (_lastDocument != null) {
         query = query.startAfterDocument(_lastDocument!);
@@ -1430,8 +1432,8 @@ class FirebaseDBOperations {
         .collection('articles')
         .where('category', whereIn: bandHook)
         // .where('articleId', whereNotIn: seenPosts)
-        //.where('country', isEqualTo: 'in')
-        .where('source', isNotEqualTo: null)
+        .where('country', isEqualTo: 'in')
+        .where('publishedAt', isNotEqualTo: null)
         .orderBy("publishedAt", descending: true)
         .limit(50);
 

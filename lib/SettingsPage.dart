@@ -212,6 +212,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           BorderRadius.vertical(top: Radius.circular(0.0)),
                       child: AlertDialog(
                         backgroundColor: Colors.grey.shade900,
+                        surfaceTintColor: Colors.grey.shade900,
                         title: Text(
                             "Are you sure you want to delete your account?"),
                         actions: [
