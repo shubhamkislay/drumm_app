@@ -42,7 +42,6 @@ import 'package:drumm_app/swipe_page.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/theme/theme_manager.dart';
 import 'package:lottie/lottie.dart';
-import 'package:scroll_app_bar/scroll_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
