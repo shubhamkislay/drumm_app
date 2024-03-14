@@ -363,7 +363,7 @@ class ArticleReelsState extends State<ArticleReels>
                                   ),
                                 ),
                               ),
-                            LikeBtn(article: Article()),
+                            LikeBtn(article: articleOnTop?.article??Article()),
                             Container(
                               height: 46,
                               width: 46,

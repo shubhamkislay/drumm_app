@@ -56,7 +56,7 @@ class FirebaseDBOperations {
   static List<Band> fetchedBands = [];
   static List<String> bandCategoryList = [];
 
-  static Future<List<Article>> searchArticles(String query,int page) async {
+  static Future<List<Article>> searchArticles(String query, int page) async {
     AlgoliaQuerySnapshot getArticles = await algolia.instance
         .index('articles')
         .setPage(page)
@@ -139,38 +139,76 @@ class FirebaseDBOperations {
     DocumentSnapshot<Map<String, dynamic>>? fetchedLastDocument = null;
 
     //if (fetchedBands.isEmpty)
-      fetchedBands = await FirebaseDBOperations.getBandByUser();
+    fetchedBands = await FirebaseDBOperations.getBandByUser();
     List bandCategoryList = [];
 
     for (Band band in fetchedBands) {
-      bandCategoryList.addAll(band.hooks??[]);
+      bandCategoryList.addAll(band.hooks ?? []);
     }
     if (fetchedBands.isEmpty) bandCategoryList.add("general");
+    query = FirebaseFirestore.instance
+        .collection('articles')
+        .where('category', whereIn: bandCategoryList)
+        .where('country', isEqualTo: 'in')
+        .where('publishedAt', isNotEqualTo: null)
+        .orderBy("publishedAt", descending: true)
+        .limit(10);
 
-    if (reverse) {
-      query = FirebaseFirestore.instance
-          .collection('articles')
-          .where('category', whereIn: bandCategoryList)
-          .where('country', isEqualTo: 'in')
-          .where('publishedAt', isNotEqualTo: null)
-          .orderBy("publishedAt", descending: true)
-          .limitToLast(10);
-      if (_startDocument != null) {
-        query = query.endBeforeDocument(_startDocument);
-      }
+    if (_lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
+    }
+
+    final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+    List<Article> newArticles = [];
+    if (snapshot.docs.isNotEmpty) {
+      newArticles = snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+      fetchedLastDocument =
+          snapshot.docs.last; // Save the last document for the next page
+      fetchedStartDocument = snapshot.docs.first;
     } else {
-      query = FirebaseFirestore.instance
-          .collection('articles')
-          .where('category', whereIn: bandCategoryList)
-          .where('country', isEqualTo: 'in')
-          //.where('source', isNotEqualTo: null)
-          .where('publishedAt', isNotEqualTo: null)
-          .orderBy("publishedAt", descending: true)
-          .limit(10);
+      print('Nothing found');
+    }
 
-      if (_lastDocument != null) {
-        query = query.startAfterDocument(_lastDocument!);
-      }
+    AlgoliaArticles algoliaArticles = AlgoliaArticles(
+        articles: newArticles, queryID: fetchedLastDocument.toString());
+
+    algoliaArticles.setLastDocument(fetchedLastDocument);
+    algoliaArticles.setStartDocument(fetchedStartDocument);
+
+    return algoliaArticles;
+  }
+
+  static Future<AlgoliaArticles> getBoostedArticlesData(
+      DocumentSnapshot<Map<String, dynamic>>? _startDocument,
+      DocumentSnapshot<Map<String, dynamic>>? _lastDocument,
+      bool reverse) async {
+    DocumentSnapshot<Map<String, dynamic>>? fetchedStartDocument = null;
+    DocumentSnapshot<Map<String, dynamic>>? fetchedLastDocument = null;
+
+    //if (fetchedBands.isEmpty)
+    fetchedBands = await FirebaseDBOperations.getBandByUser();
+    List bandCategoryList = [];
+
+    for (Band band in fetchedBands) {
+      bandCategoryList.addAll(band.hooks ?? []);
+    }
+
+
+    DateTime currentTime = DateTime.now();
+    DateTime oneDayAgo = currentTime.subtract(Duration(hours: 3));
+
+    if (fetchedBands.isEmpty) bandCategoryList.add("general");
+    query = FirebaseFirestore.instance
+        .collection('articles')
+        .where('category', whereIn: bandCategoryList)
+        .where('country', isEqualTo: 'in')
+        .where('boostamp', isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
+        //.where('boosts', isGreaterThanOrEqualTo: 1)
+        .orderBy("boostamp", descending: true)
+        .limit(10);
+
+    if (_lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
     }
 
     final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
@@ -196,38 +234,73 @@ class FirebaseDBOperations {
   static Future<AlgoliaArticles> getArticlesDataForBand(
       DocumentSnapshot<Map<String, dynamic>>? _startDocument,
       DocumentSnapshot<Map<String, dynamic>>? _lastDocument,
-      bool reverse, Band selectedBand) async {
+      bool reverse,
+      Band selectedBand) async {
     DocumentSnapshot<Map<String, dynamic>>? fetchedStartDocument = null;
     DocumentSnapshot<Map<String, dynamic>>? fetchedLastDocument = null;
 
     List bandCategoryList = [];
 
-    bandCategoryList.addAll(selectedBand.hooks??[]);
+    bandCategoryList.addAll(selectedBand.hooks ?? []);
 
-    if (reverse) {
-      query = FirebaseFirestore.instance
-          .collection('articles')
-          .where('category', whereIn: bandCategoryList)
-          .where('country', isEqualTo: 'in')
-          .where('publishedAt', isNotEqualTo: null)
-          .orderBy("publishedAt", descending: true)
-          .limitToLast(10);
-      if (_startDocument != null) {
-        query = query.endBeforeDocument(_startDocument);
-      }
+    query = FirebaseFirestore.instance
+        .collection('articles')
+        .where('category', whereIn: bandCategoryList)
+        .where('country', isEqualTo: 'in')
+        .where('publishedAt', isNotEqualTo: null)
+        .orderBy("publishedAt", descending: true)
+        .limit(10);
+
+    if (_lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
+    }
+
+    final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+    List<Article> newArticles = [];
+    if (snapshot.docs.isNotEmpty) {
+      newArticles = snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+      fetchedLastDocument =
+          snapshot.docs.last; // Save the last document for the next page
+      fetchedStartDocument = snapshot.docs.first;
     } else {
-      query = FirebaseFirestore.instance
-          .collection('articles')
-          .where('category', whereIn: bandCategoryList)
-          .where('country', isEqualTo: 'in')
-          //.where('source', isNotEqualTo: null)
-          .where('publishedAt', isNotEqualTo: null)
-          .orderBy("publishedAt", descending: true)
-          .limit(10);
+      print('Nothing found');
+    }
 
-      if (_lastDocument != null) {
-        query = query.startAfterDocument(_lastDocument!);
-      }
+    AlgoliaArticles algoliaArticles = AlgoliaArticles(
+        articles: newArticles, queryID: fetchedLastDocument.toString());
+
+    algoliaArticles.setLastDocument(fetchedLastDocument);
+    algoliaArticles.setStartDocument(fetchedStartDocument);
+
+    return algoliaArticles;
+  }
+
+  static Future<AlgoliaArticles> getBoostedArticlesDataForBand(
+      DocumentSnapshot<Map<String, dynamic>>? _startDocument,
+      DocumentSnapshot<Map<String, dynamic>>? _lastDocument,
+      bool reverse,
+      Band selectedBand) async {
+    DocumentSnapshot<Map<String, dynamic>>? fetchedStartDocument = null;
+    DocumentSnapshot<Map<String, dynamic>>? fetchedLastDocument = null;
+
+    List bandCategoryList = [];
+
+    bandCategoryList.addAll(selectedBand.hooks ?? []);
+
+    DateTime currentTime = DateTime.now();
+    DateTime oneDayAgo = currentTime.subtract(Duration(hours: 3));
+
+    query = FirebaseFirestore.instance
+        .collection('articles')
+        .where('category', whereIn: bandCategoryList)
+        .where('country', isEqualTo: 'in')
+        .where('boostamp', isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
+        //.where('boosts', isGreaterThanOrEqualTo: 1)
+        .orderBy("boostamp", descending: true)
+        .limit(10);
+
+    if (_lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
     }
 
     final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
@@ -321,8 +394,8 @@ class FirebaseDBOperations {
         .setPage(page)
         .setUserToken(userToken)
         .setDistinct(value: true);
-        //.setPersonalizationImpact(value: 75)
-        //.setEnablePersonalization(enabled: true);
+    //.setPersonalizationImpact(value: 75)
+    //.setEnablePersonalization(enabled: true);
 
     List<String> filterStr = [];
     for (String hook in hooks) {
@@ -381,7 +454,11 @@ class FirebaseDBOperations {
     try {
       final WriteBatch batch = FirebaseFirestore.instance.batch();
 
-      batch.update(articleRef, {'likes': FieldValue.increment(1)});
+      batch.update(articleRef, {
+        'likes': FieldValue.increment(1),
+        'boosts': FieldValue.increment(1),
+        'boostamp': Timestamp.now()
+      });
       batch.set(userLikeRef, {'liked': true});
 
       await batch.commit();
@@ -432,7 +509,10 @@ class FirebaseDBOperations {
     try {
       final WriteBatch batch = FirebaseFirestore.instance.batch();
 
-      batch.update(articleRef, {'likes': FieldValue.increment(-1)});
+      batch.update(articleRef, {
+        'likes': FieldValue.increment(-1),
+        'boosts': FieldValue.increment(-1),
+      });
       batch.delete(userLikeRef);
 
       await batch.commit();
@@ -548,7 +628,8 @@ class FirebaseDBOperations {
         .collection('users')
         .doc(uid)
         .collection('questions')
-        .where('createdTime', isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
+        .where('createdTime',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
         //.orderBy('createdTime',descending: true)
         .get();
     return List.from(data.docs.map((e) => Question.fromSnapshot(e)));
@@ -570,9 +651,13 @@ class FirebaseDBOperations {
           .collection('users')
           .doc(uid)
           .collection('questions')
-          .doc(question.qid).set(question.toJson()).onError((error, stackTrace) => print('Error posting question: $error'));
+          .doc(question.qid)
+          .set(question.toJson())
+          .onError(
+              (error, stackTrace) => print('Error posting question: $error'));
 
-      print('Question posted successfully Users/$uid/questions/${question.qid} \n ${question.toJson()}');
+      print(
+          'Question posted successfully Users/$uid/questions/${question.qid} \n ${question.toJson()}');
     } catch (error) {
       print('Error posting question: $error');
       // Handle error as needed
@@ -591,8 +676,9 @@ class FirebaseDBOperations {
 
     var data = await FirebaseFirestore.instance
         .collectionGroup('questions')
-        .where('createdTime', isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
-        .orderBy('createdTime',descending: true)
+        .where('createdTime',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
+        .orderBy('createdTime', descending: true)
         //.where("hook", whereIn: userInterests)
         .get();
 
@@ -652,15 +738,14 @@ class FirebaseDBOperations {
     print("getDrummsFromBands triggered");
 
     //if (fetchedBands.isEmpty)
-      fetchedBands = await FirebaseDBOperations.getBandByUser();
+    fetchedBands = await FirebaseDBOperations.getBandByUser();
 
     DateTime currentTime = DateTime.now();
 
     // Calculate the time one minute ago
     DateTime oneMinuteAgo = currentTime.subtract(Duration(minutes: 1));
 
-
-      List bandCategoryList = [];
+    List bandCategoryList = [];
     for (Band band in fetchedBands) {
       //print("${band.name}");
       bandCategoryList.add(band.bandId);
@@ -671,7 +756,8 @@ class FirebaseDBOperations {
         .collection('openDrumm')
         .where('bandId', whereIn: bandCategoryList)
         .where('broadcast', isEqualTo: false)
-        .where('lastActive', isGreaterThanOrEqualTo: Timestamp.fromDate(oneMinuteAgo))
+        .where('lastActive',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(oneMinuteAgo))
         //.where('lastActive', isLessThanOrEqualTo: Timestamp.fromDate(currentTime))
         // .where('count', isGreaterThan: 0)
         .get();
@@ -683,7 +769,7 @@ class FirebaseDBOperations {
     List<Jam> filterList = [];
     for (Jam jam in fetchedList) {
       //if (isTimestampWithin1Minute(jam.lastActive ?? Timestamp.now())) {
-        filterList.add(jam);
+      filterList.add(jam);
       //}
     }
     print("Filtered list size ${filterList.length} ///////////////////////// ");
@@ -706,12 +792,11 @@ class FirebaseDBOperations {
     print("getJamsFromBand triggered");
 
     //if (fetchedBands.isEmpty)
-      fetchedBands = await FirebaseDBOperations.getBandByUser();
+    fetchedBands = await FirebaseDBOperations.getBandByUser();
 
-
-      List bandCategoryList = [];
+    List bandCategoryList = [];
     for (Band band in fetchedBands) {
-      bandCategoryList.addAll(band.hooks as Iterable );
+      bandCategoryList.addAll(band.hooks as Iterable);
     }
     if (bandCategoryList.isEmpty) {
       print("BandIDList is empty");
@@ -1120,7 +1205,7 @@ class FirebaseDBOperations {
 
   static void subscribeToUserBands() async {
     //if (fetchedBands.isEmpty)
-      fetchedBands = await FirebaseDBOperations.getBandByUser();
+    fetchedBands = await FirebaseDBOperations.getBandByUser();
 
     FirebaseDBOperations.subscribeToTopic("broadcast");
     for (Band band in fetchedBands) {
@@ -1130,7 +1215,7 @@ class FirebaseDBOperations {
 
   static void unSubscribeToUserBands() async {
     //if (fetchedBands.isEmpty)
-      fetchedBands = await FirebaseDBOperations.getBandByUser();
+    fetchedBands = await FirebaseDBOperations.getBandByUser();
 
     for (Band band in fetchedBands) {
       FirebaseDBOperations.unsubscribeFromTopic(band.bandId ?? "");

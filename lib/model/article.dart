@@ -9,6 +9,7 @@ class Article {
   String? url;
   String? imageUrl;
   Timestamp? publishedAt;
+  Timestamp? boostamp;
   String? question;
   String? summary;
   String? content;
@@ -19,14 +20,18 @@ class Article {
   bool? liked;
   int? likes = 0;
   int? reads = 0;
+  int? boosts = 0;
   String? uid;
   String? aiVoiceUrl;
+
 
 
   Article(
       {this.summary,
         this.liked,
         this.likes,
+        this.boostamp,
+        this.boosts,
         this.meta,
       this.category,
         this.source,
@@ -50,6 +55,8 @@ class Article {
     meta = snapshot.data()['meta'];
     liked = snapshot.data()['liked'];
     likes = snapshot.data()['likes'];
+    boostamp = snapshot.data()['boostamp'];
+    boosts = snapshot.data()['boosts'];
     summary = snapshot.data()['summary'];
     source = snapshot.data()['source'];
     dump = snapshot.data()['dump'];
@@ -87,6 +94,8 @@ class Article {
     imageUrl = snapshot['imageUrl'];
     publishedAt = Timestamp.fromMillisecondsSinceEpoch(snapshot['publishedAt']);
     content = snapshot['content'];
+    boostamp = Timestamp.fromMillisecondsSinceEpoch(snapshot['boostamp']??0);
+    boosts = snapshot['boosts'];
     uid = snapshot['uid'];
     aiVoiceUrl = snapshot['aiVoiceUrl'];
   }
@@ -106,6 +115,8 @@ class Article {
       description: this.description,
       imageUrl: this.imageUrl,
       publishedAt: this.publishedAt,
+      boostamp: this.boostamp,
+      boosts: this.boosts,
       articleId: this.articleId,
       jamId: this.jamId,
       content: this.content,
@@ -130,6 +141,8 @@ class Article {
     data['imageUrl'] = this.imageUrl;
     data['publishedAt'] = this.publishedAt;
     data['content'] = this.content;
+    data['boostamp'] = this.boostamp;
+    data['boosts'] = this.boosts;
     data['question'] = this.question;
     data['articleId'] = this.articleId;
     data['jamId'] = this.jamId;

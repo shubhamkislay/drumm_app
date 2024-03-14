@@ -136,6 +136,8 @@ class DiscoverHomeState extends State<DiscoverHome>
   List<ArticleImageCard> bufferingCards = [];
   late PageController _pageController ;
 
+  bool fetchedAllBoosted = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -561,6 +563,7 @@ class DiscoverHomeState extends State<DiscoverHome>
 
                         _lastDocument =null;
                         _startDocument = null;
+                        fetchedAllBoosted = false;
 
                         if (selectedBandID == "For You") {
                           getArticles(false);
@@ -780,6 +783,7 @@ class DiscoverHomeState extends State<DiscoverHome>
           loadingAnimation = LOADING_ASSET;
           selectedBand = selectedItem;
           selectedBandID = selectedBand.bandId ?? "For You";
+          fetchedAllBoosted = false;
           setState(() {
             articles = [];
             bufferingCards = [];
@@ -808,10 +812,31 @@ class DiscoverHomeState extends State<DiscoverHome>
     //articleBands.clear();
     //});
     controller = CardSwiperController();
-    algoliaArticles = await FirebaseDBOperations.getArticlesData(
-        _startDocument, _lastDocument, reverse);
-    List<Article> articleFetched = algoliaArticles?.articles ??
-        []; //await FirebaseDBOperations.getArticlesByBands();
+    List<Article> articleFetched = [];
+    if(!fetchedAllBoosted) {
+      algoliaArticles = await FirebaseDBOperations.getBoostedArticlesData(
+          _startDocument, _lastDocument, reverse);
+      for(Article article in algoliaArticles?.articles??[]){
+        int boosts = article.boosts??0;
+        if(boosts>0)
+          articleFetched.add(article);
+      }
+    }//await FirebaseDBOperations.getArticlesByBands();
+    if(articleFetched.length<10) {
+      if(!fetchedAllBoosted) {
+        _lastDocument = null;
+        _startDocument = null;
+        fetchedAllBoosted = true;
+      }
+      algoliaArticles = await FirebaseDBOperations.getArticlesData(
+          _startDocument, _lastDocument, reverse);
+      for(Article article in algoliaArticles?.articles??[]){
+        int boosts = article.boosts??0;
+        if(boosts==0)
+          articleFetched.add(article);
+      }
+      //articleFetched.addAll(algoliaArticles?.articles ?? []);
+    }
 
     if(_lastDocument==null)
     _startDocument = algoliaArticles?.getStartDocument();
@@ -830,9 +855,10 @@ class DiscoverHomeState extends State<DiscoverHome>
         for (Band band in bandList) {
           List hooks = band.hooks ?? [];
           if (hooks.contains(article.category)) {
-            ArticleBand articleBand = ArticleBand(article: article, band: band);
-            fetchedArticleBand.add(articleBand);
-            break;
+              ArticleBand articleBand = ArticleBand(
+                  article: article, band: band);
+              fetchedArticleBand.add(articleBand);
+              break;
           }
         }
       }
@@ -885,10 +911,32 @@ class DiscoverHomeState extends State<DiscoverHome>
     //articles.clear();
     //articleBands.clear();
     controller = CardSwiperController();
-    algoliaArticles = await FirebaseDBOperations.getArticlesDataForBand(
-        _startDocument, _lastDocument, reverse, selectedBand);
-    List<Article> articleFetched = algoliaArticles?.articles ??
-        []; //await FirebaseDBOperations.getArticlesByBands();
+    List<Article> articleFetched = [];
+    if(!fetchedAllBoosted) {
+      algoliaArticles =
+      await FirebaseDBOperations.getBoostedArticlesDataForBand(
+          _startDocument, _lastDocument, reverse, selectedBand);
+      for(Article article in algoliaArticles?.articles??[]){
+        int boosts = article.boosts??0;
+        if(boosts>0)
+          articleFetched.add(article);
+      }
+    }
+
+    if(articleFetched.length<10){
+      if(!fetchedAllBoosted) {
+        _lastDocument = null;
+        _startDocument = null;
+        fetchedAllBoosted = true;
+      }
+      algoliaArticles = await FirebaseDBOperations.getArticlesDataForBand(
+          _startDocument, _lastDocument, reverse, selectedBand);
+      for(Article article in algoliaArticles?.articles??[]){
+        int boosts = article.boosts??0;
+        if(boosts==0)
+          articleFetched.add(article);
+      }
+    }
 
     _lastDocument = algoliaArticles?.getLastDocument();
     _startDocument = algoliaArticles?.getStartDocument();
@@ -1014,6 +1062,7 @@ class DiscoverHomeState extends State<DiscoverHome>
 
     _lastDocument = null;
     _startDocument = null;
+    fetchedAllBoosted = false;
     Vibrate.feedback(FeedbackType.selection);
     FirebaseDBOperations.lastDocument = null;
     controller = CardSwiperController();

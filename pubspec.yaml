@@ -223,6 +223,8 @@ flutter:
     - images/search_button.png
     - images/discover_home_active.png
     - images/discover_home_inactive.png
+    - images/boost_enabled.png
+    - images/boost_disabled.png
   # - images/a_dot_ham.jpeg
 
   fonts:
