@@ -469,6 +469,34 @@ class FirebaseDBOperations {
     }
   }
 
+  static Future<bool> updateBoosts(String? articleID) async {
+    final String currentUserID = getCurrentUserID();
+    final DocumentReference articleRef =
+    FirebaseFirestore.instance.collection("articles").doc(articleID);
+    final DocumentReference userLikeRef = FirebaseFirestore.instance
+        .collection("userActivity")
+        .doc(currentUserID)
+        .collection("boosts")
+        .doc(articleID);
+
+    try {
+      final WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      batch.update(articleRef, {
+        'likes': FieldValue.increment(1),
+        'boosts': FieldValue.increment(1),
+        'boostamp': Timestamp.now()
+      });
+      batch.set(userLikeRef, {'boosted': true});
+
+      await batch.commit();
+      return true;
+    } catch (error) {
+      print("Error updating like status: $error");
+      return false;
+    }
+  }
+
   static Future<bool> updateCount(String? jamID, int count) async {
     // final DocumentReference jams =
     //     FirebaseFirestore.instance.collection("openDrumm").doc(jamID);
@@ -523,6 +551,33 @@ class FirebaseDBOperations {
     }
   }
 
+  static Future<bool> removeBoost(String? articleID) async {
+    final String currentUserID = getCurrentUserID();
+    final DocumentReference articleRef =
+    FirebaseFirestore.instance.collection("articles").doc(articleID);
+    final DocumentReference userLikeRef = FirebaseFirestore.instance
+        .collection("userActivity")
+        .doc(currentUserID)
+        .collection("boosts")
+        .doc(articleID);
+
+    try {
+      final WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      batch.update(articleRef, {
+        'likes': FieldValue.increment(-1),
+        'boosts': FieldValue.increment(-1),
+      });
+      batch.delete(userLikeRef);
+
+      await batch.commit();
+      return true;
+    } catch (error) {
+      print("Error removing like status: $error");
+      return false;
+    }
+  }
+
   static String getCurrentUserID() {
     final User? user = FirebaseAuth.instance.currentUser;
     final String userID = user?.uid ?? '';
@@ -536,6 +591,22 @@ class FirebaseDBOperations {
           .collection("userActivity")
           .doc(getCurrentUserID())
           .collection("likes")
+          .doc(articleID)
+          .get();
+
+      return doc.exists;
+    } catch (error) {
+      print("Error checking like status: $error");
+      return false;
+    }
+  }
+
+  static Future<bool> hasBoosted(String? articleID) async {
+    try {
+      final DocumentSnapshot doc = await FirebaseFirestore.instance
+          .collection("userActivity")
+          .doc(getCurrentUserID())
+          .collection("boosts")
           .doc(articleID)
           .get();
 

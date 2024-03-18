@@ -107,7 +107,7 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
 
   String? getSpeechText(Article articleForSpeech) {
     //return articleForSpeech.question;
-    String? text = (articleForSpeech.description == null)
+    String? text = (articleForSpeech.summary!=null)?articleForSpeech.summary:(articleForSpeech.description == null)
         ? (articleForSpeech.content == null)?articleForSpeech.title:articleForSpeech.content
         : "${articleForSpeech.description}";
     if (articleForSpeech.question != null) {

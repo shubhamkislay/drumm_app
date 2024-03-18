@@ -1,4 +1,6 @@
+import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/model/article.dart';
+import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 
@@ -16,7 +18,7 @@ class ArticleDrummButton extends StatelessWidget {
       padding: 10,
       height: iconSize??52,
       color: Colors.white,
-      bgColor: Colors.transparent,
+      bgColor: COLOR_PRIMARY_DARK,
       onPressed: () {
         Vibrate.feedback(FeedbackType.selection);
         showModalBottomSheet(

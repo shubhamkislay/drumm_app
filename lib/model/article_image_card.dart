@@ -39,9 +39,19 @@ class ArticleImageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int boosts = articleBand.article?.boosts ?? 0;
-    Color colorBorder = (boosts > 0) ? COLOR_BOOST : Colors.white12;
-    Color colorBorder2 = (boosts > 0) ? Colors.orange : Colors.white12;
+    int boosts = 0;
+    DateTime currentTime = DateTime.now();
+    DateTime recent = currentTime.subtract(Duration(hours: 3));
+    Timestamp boostTime = Timestamp.now();
+    try {
+      boostTime = articleBand.article!.boostamp ?? Timestamp.now();
+      boosts = articleBand.article?.boosts ?? 0;
+    }catch(e){
+
+    }
+
+    Color colorBorder = (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent))>0 ) ? COLOR_BOOST : Colors.white12;
+    Color colorBorder2 = (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent))>0) ? Colors.blueGrey : Colors.white12;
     Widget returnWidget = (loading ?? false)
         ? Container(
             alignment: Alignment.center,
@@ -110,276 +120,271 @@ class ArticleImageCard extends StatelessWidget {
                               begin: Alignment.bottomLeft,
                               end: Alignment.topRight,
                               colors: [
-                                Colors.white12,
-                                //colorBorder2,
+                                //Colors.white12,
+                                colorBorder2,
                                 colorBorder,
                               ])),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Stack(
-                          children: [
-                            Hero(
-                              tag: articleBands
-                                      ?.elementAt(
-                                          articleBands?.indexOf(articleBand) ??
-                                              0)
-                                      .article
-                                      ?.articleId ??
-                                  "",
-                              child: CachedNetworkImage(
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  errorWidget: (context, url, error) {
-                                    return Container();
-                                  },
-                                  placeholder: (context, url) => Container(
-                                        color: Colors.grey.shade900,
-                                      ),
-                                  imageUrl: articleBand.article?.imageUrl ?? "",
-                                  alignment: Alignment.topCenter,
-                                  fit: BoxFit.cover),
-                            ),
-                            if (false)
-                              Container(
-                                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                                color: Colors.black,
-                                width: double.maxFinite,
-                                child: AutoSizeText(
-                                  unescape.convert(articleBand.article?.meta ??
-                                      articleBand.article?.title ??
-                                      ""),
-                                  textAlign: TextAlign.left,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxFontSize: 15,
-                                  maxLines: 3,
-                                  minFontSize: 10,
-                                  style: TextStyle(
-                                      overflow: TextOverflow.ellipsis,
-                                      fontSize: 15,
-                                      //fontWeight: FontWeight.bold,
-                                      fontFamily: APP_FONT_MEDIUM,
-                                      color: Colors.white),
-                                ),
+                      child: Container(
+                        padding: EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: COLOR_BACKGROUND,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Stack(
+                            children: [
+                              Hero(
+                                tag: articleBands
+                                        ?.elementAt(
+                                            articleBands?.indexOf(articleBand) ??
+                                                0)
+                                        .article
+                                        ?.articleId ??
+                                    "",
+                                child: CachedNetworkImage(
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    errorWidget: (context, url, error) {
+                                      return Container();
+                                    },
+                                    placeholder: (context, url) => Container(
+                                          color: Colors.grey.shade900,
+                                        ),
+                                    imageUrl: articleBand.article?.imageUrl ?? "",
+                                    alignment: Alignment.topCenter,
+                                    fit: BoxFit.cover),
                               ),
-                            if (false)
-                              Container(
-                                color: Colors.black,
-                                padding: const EdgeInsets.fromLTRB(8, 2, 8, 8),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Flexible(
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            //borderRadius: BorderRadius.circular(12),
-                                            // color: Colors.black,
-                                            ),
-                                        child: AutoSizeText(
-                                          "${articleBand.article?.source}",
-                                          textAlign: TextAlign.left,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                          minFontSize: 8,
-                                          style: const TextStyle(
-                                              fontSize: 10,
-                                              fontFamily: APP_FONT_MEDIUM,
-                                              //fontWeight: FontWeight.bold,
-                                              color: Colors.white70),
+                              if (false)
+                                Container(
+                                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                  color: Colors.black,
+                                  width: double.maxFinite,
+                                  child: AutoSizeText(
+                                    unescape.convert(articleBand.article?.meta ??
+                                        articleBand.article?.title ??
+                                        ""),
+                                    textAlign: TextAlign.left,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxFontSize: 15,
+                                    maxLines: 3,
+                                    minFontSize: 10,
+                                    style: TextStyle(
+                                        overflow: TextOverflow.ellipsis,
+                                        fontSize: 15,
+                                        //fontWeight: FontWeight.bold,
+                                        fontFamily: APP_FONT_MEDIUM,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              if (false)
+                                Container(
+                                  color: Colors.black,
+                                  padding: const EdgeInsets.fromLTRB(8, 2, 8, 8),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Flexible(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              //borderRadius: BorderRadius.circular(12),
+                                              // color: Colors.black,
+                                              ),
+                                          child: AutoSizeText(
+                                            "${articleBand.article?.source}",
+                                            textAlign: TextAlign.left,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 2,
+                                            minFontSize: 8,
+                                            style: const TextStyle(
+                                                fontSize: 10,
+                                                fontFamily: APP_FONT_MEDIUM,
+                                                //fontWeight: FontWeight.bold,
+                                                color: Colors.white70),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    const Text(" • "),
-                                    Container(
-                                      padding: const EdgeInsets.only(
-                                          right: 4, bottom: 4),
-                                      child: InstagramDateTimeWidget(
-                                        textSize: 10,
-                                        fontColor: Colors.white70,
-                                        publishedAt: articleBand
-                                                .article?.publishedAt
-                                                .toString() ??
-                                            "",
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            if (true)
-                              Container(
-                                alignment: Alignment.bottomLeft,
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                        end: Alignment.bottomCenter,
-                                        begin: Alignment.topCenter,
-                                        colors: [
-                                      Colors.transparent,
-                                      Colors.black.withOpacity(0.65),
-                                      //Colors.black,
-                                      Colors.black,
-                                    ])),
-                                //RandomColorBackground.generateRandomVibrantColor().withOpacity(0.55),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Flexible(
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 6,
-                                                        vertical: 4),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                    color: Colors.white
-                                                        .withOpacity(0.1)),
-                                                child: Hero(
-                                                  tag:
-                                                      "${articleBand.band?.name} ${articleBand.article?.articleId}",
-                                                  child: AutoSizeText(
-                                                    "${articleBand.band?.name}",
-                                                    textAlign: TextAlign.left,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 2,
-                                                    minFontSize: 8,
-                                                    style: const TextStyle(
-                                                        fontSize: 8,
-                                                        fontFamily:
-                                                            APP_FONT_MEDIUM,
-                                                        //fontWeight: FontWeight.bold,
-                                                        color: Colors.white),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            if (boosts > 0)
-                                              Flexible(
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.all(6),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            32),
-                                                    color: colorBorder,
-                                                  ),
-                                                  child: Image.asset(
-                                                    'images/boost_enabled.png', //'images/like_btn.png',
-                                                    height: 12,
-                                                    color: Colors.white,
-                                                    fit: BoxFit.contain,
-                                                  ),
-                                                ),
-                                              ),
-                                          ],
+                                      const Text(" • "),
+                                      Container(
+                                        padding: const EdgeInsets.only(
+                                            right: 4, bottom: 4),
+                                        child: InstagramDateTimeWidget(
+                                          textSize: 10,
+                                          fontColor: Colors.white70,
+                                          publishedAt: articleBand
+                                                  .article?.publishedAt
+                                                  .toString() ??
+                                              "",
                                         ),
-                                      ],
-                                    ),
-                                    Flexible(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              if (true)
+                                Container(
+                                  alignment: Alignment.bottomLeft,
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                          end: Alignment.bottomCenter,
+                                          begin: Alignment.topCenter,
+                                          colors: [
+                                        Colors.transparent,
+                                        Colors.black.withOpacity(0.75),
+                                        //Colors.black,
+                                        Colors.black,
+                                      ])),
+                                  //RandomColorBackground.generateRandomVibrantColor().withOpacity(0.55),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         mainAxisAlignment:
-                                            MainAxisAlignment.end,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Column(
-                                            children: [
-                                              Container(
-                                                alignment: Alignment.bottomLeft,
-                                                padding:
-                                                    const EdgeInsets.all(4.0),
-                                                height: maxHeight,
+                                          Flexible(
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 6,
+                                                      vertical: 4),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8),
+                                                  color: Colors.grey.shade800
+                                                      .withOpacity(0.65)),
+                                              child: Hero(
+                                                tag:
+                                                    "${articleBand.band?.name} ${articleBand.article?.articleId}",
                                                 child: AutoSizeText(
-                                                  unescape.convert(articleBand
-                                                          .article?.meta ??
-                                                      articleBand
-                                                          .article?.title ??
-                                                      ""),
+                                                  "${articleBand.band?.name}",
                                                   textAlign: TextAlign.left,
                                                   overflow:
                                                       TextOverflow.ellipsis,
-                                                  maxFontSize: 17,
-                                                  maxLines: 3,
-                                                  minFontSize: 12,
-                                                  style: TextStyle(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.w500,
+                                                  maxLines: 1,
+                                                  minFontSize: 8,
+                                                  style: const TextStyle(
+                                                      fontSize: 8,
                                                       fontFamily:
                                                           APP_FONT_MEDIUM,
+                                                      //fontWeight: FontWeight.bold,
                                                       color: Colors.white),
                                                 ),
                                               ),
-                                              SizedBox(
-                                                height: 4,
-                                              ),
-                                            ],
+                                            ),
                                           ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Flexible(
-                                                child: Container(
+                                          if (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent))>0)
+                                            Flexible(
+                                              child: Container(
+                                                padding: EdgeInsets.all(2),
+                                                child: Image.asset(
+                                                  'images/boost_enabled.png', //'images/like_btn.png',
+                                                  height: 18,
+                                                  color: Colors.white,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                      Flexible(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Container(
+                                                  alignment: Alignment.bottomLeft,
                                                   padding:
-                                                      const EdgeInsets.only(
-                                                          left: 4, bottom: 4),
-                                                  decoration: BoxDecoration(
-                                                      //borderRadius: BorderRadius.circular(12),
-                                                      //color: Colors.grey.shade900.withOpacity(0.35),
-                                                      ),
+                                                      const EdgeInsets.all(4.0),
+                                                  height: maxHeight,
                                                   child: AutoSizeText(
-                                                    "${articleBand.article?.source}",
+                                                    unescape.convert(articleBand
+                                                            .article?.meta ??
+                                                        articleBand
+                                                            .article?.title ??
+                                                        ""),
                                                     textAlign: TextAlign.left,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    maxLines: 2,
-                                                    minFontSize: 8,
-                                                    style: const TextStyle(
-                                                        fontSize: 10,
+                                                    maxFontSize: 17,
+                                                    maxLines: 3,
+                                                    minFontSize: 12,
+                                                    style: TextStyle(
+                                                        overflow:
+                                                            TextOverflow.ellipsis,
+                                                        fontSize: 17,
+                                                        fontWeight:
+                                                            FontWeight.w500,
                                                         fontFamily:
                                                             APP_FONT_MEDIUM,
-                                                        //fontWeight: FontWeight.bold,
-                                                        color: Colors.white70),
+                                                        color: Colors.white),
                                                   ),
                                                 ),
-                                              ),
-                                              const Text(" • "),
-                                              Container(
-                                                padding: const EdgeInsets.only(
-                                                    right: 4, bottom: 4),
-                                                child: InstagramDateTimeWidget(
-                                                  textSize: 10,
-                                                  fontColor: Colors.white70,
-                                                  publishedAt: articleBand
-                                                          .article?.publishedAt
-                                                          .toString() ??
-                                                      "",
+                                                SizedBox(
+                                                  height: 4,
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Flexible(
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 4, bottom: 4),
+                                                    decoration: BoxDecoration(
+                                                        //borderRadius: BorderRadius.circular(12),
+                                                        //color: Colors.grey.shade900.withOpacity(0.35),
+                                                        ),
+                                                    child: Flexible(
+                                                      child: Text(
+                                                        "${articleBand.article?.source}",
+                                                        textAlign: TextAlign.left,
+                                                        overflow:
+                                                            TextOverflow.ellipsis,
+                                                        maxLines: 1,
+                                                        style: const TextStyle(
+                                                            fontSize: 10,
+                                                            fontFamily:
+                                                                APP_FONT_MEDIUM,
+                                                            //fontWeight: FontWeight.bold,
+                                                            color: Colors.white70),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                const Text(" • "),
+                                                Container(
+                                                  padding: const EdgeInsets.only(
+                                                      right: 4, bottom: 4),
+                                                  child: InstagramDateTimeWidget(
+                                                    textSize: 10,
+                                                    fontColor: Colors.white70,
+                                                    publishedAt: articleBand
+                                                            .article?.publishedAt
+                                                            .toString() ??
+                                                        "",
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                          ],
+                                    ],
+                                  ),
+                                )
+                            ],
+                          ),
                         ),
                       ),
                     )
