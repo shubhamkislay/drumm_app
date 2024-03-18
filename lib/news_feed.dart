@@ -369,6 +369,7 @@ class _NewsFeedState extends State<NewsFeed>
                             JoinDrummButton(controller: controller),
                             const SizedBox(width: 8),
                             LikeBtn(
+                              userBoosted: false,
                                 article: articleOnScreen,
                                 queryID: queryID ?? ""),
                           ],

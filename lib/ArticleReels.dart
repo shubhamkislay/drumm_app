@@ -359,6 +359,7 @@ class ArticleReelsState extends State<ArticleReels>
                               ),
                             LikeBtn(
                                 article: articleOnTop?.article ?? Article(),
+                              userBoosted: isBoosted,
                               boostedCallback: (boost){
                                   setState(() {
                                     if(boost) {

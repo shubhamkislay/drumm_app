@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
@@ -11,15 +12,15 @@ typedef void BoostedCallback(bool boosted);
 class LikeBtn extends StatefulWidget {
   Article article;
   String? queryID;
+  bool userBoosted;
   BoostedCallback? boostedCallback;
-  LikeBtn({super.key, required this.article, this.queryID, this.boostedCallback});
+  LikeBtn({super.key, required this.article, this.queryID, this.boostedCallback, required this.userBoosted});
 
   @override
   State<LikeBtn> createState() => _LikeBtnState();
 }
 
 class _LikeBtnState extends State<LikeBtn> {
-  bool userBoosted = false;
   @override
   Widget build(BuildContext context) {
 
@@ -38,12 +39,16 @@ class _LikeBtnState extends State<LikeBtn> {
 
     return GestureDetector(
       onTap: () {
-        likeArticle(userBoosted??false);
+        if(!widget.userBoosted){
+          final player = AudioPlayer();
+          //player.play(AssetSource("air.wav"));
+        }
+        likeArticle(widget.userBoosted??false);
       },
       child: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(42),
-            border: Border.all(color: userBoosted??false
+            border: Border.all(color: widget.userBoosted??false
                 ? COLOR_BOOST
                 : Colors.grey.shade900,width: 2.25)),
         child: Container(
@@ -51,19 +56,19 @@ class _LikeBtnState extends State<LikeBtn> {
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(42),
-            color: userBoosted??false
+            color: widget.userBoosted??false
                 ? COLOR_BOOST.withOpacity(0.5)
                 : COLOR_BACKGROUND,//Colors.black.withOpacity(0.5),
 
           ),
           child: Image.asset(
-            userBoosted??false
+            widget.userBoosted??false
                 ? 'images/boost_enabled.png'//'images/heart_like.png'
                 : 'images/boost_disabled.png',//'images/like_btn.png',
-            height: userBoosted??false
+            height: widget.userBoosted??false
                 ? 24
                 : 18,
-            color: userBoosted??false
+            color: widget.userBoosted??false
                 ? Colors.white
                 : Colors.white,
             fit: BoxFit.contain,
@@ -83,16 +88,16 @@ class _LikeBtnState extends State<LikeBtn> {
             widget.article.articleId);
       }
       setState(() {
-        if (userBoosted??false) {
-          userBoosted = false;
+        if (widget.userBoosted??false) {
+          widget.userBoosted = false;
         } else {
-          userBoosted= true;
+          widget.userBoosted= true;
           Vibrate.feedback(FeedbackType.success);
         }
       });
     });
 
-    widget.boostedCallback!(userBoosted??false);
+    widget.boostedCallback!(widget.userBoosted??false);
   }
 
   void checkIfUserLiked() async {
@@ -101,7 +106,7 @@ class _LikeBtnState extends State<LikeBtn> {
         widget.article?.articleId)
         .then((value) {
       setState(() {
-        userBoosted = value;
+        widget.userBoosted = value;
 
       });
     });

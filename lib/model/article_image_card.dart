@@ -345,20 +345,18 @@ class ArticleImageCard extends StatelessWidget {
                                                         //borderRadius: BorderRadius.circular(12),
                                                         //color: Colors.grey.shade900.withOpacity(0.35),
                                                         ),
-                                                    child: Flexible(
-                                                      child: Text(
-                                                        "${articleBand.article?.source}",
-                                                        textAlign: TextAlign.left,
-                                                        overflow:
-                                                            TextOverflow.ellipsis,
-                                                        maxLines: 1,
-                                                        style: const TextStyle(
-                                                            fontSize: 10,
-                                                            fontFamily:
-                                                                APP_FONT_MEDIUM,
-                                                            //fontWeight: FontWeight.bold,
-                                                            color: Colors.white70),
-                                                      ),
+                                                    child: Text(
+                                                      "${articleBand.article?.source}",
+                                                      textAlign: TextAlign.left,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: const TextStyle(
+                                                          fontSize: 10,
+                                                          fontFamily:
+                                                              APP_FONT_MEDIUM,
+                                                          //fontWeight: FontWeight.bold,
+                                                          color: Colors.white70),
                                                     ),
                                                   ),
                                                 ),
@@ -427,7 +425,7 @@ class ArticleImageCard extends StatelessWidget {
                                               "${articleBand.band?.name}",
                                               textAlign: TextAlign.left,
                                               overflow: TextOverflow.ellipsis,
-                                              maxLines: 2,
+                                              maxLines: 1,
                                               minFontSize: 8,
                                               style: const TextStyle(
                                                   fontSize: 8,
@@ -481,7 +479,7 @@ class ArticleImageCard extends StatelessWidget {
                                           "${articleBand.article?.source ?? ""}",
                                           textAlign: TextAlign.left,
                                           overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
+                                          maxLines: 1,
                                           minFontSize: 8,
                                           style: const TextStyle(
                                               fontSize: 10,

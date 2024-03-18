@@ -342,6 +342,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
                               ),
                             ),
                             LikeBtn(
+                              userBoosted: false,
                                 article: Article()),
                             Container(
                               height: 46,

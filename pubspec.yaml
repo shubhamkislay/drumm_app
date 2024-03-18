@@ -225,6 +225,8 @@ flutter:
     - images/discover_home_inactive.png
     - images/boost_enabled.png
     - images/boost_disabled.png
+    - assets/zap.mp3
+    - assets/air.wav
   # - images/a_dot_ham.jpeg
 
   fonts:
