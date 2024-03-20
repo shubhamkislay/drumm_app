@@ -118,7 +118,7 @@ class SwipePageState extends State<SwipePage>
                           cursorColor: Colors.white,
                           maxLines: null,
                           autofocus: true,
-                          maxLength: 120,
+                          maxLength: 60,
                           cursorHeight: 32,
                           cursorWidth: 5,
                           textAlign: TextAlign.center,

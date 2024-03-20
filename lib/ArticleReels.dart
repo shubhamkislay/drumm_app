@@ -660,7 +660,7 @@ class ArticleReelsState extends State<ArticleReels>
                         Container(
                             height: double.maxFinite,
                             width: double.maxFinite,
-                            color: (isBoosted)?Colors.indigo.withOpacity(0.65):Colors.grey.shade900,
+                            color: (isBoosted)?Colors.indigo.withOpacity(0.65):Colors.grey.shade900.withOpacity(0.8),
                           ),
                         Column(
                           children: [

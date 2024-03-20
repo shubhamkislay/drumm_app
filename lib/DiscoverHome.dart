@@ -383,7 +383,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                                       height: 12,
                                     ),
                                     Container(
-                                      height: 120,
+                                      height: 150,
                                       alignment: Alignment.centerLeft,
                                       child: ListView(
                                         controller: _pageController,

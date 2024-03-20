@@ -125,7 +125,7 @@ class ArticleImageCard extends StatelessWidget {
                                 colorBorder,
                               ])),
                       child: Container(
-                        padding: EdgeInsets.all(4),
+                        padding: EdgeInsets.all(3),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           color: COLOR_BACKGROUND,
@@ -313,15 +313,15 @@ class ArticleImageCard extends StatelessWidget {
                                                     textAlign: TextAlign.left,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    maxFontSize: 17,
+                                                    maxFontSize: 20,
                                                     maxLines: 3,
                                                     minFontSize: 12,
                                                     style: TextStyle(
                                                         overflow:
                                                             TextOverflow.ellipsis,
-                                                        fontSize: 17,
+                                                        fontSize: 20,
                                                         fontWeight:
-                                                            FontWeight.w500,
+                                                            FontWeight.w600,
                                                         fontFamily:
                                                             APP_FONT_MEDIUM,
                                                         color: Colors.white),
