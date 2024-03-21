@@ -1321,6 +1321,7 @@ class FirebaseDBOperations {
       "data": {
         "bandId": jam.bandId,
         "jamId": jam.jamId,
+        "ring": true
       }
     });
 

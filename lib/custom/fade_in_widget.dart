@@ -8,7 +8,7 @@ class FadeInContainer extends StatefulWidget {
   const FadeInContainer({
     Key? key,
     required this.child,
-    this.duration = const Duration(milliseconds: 350),
+    this.duration = const Duration(milliseconds: 200),
   }) : super(key: key);
 
   @override

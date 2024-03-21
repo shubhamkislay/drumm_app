@@ -313,13 +313,13 @@ class ArticleImageCard extends StatelessWidget {
                                                     textAlign: TextAlign.left,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    maxFontSize: 20,
+                                                    maxFontSize: 17,
                                                     maxLines: 3,
-                                                    minFontSize: 12,
+                                                    minFontSize: 17,
                                                     style: TextStyle(
                                                         overflow:
                                                             TextOverflow.ellipsis,
-                                                        fontSize: 20,
+                                                        fontSize: 17,
                                                         fontWeight:
                                                             FontWeight.w600,
                                                         fontFamily:
@@ -449,12 +449,12 @@ class ArticleImageCard extends StatelessWidget {
                                   ""),
                               textAlign: TextAlign.left,
                               overflow: TextOverflow.ellipsis,
-                              maxFontSize: 24,
+                              maxFontSize: 17,
                               maxLines: 3,
                               minFontSize: 10,
                               style: const TextStyle(
                                   overflow: TextOverflow.ellipsis,
-                                  fontSize: 24,
+                                  fontSize: 17,
                                   //fontWeight: FontWeight.bold,
                                   fontFamily: APP_FONT_MEDIUM,
                                   color: Colors.white),

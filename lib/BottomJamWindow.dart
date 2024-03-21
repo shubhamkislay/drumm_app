@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drumm_app/question_jam_room.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
@@ -22,6 +23,7 @@ class _BottomJamWindowState extends State<BottomJamWindow> {
   bool userConnected = false;
   late Jam currentJam = Jam();
   bool openDrumm = false;
+  bool oneOnOne = false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -48,7 +50,12 @@ class _BottomJamWindowState extends State<BottomJamWindow> {
               child: ClipRRect(
                 borderRadius: BorderRadius.vertical(
                     top: Radius.circular(0.0)),
-                child: JamRoomPage(
+                child: (oneOnOne)?
+              QuestionJamRoomPage(
+                jam: currentJam,
+                open: openDrumm, question: ConnectToChannel.jamQuestion,
+              )
+                  :JamRoomPage(
                   jam: currentJam,
                   open: openDrumm,
                 ),
@@ -162,9 +169,23 @@ class _BottomJamWindowState extends State<BottomJamWindow> {
       // print("onConnectionChanged called in Launcher");
       setState(() {
         // Update the UI with the new channelID
+
         openDrumm = open;
         currentJam = jam;
         userConnected = connected;
+
+        print("Jam is ${jam.title}");
+
+        if(jam.jamId == ConnectToChannel.questionJamId) {
+
+          setState(() {
+            oneOnOne = true;
+          });
+        }else{
+          setState(() {
+            oneOnOne = false;
+          });
+        }
       });
     };
   }

@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:algolia_insights/algolia_insights.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/model/question.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
@@ -28,6 +29,8 @@ typedef void RejoinSuccess();
 class ConnectToChannel {
   static late RtcEngine _rtcEngine;
   static const String appId = "0608d9da67a9458db263b255c8f30778";
+  static String questionJamId = "";
+  static Question jamQuestion = Question();
 
   static late Jam? jam = null;
   static bool micMute = true;
