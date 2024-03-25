@@ -315,7 +315,7 @@ class ArticleImageCard extends StatelessWidget {
                                                         TextOverflow.ellipsis,
                                                     maxFontSize: 17,
                                                     maxLines: 3,
-                                                    minFontSize: 17,
+                                                    minFontSize: 10,
                                                     style: TextStyle(
                                                         overflow:
                                                             TextOverflow.ellipsis,

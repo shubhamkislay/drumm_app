@@ -8,6 +8,7 @@ class ZoomPicture extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String imageUrl = url.isEmpty?"https://placekitten.com/200/300":url;
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
@@ -15,8 +16,7 @@ class ZoomPicture extends StatelessWidget {
         children: [
           PinchZoom(
             maxScale: 10,
-            child: Hero(tag: articleId??"",
-            child: Image.network(url)),
+            child: Image.network(imageUrl),
           ),
           SafeArea(
             child: Container(

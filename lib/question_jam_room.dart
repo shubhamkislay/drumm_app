@@ -34,16 +34,21 @@ import 'model/drummer_join_card.dart';
 import 'model/question.dart';
 
 final StreamController<Map<int, bool>> _muteStreamController =
-StreamController<Map<int, bool>>.broadcast();
+    StreamController<Map<int, bool>>.broadcast();
 final StreamController<Map<int, bool>> _speechStreamController =
-StreamController<Map<int, bool>>.broadcast();
+    StreamController<Map<int, bool>>.broadcast();
 
 class QuestionJamRoomPage extends StatefulWidget {
   Jam jam;
   bool open;
   bool? ring;
   Question? question;
-  QuestionJamRoomPage({Key? key, required this.jam, required this.open, this.ring, required this.question})
+  QuestionJamRoomPage(
+      {Key? key,
+      required this.jam,
+      required this.open,
+      this.ring,
+      required this.question})
       : super(key: key);
 
   @override
@@ -69,12 +74,15 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
   Drummer? localDrummer;
   Drummer? remoteDrummer;
 
+  DrummerJoinCard? localJoinCard;
+  DrummerJoinCard? remoteJoinCard;
+
   @override
   Widget build(BuildContext context) {
     jamRoomContext = context;
     ConnectToChannel.jamRoomContext = context;
-    ConnectToChannel.questionJamId = widget.jam.jamId??"";
-    ConnectToChannel.jamQuestion = widget.question??Question();
+    ConnectToChannel.questionJamId = widget.jam.jamId ?? "";
+    ConnectToChannel.jamQuestion = widget.question ?? Question();
     return Container(
       color: COLOR_PRIMARY_DARK, //Colors.black,
       width: double.maxFinite,
@@ -101,84 +109,112 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
               children: [
                 ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: CachedNetworkImage(imageUrl: widget.jam.imageUrl??"",height: 80,fit: BoxFit.cover)),
-                Text("${remoteDrummer?.username}",style: TextStyle(color: Colors.white),),
-                Text("${remoteDrummer?.jobTitle} at ${remoteDrummer?.organisation}",style: TextStyle(color: Colors.white54),),
-                SizedBox(height: 16,),
+                    child: CachedNetworkImage(
+                        imageUrl: widget.jam.imageUrl ?? "",
+                        height: 80,
+                        fit: BoxFit.cover)),
+               if(false) Text(
+                  "${remoteDrummer?.username}",
+                  style: TextStyle(color: Colors.white),
+                ),
+                if(false) Text(
+                  "${remoteDrummer?.jobTitle} at ${remoteDrummer?.organisation}",
+                  style: TextStyle(color: Colors.white54),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
                 Container(
                   alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.only( left: 16,right: 16),
+                  padding: const EdgeInsets.only(left: 16, right: 16),
                   child: Text(
                     "\"${widget.jam.question}\"",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,
-
                       fontWeight: FontWeight.bold,
                       fontFamily: APP_FONT_BOLD,
                     ),
                   ),
                 ),
-                SizedBox(height: 48,),
+                SizedBox(
+                  height: 48,
+                ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if(localDrummer!=null)
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: (){
-                        Navigator.push(
-                            context,
-                            SwipeablePageRoute(
-                              builder: (context) => UserProfilePage(
-                                drummer: localDrummer,
-                                fromSearch: true,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (localDrummer != null && false)
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                SwipeablePageRoute(
+                                  builder: (context) => UserProfilePage(
+                                    drummer: localDrummer,
+                                    fromSearch: true,
+                                  ),
+                                ));
+                          },
+                          child: Column(
+                            children: [
+                              ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: CachedNetworkImage(
+                                      imageUrl: localDrummer?.imageUrl ?? "",
+                                      height: 120,
+                                      fit: BoxFit.cover)),
+                              SizedBox(
+                                height: 8,
                               ),
-                            ));
-                      },
-                      child: Column(
-                        children: [
-                          ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: CachedNetworkImage(imageUrl: localDrummer?.imageUrl??"",height: 120,fit: BoxFit.cover)),
-                          SizedBox(height: 8,),
-                          Text("You"),
-                        ],
+                              Text("You"),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  if(remoteDrummer!=null && remoteUserJoined)
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: (){
-                        Navigator.push(
-                            context,
-                            SwipeablePageRoute(
-                              builder: (context) => UserProfilePage(
-                                drummer: remoteDrummer,
-                                fromSearch: true,
+                    if (remoteDrummer != null && remoteUserJoined && false)
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                SwipeablePageRoute(
+                                  builder: (context) => UserProfilePage(
+                                    drummer: remoteDrummer,
+                                    fromSearch: true,
+                                  ),
+                                ));
+                          },
+                          child: Column(
+                            children: [
+                              ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: CachedNetworkImage(
+                                    imageUrl: remoteDrummer?.imageUrl ?? "",
+                                    height: 120,
+                                    fit: BoxFit.cover,
+                                  )),
+                              SizedBox(
+                                height: 8,
                               ),
-                            ));
-                      },
-                      child: Column(
-                        children: [
-                          ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: CachedNetworkImage(imageUrl: remoteDrummer?.imageUrl??"",height: 120,fit: BoxFit.cover,)),
-                          SizedBox(height: 8,),
-                          Text("${remoteDrummer?.username}"),
-                        ],
+                              Text("${remoteDrummer?.username}"),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  )
-                ],
-                                ),
-                SizedBox(height: 100,),
+                    if (userJoined)
+                      Container(height: 150,width: 150, child: localJoinCard),
+                    if (remoteUserJoined)
+                      Container(height: 150,width: 150, child: remoteJoinCard),
+                  ],
+                ),
+                SizedBox(
+                  height: 100,
+                ),
               ],
             ),
           ),
-
 
           Row(
             children: [
@@ -206,7 +242,7 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  if (!remoteUserJoined && remoteDrummer!=null)
+                  if (!remoteUserJoined && remoteDrummer != null)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -319,20 +355,20 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
       ConnectToChannel.joinRoom(
           widget.jam,
           false,
-              (joined, userID) {
+          (joined, userID) {
             // print("$userID joinStatus $joined");
             // // getLiveDetails();
             // addUserToRoom(0);
           },
           widget.open,
-              (val) {
+          (val) {
             // AnimatedSnackBar.material(
             //     val,
             //     type: AnimatedSnackBarType.success,
             //     mobileSnackBarPosition: MobileSnackBarPosition.top
             // ).show(context);
           },
-              (userJoined) {
+          (userJoined) {
             // int currUserRid = drummer.rid??0;
             // if(userJoined!=currUserRid){
             //   setState(() {
@@ -341,10 +377,10 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
             // }
             // addUserToRoom(userJoined);
           },
-              (userLeft) {
+          (userLeft) {
             // removeUserToRoom(userLeft);
           },
-              (rid, mute) {
+          (rid, mute) {
             // for(DrummerJoinCard dj in drummerCards){
             //   if(dj.drummerId == rid){
             //     setState(() {
@@ -356,10 +392,10 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
             //   }
             // }
           },
-              (rid, talking) {
+          (rid, talking) {
             //updateSpeech(rid,talking);
           },
-              () {
+          () {
             //connection Interrupted
 
             // setState(() {
@@ -371,7 +407,7 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
             //   userJoined = false;
             // });
           },
-              () {
+          () {
             //rejoin success
 
             // setState(() {
@@ -389,7 +425,7 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
 
     String startedBy = widget.jam.startedBy ?? "";
     if (startedBy.isNotEmpty) getDrummer(startedBy);
-   // if (widget.jam.bandId != null) getBand(widget.jam.bandId);
+    // if (widget.jam.bandId != null) getBand(widget.jam.bandId);
     setState(() {
       micMute = ConnectToChannel.getMuteState();
     });
@@ -400,7 +436,7 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
     // } else {
     //   print("Article ID is null ${widget.jam.articleId}");
     // }
-    getDrummers();
+    //getDrummers();
 
     listenToJamState();
   }
@@ -414,18 +450,33 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
     if (rid == 0) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       rid = await FirebaseDBOperations.getDrummer(
-          FirebaseAuth.instance.currentUser?.uid ??
-              prefs.getString('uid') ??
-              "")
+              FirebaseAuth.instance.currentUser?.uid ??
+                  prefs.getString('uid') ??
+                  "")
           .then((value) => value.rid ?? rid);
+
+      DrummerJoinCard drummerJoinCard = DrummerJoinCard(rid, true, false,
+          _muteStreamController.stream, _speechStreamController.stream);
+
+      setState(() {
+        localJoinCard = drummerJoinCard;
+        userJoined = true;
+      });
+      return;
     }
 
-    DrummerJoinCard drummerJoinCard = DrummerJoinCard(rid, true, false, _muteStreamController.stream,
-        _speechStreamController.stream);
-    bool alreadyAdded = false;
-    for (DrummerJoinCard drummerCard in drummerCards) {
-      if (drummerCard.drummerId == rid) alreadyAdded = true;
-    }
+    DrummerJoinCard drummerJoinCard = DrummerJoinCard(rid, true, false,
+        _muteStreamController.stream, _speechStreamController.stream);
+
+    setState(() {
+      remoteJoinCard = drummerJoinCard;
+      remoteUserJoined = true;
+    });
+    return;
+    // bool alreadyAdded = false;
+    // for (DrummerJoinCard drummerCard in drummerCards) {
+    //   if (drummerCard.drummerId == rid) alreadyAdded = true;
+    // }
 
     // if (!alreadyAdded) {
     //   dCards.add(drummerJoinCard);
@@ -436,10 +487,10 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
       userJoined = true;
       // drummerCards = dCards;
       // drummerCards = [...state.drummerCards,drummerJoinCard];
-      if(!alreadyAdded) {
-        drummerCards = List.from(drummerCards)
-          ..add(drummerJoinCard);
-      }
+      // if(!alreadyAdded) {
+      //   drummerCards = List.from(drummerCards)
+      //     ..add(drummerJoinCard);
+      // }
       FirebaseDBOperations.updateCount(widget.jam.jamId, drummerCards.length);
     });
   }
@@ -449,8 +500,7 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
       for (DrummerJoinCard dj in drummerCards) {
         if (dj.drummerId == rid) {
           //drummerCards.remove(dj);
-          drummerCards = List.from(drummerCards)
-            ..remove(dj);
+          drummerCards = List.from(drummerCards)..remove(dj);
           break;
         }
       }
@@ -470,9 +520,9 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
     //         .toList();
     //   });
     // });
-    for(int userId in ConnectToChannel.USERIDS_IN_DRUMM){
+    for (int userId in ConnectToChannel.USERIDS_IN_DRUMM) {
       int currUserRid = drummer.rid ?? 0;
-      if(!remoteUserJoined) {
+      if (!remoteUserJoined) {
         if (userId != currUserRid) {
           setState(() {
             remoteUserJoined = true;
@@ -510,8 +560,8 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
     ConnectionListener.onRejoinSuccessCallback = () {
       setState(() {
         AnimatedSnackBar.material("Rejoined",
-            type: AnimatedSnackBarType.success,
-            mobileSnackBarPosition: MobileSnackBarPosition.top)
+                type: AnimatedSnackBarType.success,
+                mobileSnackBarPosition: MobileSnackBarPosition.top)
             .show(context);
         userJoined = true;
       });
@@ -519,9 +569,9 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
     ConnectionListener.onConnectionInterruptedCallback = () {
       setState(() {
         AnimatedSnackBar.material(
-            "Trying to connect. Please check your internet connection.",
-            type: AnimatedSnackBarType.error,
-            mobileSnackBarPosition: MobileSnackBarPosition.top)
+                "Trying to connect. Please check your internet connection.",
+                type: AnimatedSnackBarType.error,
+                mobileSnackBarPosition: MobileSnackBarPosition.top)
             .show(context);
         userJoined = false;
       });
@@ -542,8 +592,8 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
     };
   }
 
-  Future<Drummer> getDrummer(String? foundedBy) async{
-     return FirebaseDBOperations.getDrummer(foundedBy!);
+  Future<Drummer> getDrummer(String? foundedBy) async {
+    return FirebaseDBOperations.getDrummer(foundedBy!);
     //  .then((value) {
     //   setState(() {
     //     drummer = value;
@@ -551,8 +601,9 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
     // });
   }
 
-  void getDrummers() async{
-    Drummer fetchLocalDrummer = await getDrummer(FirebaseAuth.instance.currentUser?.uid);
+  void getDrummers() async {
+    Drummer fetchLocalDrummer =
+        await getDrummer(FirebaseAuth.instance.currentUser?.uid);
     Drummer fetchRemoteDrummer = await getDrummer(widget.question?.uid);
 
     setState(() {
@@ -600,9 +651,9 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
     if (rid == 0) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       rid = await FirebaseDBOperations.getDrummer(
-          FirebaseAuth.instance.currentUser?.uid ??
-              prefs.getString('uid') ??
-              "")
+              FirebaseAuth.instance.currentUser?.uid ??
+                  prefs.getString('uid') ??
+                  "")
           .then((value) => value.rid ?? rid);
     }
     final updateMap = {rid: showTalk};
@@ -615,9 +666,9 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
   void updateLocalUserMic(bool micMute) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int rid = await FirebaseDBOperations.getDrummer(
-        FirebaseAuth.instance.currentUser?.uid ??
-            prefs.getString('uid') ??
-            "")
+            FirebaseAuth.instance.currentUser?.uid ??
+                prefs.getString('uid') ??
+                "")
         .then((value) => value.rid ?? 0);
     final updateMap = {rid: micMute};
     _muteStreamController.sink.add(updateMap);

@@ -81,7 +81,7 @@ class _QuestionCardState extends State<QuestionCard> {
                         Row(
                           children: [
                             const SizedBox(width: 4,height: 24,),
-                            Text(drummer.username??"",style: const TextStyle(overflow: TextOverflow.ellipsis,fontSize: 15,fontWeight: FontWeight.w600),),
+                            Text(drummer.username??"",style: const TextStyle(overflow: TextOverflow.ellipsis,fontSize: 15,fontWeight: FontWeight.w600,fontFamily: APP_FONT_MEDIUM,),),
                             const Text(" • "),
                             InstagramDateTimeWidget(publishedAt: widget.question?.createdTime.toString()??Timestamp.now().toString()),
                             Expanded(child: SizedBox()),
@@ -94,6 +94,8 @@ class _QuestionCardState extends State<QuestionCard> {
                             maxLines: 3,
                             style: const TextStyle(
                               fontSize: 14,
+                              fontFamily: APP_FONT_LIGHT,
+                              fontWeight: FontWeight.w600,
                               overflow: TextOverflow.ellipsis,
                             ),),
                         ),

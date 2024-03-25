@@ -191,6 +191,8 @@ class ArticleReelsState extends State<ArticleReels>
 
   bool isBoosted = false;
 
+  bool errorImage = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -358,30 +360,26 @@ class ArticleReelsState extends State<ArticleReels>
                                 ),
                               ),
                             LikeBtn(
-                                article: articleOnTop?.article ?? Article(),
+                              article: articleOnTop?.article ?? Article(),
                               userBoosted: isBoosted,
-                              boostedCallback: (boost){
-                                  setState(() {
-                                    if(boost) {
-                                      int currentBoosts = articleOnTop?.article
-                                          ?.boosts ?? 0;
-                                      articleOnTop?.article?.boosts =
-                                          currentBoosts + 1;
-                                      articleOnTop?.article?.boostamp = Timestamp.now();
-                                    }
-                                    else {
-                                      int currentBoosts = articleOnTop?.article
-                                          ?.boosts ?? 0;
-                                      articleOnTop?.article?.boosts =
-                                          currentBoosts-1;
-
-                                    }
-                                    isBoosted = boost;
-
-                                  });
+                              boostedCallback: (boost) {
+                                setState(() {
+                                  if (boost) {
+                                    int currentBoosts =
+                                        articleOnTop?.article?.boosts ?? 0;
+                                    articleOnTop?.article?.boosts =
+                                        currentBoosts + 1;
+                                    articleOnTop?.article?.boostamp =
+                                        Timestamp.now();
+                                  } else {
+                                    int currentBoosts =
+                                        articleOnTop?.article?.boosts ?? 0;
+                                    articleOnTop?.article?.boosts =
+                                        currentBoosts - 1;
+                                  }
+                                  isBoosted = boost;
+                                });
                               },
-
-
                             ),
                             Container(
                               height: 46,
@@ -474,17 +472,20 @@ class ArticleReelsState extends State<ArticleReels>
                               ),
                             ),
                           ),
-                        Expanded(child: Container(height: 5,)),
+                        Expanded(
+                            child: Container(
+                          height: 5,
+                        )),
                         if (isBoosted)
-                        Container(
-                          padding: EdgeInsets.all(12),
-                          child: Image.asset(
-                            'images/boost_enabled.png', //'images/like_btn.png',
-                            height: 28,
-                            color: Colors.white,
-                            fit: BoxFit.contain,
-                          ),
-                        )
+                          Container(
+                            padding: EdgeInsets.all(12),
+                            child: Image.asset(
+                              'images/boost_enabled.png', //'images/like_btn.png',
+                              height: 28,
+                              color: Colors.white,
+                              fit: BoxFit.contain,
+                            ),
+                          )
                       ],
                     ),
                   ),
@@ -546,18 +547,19 @@ class ArticleReelsState extends State<ArticleReels>
                   Timestamp boostTime = Timestamp.now();
                   try {
                     boostTime = widget.preloadList
-                        ?.elementAt(value)
-                        .article!.boostamp ?? Timestamp.now();
-                    boosts = widget.preloadList
-                        ?.elementAt(value)
-                        .article?.boosts ?? 0;
-                  }catch(e){
-
-                  }
+                            ?.elementAt(value)
+                            .article!
+                            .boostamp ??
+                        Timestamp.now();
+                    boosts =
+                        widget.preloadList?.elementAt(value).article?.boosts ??
+                            0;
+                  } catch (e) {}
                   setState(() {
                     currentVisiblePageIndex = value;
                     articleOnTop = widget.preloadList?.elementAt(value);
-                    isBoosted = (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent))>0);
+                    isBoosted = (boosts > 0 &&
+                        boostTime.compareTo(Timestamp.fromDate(recent)) > 0);
                   });
 
                   try {
@@ -591,20 +593,19 @@ class ArticleReelsState extends State<ArticleReels>
                     checkIfUserLiked(index);
                   }
 
-                  if (widget.preloadList?.elementAt(index).article?.imageUrl ==
-                      null) {
-                    fetchMissingImageUrls(
-                        widget.preloadList!.elementAt(index).article ??
-                            Article(),
-                        index);
-                    imageSet.add(widget.preloadList
-                            ?.elementAt(index)
-                            .article
-                            ?.articleId ??
-                        "");
-                    // print("Contains article ${artcls?.elementAt(index).articleId} ${imageSet.contains(artcls?.elementAt(index).articleId)}");
-                  }
-
+                  // if (widget.preloadList?.elementAt(index).article?.imageUrl ==
+                  //     null) {
+                  //   fetchMissingImageUrls(
+                  //       widget.preloadList!.elementAt(index).article ??
+                  //           Article(),
+                  //       index);
+                  //   imageSet.add(widget.preloadList
+                  //           ?.elementAt(index)
+                  //           .article
+                  //           ?.articleId ??
+                  //       "");
+                  //   // print("Contains article ${artcls?.elementAt(index).articleId} ${imageSet.contains(artcls?.elementAt(index).articleId)}");
+                  // }
 
                   Widget articleWidget = SafeArea(
                     bottom: false,
@@ -627,22 +628,49 @@ class ArticleReelsState extends State<ArticleReels>
                             "",
                         progressIndicatorBuilder:
                             (context, url, downloadProgress) {
+
+                          double opacity = downloadProgress.progress??0;
                           return ClipRRect(
                             borderRadius: BorderRadius.circular(12),
                             child: Container(
                               color: Colors.grey.shade900.withOpacity(0.25),
-                              height: 200,
+                              height: 300,
                               padding: const EdgeInsets.all(48),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 225,
+                                  height: 225,
+                                  child:  (downloadProgress.progress == null)
+                              ? CircularProgressIndicator(
+                                    value: downloadProgress.progress,
+                                    color: Colors.white.withOpacity(0.07),
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white.withOpacity(0.07)),
+
+                                  )
+                              : CircularProgressIndicator(
+                                    value: downloadProgress.progress,
+                                    color: Colors.white70,//.withOpacity(1.0-opacity),
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white70),
+
+                                  ),
+                                ),
+                              ),
                             ),
                           );
                         },
                         errorWidget: (context, url, error) {
                           return ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
                             child: Container(
-                              color: Colors.grey.shade900.withOpacity(0.25),
-                              height: 100,
+                              color: COLOR_BACKGROUND,
+                              height: 300,
                               padding: const EdgeInsets.all(48),
+                              child: Image.asset(
+                                "images/drumm_logo.png",
+                                color: Colors.white12,
+                              ),
                             ),
                           );
                         },
@@ -656,16 +684,17 @@ class ArticleReelsState extends State<ArticleReels>
                     color: Colors.black,
                     child: Stack(
                       children: [
-
                         Container(
-                            height: double.maxFinite,
-                            width: double.maxFinite,
-                            color: (isBoosted)?Colors.indigo.withOpacity(0.65):Colors.grey.shade900.withOpacity(0.8),
-                          ),
+                          height: double.maxFinite,
+                          width: double.maxFinite,
+                          color: (isBoosted)
+                              ? Colors.indigo.withOpacity(0.65)
+                              : Colors.grey.shade900.withOpacity(0.8),
+                        ),
                         Column(
                           children: [
-                            Expanded(
-                              flex: 10,
+                            Container(
+                              height: 320,
                               child: GestureDetector(
                                 onTap: () {
                                   Navigator.push(
@@ -682,7 +711,7 @@ class ArticleReelsState extends State<ArticleReels>
                                                       ?.elementAt(index)
                                                       .article
                                                       ?.imageUrl ??
-                                                  "https://placekitten.com/640/360"),
+                                                  "https://placekitten.com/200/300"),
                                       transitionDuration:
                                           const Duration(seconds: 0),
                                       reverseTransitionDuration:
@@ -696,37 +725,36 @@ class ArticleReelsState extends State<ArticleReels>
                             const SizedBox(
                               height: 8,
                             ),
-                            Expanded(
-                              flex: 3,
-                              child: Padding(
-                                padding:
-                                     EdgeInsets.symmetric(horizontal: horizontalPadding),
-                                child: FadeInContainer(
-                                  child: AutoSizeText(
-                                    unescape.convert(widget.preloadList
-                                            ?.elementAt(index)
-                                            .article
-                                            ?.meta ??
-                                        widget.preloadList
-                                            ?.elementAt(index)
-                                            .article
-                                            ?.title ??
-                                        ""),
-                                    textAlign: TextAlign.start,
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: APP_FONT_MEDIUM,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 48),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: horizontalPadding),
+                              child: FadeInContainer(
+                                child: AutoSizeText(
+                                  unescape.convert(widget.preloadList
+                                          ?.elementAt(index)
+                                          .article
+                                          ?.meta?.trim() ??
+                                      widget.preloadList
+                                          ?.elementAt(index)
+                                          .article
+                                          ?.title ??
+                                      ""),
+                                  maxLines: 3,
+                                  textAlign: TextAlign.start,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: APP_FONT_MEDIUM,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 21,
                                   ),
                                 ),
                               ),
                             ),
                             SizedBox(
-                              height: 8,
+                              height: 4,
                             ),
                             Expanded(
-                              flex: 9,
+                              flex: 8,
                               child: GestureDetector(
                                 onTap: () {
                                   openArticlePage(
@@ -739,27 +767,31 @@ class ArticleReelsState extends State<ArticleReels>
                                   children: [
                                     Flexible(
                                       child: Container(
-                                        padding:  EdgeInsets.symmetric(
+                                        padding: EdgeInsets.symmetric(
                                             horizontal: horizontalPadding),
                                         width: double.maxFinite,
                                         child: RawScrollbar(
                                           trackVisibility: true,
                                           interactive: true,
                                           child: SingleChildScrollView(
-                                            physics: (!_scrollParent)?ScrollPhysics():NeverScrollableScrollPhysics(),
+                                            physics: (!_scrollParent)
+                                                ? ScrollPhysics()
+                                                : NeverScrollableScrollPhysics(),
                                             child: ExpandableText(
                                               widget.preloadList
                                                       ?.elementAt(index)
                                                       .article
-                                                      ?.summary?.trim() ??
+                                                      ?.summary
+                                                      ?.trim() ??
                                                   "Read Article",
                                               textAlign: TextAlign.left,
-                                              maxLines: 8,
+                                              maxLines: 7,
                                               style: const TextStyle(
-                                                fontSize: 18,
-                                                color: Colors.white70,
-                                                fontFamily: APP_FONT_LIGHT,
-                                              ), expandText: 'See more',
+                                                  fontSize: 16,
+                                                  color: Colors.white54,
+                                                  fontFamily: APP_FONT_LIGHT,
+                                                  fontWeight: FontWeight.w600),
+                                              expandText: 'See more',
                                               linkColor: Colors.white,
                                               collapseText: 'Hide',
                                             ),
@@ -772,31 +804,32 @@ class ArticleReelsState extends State<ArticleReels>
                                     ),
                                     Container(
                                       alignment: Alignment.centerLeft,
-                                      padding:
-                                       EdgeInsets.symmetric(horizontal: horizontalPadding),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: horizontalPadding),
                                       margin: const EdgeInsets.only(top: 2),
                                       child: Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           SingleChildScrollView(
                                             scrollDirection: Axis.horizontal,
                                             child: Row(
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                                  CrossAxisAlignment.center,
                                               mainAxisAlignment:
-                                              MainAxisAlignment.start,
+                                                  MainAxisAlignment.start,
                                               children: [
                                                 Text(
                                                     widget.preloadList
-                                                        ?.elementAt(index)
-                                                        .article
-                                                        ?.source ??
+                                                            ?.elementAt(index)
+                                                            .article
+                                                            ?.source ??
                                                         "",
                                                     style: TextStyle(
                                                       color: Colors.white30,
                                                       fontSize: 13,
-                                                      fontFamily: APP_FONT_MEDIUM,
+                                                      fontFamily:
+                                                          APP_FONT_MEDIUM,
                                                     )),
                                                 const Text(
                                                   " • ",
@@ -807,11 +840,12 @@ class ArticleReelsState extends State<ArticleReels>
                                                   ),
                                                 ),
                                                 InstagramDateTimeWidget(
-                                                  publishedAt: widget.preloadList
-                                                      ?.elementAt(index)
-                                                      .article
-                                                      ?.publishedAt
-                                                      .toString() ??
+                                                  publishedAt: widget
+                                                          .preloadList
+                                                          ?.elementAt(index)
+                                                          .article
+                                                          ?.publishedAt
+                                                          .toString() ??
                                                       "",
                                                   textSize: 13,
                                                   fontColor: Colors.white30,
@@ -836,9 +870,12 @@ class ArticleReelsState extends State<ArticleReels>
                               child: Container(
                                 width: double.maxFinite,
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 8),
-                                margin:
-                                     EdgeInsets.fromLTRB(horizontalPadding-6, 0, horizontalPadding-6, 12),
+                                    horizontal: 6, vertical: 6),
+                                margin: EdgeInsets.fromLTRB(
+                                    horizontalPadding - 6,
+                                    0,
+                                    horizontalPadding - 6,
+                                    12),
                                 alignment: Alignment.centerLeft,
                                 decoration: BoxDecoration(
                                   //color: Colors.blue,//s.withOpacity(0.1),
@@ -876,14 +913,16 @@ class ArticleReelsState extends State<ArticleReels>
                                             vertical: 4, horizontal: 4),
                                         child: Text(
                                           unescape.convert(
-                                              "\"${widget.preloadList?.elementAt(index).article?.question ?? ""}\"" ??
+                                              "\"${widget.preloadList?.elementAt(index).article?.question ?? widget.preloadList?.elementAt(index).article?.title??""}\"" ??
                                                   ""),
                                           textAlign: TextAlign.left,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                             color: Colors.white,
-                                            fontSize: 16,
-                                            fontFamily: APP_FONT_BOLD,
-                                            //fontWeight: FontWeight.w400
+                                            fontSize: 15,
+                                            fontFamily: APP_FONT_LIGHT,
+                                            fontWeight: FontWeight.w600
                                           ),
                                         ),
                                       ),
@@ -978,19 +1017,15 @@ class ArticleReelsState extends State<ArticleReels>
           DateTime recent = currentTime.subtract(Duration(hours: 3));
           Timestamp boostTime = Timestamp.now();
           try {
-            boostTime = widget.preloadList
-                ?.elementAt(0)
-                .article!.boostamp ?? Timestamp.now();
-            boosts = widget.preloadList
-                ?.elementAt(0)
-                .article?.boosts ?? 0;
-          }catch(e){
-
-          }
+            boostTime = widget.preloadList?.elementAt(0).article!.boostamp ??
+                Timestamp.now();
+            boosts = widget.preloadList?.elementAt(0).article?.boosts ?? 0;
+          } catch (e) {}
 
           setState(() {
             articleOnTop = updatedArticles.elementAt(0);
-            isBoosted = (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent))>0);
+            isBoosted = (boosts > 0 &&
+                boostTime.compareTo(Timestamp.fromDate(recent)) > 0);
           });
 
           _articlesController.add(updatedArticles);
@@ -1332,19 +1367,22 @@ class ArticleReelsState extends State<ArticleReels>
       Timestamp boostTime = Timestamp.now();
       try {
         boostTime = widget.preloadList
-            ?.elementAt(widget.articlePosition ?? 0)
-            .article!.boostamp ?? Timestamp.now();
+                ?.elementAt(widget.articlePosition ?? 0)
+                .article!
+                .boostamp ??
+            Timestamp.now();
         boosts = widget.preloadList
-            ?.elementAt(widget.articlePosition ?? 0)
-            .article?.boosts ?? 0;
-      }catch(e){
-
-      }
+                ?.elementAt(widget.articlePosition ?? 0)
+                .article
+                ?.boosts ??
+            0;
+      } catch (e) {}
 
       setState(() {
         articleOnTop =
             fetchedArticleBand.elementAt(widget.articlePosition ?? 0);
-        isBoosted = (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent))>0);
+        isBoosted =
+            (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0);
         fromSearch = true;
         isContainerVisible = false;
         //_articlesController.add(fetchedArticleBand ?? []);

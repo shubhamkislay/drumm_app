@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 const int COLOR_PRIMARY_VAL = 0xff008cff;
 const COLOR_ACCENT = Colors.blue;
 const Color COLOR_PRIMARY_DARK = Color(0xff101010);
-const APP_FONT_LIGHT = "";//"poppinslight";//"robotolight";chakrapetchlight
-const APP_FONT_MEDIUM = "";//"poppinsmedium";//"robotomedium";chakrapetchmedium
+const APP_FONT_LIGHT = "robotolight";//"poppinslight";//"robotolight";chakrapetchlight
+const APP_FONT_MEDIUM = "robotomedium";//"poppinsmedium";//"robotomedium";chakrapetchmedium
 const APP_FONT_BOLD = "";//"poppinsbold";//"robotobold";chakrapetchbold
 const DEFAULT_APP_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/drummapp.appspot.com/o/asset_image%2Finvite.png?alt=media&token=413b3a09-dc1a-4858-b42e-fcf6517b8175";
 
