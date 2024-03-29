@@ -172,43 +172,32 @@ class _UserProfilePageState extends State<UserProfilePage>
                                             height: 4,
                                           ),
                                           Text(
-                                            "${drummer?.jobTitle} at ${drummer?.organisation}",
+                                            "${drummer?.jobTitle??""}\n${drummer?.occupation ??""}",
                                             textAlign: TextAlign.center,
                                             style: const TextStyle(
                                                 fontFamily: APP_FONT_MEDIUM,
-                                                color: Colors.white54),
+                                                color: Colors.white70),
+                                          ),
+                                          const SizedBox(
+                                            height: 4,
+                                          ),
+                                          Container(
+                                            alignment: Alignment.center,
+                                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                                            child: ExpandableText(
+                                              drummer?.bio ?? "",
+                                              expandText: 'show more',
+                                              collapseText: 'show less',
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                fontFamily: APP_FONT_MEDIUM,
+                                                  color: Colors.white54
+                                              ),
+                                              linkColor: Colors.blue,
+                                            ),
                                           ),
                                           //Text("${widget.drummer?.badges}"),
                                         ],
-                                      ),
-                                     if(false) Container(
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey.shade900,
-                                            borderRadius:
-                                                BorderRadius.circular(8)),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 24, vertical: 8),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              "${drummer?.badges}",
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20),
-                                            ),
-                                            const SizedBox(
-                                              height: 4,
-                                            ),
-                                            const Text(
-                                              "dB",
-                                              style: TextStyle(
-                                                color: Colors.white54,
-                                                fontSize: 12,
-                                              ),
-                                            )
-                                          ],
-                                        ),
                                       ),
                                     ],
                                   ),
@@ -219,23 +208,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                         ],
                       ),
                     ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: ExpandableText(
-                      drummer?.bio ?? "",
-                      expandText: 'show more',
-                      collapseText: 'show less',
-                      maxLines: 2,
-                      style: TextStyle(
-                        fontFamily: APP_FONT_MEDIUM,
-                      ),
-                      linkColor: Colors.blue,
-                    ),
-                  ),
+
                   if(false)const SizedBox(
                     height: 24,
                   ),
@@ -262,7 +235,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                     ),
                   ),
                   const SizedBox(
-                    height: 32,
+                    height: 4,
                   ),
                   if (drummer?.uid == currentID)
                   GestureDetector(

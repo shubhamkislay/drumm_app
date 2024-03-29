@@ -5,6 +5,7 @@ class Drummer {
   String? email;
   String? username;
   String? bio;
+  String? occupation;
   int? badges = 0;
   String? imageUrl;
   String? jobTitle;
@@ -26,8 +27,9 @@ class Drummer {
         'bio': bio,
         'badges': badges,
         'uid': uid,
+        'occupation': occupation,
         'speaking': speaking,
-    'muted': muted,
+        'muted': muted,
         'imageUrl': imageUrl,
         'jobTitle': jobTitle,
         'organisation': organisation,
@@ -45,6 +47,7 @@ class Drummer {
         speaking = snapshot.data()['speaking'],
         muted = snapshot.data()['muted'],
         username = snapshot.data()['username'],
+        occupation = snapshot.data()['occupation'],
         bio = snapshot.data()['bio'],
         imageUrl = snapshot.data()['imageUrl'],
         organisation = snapshot.data()['organisation'],
@@ -59,6 +62,7 @@ class Drummer {
         email = snapshot['email'],
         rid = snapshot['rid'],
         username = snapshot['username'],
+        occupation = snapshot['occupation'],
         speaking = snapshot['speaking'],
         muted = snapshot['muted'],
         //badges = int.parse(snapshot['badges']),

@@ -1,14 +1,16 @@
 import 'dart:io';
 
 import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
+import 'package:drumm_app/professionDetailsPage.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:drumm_app/InterestPage.dart';
 import 'package:drumm_app/custom/helper/image_uploader.dart';
 import 'package:drumm_app/launcher.dart';
 import 'package:drumm_app/theme/theme_manager.dart';
@@ -48,6 +50,11 @@ class _RegisterUserState extends State<RegisterUser> {
   double uploadProgress = 0;
   File? pickedImage;
   double inputTextSize = 18;
+  var bioTxt = TextEditingController();
+  var orgTxt = TextEditingController();
+  var professionTxt = TextEditingController();
+  var nameTxt = TextEditingController();
+  var usernameTxt = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +81,13 @@ class _RegisterUserState extends State<RegisterUser> {
                   ),
                 ),
                 if (pickedImage == null)
-                  Padding(
+                   (drummer.imageUrl != null)?
+                       CachedNetworkImage(
+                         imageUrl: modifyImageUrl(drummer.imageUrl ?? "", "300x300"),
+                        height: 150,
+                         width: 150,
+                       )
+                       : Padding(
                     padding: const EdgeInsets.fromLTRB(24, 24, 24, 4),
                     child: RoundedButton(
                       assetPath: "images/add-image.png",
@@ -100,7 +113,7 @@ class _RegisterUserState extends State<RegisterUser> {
                           alignment: Alignment.center,
                         )),
                   ),
-                if (pickedImage == null)
+                if (pickedImage == null&&drummer.imageUrl==null)
                 Text(
                   "Add a profile picture",
                   style: TextStyle(
@@ -131,6 +144,7 @@ class _RegisterUserState extends State<RegisterUser> {
                   padding: EdgeInsets.symmetric(vertical: 12),
                   margin: EdgeInsets.symmetric(horizontal: 24),
                   child: TextField(
+                    controller: nameTxt,
                     decoration: InputDecoration(
                         hintText: "Type your full name",
                         labelText: "Full Name",
@@ -145,13 +159,6 @@ class _RegisterUserState extends State<RegisterUser> {
                       color: Colors.white,
                     ),
                     textInputAction: TextInputAction.done,
-                    // onSubmitted: (value) {
-                    //   setState(() {
-                    //     nameError = "";
-                    //   });
-                    //   FocusManager.instance.primaryFocus?.unfocus();
-                    //   if (isValidDrummUsername(value)) usernameCheck(value.toLowerCase());
-                    // },
                     onChanged: (value){
                       drummer.name = value;
                     },
@@ -161,6 +168,7 @@ class _RegisterUserState extends State<RegisterUser> {
                   padding: EdgeInsets.symmetric(vertical: 12),
                   margin: EdgeInsets.symmetric(horizontal: 24),
                   child: TextField(
+                    controller: usernameTxt,
                     decoration: InputDecoration(
                         hintText: "Type a unique username",
                         labelText: "Username",
@@ -175,13 +183,6 @@ class _RegisterUserState extends State<RegisterUser> {
                       color: Colors.white,
                     ),
                     textInputAction: TextInputAction.done,
-                    // onSubmitted: (value) {
-                    //   setState(() {
-                    //     nameError = "";
-                    //   });
-                    //   FocusManager.instance.primaryFocus?.unfocus();
-                    //   if (isValidDrummUsername(value)) usernameCheck(value.toLowerCase());
-                    // },
                     onChanged: (value){
                       drummer.username = value;
                     },
@@ -197,76 +198,6 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  margin: EdgeInsets.symmetric(horizontal: 24),
-                  child: TextField(
-                    decoration: InputDecoration(
-                        hintText: "Write something about yourself...",
-                        labelText: "Bio",
-                        hoverColor: Colors.white,
-                        hintStyle: TextStyle(
-                          color: Colors.white24,
-                          fontFamily: APP_FONT_MEDIUM,
-                        )),
-                    style: TextStyle(
-                      fontSize: inputTextSize,
-                      fontFamily: APP_FONT_MEDIUM,
-                      color: Colors.white,
-                    ),
-                    textInputAction: TextInputAction.done,
-                    onChanged: (value) {
-                      drummer.bio = value;
-                    },
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  margin: EdgeInsets.symmetric(horizontal: 24),
-                  child: TextField(
-                    decoration: InputDecoration(
-                        hintText: "What do you do?",
-                        labelText: "Profession",
-                        hoverColor: Colors.white,
-                        hintStyle: TextStyle(
-                          color: Colors.white24,
-                          fontFamily: APP_FONT_MEDIUM,
-                        )),
-                    style: TextStyle(
-                      fontSize: inputTextSize,
-                      fontFamily: APP_FONT_MEDIUM,
-                      color: Colors.white,
-                    ),
-                    textInputAction: TextInputAction.done,
-                    onChanged: (value) {
-                      drummer.jobTitle = value;
-                      print(drummer.jobTitle );
-                    },
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  margin: EdgeInsets.symmetric(horizontal: 24),
-                  child: TextField(
-                    decoration: InputDecoration(
-                        hintText: "Where do you work?",
-                        labelText: "Organisation",
-                        hoverColor: Colors.white,
-                        hintStyle: TextStyle(
-                          color: Colors.white24,
-                          fontFamily: APP_FONT_MEDIUM,
-                        )),
-                    style: TextStyle(
-                      fontSize: inputTextSize,
-                      fontFamily: APP_FONT_MEDIUM,
-                      color: Colors.white,
-                    ),
-                    textInputAction: TextInputAction.done,
-                    onChanged: (value) {
-                      drummer.organisation = value;
-                    },
-                  ),
-                ),
                 GestureDetector(
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 16),
@@ -280,7 +211,7 @@ class _RegisterUserState extends State<RegisterUser> {
                   ),
                   onTap: (){
                     if(uploadProgress == 0 || uploadProgress == 1) {
-                      if(readToUpload) {
+                      if(readToUpload || drummer.imageUrl!=null) {
                         if (isValidDrummUsername(
                             drummer.username ?? "")) usernameCheck(
                             drummer.username ?? "");
@@ -306,6 +237,7 @@ class _RegisterUserState extends State<RegisterUser> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getDrummer();
 
   }
 
@@ -430,44 +362,24 @@ class _RegisterUserState extends State<RegisterUser> {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => InterestsPage(
-              themeManager: widget.themeManager,
-              analytics: widget.analytics,
-              observer: widget.observer,
+            builder: (context) => ProfessionDetailsPage(
             )));
 
     // Navigator.of(context)
     //     .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
   }
 
-  void _checkOnboardingStatus(String userName) async {
-    bool _isOnboarded = false;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("username", userName);
-    //prefs.remove('isOnboarded');
-    bool isOnboarded = prefs.getBool('isOnboarded') ?? false;
-    setState(() {
-      _isOnboarded = isOnboarded;
-    });
+  void getDrummer() async{
+    Drummer fetchDrummer = await FirebaseDBOperations.getDrummer(FirebaseAuth.instance.currentUser?.uid??"");
 
-    if (_isOnboarded) {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => LauncherPage(
-                    themeManager: widget.themeManager,
-                    analytics: widget.analytics,
-                    observer: widget.observer,
-                  )));
-    } else {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => InterestsPage(
-                    themeManager: widget.themeManager,
-                    analytics: widget.analytics,
-                    observer: widget.observer,
-                  )));
-    }
+    setState(() {
+      drummer = fetchDrummer;
+      bioTxt.text = drummer.bio!;
+      orgTxt.text = drummer.organisation!;
+      professionTxt.text = drummer.jobTitle!;
+      nameTxt.text = drummer.name!;
+      widget.name = drummer.username!;
+      usernameTxt.text = drummer.username!;
+    });
   }
 }

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:algolia/algolia.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/model/profession.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart' as realtime;
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -735,6 +736,8 @@ class FirebaseDBOperations {
     }
   }
 
+
+
   static Future<List<Question>> getQuestionsAsked() async {
     print("getQuestionsAsked triggered");
     //SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -961,6 +964,17 @@ class FirebaseDBOperations {
 
     List<Jam> fetchedList =
         List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
+    return fetchedList;
+  }
+
+  static Future<List<Profession>> getProfessions() async {
+    print("getProfessions triggered");
+    var data = await FirebaseFirestore.instance
+        .collection('profession')
+        .get();
+
+    List<Profession> fetchedList =
+    List.from(data.docs.map((e) => Profession.fromSnapshot(e)));
     return fetchedList;
   }
 

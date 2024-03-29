@@ -117,7 +117,7 @@ class _DrummBottomDialogState extends State<DrummBottomQuestionDialog> {
                 const SizedBox(
                   height: 4,
                 ),
-                Text("${widget.drummer?.jobTitle} at ${widget.drummer?.organisation} ",style: const TextStyle(color: Colors.white38),),
+                Text("${widget.drummer?.jobTitle??""}\n${widget.drummer?.occupation??""}",style: const TextStyle(color: Colors.white38),),
                 const SizedBox(
                   height: 16,
                 ),

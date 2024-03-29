@@ -113,14 +113,6 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
                         imageUrl: widget.jam.imageUrl ?? "",
                         height: 80,
                         fit: BoxFit.cover)),
-               if(false) Text(
-                  "${remoteDrummer?.username}",
-                  style: TextStyle(color: Colors.white),
-                ),
-                if(false) Text(
-                  "${remoteDrummer?.jobTitle} at ${remoteDrummer?.organisation}",
-                  style: TextStyle(color: Colors.white54),
-                ),
                 SizedBox(
                   height: 16,
                 ),

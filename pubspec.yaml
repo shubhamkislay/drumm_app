@@ -104,6 +104,7 @@ dependencies:
   flutter_swipe_button: ^2.1.1+1
   cupertino_back_gesture: ^0.1.0
   swipeable_page_route: ^0.3.0
+  animated_custom_dropdown: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -227,6 +228,7 @@ flutter:
     - images/boost_disabled.png
     - assets/zap.mp3
     - assets/air.wav
+    - images/verify.png
   # - images/a_dot_ham.jpeg
 
   fonts:

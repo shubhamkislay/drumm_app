@@ -575,7 +575,7 @@ class ArticleReelsState extends State<ArticleReels>
                   }
                   //Prefetch the next page image
                   if (value != articleSize - 1) {
-                    //preloadNextPageImage(value + 1);
+                    preloadNextPageImage(value + 1);
                   }
                 },
                 itemCount: widget.preloadList?.length,
@@ -1315,6 +1315,7 @@ class ArticleReelsState extends State<ArticleReels>
 
     _pageController = PageController(
       initialPage: widget.articlePosition ?? 0,
+
     );
     //_pageController.addListener(_pageListener);
     //widget.scrollController.addListener(_handleScroll);

@@ -7,6 +7,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:drumm_app/InterestPage.dart';
 import 'package:drumm_app/custom/helper/image_uploader.dart';
@@ -15,8 +16,12 @@ import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/theme/theme_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'custom/SearchDesignationsDropdown.dart';
+import 'custom/SearchProfessionDropdown.dart';
+import 'custom/helper/firebase_db_operations.dart';
 import 'custom/rounded_button.dart';
 import 'model/Drummer.dart';
+import 'model/profession.dart';
 
 class EditProfile extends StatefulWidget {
   Drummer? drummer;
@@ -41,6 +46,24 @@ class _EditProfileState extends State<EditProfile> {
   double uploadProgress = 0;
   File? pickedImage;
   double inputTextSize = 18;
+
+  List<Profession> professions = [];
+
+  Profession selectedProfession = Profession();
+
+  String selectedDesignation = "";
+
+  Widget selectedItem = Container();
+
+  Widget moreAbout = Container();
+
+  TextEditingController textEditingController = TextEditingController();
+
+  String moreAboutTxt = "";
+
+  Profession initialProfession = Profession();
+
+  String initialDesignation = "";
 
 
   @override
@@ -101,93 +124,44 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 Column(
                   children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 4,horizontal: 4),
-                      margin: EdgeInsets.symmetric(horizontal: 24),
 
-                      decoration: BoxDecoration(
-                          color: COLOR_PRIMARY_DARK,
-                          borderRadius: BorderRadius.circular(24)
-                      ),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            hintText: "Write something about yourself...",
-                            labelText: "Bio",
-                            hoverColor: Color(0xff008cff),
-                            hintStyle: TextStyle(
-                              color: Colors.white38,
-                              fontFamily: APP_FONT_MEDIUM,
-                            )),
-                        style: TextStyle(
-                          fontSize: inputTextSize,
-                          fontFamily: APP_FONT_MEDIUM,
-                          color: Colors.white,
+                    if (professions.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: SearchProfessionDropdown(
+                          professions: professions,
+                          initialProfession: initialProfession,
+                          professionSelectedCallback: (Profession profession) {
+                            setState(() {
+                              selectedProfession = profession;
+                              drummer.occupation = profession.departmentName;
+                              selectedDesignation = "";
+                              initialDesignation = "";
+
+                              selectedItem = Container();
+                              moreAbout = Container();
+                              textEditingController.clear();
+                              moreAboutTxt = "";
+                              setWidget();
+
+                            });
+                          },
+
                         ),
-                        textInputAction: TextInputAction.done,
-                        onChanged: (value) {
-                          drummer.bio = value;
-                        },
-                        controller: bioTextController,
                       ),
+                    SizedBox(
+                      height: 12,
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 4,horizontal: 4),
-                      margin: EdgeInsets.symmetric(horizontal: 24),
-
-                      decoration: BoxDecoration(
-                          color: COLOR_PRIMARY_DARK,
-                          borderRadius: BorderRadius.circular(24)
-                      ),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            hintText: "What do you do?",
-                            labelText: "Profession",
-                            hoverColor: Color(0xff008cff),
-                            hintStyle: TextStyle(
-                              color: Colors.white38,
-                              fontFamily: APP_FONT_MEDIUM,
-                            )),
-                        style: TextStyle(
-                          fontSize: inputTextSize,
-                          fontFamily: APP_FONT_MEDIUM,
-                          color: Colors.white,
-                        ),
-                        textInputAction: TextInputAction.done,
-                        controller: professionTextController,
-                        onChanged: (value) {
-                          drummer.jobTitle = value;
-                          print(drummer.jobTitle);
-                        },
-                      ),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: selectedItem
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 4,horizontal: 4),
-                      margin: EdgeInsets.symmetric(horizontal: 24),
-
-                      decoration: BoxDecoration(
-                          color: COLOR_PRIMARY_DARK,
-                          borderRadius: BorderRadius.circular(24)
-                      ),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            hintText: "Where do you work?",
-                            labelText: "Organisation",
-                            hoverColor: Color(0xff008cff),
-                            hintStyle: TextStyle(
-                              color: Colors.white38,
-                              fontFamily: APP_FONT_MEDIUM,
-                            )),
-                        style: TextStyle(
-                          fontSize: inputTextSize,
-                          fontFamily: APP_FONT_MEDIUM,
-                          color: Colors.white,
-                        ),
-                        textInputAction: TextInputAction.done,
-                        controller: orgTextController,
-                        onChanged: (value) {
-                          drummer.organisation = value;
-                        },
-                      ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: moreAbout
                     ),
                   ],
                 ),
@@ -235,6 +209,7 @@ class _EditProfileState extends State<EditProfile> {
     // TODO: implement initState
     drummer = widget.drummer!;
     super.initState();
+    getProfessions();
 
   }
 
@@ -268,6 +243,25 @@ class _EditProfileState extends State<EditProfile> {
           });
         });
   }
+  void getProfessions() async {
+    List<Profession> fetchProfessions =
+    await FirebaseDBOperations.getProfessions();
+for(Profession profession in fetchProfessions){
+  if(drummer.occupation == profession.departmentName){
+    setState(() {
+      initialProfession = profession;
+      initialDesignation = widget.drummer!.jobTitle??"";
+      textEditingController.text = widget.drummer!.bio??"";
+    });
+    break;
+  }
+}
+    setState(() {
+      professions = fetchProfessions;
+      setWidget();
+      setMoreAboutWidget();
+    });
+  }
 
   void saveUserDetails() async {
     FirebaseAuth auth = FirebaseAuth.instance;
@@ -283,5 +277,60 @@ class _EditProfileState extends State<EditProfile> {
 
     // Navigator.of(context)
     //     .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+  }
+
+  void setWidget() async{
+
+    Future.delayed(Duration(milliseconds: 100),(){
+      setState(() {
+        selectedItem = (initialDesignation.length>0) ? SearchDesignationDropdown(
+          initialDesignation: initialDesignation,
+          designations: initialProfession.designations??["$initialDesignation"],
+          designationsSelectedCallback: (String designation) {
+
+            setState(() {
+              selectedDesignation = designation;
+              drummer.jobTitle = designation;
+              setMoreAboutWidget();
+            });
+          },
+
+        ):
+        SearchDesignationDropdown(
+          designations: selectedProfession.designations??[],
+          designationsSelectedCallback: (String designation) {
+
+            setState(() {
+              selectedDesignation = designation;
+              drummer.jobTitle = designation;
+              setMoreAboutWidget();
+            });
+          },
+
+        );
+
+        setMoreAboutWidget();
+      });
+
+    });
+  }
+
+  void setMoreAboutWidget() {
+    print("Setting more about");
+
+    setState(() {
+      moreAbout = TextField(
+        controller: textEditingController,
+        decoration: InputDecoration(
+          fillColor: Colors.grey.shade900,
+          hintText: "Tell us more about your role (optional)",
+          contentPadding: EdgeInsets.all(16),
+        ),
+        onChanged: (value){
+          moreAboutTxt = value;
+          drummer.bio = moreAboutTxt;
+        },
+      );
+    });
   }
 }

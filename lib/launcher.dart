@@ -55,14 +55,14 @@ import 'theme/theme_constants.dart';
 import 'theme/theme_manager.dart';
 
 class LauncherPage extends StatefulWidget {
-  ThemeManager themeManager;
-  FirebaseAnalytics analytics;
-  FirebaseAnalyticsObserver observer;
+  ThemeManager? themeManager;
+  FirebaseAnalytics? analytics;
+  FirebaseAnalyticsObserver? observer;
   LauncherPage({
     super.key,
-    required this.themeManager,
-    required this.analytics,
-    required this.observer,
+     this.themeManager,
+     this.analytics,
+     this.observer,
   });
 
   @override
@@ -420,7 +420,8 @@ class _TutotrialManagerState extends State<TutotrialManager> {
         playWelcomeAudio();
       }
     });
-    await prefs.setBool('isOnboarded', true);
+    await prefs.setBool('isOnboarded', false);
+    await prefs.setBool('addedOccupation', false);
   }
 
   void playWelcomeAudio() async {

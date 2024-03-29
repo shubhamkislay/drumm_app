@@ -4,6 +4,7 @@ import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/model/algolia_article.dart';
+import 'package:drumm_app/professionDetailsPage.dart';
 import 'package:drumm_app/register_user.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -772,6 +773,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   bool _isOnboarded = false;
+  bool _addedOccupation = false;
   bool toggleLogo = false;
 
   @override
@@ -783,8 +785,9 @@ class _SplashScreenState extends State<SplashScreen> {
   void _checkOnboardingStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _isOnboarded = prefs.getBool('isOnboarded') ?? false;
+    _addedOccupation = prefs.getBool('addedOccupation') ?? false;
     //prefs.remove('isOnboarded');
-    if (_isOnboarded) {
+    if (_isOnboarded && _addedOccupation) {
       // Future.delayed(const Duration(seconds: 1),(){
       //
       //   setState(() {
@@ -825,24 +828,34 @@ class _SplashScreenState extends State<SplashScreen> {
         if (notify) FirebaseDBOperations.subscribeToUserBands();
         Drummer drummer = await FirebaseDBOperations.getDrummer(
             FirebaseAuth.instance.currentUser?.uid ?? "");
-        if (drummer != null) {
+        if (drummer.username != null) {
           int userLen = drummer.username?.length ?? 0;
           if (userLen > 0) {
-            await prefs.setBool("isOnboarded", true);
-            await prefs.setString('uid', drummer.uid ?? "");
-            await prefs.setInt('rid', drummer.rid ?? 0);
+            if(drummer.occupation!=null){
+              await prefs.setBool("isOnboarded", true);
+              await prefs.setBool("addedOccupation", true);
+              await prefs.setString('uid', drummer.uid ?? "");
+              await prefs.setInt('rid', drummer.rid ?? 0);
 
-            print("This part is being called");
 
-            Navigator.of(context).push(PageRouteBuilder(
-                opaque: false,
-                pageBuilder: (context, animation, _) {
-                  return LauncherPage(
-                    themeManager: widget.themeManager,
-                    analytics: widget.analytics,
-                    observer: widget.observer,
-                  );
-                }));
+              Navigator.of(context).push(PageRouteBuilder(
+                  opaque: false,
+                  pageBuilder: (context, animation, _) {
+                    return LauncherPage(
+                      themeManager: widget.themeManager,
+                      analytics: widget.analytics,
+                      observer: widget.observer,
+                    );
+                  }));
+
+            }else{
+              Navigator.of(context).push(PageRouteBuilder(
+                  opaque: false,
+                  pageBuilder: (context, animation, _) {
+                    return ProfessionDetailsPage();
+                  }));
+            }
+
           } else {
             Navigator.of(context).push(PageRouteBuilder(
                 opaque: false,
@@ -852,7 +865,8 @@ class _SplashScreenState extends State<SplashScreen> {
                       analytics: widget.analytics,
                       observer: widget.observer,
                       name: "",
-                      email: "");
+                      email: "",
+                  );
                 }));
           }
         } else {

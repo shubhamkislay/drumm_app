@@ -138,7 +138,7 @@ class _ProfilePageState extends State<ProfilePage>
                                             height: 4,
                                           ),
                                           Text(
-                                            "${drummer?.jobTitle} at ${drummer?.organisation}",
+                                            "${drummer?.jobTitle??""}\n${drummer?.occupation??""}",
                                             style: const TextStyle(
                                                 color: Colors.white54),
                                           ),

@@ -15,14 +15,14 @@ import 'main.dart';
 import 'model/band_image_card.dart';
 
 class InterestsPage extends StatefulWidget {
-  final FirebaseAnalyticsObserver observer;
-  final FirebaseAnalytics analytics;
-  final ThemeManager themeManager;
+  final FirebaseAnalyticsObserver? observer;
+  final FirebaseAnalytics? analytics;
+  final ThemeManager? themeManager;
 
   const InterestsPage({
-    required this.observer,
-    required this.analytics,
-    required this.themeManager,
+     this.observer,
+     this.analytics,
+     this.themeManager,
   });
 
   @override
@@ -322,6 +322,7 @@ class _InterestsPageState extends State<InterestsPage> {
   void _onboardingComplete() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isOnboarded', true);
+    await prefs.setBool('addedOccupation', true);
     // await prefs.setStringList('interestList', interestList);
     joinBand();
     Navigator.pushReplacement(
