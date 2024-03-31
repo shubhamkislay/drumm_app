@@ -229,6 +229,9 @@ flutter:
     - assets/zap.mp3
     - assets/air.wav
     - images/verify.png
+    - images/grid.png
+    - images/network.png
+    - images/audio-waves-large.png
   # - images/a_dot_ham.jpeg
 
   fonts:

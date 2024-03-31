@@ -14,6 +14,8 @@ class OnBoarding extends StatelessWidget {
   final ThemeManager themeManager;
   final FirebaseAnalyticsObserver observer;
   final FirebaseAnalytics analytics;
+
+  double assetSize = 200;
   OnBoarding({
     Key? key,
     required this.themeManager,
@@ -25,7 +27,7 @@ class OnBoarding extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double textSize = 32;
+    double textSize = 38;
     Color offText = Colors.grey;
     return MaterialApp(
       color: Colors.black,
@@ -70,10 +72,10 @@ class OnBoarding extends StatelessWidget {
           skipTextButton: const Text('Skip',style: TextStyle(color: Colors.white,),),
           //trailing: Text('Login'),
           background: [
-            Stack(
+           if(false) Stack(
               children: [
                 Container(
-                  height: MediaQuery.of(context).size.height,
+                  height: 300,//MediaQuery.of(context).size.height,
                   child: Image.network("https://firebasestorage.googleapis.com/v0/b/drummapp.appspot.com/o/asset_image%2Fonboarding_news.JPG?alt=media&token=3c3c4d6a-7063-4099-bf96-e31c8883a4b1",fit: BoxFit.cover,height: MediaQuery.of(context).size.height,),
                 ),
                 Container(
@@ -105,11 +107,11 @@ class OnBoarding extends StatelessWidget {
                 ),
               ],
             ),
-            Stack(
+            if(false)  Stack(
               fit: StackFit.passthrough,
               children: [
                 Container(
-                  height: MediaQuery.of(context).size.height,
+                  height: 300,//MediaQuery.of(context).size.height,
                   child: Image.network("https://firebasestorage.googleapis.com/v0/b/drummapp.appspot.com/o/asset_image%2Fonboarding_people.png?alt=media&token=0391f610-0e59-4351-84de-8ed00cf697ee",fit: BoxFit.cover,height: MediaQuery.of(context).size.height,),
                 ),
                 Container(
@@ -142,7 +144,7 @@ class OnBoarding extends StatelessWidget {
                 ),
               ],
             ),
-            Stack(
+            if(false)  Stack(
               fit: StackFit.passthrough,
               children: [
                 Container(
@@ -180,13 +182,49 @@ class OnBoarding extends StatelessWidget {
               ],
             ),
             Container(
+              height: 500,
+              width: 300,
+              alignment: Alignment.center,
+              child: Image.asset(
+                height: assetSize,
+                width: assetSize,
+                fit: BoxFit.contain,
+                color: Colors.white, //Color(0xD8181818),
+                "images/grid.png",
+              ),
+            ),
+            Container(
+              height: 500,
+              width: 300,
+              alignment: Alignment.center,
+              child: Image.asset(
+                height: assetSize,
+                width: assetSize,
+                fit: BoxFit.contain,
+                color: Colors.white, //Color(0xD8181818),
+                "images/network.png",
+              ),
+            ),
+            Container(
+              height: 500,
+              width: 300,
+              alignment: Alignment.center,
+              child: Image.asset(
+                height: assetSize,
+                width: assetSize,
+                fit: BoxFit.contain,
+                color: Colors.white, //Color(0xD8181818),
+                "images/audio-waves-large.png",
+              ),
+            ),
+            Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 1.75,
+              height: MediaQuery.of(context).size.height / 1.45,
               child: Container(
                 alignment: Alignment.center,
                 child: Image.asset(
-                  height: 200,
-                  width: 200,
+                  height: assetSize,
+                  width: assetSize,
                   fit: BoxFit.contain,
                   color: Colors.white, //Color(0xD8181818),
                   "images/logo_background_white.png",
@@ -201,7 +239,7 @@ class OnBoarding extends StatelessWidget {
               color: Colors.transparent,
               child: Container(
 
-                height: MediaQuery.of(context).size.height/2,
+                height: MediaQuery.of(context).size.height,//2,
                 color: Colors.transparent,
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: Column(
@@ -209,34 +247,30 @@ class OnBoarding extends StatelessWidget {
                   children: <Widget>[
                     RichText(
                       text: TextSpan(
-                        text: 'Discover ',
+                        text: 'Discover News',
                         style: TextStyle(
                             fontFamily: APP_FONT_MEDIUM,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: textSize),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: 'Breaking ',
-                            style: TextStyle(
-                                fontFamily: APP_FONT_MEDIUM,
-                                color: offText,
-                                fontWeight: FontWeight.normal,
-                                fontSize: textSize),
-                          ),
-                          TextSpan(
-                            text: 'News',
-                            style: TextStyle(
-                                fontFamily: APP_FONT_MEDIUM,
-                                color: offText,
-                                fontWeight: FontWeight.normal,
-                                fontSize: textSize),
-                          ),
-                        ],
+                        // children: <TextSpan>[
+                        //   TextSpan(
+                        //     text: 'News',
+                        //     style: TextStyle(
+                        //         fontFamily: APP_FONT_MEDIUM,
+                        //         color: offText,
+                        //         fontWeight: FontWeight.normal,
+                        //         fontSize: textSize),
+                        //   ),
+                        // ],
                       ),
                     ),
                     const SizedBox(
-                      height: 32,
+                      height: 8,
+                    ),
+                    Text("Dive into a world of endless news topics and discover stories that matter to you.",textAlign: TextAlign.center,style: TextStyle(color: Colors.white54,fontSize: textSize/2.25,fontWeight: FontWeight.w500),),
+                    const SizedBox(
+                      height:64,
                     ),
                   ],
                 ),
@@ -245,34 +279,39 @@ class OnBoarding extends StatelessWidget {
             Container(
               color: Colors.transparent,
               child: Container(
-                height: MediaQuery.of(context).size.height/2,
+
+                height: MediaQuery.of(context).size.height,//2,
+                color: Colors.transparent,
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     RichText(
                       text: TextSpan(
-                        text: 'Drumm',
+                        text: 'Explore Bands',
                         style: TextStyle(
                             fontFamily: APP_FONT_MEDIUM,
-                            fontWeight: FontWeight.bold,
                             color: Colors.white,
+                            fontWeight: FontWeight.bold,
                             fontSize: textSize),
-                        children: <TextSpan>[
-                          TextSpan(
-                              text: ' with the community',
-                              style: TextStyle(
-                                color: offText,
-                                fontWeight: FontWeight.normal,
-                                fontSize: textSize,
-                                fontFamily: APP_FONT_MEDIUM,
-                                fontStyle: FontStyle.normal,
-                              )),
-                        ],
+                        // children: <TextSpan>[
+                        //   TextSpan(
+                        //     text: 'News',
+                        //     style: TextStyle(
+                        //         fontFamily: APP_FONT_MEDIUM,
+                        //         color: offText,
+                        //         fontWeight: FontWeight.normal,
+                        //         fontSize: textSize),
+                        //   ),
+                        // ],
                       ),
                     ),
                     const SizedBox(
-                      height: 32,
+                      height: 8,
+                    ),
+                    Text("Join or create your band and connect with like-minded individuals and groups.",textAlign: TextAlign.center,style: TextStyle(color: Colors.white54,fontSize: textSize/2.25),),
+                    const SizedBox(
+                      height:64,
                     ),
                   ],
                 ),
@@ -281,36 +320,39 @@ class OnBoarding extends StatelessWidget {
             Container(
               color: Colors.transparent,
               child: Container(
-                height: MediaQuery.of(context).size.height/2,
+
+                height: MediaQuery.of(context).size.height,//2,
+                color: Colors.transparent,
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     RichText(
                       text: TextSpan(
-                        text: 'Join ',
+                        text: 'Drumm Voice',
                         style: TextStyle(
-                            fontFamily: APP_FONT_MEDIUM, color: offText, fontSize: textSize),
-                        children: <TextSpan>[
-                          TextSpan(
-                              text: 'Bands',
-                              style: TextStyle(
-                                fontFamily: APP_FONT_MEDIUM,
-                                fontSize: textSize,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              )),
-                          TextSpan(
-                              text: ' of Shared Passions',
-                              style: TextStyle(
-                                color: offText,
-                                fontFamily: APP_FONT_MEDIUM,
-                              )),
-                        ],
+                            fontFamily: APP_FONT_MEDIUM,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: textSize),
+                        // children: <TextSpan>[
+                        //   TextSpan(
+                        //     text: 'News',
+                        //     style: TextStyle(
+                        //         fontFamily: APP_FONT_MEDIUM,
+                        //         color: offText,
+                        //         fontWeight: FontWeight.normal,
+                        //         fontSize: textSize),
+                        //   ),
+                        // ],
                       ),
                     ),
                     const SizedBox(
-                      height: 32,
+                      height: 8,
+                    ),
+                    Text("Start a drumm and engage in dynamic audio discussions with your band members on the latest news.",textAlign: TextAlign.center,style: TextStyle(color: Colors.white54,fontSize: textSize/2.25),),
+                    const SizedBox(
+                      height:64,
                     ),
                   ],
                 ),

@@ -48,194 +48,96 @@ class _UserProfilePageState extends State<UserProfilePage>
       backgroundColor: COLOR_BACKGROUND,
       body: Stack(
         children: [
+          CachedNetworkImage(
+            height: double.maxFinite,
+            width: double.maxFinite,
+            alignment: Alignment.center,
+            imageUrl: modifyImageUrl(drummer?.imageUrl ??"","100x100"), //widget.drummer?.imageUrl ?? "",
+            fit: BoxFit.cover,
+            placeholder: (context, url) =>
+                Container(color: COLOR_PRIMARY_DARK),
+            errorWidget: (context, url, error) =>
+                Container(color: COLOR_PRIMARY_DARK),
+          ),
+          Container(
+            alignment: Alignment.topCenter,
+            height: double.maxFinite,
+            width: double.maxFinite,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.transparent,Colors.transparent,COLOR_BACKGROUND,COLOR_BACKGROUND]),
+            ),
+          ).frosted(blur: 6,frostColor: COLOR_BACKGROUND),
           RefreshIndicator(
             onRefresh: _refreshData,
             child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
               child: Column(
                 children: [
-                  if (drummer?.username != null)
-                    Container(
-                      height: 500,
-                      child: Stack(
-                        children: [
-                          CachedNetworkImage(
-                            height: double.maxFinite,
-                            width: double.maxFinite,
-                            alignment: Alignment.center,
-                            imageUrl: modifyImageUrl(drummer?.imageUrl ??"","100x100"), //widget.drummer?.imageUrl ?? "",
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) =>
-                                Container(color: COLOR_PRIMARY_DARK),
-                            errorWidget: (context, url, error) =>
-                                Container(color: COLOR_PRIMARY_DARK),
-                          ),
-                          Container(
-                            alignment: Alignment.topCenter,
-                            decoration: const BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [Colors.transparent,Colors.transparent,COLOR_BACKGROUND,COLOR_BACKGROUND]),
-                            ),
-                          ).frosted(blur: 6,frostColor: COLOR_BACKGROUND),
-                          Center(
-                            child: SizedBox(
-                              width: 175,
-                              height: 175,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: CachedNetworkImage(
-                                  imageUrl: modifyImageUrl(drummer?.imageUrl ??"","300x300"),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                SizedBox(),
-                               if(false) SafeArea(
-                                    child: Container(
-                                        alignment: Alignment.topCenter,
-                                        child: Text(
-                                          "@${drummer?.username}",
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
-                                        ))),
-                                if (drummer?.uid == currentID)
-                                  SafeArea(
-                                      child: GestureDetector(
-                                    onTap: () {
-
-                                      openSettingsPage();
-                                      // if(ConnectToChannel.engineInitialized)
-                                      //   ConnectToChannel.disposeEngine();
-                                      // removedPreferences();
-                                      // FirebaseAuth.instance.signOut().then(
-                                      //     (value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MyApp()), (_) => false));
-                                    },
-                                    child: Container(
-                                        alignment: Alignment.topCenter,
-                                        padding: EdgeInsets.all(8),
-                                        child: Icon(Icons.settings_outlined,size: 32,)),
-                                  )),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.bottomCenter,
-                            child: Wrap(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: [Colors.transparent,Colors.transparent,COLOR_BACKGROUND,COLOR_BACKGROUND]),
-                                  ),
-                                  alignment: Alignment.center,
-                                  width: MediaQuery.of(context).size.width,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 24, horizontal: 8),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                              alignment: Alignment.topCenter,
-                                              padding: const EdgeInsets.symmetric(vertical: 8),
-                                              child: Text(
-                                                "@${drummer?.username}",
-                                                textAlign: TextAlign.center,
-                                                style: const TextStyle(
-                                                  fontFamily: APP_FONT_MEDIUM,
-                                                    fontSize: 16,),
-                                              )),
-                                          Text(
-                                            drummer?.name ?? "",
-                                            style: const TextStyle(
-                                                fontSize: 24,
-                                                fontFamily: APP_FONT_BOLD,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          const SizedBox(
-                                            height: 4,
-                                          ),
-                                          Text(
-                                            "${drummer?.jobTitle??""}\n${drummer?.occupation ??""}",
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(
-                                                fontFamily: APP_FONT_MEDIUM,
-                                                color: Colors.white70),
-                                          ),
-                                          const SizedBox(
-                                            height: 4,
-                                          ),
-                                          Container(
-                                            alignment: Alignment.center,
-                                            padding: const EdgeInsets.symmetric(horizontal: 24),
-                                            child: ExpandableText(
-                                              drummer?.bio ?? "",
-                                              expandText: 'show more',
-                                              collapseText: 'show less',
-                                              maxLines: 2,
-                                              style: TextStyle(
-                                                fontFamily: APP_FONT_MEDIUM,
-                                                  color: Colors.white54
-                                              ),
-                                              linkColor: Colors.blue,
-                                            ),
-                                          ),
-                                          //Text("${widget.drummer?.badges}"),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                  if(false)const SizedBox(
-                    height: 24,
+                  const SizedBox(
+                    height: 150,
                   ),
-                  if(false)Container(
-                    padding: EdgeInsets.symmetric(vertical: 8,horizontal: 4),
-                    color: COLOR_PRIMARY_DARK,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Column(
-                          children: [
-                            Text("${drummer?.followerCount??0}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-                            Text("Followers",style: TextStyle(color: Colors.white60),),
-                          ],
+                  if(drummer?.imageUrl!=null)
+                  Center(
+                    child: SizedBox(
+                      width: 175,
+                      height: 175,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: CachedNetworkImage(
+                          imageUrl: modifyImageUrl(drummer?.imageUrl ??"","300x300"),
+                          placeholder: (context,url){
+
+                            return Container();
+                          },
                         ),
-                        Column(
-                          children: [
-                            Text("${drummer?.followingCount??0}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-                            Text("Following",style: TextStyle(color: Colors.white60),),
-                          ],
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                   const SizedBox(
                     height: 4,
+                  ),
+                  Text(
+                    drummer?.name ?? "",
+                    style: const TextStyle(
+                        fontSize: 24,
+                        fontFamily: APP_FONT_BOLD,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    "${drummer?.jobTitle??""}\n${drummer?.occupation??""}",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontFamily: APP_FONT_MEDIUM,
+                        color: Colors.white),
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: ExpandableText(
+                      drummer?.bio ?? "",
+                      expandText: 'show more',
+                      collapseText: 'show less',
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontFamily: APP_FONT_MEDIUM,
+                          color: Colors.white54
+                      ),
+                      linkColor: Colors.blue,
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 16,
                   ),
                   if (drummer?.uid == currentID)
                   GestureDetector(
@@ -264,130 +166,63 @@ class _UserProfilePageState extends State<UserProfilePage>
                       ),
                     ),
                   ),
-                  if (drummer?.uid != currentID&&false)
-                    if (!followed)
-                      GestureDetector(
-                        onTap: () {
-                          followUser();
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.all(12),
-                          margin: EdgeInsets.symmetric(horizontal: 20),
-                          width: double.maxFinite,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8)
-                          ),
-                          child: Text(
-                            "Follow",
-                            style: TextStyle(
-                                color: Colors.black, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                  if (followed&&false)
-                    GestureDetector(
-                      onTap: () {
-                        unfollow();
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        padding: EdgeInsets.all(12),
-                        margin: EdgeInsets.symmetric(horizontal: 20),
-                        width: double.maxFinite,
-                        decoration: BoxDecoration(
-                            color: Colors.grey.shade900,
-                            borderRadius: BorderRadius.circular(8)
-                        ),
-                        child: Text(
-                          "Following",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
                   const SizedBox(
                     height: 16,
                   ),
-                  if(false)Container(
-                      alignment: Alignment.center,
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Image.asset(
-                        "images/feed.png",
-                        height: 32,
-                        color: Colors.white,
-                      )),
                   const SizedBox(
                     height: 12,
                   ),
-                 if(false) Container(
-                    padding: const EdgeInsets.all(1),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        color: (articleCards.isNotEmpty)
-                            ? COLOR_PRIMARY_DARK
-                            : Colors.black,
-                        border: const Border(
-                          top: BorderSide(
-                            color: Colors.white24,
-                            width: 1.0,
-                          ),
-                        )),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (articleCards.isNotEmpty)
-                          Container(
-                            alignment: Alignment.topCenter,
-                            child: GridView.custom(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 2, vertical: 2),
-                              gridDelegate: SliverQuiltedGridDelegate(
-                                crossAxisCount: 3,
-                                mainAxisSpacing: 3,
-                                crossAxisSpacing: 3,
-                                repeatPattern: QuiltedGridRepeatPattern.inverted,
-                                pattern: [
-                                  const QuiltedGridTile(2, 1),
-                                  const QuiltedGridTile(2, 1),
-                                  const QuiltedGridTile(2, 1),
-                                ],
-                              ),
-                              childrenDelegate: SliverChildBuilderDelegate(
-                                childCount: articleCards.length,
-                                (context, index) => articleCards.elementAt(index),
-                              ),
-                            ),
-                          ),
-                        const SizedBox(
-                          height: 100,
-                        ),
-                      ],
-                    ),
-                  )
                 ],
               ),
             ),
           ),
-          if(fromSearch)
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    padding: EdgeInsets.all(4),
-                    child: Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      size: 36,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if(fromSearch)
+                  SafeArea(
+                    child: Container(
+                      alignment: Alignment.topCenter,
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          size: 36,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
+                if(drummer?.username !=null)
+                  SafeArea(
+                    child: Container(
+                        alignment: Alignment.topCenter,
+                        padding: EdgeInsets.all(8),
+                        child: Text(
+                          "@${drummer?.username}",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontFamily: APP_FONT_MEDIUM,
+                            fontSize: 20,),
+                        )),
+                  ),
+                if (drummer?.uid == currentID)
+                  SafeArea(
+                      child: GestureDetector(
+                        onTap: () {
+                          openSettingsPage();
+                        },
+                        child: Container(
+                            alignment: Alignment.topCenter,
+                            padding: EdgeInsets.all(8),
+                            child: Icon(Icons.settings_outlined,size: 32,)),
+                      )),
+              ],
             ),
+          ),
         ],
       ),
     );
