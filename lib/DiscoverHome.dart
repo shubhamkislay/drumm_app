@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 import 'package:blur/blur.dart';
+import 'package:drumm_app/CommunityQuestionsPage.dart';
 import 'package:drumm_app/MultiSelectContainerWidget.dart';
 import 'package:drumm_app/model/article_image_card.dart';
 import 'package:drumm_app/search_result_page.dart';
@@ -45,7 +46,10 @@ class DiscoverHome extends StatefulWidget {
 }
 
 class DiscoverHomeState extends State<DiscoverHome>
-    with AutomaticKeepAliveClientMixin<DiscoverHome>, TickerProviderStateMixin, WidgetsBindingObserver  {
+    with
+        AutomaticKeepAliveClientMixin<DiscoverHome>,
+        TickerProviderStateMixin,
+        WidgetsBindingObserver {
   List<Article> articles = [];
   List<ArticleBand> articleBands = [];
   late CardSwiperController? controller;
@@ -131,10 +135,10 @@ class DiscoverHomeState extends State<DiscoverHome>
 
   bool showLiveALert = true;
   late ScrollController _scrollController;
-  List<ArticleImageCard> loadingCards=[];
+  List<ArticleImageCard> loadingCards = [];
 
   List<ArticleImageCard> bufferingCards = [];
-  late PageController _pageController ;
+  late PageController _pageController;
 
   bool fetchedAllBoosted = false;
 
@@ -158,410 +162,415 @@ class DiscoverHomeState extends State<DiscoverHome>
                 backgroundColor: Colors.grey.shade900.withOpacity(0.75),
                 child: CustomScrollView(
                   controller: _scrollController,
-                    slivers: [
-                      SliverPadding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 2, horizontal: horizontalPadding),
-                        sliver: SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                              // Build your content here
-                              // Example:
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(36),
-                                        border: Border.all(
-                                            color: Colors.grey.shade900, width: 2),
-                                      ),
-                                      child: GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => UserProfilePage(
-                                                    fromSearch: true,
-                                                  ),
-                                                ));
-                                          },
-                                          child: UserProfileIcon(
-                                            iconSize: 32,
-                                          ))),
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  Expanded(
+                  slivers: [
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 2, horizontal: horizontalPadding),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            // Build your content here
+                            // Example:
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(36),
+                                      border: Border.all(
+                                          color: Colors.grey.shade900,
+                                          width: 2),
+                                    ),
                                     child: GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          PageRouteBuilder(
-                                            pageBuilder:
-                                                (context, animation1, animation2) =>
-                                                SearchResultPage(),
-                                            transitionDuration: Duration.zero,
-                                            reverseTransitionDuration: Duration.zero,
-                                          ),
-                                        );
-                                      },
-                                      child: Wrap(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 9, horizontal: 16),
-                                            decoration: BoxDecoration(
-                                                color: Colors.grey.shade900,
-                                                //border: Border.all(color: Colors.grey.shade900),
-                                                borderRadius: BorderRadius.circular(16)),
-                                            child: Row(
-                                              children: [
-                                                Image.asset("images/search_button.png",
-                                                    color: Colors.white38, width: 16),
-                                                const SizedBox(
-                                                  width: 8,
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    UserProfilePage(
+                                                  fromSearch: true,
                                                 ),
-                                                const Text(
-                                                  "Search drumms",
-                                                  style: TextStyle(color: Colors.white38),
-                                                )
-                                              ],
-                                            ),
+                                              ));
+                                        },
+                                        child: UserProfileIcon(
+                                          iconSize: 32,
+                                        ))),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        PageRouteBuilder(
+                                          pageBuilder: (context, animation1,
+                                                  animation2) =>
+                                              SearchResultPage(),
+                                          transitionDuration: Duration.zero,
+                                          reverseTransitionDuration:
+                                              Duration.zero,
+                                        ),
+                                      );
+                                    },
+                                    child: Wrap(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 9, horizontal: 16),
+                                          decoration: BoxDecoration(
+                                              color: Colors.grey.shade900,
+                                              //border: Border.all(color: Colors.grey.shade900),
+                                              borderRadius:
+                                                  BorderRadius.circular(16)),
+                                          child: Row(
+                                            children: [
+                                              Image.asset(
+                                                  "images/search_button.png",
+                                                  color: Colors.white38,
+                                                  width: 16),
+                                              const SizedBox(
+                                                width: 8,
+                                              ),
+                                              const Text(
+                                                "Search drumms",
+                                                style: TextStyle(
+                                                    color: Colors.white38),
+                                              )
+                                            ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  const LiveIcon(),
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  const NotificationIcon(),
-                                ],
-                              );
-                            },
-                            childCount: 1, // Adjust the child count as per your content
-                          ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                const LiveIcon(),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                const NotificationIcon(),
+                              ],
+                            );
+                          },
+                          childCount:
+                              1, // Adjust the child count as per your content
                         ),
                       ),
-                      if (drummCards.isNotEmpty)
-                        SliverPadding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 2, horizontal: 0),
-                          sliver: SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                                  (context, index) {
-                                // Build your content here
-                                // Example:
-                                return Column(
-                                  children: [
-                                    const SizedBox(
-                                      height: 16,
-                                    ),
-                                    GestureDetector(
-                                      onTap: (){
-                                        showModalBottomSheet(
-                                          context: context,
-                                          isScrollControlled: true,
-                                          backgroundColor: COLOR_PRIMARY_DARK,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.vertical(
-                                                top: Radius.circular(0.0)),
-                                          ),
-                                          builder: (BuildContext context) {
-                                            return Padding(
-                                              padding: EdgeInsets.only(
-                                                  bottom: MediaQuery.of(context)
-                                                      .viewInsets
-                                                      .bottom),
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.vertical(
-                                                    top: Radius.circular(0.0)),
-                                                child: LiveDrumms(),
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: horizontalPadding),
-                                            child: const Text(
-                                              "Live now",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold, fontSize: 20),
-                                            ),
-                                          ),
-                                          Icon(Icons.arrow_forward_ios_rounded,size: 16,)
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 12,
-                                    ),
-                                    Container(
-                                      height: 225,
-                                      alignment: Alignment.centerLeft,
-                                      child: PageView(
-                                        controller: _pageController,
-                                        scrollDirection: Axis.horizontal,
-                                        children: drummCards,
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                              childCount: 1, // Adjust the child count as per your content
-                            ),
-                          ),
-                        ),
-
-                      if (questionCards.isNotEmpty)
-                        SliverPadding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 2, horizontal: 0),
-                          sliver: SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                                  (context, index) {
-                                // Build your content here
-                                // Example:
-                                return Column(
-                                  children: [
-                                    const SizedBox(
-                                      height: 16,
-                                    ),
-                                    GestureDetector(
-                                      onTap: (){
-                                        showModalBottomSheet(
-                                          context: context,
-                                          isScrollControlled: true,
-                                          backgroundColor: COLOR_PRIMARY_DARK,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.vertical(
-                                                top: Radius.circular(0.0)),
-                                          ),
-                                          builder: (BuildContext context) {
-                                            return Padding(
-                                              padding: EdgeInsets.only(
-                                                  bottom: MediaQuery.of(context)
-                                                      .viewInsets
-                                                      .bottom),
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.vertical(
-                                                    top: Radius.circular(0.0)),
-                                                child: LiveDrumms(),
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: horizontalPadding),
-                                            child: const Text(
-                                              "From Community",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold, fontSize: 20),
-                                            ),
-                                          ),
-                                          Icon(Icons.arrow_forward_ios_rounded,size: 16,)
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 12,
-                                    ),
-                                    Container(
-                                      height: 120,
-                                      alignment: Alignment.centerLeft,
-                                      child: ListView(
-                                        controller: _pageController,
-                                        scrollDirection: Axis.horizontal,
-                                        children: questionCards,
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                              childCount: 1, // Adjust the child count as per your content
-                            ),
-                          ),
-                        ),
-
+                    ),
+                    if (drummCards.isNotEmpty)
                       SliverPadding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 2, horizontal: 0),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 2, horizontal: 0),
                         sliver: SliverList(
                           delegate: SliverChildBuilderDelegate(
-                                (context, index) {
+                            (context, index) {
                               // Build your content here
                               // Example:
                               return Column(
                                 children: [
-                                  const SizedBox(height: 12),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: horizontalPadding),
-                                    width: double.maxFinite,
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        backgroundColor: COLOR_PRIMARY_DARK,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(0.0)),
+                                        ),
+                                        builder: (BuildContext context) {
+                                          return Padding(
+                                            padding: EdgeInsets.only(
+                                                bottom: MediaQuery.of(context)
+                                                    .viewInsets
+                                                    .bottom),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                      top:
+                                                          Radius.circular(0.0)),
+                                              child: LiveDrumms(),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
                                     child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          "What's new",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold, fontSize: 20),
-                                        ),
-                                        Expanded(child: Container()),
-                                        if (articleBands.isNotEmpty)
-                                          const Icon(Icons.refresh_rounded,
-                                              size: 16, color: Colors.white38),
-                                        const SizedBox(
-                                          width: 2,
-                                        ),
-                                        if (articleBands.isNotEmpty)
-                                          const Text(
-                                            "Freshness",
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: horizontalPadding),
+                                          child: const Text(
+                                            "Live now",
                                             style: TextStyle(
-                                                fontSize: 13, color: Colors.white38),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20),
                                           ),
-                                        const SizedBox(
-                                          width: 4,
                                         ),
-                                        if (articleBands.isNotEmpty)
-                                          InstagramDateTimeWidget(
-                                              fontColor: Colors.white38,
-                                              textSize: 12,
-                                              publishedAt: articleBands
-                                                  .elementAt(0)
-                                                  .article
-                                                  ?.publishedAt
-                                                  .toString() ??
-                                                  ""),
+                                        Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          size: 16,
+                                        )
                                       ],
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 12,
+                                  ),
+                                  Container(
+                                    height: 225,
+                                    alignment: Alignment.centerLeft,
+                                    child: PageView(
+                                      controller: _pageController,
+                                      scrollDirection: Axis.horizontal,
+                                      children: drummCards,
                                     ),
                                   ),
                                 ],
                               );
                             },
-                            childCount: 1, // Adjust the child count as per your content
+                            childCount:
+                                1, // Adjust the child count as per your content
                           ),
                         ),
                       ),
-                      SliverAppBar(
-                        backgroundColor: COLOR_BACKGROUND.withOpacity(0.9),
-                        floating: true,
-                        pinned: true,
-                        toolbarHeight: 58,
-                        snap: true,
-                        //elevation: 10,
-                        surfaceTintColor: COLOR_BACKGROUND.withOpacity(0.9),
-                        foregroundColor:  COLOR_BACKGROUND.withOpacity(0.9),
-                        automaticallyImplyLeading: false,
-                        flexibleSpace: Column(
-                          children: [
-                            const SizedBox(height: 16),
-                            if (bandsCards.isNotEmpty)
-                              Container(
-                                //color: COLOR_BACKGROUND,
-                                  alignment: Alignment.centerLeft,
-                                  padding: EdgeInsets.only(
-                                    left: horizontalPadding,
-                                    right: horizontalPadding,
-                                  ),
-                                  height: 30,
-                                  child: multiSelectContainer),
-                            const SizedBox(height: 12),
-                          ],
-                        ),
-                      ),
+                    if (questionCards.isNotEmpty)
                       SliverPadding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 2, horizontal: 0),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 2, horizontal: 0),
                         sliver: SliverList(
                           delegate: SliverChildBuilderDelegate(
-                                (context, index) {
+                            (context, index) {
                               // Build your content here
                               // Example:
-                              return GridView.custom(
-                                shrinkWrap: true,
-                                //controller: _scrollController,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: horizontalPadding),
-                                physics: const NeverScrollableScrollPhysics(),
-                                gridDelegate: SliverQuiltedGridDelegate(
-                                  crossAxisCount: 5,
-                                  mainAxisSpacing: 10,
-                                  crossAxisSpacing: 10,
-                                  repeatPattern: QuiltedGridRepeatPattern.inverted,
-                                  pattern: [
-                                    const QuiltedGridTile(4, 3),
-                                    const QuiltedGridTile(2, 2),
-                                    const QuiltedGridTile(3, 2),
-
-                                    const QuiltedGridTile(3, 3),
-                                    const QuiltedGridTile(2, 2),
-                                    // const QuiltedGridTile(5, 3),
-                                    // const QuiltedGridTile(3, 2),
-
-                                    // const QuiltedGridTile(3, 3),
-                                    // const QuiltedGridTile(3, 2),
-                                    // const QuiltedGridTile(3, 2),
-                                    // const QuiltedGridTile(3, 3),
-                                    //const QuiltedGridTile(3, 3),
-                                    //const QuiltedGridTile(2, 2),
-
-                                  ],
-                                ),
-                                childrenDelegate: (articleCards.isNotEmpty)
-                                    ? SliverChildBuilderDelegate(
-                                  childCount: articleCards.length,
-                                      (context, index) =>
-                                      articleCards.elementAt(index),
-                                )
-                                    : SliverChildBuilderDelegate(
-                                  childCount: 10,
-                                      (context, index) =>
-                                  //     Container(
-                                  //   decoration: BoxDecoration(
-                                  //       color: Colors.grey.shade900,
-                                  //       borderRadius:
-                                  //           BorderRadius.circular(16)),
-                                  // ),
-                                  loadingCards.elementAt(index),
-                                ),
+                              return Column(
+                                children: [
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        backgroundColor: COLOR_PRIMARY_DARK,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(0.0)),
+                                        ),
+                                        builder: (BuildContext context) {
+                                          return Padding(
+                                            padding: EdgeInsets.only(
+                                                bottom: MediaQuery.of(context)
+                                                    .viewInsets
+                                                    .bottom),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                      top:
+                                                          Radius.circular(0.0)),
+                                              child: CommunityQuestionsPage(),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: horizontalPadding),
+                                          child: const Text(
+                                            "From Community",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20),
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          size: 16,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 12,
+                                  ),
+                                  Container(
+                                    height: 120,
+                                    alignment: Alignment.centerLeft,
+                                    child: ListView(
+                                      controller: _pageController,
+                                      scrollDirection: Axis.horizontal,
+                                      children: questionCards,
+                                    ),
+                                  ),
+                                ],
                               );
                             },
-                            childCount: 1, // Adjust the child count as per your content
+                            childCount:
+                                1, // Adjust the child count as per your content
                           ),
                         ),
                       ),
-                    ],
-
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 0),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            // Build your content here
+                            // Example:
+                            return Column(
+                              children: [
+                                const SizedBox(height: 12),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: horizontalPadding),
+                                  width: double.maxFinite,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        "What's new",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20),
+                                      ),
+                                      Expanded(child: Container()),
+                                      if (articleBands.isNotEmpty)
+                                        const Icon(Icons.refresh_rounded,
+                                            size: 16, color: Colors.white38),
+                                      const SizedBox(
+                                        width: 2,
+                                      ),
+                                      if (articleBands.isNotEmpty)
+                                        const Text(
+                                          "Freshness",
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              color: Colors.white38),
+                                        ),
+                                      const SizedBox(
+                                        width: 4,
+                                      ),
+                                      if (articleBands.isNotEmpty)
+                                        InstagramDateTimeWidget(
+                                            fontColor: Colors.white38,
+                                            textSize: 12,
+                                            publishedAt: articleBands
+                                                    .elementAt(0)
+                                                    .article
+                                                    ?.publishedAt
+                                                    .toString() ??
+                                                ""),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                          childCount:
+                              1, // Adjust the child count as per your content
+                        ),
+                      ),
+                    ),
+                    SliverAppBar(
+                      backgroundColor: COLOR_BACKGROUND.withOpacity(0.9),
+                      floating: true,
+                      pinned: true,
+                      toolbarHeight: 58,
+                      snap: true,
+                      //elevation: 10,
+                      surfaceTintColor: COLOR_BACKGROUND.withOpacity(0.9),
+                      foregroundColor: COLOR_BACKGROUND.withOpacity(0.9),
+                      automaticallyImplyLeading: false,
+                      flexibleSpace: Column(
+                        children: [
+                          const SizedBox(height: 16),
+                          if (bandsCards.isNotEmpty)
+                            Container(
+                                //color: COLOR_BACKGROUND,
+                                alignment: Alignment.centerLeft,
+                                padding: EdgeInsets.only(
+                                  left: horizontalPadding,
+                                  right: horizontalPadding,
+                                ),
+                                height: 30,
+                                child: multiSelectContainer),
+                          const SizedBox(height: 12),
+                        ],
+                      ),
+                    ),
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 0),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            return GridView.custom(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: horizontalPadding),
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate: SliverQuiltedGridDelegate(
+                                crossAxisCount: 5,
+                                mainAxisSpacing: 10,
+                                crossAxisSpacing: 10,
+                                repeatPattern:
+                                    QuiltedGridRepeatPattern.inverted,
+                                pattern: [
+                                  const QuiltedGridTile(4, 3),
+                                  const QuiltedGridTile(2, 2),
+                                  const QuiltedGridTile(3, 2),
+                                  const QuiltedGridTile(3, 3),
+                                  const QuiltedGridTile(2, 2),
+                                ],
+                              ),
+                              childrenDelegate: (articleCards.isNotEmpty)
+                                  ? SliverChildBuilderDelegate(
+                                      childCount: articleCards.length,
+                                      (context, index) =>
+                                          articleCards.elementAt(index),
+                                    )
+                                  : SliverChildBuilderDelegate(
+                                      childCount: 10,
+                                      (context, index) =>
+                                          loadingCards.elementAt(index),
+                                    ),
+                            );
+                          },
+                          childCount:
+                              1, // Adjust the child count as per your content
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              if(showNewArticleWidget)
+              if (showNewArticleWidget)
                 Container(
                   width: double.maxFinite,
                   alignment: Alignment.bottomCenter,
                   margin: EdgeInsets.only(bottom: 12),
                   child: GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       setState(() {
                         showNewArticleWidget = false;
                         getToTop();
 
-                        _lastDocument =null;
+                        _lastDocument = null;
                         _startDocument = null;
                         fetchedAllBoosted = false;
 
@@ -571,20 +580,19 @@ class DiscoverHomeState extends State<DiscoverHome>
                           getArticlesForBands(selectedBand, false);
                         }
                       });
-
                     },
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 8,horizontal: 12),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                       decoration: BoxDecoration(
                         color: Colors.blue,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text("New articles available",
+                      child: Text(
+                        "New articles available",
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                            color: Colors.white
-                        ),),
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
                     ),
                   ),
                 ),
@@ -597,7 +605,6 @@ class DiscoverHomeState extends State<DiscoverHome>
 
   @override
   void dispose() {
-
     try {
       if (controller != null) controller?.dispose();
     } catch (e) {}
@@ -618,10 +625,12 @@ class DiscoverHomeState extends State<DiscoverHome>
     super.initState();
     WidgetsBinding.instance?.addObserver(this);
 
-    for(int i = 0;i<10;i++){
-      loadingCards.add(ArticleImageCard(ArticleBand(),loading: true,));
+    for (int i = 0; i < 10; i++) {
+      loadingCards.add(ArticleImageCard(
+        ArticleBand(),
+        loading: true,
+      ));
     }
-
 
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
@@ -636,15 +645,17 @@ class DiscoverHomeState extends State<DiscoverHome>
     getBandDrumms();
     getCommunityQuestion();
   }
-  void _scrollListener() {
 
+  void _scrollListener() {
     double threshold = 250.0; // Adjust as needed
     double maxScrollExtent = _scrollController.position.maxScrollExtent;
     double currentScrollPosition = _scrollController.position.pixels;
     double remainingScrollDistance = maxScrollExtent - currentScrollPosition;
 
     // Check if the remaining scroll distance is less than the threshold
-    if (remainingScrollDistance < threshold && !_scrollController.position.outOfRange && bufferingCards.isEmpty) {
+    if (remainingScrollDistance < threshold &&
+        !_scrollController.position.outOfRange &&
+        bufferingCards.isEmpty) {
       // Scroll position is almost at the end
       // Call getArticles method to fetch more data
       bufferingCards = articleCards;
@@ -658,13 +669,16 @@ class DiscoverHomeState extends State<DiscoverHome>
       } // Pass true to fetch more articles
     }
   }
+
   void getToTop() {
     //getBandDrumms();
     print("Okay");
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+      _scrollController.animateTo(0,
+          duration: Duration(milliseconds: 500), curve: Curves.easeIn);
     });
   }
+
   Future<bool> getBandsCards() async {
     mulList.clear();
 
@@ -759,6 +773,9 @@ class DiscoverHomeState extends State<DiscoverHome>
     List<QuestionCard> fetchedQuestionCards = questions.map((question) {
       return QuestionCard(
         question: question,
+        deleteCallback: (question){
+          getCommunityQuestion();
+        },
       );
     }).toList();
 
@@ -793,7 +810,6 @@ class DiscoverHomeState extends State<DiscoverHome>
             initialisedYoutubePlayer = false;
             if (selectedBandID == "For You") {
               getArticles(false);
-
             } else {
               getArticlesForBands(selectedBand, false);
             }
@@ -813,33 +829,31 @@ class DiscoverHomeState extends State<DiscoverHome>
     //});
     controller = CardSwiperController();
     List<Article> articleFetched = [];
-    if(!fetchedAllBoosted) {
+    if (!fetchedAllBoosted) {
       algoliaArticles = await FirebaseDBOperations.getBoostedArticlesData(
           _startDocument, _lastDocument, reverse);
-      for(Article article in algoliaArticles?.articles??[]){
-        int boosts = article.boosts??0;
-        if(boosts>0)
-          articleFetched.add(article);
+      for (Article article in algoliaArticles?.articles ?? []) {
+        int boosts = article.boosts ?? 0;
+        if (boosts > 0) articleFetched.add(article);
       }
-    }//await FirebaseDBOperations.getArticlesByBands();
-    if(articleFetched.length<10) {
-      if(!fetchedAllBoosted) {
+    } //await FirebaseDBOperations.getArticlesByBands();
+    if (articleFetched.length < 10) {
+      if (!fetchedAllBoosted) {
         _lastDocument = null;
         _startDocument = null;
         fetchedAllBoosted = true;
       }
       algoliaArticles = await FirebaseDBOperations.getArticlesData(
           _startDocument, _lastDocument, reverse);
-      for(Article article in algoliaArticles?.articles??[]){
-        int boosts = article.boosts??0;
-        if(boosts==0)
-          articleFetched.add(article);
+      for (Article article in algoliaArticles?.articles ?? []) {
+        int boosts = article.boosts ?? 0;
+        if (boosts == 0) articleFetched.add(article);
       }
       //articleFetched.addAll(algoliaArticles?.articles ?? []);
     }
 
-    if(_lastDocument==null)
-    _startDocument = algoliaArticles?.getStartDocument();
+    if (_lastDocument == null)
+      _startDocument = algoliaArticles?.getStartDocument();
 
     _lastDocument = algoliaArticles?.getLastDocument();
 
@@ -855,19 +869,17 @@ class DiscoverHomeState extends State<DiscoverHome>
         for (Band band in bandList) {
           List hooks = band.hooks ?? [];
           if (hooks.contains(article.category)) {
-              ArticleBand articleBand = ArticleBand(
-                  article: article, band: band);
-              fetchedArticleBand.add(articleBand);
-              break;
+            ArticleBand articleBand = ArticleBand(article: article, band: band);
+            fetchedArticleBand.add(articleBand);
+            break;
           }
         }
       }
 
       if (selectedBandID == "For You") {
         setState(() {
-          Article article = fetchedArticleBand
-              .elementAt(0)
-              .article ?? Article();
+          Article article =
+              fetchedArticleBand.elementAt(0).article ?? Article();
           print("getArticles page $articlePage item ${article.title}");
           try {} catch (e) {}
           topIndex = 0;
@@ -878,25 +890,20 @@ class DiscoverHomeState extends State<DiscoverHome>
           articles = articles + articleFetched;
           articleBands = articleBands + fetchedArticleBand;
           articleCards = bufferingCards +
-              fetchedArticleBand.map((article) =>
-              ArticleImageCard(
-                article,
-                articleBands: articleBands,
-                  lastDocument:_lastDocument,
-                selectedBandID: selectedBandID,
-              ))
-              .toList();
+              fetchedArticleBand
+                  .map((article) => ArticleImageCard(
+                        article,
+                        articleBands: articleBands,
+                        lastDocument: _lastDocument,
+                        selectedBandID: selectedBandID,
+                      ))
+                  .toList();
           bufferingCards = [];
           undoIndex = 0;
           try {
-            articleOnScreen = articleBands
-                .elementAt(0)
-                .article ?? Article();
+            articleOnScreen = articleBands.elementAt(0).article ?? Article();
             if (articleTop == "") {
-              articleTop = articleBands
-                  .elementAt(0)
-                  .article
-                  ?.articleId ?? "";
+              articleTop = articleBands.elementAt(0).article?.articleId ?? "";
             }
           } catch (e) {
             print("Error setting Article $e");
@@ -912,29 +919,27 @@ class DiscoverHomeState extends State<DiscoverHome>
     //articleBands.clear();
     controller = CardSwiperController();
     List<Article> articleFetched = [];
-    if(!fetchedAllBoosted) {
+    if (!fetchedAllBoosted) {
       algoliaArticles =
-      await FirebaseDBOperations.getBoostedArticlesDataForBand(
-          _startDocument, _lastDocument, reverse, selectedBand);
-      for(Article article in algoliaArticles?.articles??[]){
-        int boosts = article.boosts??0;
-        if(boosts>0)
-          articleFetched.add(article);
+          await FirebaseDBOperations.getBoostedArticlesDataForBand(
+              _startDocument, _lastDocument, reverse, selectedBand);
+      for (Article article in algoliaArticles?.articles ?? []) {
+        int boosts = article.boosts ?? 0;
+        if (boosts > 0) articleFetched.add(article);
       }
     }
 
-    if(articleFetched.length<10){
-      if(!fetchedAllBoosted) {
+    if (articleFetched.length < 10) {
+      if (!fetchedAllBoosted) {
         _lastDocument = null;
         _startDocument = null;
         fetchedAllBoosted = true;
       }
       algoliaArticles = await FirebaseDBOperations.getArticlesDataForBand(
           _startDocument, _lastDocument, reverse, selectedBand);
-      for(Article article in algoliaArticles?.articles??[]){
-        int boosts = article.boosts??0;
-        if(boosts==0)
-          articleFetched.add(article);
+      for (Article article in algoliaArticles?.articles ?? []) {
+        int boosts = article.boosts ?? 0;
+        if (boosts == 0) articleFetched.add(article);
       }
     }
 
@@ -962,26 +967,21 @@ class DiscoverHomeState extends State<DiscoverHome>
           loadingAnimation = LOADING_ASSET;
           articles = articleFetched;
           articleBands = articleBands + fetchedArticleBand;
-          articleCards = bufferingCards + fetchedArticleBand
-              .map((article) =>
-              ArticleImageCard(
-                article,
-                articleBands: articleBands,
-                selectedBandID: selectedBandID,
-                lastDocument: _lastDocument,
-              ))
-              .toList();
+          articleCards = bufferingCards +
+              fetchedArticleBand
+                  .map((article) => ArticleImageCard(
+                        article,
+                        articleBands: articleBands,
+                        selectedBandID: selectedBandID,
+                        lastDocument: _lastDocument,
+                      ))
+                  .toList();
           bufferingCards = [];
           undoIndex = 0;
           topIndex = 0;
           initialisedYoutubePlayer = false;
-          articleOnScreen = articleBands
-              .elementAt(0)
-              .article ?? Article();
-          articleTop = articleBands
-              .elementAt(0)
-              .article
-              ?.articleId ?? "";
+          articleOnScreen = articleBands.elementAt(0).article ?? Article();
+          articleTop = articleBands.elementAt(0).article?.articleId ?? "";
         });
       }
     }
@@ -1021,8 +1021,6 @@ class DiscoverHomeState extends State<DiscoverHome>
       getCommunityQuestion();
       // checkForNewArticles();
     }
-
-
   }
 
   @override
@@ -1037,15 +1035,15 @@ class DiscoverHomeState extends State<DiscoverHome>
     late AlgoliaArticles freshArticle;
 
     if (selectedBandID == "For You") {
-      freshArticle = await FirebaseDBOperations.getArticlesData(
-          null, null, false);
-
+      freshArticle =
+          await FirebaseDBOperations.getArticlesData(null, null, false);
     } else {
       freshArticle = await FirebaseDBOperations.getArticlesDataForBand(
           null, null, false, selectedBand);
     }
 
-    if(_startDocument?.data()!["articleId"]!=freshArticle?.getStartDocument()?.data()!["articleId"]) {
+    if (_startDocument?.data()!["articleId"] !=
+        freshArticle?.getStartDocument()?.data()!["articleId"]) {
       print("New Articles fetched");
       setState(() {
         showNewArticleWidget = true;
@@ -1054,11 +1052,8 @@ class DiscoverHomeState extends State<DiscoverHome>
   }
 
   Future<void> onRefresh() async {
-
-
     // Simulate fetching new data
     bool loadedCard = await getBandsCards();
-
 
     _lastDocument = null;
     _startDocument = null;
@@ -1078,12 +1073,10 @@ class DiscoverHomeState extends State<DiscoverHome>
       initialisedYoutubePlayer = false;
     });
 
-
     bool loadedBand = await getBandsCards();
     bool loaded = await getArticles(false);
     bool loadedDrumms = await getBandDrumms();
     bool loadedQuestion = await getCommunityQuestion();
-
 
     setState(() {
       showNewArticleWidget = false;

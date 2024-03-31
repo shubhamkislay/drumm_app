@@ -759,6 +759,37 @@ class FirebaseDBOperations {
     return List.from(data.docs.map((e) => Question.fromSnapshot(e)));
   }
 
+  static Future<List<Question>> getQuestionsAskedByUserId(String uid) async {
+    print("getQuestionsAsked triggered");
+    //SharedPreferences prefs = await SharedPreferences.getInstance();
+    //List<String> userInterests = prefs.getStringList('interestList')!;
+
+    DateTime currentTime = DateTime.now();
+
+    // Calculate the time one minute ago
+    DateTime oneDayAgo = currentTime.subtract(Duration(days: 1));
+
+    var data = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('questions')
+    .limit(100)
+    //.where("hook", whereIn: userInterests)
+        .get();
+
+    return List.from(data.docs.map((e) => Question.fromSnapshot(e)));
+  }
+
+  static void deletedQuestionsAskedByQuestionId(String uid, String qid) async {
+    print("deletedQuestionsAskedByQuestionId triggered");
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('questions')
+    .doc(qid).delete();
+
+  }
+
   static Future<List<Drummer>> getBandMembers() async {
     print("getQuestionsAsked triggered");
     SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -232,6 +232,7 @@ flutter:
     - images/grid.png
     - images/network.png
     - images/audio-waves-large.png
+    - images/trash.png
   # - images/a_dot_ham.jpeg
 
   fonts:

@@ -3,7 +3,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/SettingsPage.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:drumm_app/custom/helper/connect_channel.dart';
@@ -19,6 +21,8 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'custom/constants/Constants.dart';
 import 'custom/helper/image_uploader.dart';
+import 'model/QuestionCard.dart';
+import 'model/question.dart';
 
 class UserProfilePage extends StatefulWidget {
   Drummer? drummer;
@@ -38,6 +42,8 @@ class _UserProfilePageState extends State<UserProfilePage>
 
   bool followed = false;
   bool fromSearch=false;
+  List<Question> questions = [];
+  List<QuestionCard> questionCards = [];
 
 
   @override
@@ -70,10 +76,37 @@ class _UserProfilePageState extends State<UserProfilePage>
                   colors: [Colors.transparent,Colors.transparent,COLOR_BACKGROUND,COLOR_BACKGROUND]),
             ),
           ).frosted(blur: 6,frostColor: COLOR_BACKGROUND),
+          IgnorePointer(
+            child: Positioned.fill(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  alignment: Alignment.bottomCenter,
+                  height: 100,
+                  width: double.maxFinite,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+
+                        Colors.transparent,
+                        Colors.black,
+                      ]
+                    )
+
+                  ),
+
+                ),
+              ),
+            ),
+          ),
           RefreshIndicator(
             onRefresh: _refreshData,
             child: SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
+              //physics: AlwaysScrollableScrollPhysics(),
+
               child: Column(
                 children: [
                   const SizedBox(
@@ -135,7 +168,6 @@ class _UserProfilePageState extends State<UserProfilePage>
                       linkColor: Colors.blue,
                     ),
                   ),
-
                   const SizedBox(
                     height: 16,
                   ),
@@ -152,7 +184,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                     child: Container(
                       alignment: Alignment.center,
                       padding: EdgeInsets.all(12),
-                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      margin: EdgeInsets.symmetric(horizontal: 12),
                       width: double.maxFinite,
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -166,12 +198,37 @@ class _UserProfilePageState extends State<UserProfilePage>
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 16,
+                  SizedBox(height: 24,),
+
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    width: double.maxFinite,
+                      child: Text("Questions",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,fontFamily: APP_FONT_BOLD),)),
+                  SizedBox(height: 8,),
+
+
+
+                  if(questionCards.isNotEmpty)
+                  Container(
+                    alignment: Alignment.topCenter,
+                    //height: double.maxFinite,//MediaQuery.of(context).size.height,
+                    child: ListView(
+                      padding: EdgeInsets.all(0),
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      children: questionCards,
+                    ),
                   ),
-                  const SizedBox(
-                    height: 12,
-                  ),
+                  if(questionCards.isEmpty)
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      height: 100,
+                      width: double.maxFinite,
+                      child: Text("There's nothing here",textAlign: TextAlign.center,),
+                    ),
+
+                  SizedBox(height: 100,),
                 ],
               ),
             ),
@@ -223,6 +280,29 @@ class _UserProfilePageState extends State<UserProfilePage>
               ],
             ),
           ),
+         ///The below logic will be enable when the feature, ask this person is implement
+         if(false) Positioned.fill(
+            child: Align(
+                alignment: Alignment.bottomCenter,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 64,
+                      width: 64,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(36),
+                      ),
+                      child: Image.asset("images/audio-waves.png",color: Colors.white,height: 32,width: 32,alignment: Alignment.center,),
+
+                    ),
+                  ),
+                ),
+            ),
+          ),
+
         ],
       ),
     );
@@ -242,6 +322,29 @@ class _UserProfilePageState extends State<UserProfilePage>
       });
     }
 
+  }
+
+  Future<bool> getDrummerQuestion(String uid) async {
+    questionCards.clear();
+    //getUserBands();
+    questions = await FirebaseDBOperations.getQuestionsAskedByUserId(uid);
+    List<QuestionCard> fetchedQuestionCards = questions.map((question) {
+      return QuestionCard(
+        question: question,
+        deleteItem: true,
+        deleteCallback: (question){
+          updateList(question);
+        },
+        cardWidth: double.maxFinite,
+      );
+    }).toList();
+
+    print("Questions list ${fetchedQuestionCards.length}");
+
+    setState(() {
+      questionCards = fetchedQuestionCards;
+    });
+    return true;
   }
 
   void initialise(){
@@ -264,15 +367,11 @@ class _UserProfilePageState extends State<UserProfilePage>
     }
     //getArticles(uid);
     checkIfUserisFollowing();
+    getDrummerQuestion(uid??"");
   }
 
   Future<void> _refreshData() async {
-    // Simulate a delay
-    // await Future.delayed(Duration(seconds: 2));
     initialise();
-
-    // Refresh your data
-    //getNews();
   }
 
   @override
@@ -309,5 +408,9 @@ class _UserProfilePageState extends State<UserProfilePage>
   void openSettingsPage() {
     Navigator.push(context, SwipeablePageRoute(builder: (context) => SettingsPage()));
 
+  }
+
+  void updateList(Question? question) {
+    getDrummerQuestion(FirebaseAuth.instance.currentUser!.uid??"");
   }
 }

@@ -20,8 +20,9 @@ import 'helper/image_uploader.dart';
 class DrummBottomQuestionDialog extends StatefulWidget {
   Question? question;
   Drummer? drummer;
+  bool? deleteItem;
   VoidCallback startDrumming;
-  DrummBottomQuestionDialog({Key? key, required this.question,required this.startDrumming,required this.drummer}) : super(key: key);
+  DrummBottomQuestionDialog({Key? key, required this.question,required this.startDrumming,required this.drummer, this.deleteItem}) : super(key: key);
 
   @override
   State<DrummBottomQuestionDialog> createState() => _DrummBottomDialogState();
@@ -30,9 +31,11 @@ class DrummBottomQuestionDialog extends StatefulWidget {
 class _DrummBottomDialogState extends State<DrummBottomQuestionDialog> {
   List<Container> memberCards = [];
   double drummerSize = 30;
+
   @override
   Widget build(BuildContext context) {
     BuildContext thisContext = context;
+    bool deleteItem = (widget.deleteItem==null) ?false : widget.deleteItem??false;
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: const BoxDecoration(
@@ -88,6 +91,7 @@ class _DrummBottomDialogState extends State<DrummBottomQuestionDialog> {
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(4.0),
@@ -113,11 +117,12 @@ class _DrummBottomDialogState extends State<DrummBottomQuestionDialog> {
                 const SizedBox(
                   height: 4,
                 ),
-                Text("${widget.drummer?.username}",style: const TextStyle(color: Colors.white70),),
+                Text("${widget.drummer?.username}",textAlign: TextAlign.center,style: const TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.w600),),
                 const SizedBox(
                   height: 4,
                 ),
-                Text("${widget.drummer?.jobTitle??""}\n${widget.drummer?.occupation??""}",style: const TextStyle(color: Colors.white38),),
+                Text("${widget.drummer?.jobTitle??""}",textAlign: TextAlign.center,style: const TextStyle(color: Colors.white70),),
+                Text("${widget.drummer?.occupation??""}",textAlign: TextAlign.center,style: const TextStyle(color: Colors.white30),),
                 const SizedBox(
                   height: 16,
                 ),
@@ -142,7 +147,7 @@ class _DrummBottomDialogState extends State<DrummBottomQuestionDialog> {
               ],
             ),
             const SizedBox(height: 12,),
-            const Padding(
+            if(!deleteItem)const Padding(
               padding: EdgeInsets.symmetric(horizontal: 24),
               child: Text("A ringing notification will be send to the user",style: TextStyle(color: Colors.white30,fontSize: 12),),
             ),
@@ -152,19 +157,19 @@ class _DrummBottomDialogState extends State<DrummBottomQuestionDialog> {
               thumb: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Image.asset(
-                  'images/audio-waves.png',
+                  (!deleteItem)? 'images/audio-waves.png':'images/trash.png',
                   fit: BoxFit.contain,
                   color: Colors.white,
                 ),
               ),
               borderRadius: BorderRadius.circular(22),
-              child: const Text(
-                "Swipe right to start drumming",
+              child:  Text(
+                (!deleteItem) ? "Swipe right to start drumming":"Swipe to delete this post",
                 style: TextStyle(
                   color: Colors.white,
                 ),
               ),
-              activeThumbColor: Colors.blue.shade800,
+              activeThumbColor: (!deleteItem) ? Colors.blue.shade800:Colors.red,
               activeTrackColor: Colors.white.withOpacity(0.075),
               onSwipe: () {
                 print("Drumming done...");

@@ -26,14 +26,25 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import '../question_jam_room.dart';
 import '../theme/theme_constants.dart';
 
+typedef void DeleteCallback(Question? question);
 class QuestionCard extends StatefulWidget {
 
+
   Question? question;
+  double? cardWidth;
+  double? cardHeight;
+  bool? deleteItem;
+  DeleteCallback? deleteCallback;
+
 
   QuestionCard(
       {
         Key? key,
-        this.question
+        this.question,
+        this.cardWidth,
+        this.cardHeight,
+        this.deleteItem,
+        this.deleteCallback,
       }) : super(key: key);
 
   @override
@@ -45,18 +56,26 @@ class _QuestionCardState extends State<QuestionCard> {
   Drummer drummer = Drummer();
   @override
   Widget build(BuildContext context) {
+    double cardHeight = widget.cardHeight??500;
+    double cardWidth = widget.cardHeight??250;
+
+
+
+
+
     return GestureDetector(
       onTap: (){
         drumJoinDialog();
       },
       child: Container(
-        width: 250,
+        width: cardWidth,
+        //height: cardHeight,
         decoration: BoxDecoration(
           color: Colors.grey.shade900,
             borderRadius: BorderRadius.circular(curve),
         ),
         padding: const EdgeInsets.all(8),
-        margin: const EdgeInsets.symmetric(horizontal: 8),
+        margin: const EdgeInsets.symmetric(horizontal: 8,vertical: 4),
         child: GestureDetector(
           onTap: () {
             drumJoinDialog();
@@ -135,13 +154,28 @@ class _QuestionCardState extends State<QuestionCard> {
       builder: (BuildContext context) {
         return DrummBottomQuestionDialog(
           question: widget.question,
+          deleteItem: widget.deleteItem??
+              (FirebaseAuth.instance.currentUser?.uid == widget.question?.uid),
           startDrumming: () {
-            Vibrate.feedback(FeedbackType.success);
-            joinOpenDrumm(widget.question??Question(),drummer);
-          }, drummer: drummer,
+            if(widget.deleteItem??(FirebaseAuth.instance.currentUser?.uid == widget.question?.uid)) {
+              Vibrate.feedback(FeedbackType.impact);
+              deleteQuestion();
+              try {
+                widget.deleteCallback!(widget.question);
+              }catch(e){}
+            }else{
+              Vibrate.feedback(FeedbackType.success);
+              joinOpenDrumm(widget.question ?? Question(), drummer);
+            }
+          },
+          drummer: drummer,
         );
       },
     );
+  }
+
+  void deleteQuestion() async{
+    FirebaseDBOperations.deletedQuestionsAskedByQuestionId(FirebaseAuth.instance.currentUser?.uid??"", widget.question?.qid??"");
   }
 
   void joinOpenDrumm(Question question, Drummer drummer) {
