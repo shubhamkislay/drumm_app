@@ -60,7 +60,7 @@ class ArticleImageCard extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(13),
               color: Colors.grey.shade900, //COLOR_BACKGROUND,
-              border: Border.all(color: colorBorder, width: 3),
+              border: Border.all(color: colorBorder, width: 4),
             ),
           )
         : LayoutBuilder(
@@ -113,7 +113,7 @@ class ArticleImageCard extends StatelessWidget {
               },
               child: (articleBand.article?.imageUrl != null)
                   ? Container(
-                      padding: const EdgeInsets.all(3),
+                      padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           gradient: LinearGradient(
@@ -125,7 +125,7 @@ class ArticleImageCard extends StatelessWidget {
                                 colorBorder,
                               ])),
                       child: Container(
-                        padding: EdgeInsets.all(3),
+                        padding: EdgeInsets.all(0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           color: COLOR_BACKGROUND,

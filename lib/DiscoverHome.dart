@@ -142,6 +142,8 @@ class DiscoverHomeState extends State<DiscoverHome>
 
   bool fetchedAllBoosted = false;
 
+  Article? latestArticle;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -466,11 +468,11 @@ class DiscoverHomeState extends State<DiscoverHome>
                                       const SizedBox(
                                         width: 4,
                                       ),
-                                      if (articleBands.isNotEmpty)
+                                      if (articleBands.isNotEmpty&&latestArticle!=null)
                                         InstagramDateTimeWidget(
                                             fontColor: Colors.white38,
                                             textSize: 12,
-                                            publishedAt: articleBands
+                                            publishedAt: latestArticle?.publishedAt.toString()??articleBands
                                                     .elementAt(0)
                                                     .article
                                                     ?.publishedAt
@@ -845,6 +847,10 @@ class DiscoverHomeState extends State<DiscoverHome>
       }
       algoliaArticles = await FirebaseDBOperations.getArticlesData(
           _startDocument, _lastDocument, reverse);
+      setState(() {
+        latestArticle = algoliaArticles?.articles?.elementAt(0);
+      });
+
       for (Article article in algoliaArticles?.articles ?? []) {
         int boosts = article.boosts ?? 0;
         if (boosts == 0) articleFetched.add(article);
@@ -937,6 +943,9 @@ class DiscoverHomeState extends State<DiscoverHome>
       }
       algoliaArticles = await FirebaseDBOperations.getArticlesDataForBand(
           _startDocument, _lastDocument, reverse, selectedBand);
+      setState(() {
+        latestArticle = algoliaArticles?.articles?.elementAt(0);
+      });
       for (Article article in algoliaArticles?.articles ?? []) {
         int boosts = article.boosts ?? 0;
         if (boosts == 0) articleFetched.add(article);

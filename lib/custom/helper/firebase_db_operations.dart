@@ -773,6 +773,7 @@ class FirebaseDBOperations {
         .collection('users')
         .doc(uid)
         .collection('questions')
+        .where('createdTime', isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
     .limit(100)
     //.where("hook", whereIn: userInterests)
         .get();
