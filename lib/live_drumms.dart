@@ -159,7 +159,7 @@ class LiveDrummsState extends State<LiveDrumms>
                 margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
                 alignment: Alignment.bottomCenter,
                 child: IconLabelButton(
-                  imageAsset: "images/logo_background_white.png",
+                  imageAsset: "images/audio-waves.png",
                   label: "Start New",
                   height: 40,
                   onPressed: () {

@@ -27,7 +27,7 @@ import '../question_jam_room.dart';
 import '../theme/theme_constants.dart';
 
 typedef void DeleteCallback(Question? question);
-class QuestionCard extends StatefulWidget {
+class CommunityQuestionCard extends StatefulWidget {
 
 
   Question? question;
@@ -37,7 +37,7 @@ class QuestionCard extends StatefulWidget {
   DeleteCallback? deleteCallback;
 
 
-  QuestionCard(
+  CommunityQuestionCard(
       {
         Key? key,
         this.question,
@@ -48,16 +48,16 @@ class QuestionCard extends StatefulWidget {
       }) : super(key: key);
 
   @override
-  State<QuestionCard> createState() => _QuestionCardState();
+  State<CommunityQuestionCard> createState() => _CommunityQuestionCardState();
 }
 
-class _QuestionCardState extends State<QuestionCard> {
+class _CommunityQuestionCardState extends State<CommunityQuestionCard> {
   double curve = 12;
   Drummer drummer = Drummer();
   @override
   Widget build(BuildContext context) {
     double cardHeight = widget.cardHeight??500;
-    double cardWidth = widget.cardHeight??325;
+    double cardWidth = widget.cardHeight??250;
 
 
 
@@ -72,10 +72,10 @@ class _QuestionCardState extends State<QuestionCard> {
         //height: cardHeight,
         decoration: BoxDecoration(
           color: Colors.grey.shade900,
-            borderRadius: BorderRadius.circular(curve),
+          borderRadius: BorderRadius.circular(curve),
         ),
         padding: const EdgeInsets.all(8),
-        margin: const EdgeInsets.symmetric(horizontal: 4,vertical: 4),
+        margin: const EdgeInsets.symmetric(horizontal: 0,vertical: 4),
         child: GestureDetector(
           onTap: () {
             drumJoinDialog();
@@ -84,47 +84,36 @@ class _QuestionCardState extends State<QuestionCard> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  if(drummer.imageUrl!=null)
-                  ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: CachedNetworkImage(imageUrl: drummer.imageUrl??"",width: 54,height: 54,)),
-                  SizedBox(width: 8,),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const SizedBox(width: 0,height: 12,),
-                            Flexible(child: Text(drummer.username??"",style: const TextStyle(overflow: TextOverflow.ellipsis,fontSize: 15,fontWeight: FontWeight.w600,fontFamily: APP_FONT_MEDIUM,),)),
-                            const Text(" • "),
-                            Flexible(child: InstagramDateTimeWidget(publishedAt: widget.question?.createdTime.toString()??Timestamp.now().toString())),
-                            //Text(widget.question?.hook??"",textAlign: TextAlign.end,style: TextStyle(fontSize: 12,color: Colors.white38),)
-                          ],
-                        ),
-                        Text("${drummer?.jobTitle??""}",textAlign: TextAlign.center,style: const TextStyle(color: Colors.white70,fontSize: 12),),
-                        Text("${drummer?.occupation??""}",maxLines:1,textAlign: TextAlign.left,style: const TextStyle(color: Colors.white30,fontSize: 12,),overflow: TextOverflow.ellipsis,),
-                      ],
-                    ),
+                  SizedBox(width: 4,),
+                  Row(
+                    children: [
+                      if(drummer.imageUrl!=null)
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: CachedNetworkImage(imageUrl: drummer.imageUrl??"",width: 32,height: 32,)),
+                      const SizedBox(width: 4,height: 24,),
+                      Flexible(child: Text(drummer.username??"",style: const TextStyle(overflow: TextOverflow.ellipsis,fontSize: 15,fontWeight: FontWeight.w600,fontFamily: APP_FONT_MEDIUM,),)),
+                      const Text(" • "),
+                      Flexible(child: InstagramDateTimeWidget(publishedAt: widget.question?.createdTime.toString()??Timestamp.now().toString())),
+                      //Text(widget.question?.hook??"",textAlign: TextAlign.end,style: TextStyle(fontSize: 12,color: Colors.white38),)
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                    child: Text("${widget.question?.query}".trim(),
+                      maxLines: 3,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontFamily: APP_FONT_LIGHT,
+                        fontWeight: FontWeight.w600,
+                        overflow: TextOverflow.ellipsis,
+                      ),),
                   ),
                 ],
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(4, 12, 4, 4),
-                child: Flexible(
-                  child: Text("${widget.question?.query}".trim(),
-                    maxLines: 3,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontFamily: APP_FONT_LIGHT,
-                      fontWeight: FontWeight.w600,
-                      overflow: TextOverflow.ellipsis,
-                    ),),
-                ),
               ),
 
             ],

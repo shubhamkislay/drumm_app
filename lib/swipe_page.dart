@@ -1,13 +1,18 @@
 
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/custom/SearchProfessionDropdown.dart';
 import 'package:drumm_app/custom/rounded_button.dart';
 import 'package:drumm_app/model/question.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 
+import 'custom/SearchDesignationsDropdown.dart';
 import 'custom/helper/firebase_db_operations.dart';
+import 'model/profession.dart';
 
 class SwipePage extends StatefulWidget {
   SwipePage({Key? key}) : super(key: key);
@@ -34,6 +39,13 @@ class SwipePageState extends State<SwipePage>
 
   String selectedHook = "";
 
+  List<Profession> professions = [];
+
+  Profession selectedProfession = Profession();
+
+  String selectedDesignation = "";
+
+  Widget selectedItem = Container();
 
 
   @override
@@ -42,6 +54,7 @@ class SwipePageState extends State<SwipePage>
     pageController = PageController();
     super.initState();
     getHooks();
+    getProfessions();
     observeText();
 
   }
@@ -49,7 +62,7 @@ class SwipePageState extends State<SwipePage>
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height*0.75,
+      height: MediaQuery.of(context).size.height*0.5,
       decoration: BoxDecoration(
         //color: Colors.grey.shade900,
         gradient: LinearGradient(
@@ -84,19 +97,22 @@ class SwipePageState extends State<SwipePage>
                 Container(
                   alignment: Alignment.center,
                   width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.only(right: 0, top: 22),
+                  padding: const EdgeInsets.only(right: 16, top: 22),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                       Text(
-                        topicHead,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
-                      ),
+                       Flexible(
+                         child: Text(
+                          topicHead,
+                          maxLines: 3,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                                               ),
+                       ),
                     ],
                   ),
                 ),
@@ -139,105 +155,78 @@ class SwipePageState extends State<SwipePage>
                       const SizedBox(), // Add some space at the bottom for better visibility
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Wrap(
-                      runSpacing: 12.0,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      runAlignment: WrapAlignment.center,
-                      spacing: 12,
-                      alignment: WrapAlignment.center,
-                      children: hookList
-                          .map(
-                            (hook) => GestureDetector(
-                          onTap: () {
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
 
-                            // List<String> tempHooks = selectedHooks;
-                            // if (tempHooks.contains(hook)) {
-                            //   tempHooks.remove(hook);
-                            // } else {
-                            //   tempHooks.add(hook);
-                            // }
-                            //
-                            // setState(() {
-                            //   selectedHooks = tempHooks;
-                            // });
+                      if (professions.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: SearchProfessionDropdown(
+                            colorTheme: Colors.black,
+                            professions: professions,
+                            hintText: "Field of expertise",
+                            professionSelectedCallback: (Profession profession) {
+                              setState(() {
+                                selectedProfession = profession;
+                                selectedDesignation = "";
+                                selectedItem = Container();
+                                setWidget();
 
+                              });
+                            },
 
-                            setState(() {
-                              selectedHook = hook;
-                                page+=1;
-                            });
-
-                            pageController.animateToPage(page, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
-
-                          },
-                          child: Container(
-                            padding:
-                            const EdgeInsets.symmetric(vertical: 6, horizontal: 14),
-                            decoration: BoxDecoration(
-                              color: selectedHooks.contains(hook)
-                                  ? Colors.white
-                                  : Colors.transparent,
-                              border: Border.all(
-                                  color: Colors.white, width: 2),
-                              borderRadius: BorderRadius.circular(32),
-                            ),
-                            child: Text(
-                              hook,
-                              style: TextStyle(
-                                fontSize: 16,
-                                  color: selectedHooks.contains(hook)
-                                      ? Colors.blue
-                                      : Colors.white,
-                                fontWeight: selectedHooks.contains(hook)
-                                    ? FontWeight.w600
-                                    : FontWeight.w400,
-                              ),
-                            ),
                           ),
                         ),
-                      )
-                          .toList(),
-                    ),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: selectedItem
+                      ),
+                    ],
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text(question,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                                fontSize: 26,
-                            ),),
-                          ),
-                          const SizedBox(height: 16,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("Hook: ",style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 14,
-                              )),
-                              Text(selectedHook,
-                                textAlign: TextAlign.center,
+                      if(true)   Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Flexible(child: Text("Expertise: ",style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),),),
+                            Flexible(
+                              child: Text((selectedDesignation.isNotEmpty)? "${selectedDesignation} in ${selectedProfession.departmentName}": "${selectedProfession.departmentName}",
+                                textAlign: TextAlign.left,
+                                maxLines: 3,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
                                 ),),
-                            ],
-                          ), // Add some space at the bottom for better visibility
-                        ],
+                            ),
+                          ],
+                        ),
                       ),
-                      SizedBox(),
+
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Text(question,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                            fontSize: 26,
+                        ),),
+                      ),
+                      const SizedBox(height: 16,),
+                    // Add some space at the bottom for better visibility
                     ],
                   ),
                 ],
@@ -248,12 +237,14 @@ class SwipePageState extends State<SwipePage>
                     });
                   } else if(page == 1){
                     setState(() {
-                      topicHead = "Select a hook";
+                      topicHead = "Ask an expert";
                     });
                   } else if(page == 2){
-                    setState(() {
-                      topicHead = "Post question";
+
+                      setState(() {
+                      topicHead = "Post";
                     });
+
                   }
 
                 },
@@ -277,7 +268,7 @@ class SwipePageState extends State<SwipePage>
                 ),
                 if(page==0)
                   Container(),
-                if(page==0 && question.length>2)
+                if(page==0 && question.length>2 || page==1&&selectedProfession.departmentName!=null)
                 Container(
                   padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(
@@ -285,8 +276,9 @@ class SwipePageState extends State<SwipePage>
                       FocusScope.of(context).unfocus();
                       setState(() {
 
-                        if(page<2)
+                        if(page<2) {
                           page+=1;
+                        }
                       });
 
                       pageController.animateToPage(page, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
@@ -328,6 +320,40 @@ class SwipePageState extends State<SwipePage>
     });
   }
 
+  void setWidget() async{
+
+    Future.delayed(Duration(milliseconds: 100),(){
+      setState(() {
+        selectedItem = (selectedProfession.designations!.length>0) ? SearchDesignationDropdown(
+          colorTheme: Colors.black,
+          hintText: "Role of the expert",
+          designations: selectedProfession.designations??[],
+          designationsSelectedCallback: (String designation) {
+
+            setState(() {
+              selectedDesignation = designation;
+            });
+          },
+
+        ):
+        SearchDesignationDropdown(
+          colorTheme: Colors.black,
+          hintText: "Role of the expert",
+          designations: selectedProfession.designations??[],
+          designationsSelectedCallback: (String designation) {
+
+            setState(() {
+              selectedDesignation = designation;
+            });
+          },
+
+        );
+
+      });
+
+    });
+  }
+
   void postQuestion() async{
 
     DocumentReference questionRef =
@@ -336,13 +362,22 @@ class SwipePageState extends State<SwipePage>
 
     Question newQuestion = Question();
     newQuestion.query = question;
-    newQuestion.hook = selectedHook;
+    newQuestion.departmentName = selectedProfession.departmentName;
+    newQuestion.designation = selectedDesignation;
     newQuestion.uid = FirebaseAuth.instance.currentUser?.uid;
     newQuestion.createdTime =  Timestamp.now();
     newQuestion.qid = pushId;
 
     FirebaseDBOperations.postQuestion(newQuestion);
 
+  }
+
+  void getProfessions() async {
+    List<Profession> fetchProfessions =
+    await FirebaseDBOperations.getProfessions();
+    setState(() {
+      professions = fetchProfessions;
+    });
   }
 
 

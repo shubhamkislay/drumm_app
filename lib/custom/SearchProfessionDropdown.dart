@@ -11,24 +11,26 @@ class SearchProfessionDropdown extends StatelessWidget {
   List<Profession> professions;
   ProfessionSelectedCallback professionSelectedCallback;
   Profession? initialProfession;
+  String? hintText;
+  Color? colorTheme;
 
-  SearchProfessionDropdown({Key? key, required this.professions, this.initialProfession, required this.professionSelectedCallback}) : super(key: key);
+  SearchProfessionDropdown({Key? key, required this.professions, this.hintText, this.initialProfession, this.colorTheme, required this.professionSelectedCallback}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CustomDropdown<Profession>.search(
-      hintText: 'Select your field of expertise',
+      hintText: hintText??'Select your field of expertise',
       items: professions,
       initialItem: initialProfession,
       excludeSelected: false,
       validateOnChange: true,
       decoration: CustomDropdownDecoration(
-        closedFillColor: Colors.grey.shade900,
+        closedFillColor: colorTheme??Colors.grey.shade900,
 
             closedShadow: null,
-         closedBorderRadius: BorderRadius.circular(16),
-        expandedFillColor: Colors.grey.shade900,
-        expandedBorderRadius: BorderRadius.circular(16),
+         closedBorderRadius: BorderRadius.circular(0),
+        expandedFillColor: colorTheme??Colors.grey.shade900,
+        expandedBorderRadius: BorderRadius.circular(0),
         searchFieldDecoration: SearchFieldDecoration(
           fillColor: COLOR_PRIMARY_DARK,
         ),

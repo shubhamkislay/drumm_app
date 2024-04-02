@@ -215,6 +215,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                   if (questionCards.isNotEmpty)
                     Container(
                       alignment: Alignment.topCenter,
+                      padding: EdgeInsets.symmetric(horizontal: 4),
                       //height: double.maxFinite,//MediaQuery.of(context).size.height,
                       child: ListView(
                         padding: EdgeInsets.all(0),

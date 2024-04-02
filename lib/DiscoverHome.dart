@@ -328,12 +328,15 @@ class DiscoverHomeState extends State<DiscoverHome>
                                   const SizedBox(
                                     height: 12,
                                   ),
+
                                   Container(
                                     height: 225,
                                     alignment: Alignment.centerLeft,
                                     child: PageView(
                                       controller: _pageController,
                                       scrollDirection: Axis.horizontal,
+                                      physics: AlwaysScrollableScrollPhysics(),
+                                      //padding: EdgeInsets.symmetric(horizontal: 4),
                                       children: drummCards,
                                     ),
                                   ),
@@ -411,11 +414,12 @@ class DiscoverHomeState extends State<DiscoverHome>
                                     height: 12,
                                   ),
                                   Container(
-                                    height: 120,
+                                    height: 150,
                                     alignment: Alignment.centerLeft,
                                     child: ListView(
                                       controller: _pageController,
                                       scrollDirection: Axis.horizontal,
+                                      padding: EdgeInsets.symmetric(horizontal: 4),
                                       children: questionCards,
                                     ),
                                   ),
@@ -622,7 +626,10 @@ class DiscoverHomeState extends State<DiscoverHome>
   void initState() {
     // TODO: implement initState
     loadingAnimation = LOADING_ASSET;
-    _pageController = PageController();
+    _pageController = PageController(
+     // viewportFraction: 0.95,
+
+    );
     controller = CardSwiperController();
     super.initState();
     WidgetsBinding.instance?.addObserver(this);
@@ -756,6 +763,7 @@ class DiscoverHomeState extends State<DiscoverHome>
     drumms = broadcastJams + fetchedDrumms;
     userDrummCards = drumms.map((jam) {
       return DrummCard(
+        //width: double.maxFinite,
         jam,
       );
     }).toList();

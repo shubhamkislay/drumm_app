@@ -5,6 +5,8 @@ class Question {
   String? uid;
   String? qid;
   String? hook;
+  String? departmentName;
+  String? designation;
   List<String>? tags;
   Timestamp? createdTime;
 
@@ -12,6 +14,8 @@ class Question {
 
   Map<String, dynamic> toJson() => {
     'query': query,
+    'departmentName':departmentName,
+    'designation':designation,
     'uid': uid,
     'qid': qid,
     'hook': hook,
@@ -23,6 +27,8 @@ class Question {
       : query = snapshot.data()['query'],
         uid = snapshot.data()['uid'],
         qid = snapshot.data()['qid'],
+        departmentName = snapshot.data()['departmentName'],
+        designation = snapshot.data()['designation'],
         hook = snapshot.data()['hook'],
   //tags = snapshot.data()['tags'],
         createdTime =  snapshot.data()['createdTime'];

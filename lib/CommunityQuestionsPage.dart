@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:drumm_app/SkeletonHomeItem.dart';
 import 'package:drumm_app/custom/create_jam_bottom_sheet.dart';
+import 'package:drumm_app/model/CommunityQuestionsCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:drumm_app/custom/icon_button.dart';
@@ -115,15 +116,16 @@ class CommunityQuestionsPageState extends State<CommunityQuestionsPage>
                         if (questionCards.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 16),
-                            child: GridView.count(
-                                crossAxisCount: 2, // Number of columns
-                                childAspectRatio: 0.8,
+                                horizontal: 4, vertical: 4),
+                            child: ListView(
+                                //crossAxisCount: 1, // Number of columns
+                                //childAspectRatio: 0.8,
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
                                 padding: const EdgeInsets.symmetric(horizontal: 0),
-                                crossAxisSpacing: 8,
-                                mainAxisSpacing: 8,
+
+                                //crossAxisSpacing: 8,
+                                //mainAxisSpacing: 8,
                                 children: questionCards),
                           ),
                         if (questionCards.isEmpty && loaded)

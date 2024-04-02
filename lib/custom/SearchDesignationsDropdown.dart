@@ -11,8 +11,10 @@ class SearchDesignationDropdown extends StatelessWidget {
   List<dynamic> designations;
   DesignationsSelectedCallback designationsSelectedCallback;
   dynamic initialDesignation;
+  String? hintText;
+  Color? colorTheme;
 
-  SearchDesignationDropdown({Key? key, required this.designations, this.initialDesignation, required this.designationsSelectedCallback}) : super(key: key);
+  SearchDesignationDropdown({Key? key, required this.designations,this.hintText, this.initialDesignation, this.colorTheme, required this.designationsSelectedCallback}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,16 +22,16 @@ class SearchDesignationDropdown extends StatelessWidget {
     return Container(
       color: Colors.black,
       child: CustomDropdown<dynamic>.search(
-        hintText: 'What\'s your role?',
+        hintText: hintText??'What\'s your role?',
         items: designations,
         initialItem: initialDesignation,
         //initialItem: designations.elementAt(0),
         decoration: CustomDropdownDecoration(
-          closedFillColor: Colors.grey.shade900,
+          closedFillColor: colorTheme??Colors.grey.shade900,
           closedShadow: null,
-          closedBorderRadius: BorderRadius.circular(16),
-          expandedFillColor: Colors.grey.shade900,
-          expandedBorderRadius: BorderRadius.circular(16),
+          closedBorderRadius: BorderRadius.circular(0),
+          expandedFillColor: colorTheme??Colors.grey.shade900,
+          expandedBorderRadius: BorderRadius.circular(0),
           searchFieldDecoration: SearchFieldDecoration(
             fillColor: COLOR_PRIMARY_DARK,
 

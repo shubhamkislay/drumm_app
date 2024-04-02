@@ -65,18 +65,14 @@ class _EditProfileState extends State<EditProfile> {
 
   String initialDesignation = "";
 
-
   @override
   Widget build(BuildContext context) {
-    TextEditingController bioTextController= TextEditingController(
-        text: drummer.bio
-    );
-    TextEditingController professionTextController= TextEditingController(
-        text: drummer.jobTitle
-    );
-    TextEditingController orgTextController= TextEditingController(
-        text: drummer.organisation
-    );
+    TextEditingController bioTextController =
+        TextEditingController(text: drummer.bio);
+    TextEditingController professionTextController =
+        TextEditingController(text: drummer.jobTitle);
+    TextEditingController orgTextController =
+        TextEditingController(text: drummer.organisation);
 
     return Container(
       color: Colors.black,
@@ -90,15 +86,16 @@ class _EditProfileState extends State<EditProfile> {
               children: [
                 if (pickedImage == null)
                   Container(
-                    padding:  const EdgeInsets.all(32.0),
+                    padding: const EdgeInsets.all(32.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(24),
                       child: GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           selectData();
                         },
                         child: CachedNetworkImage(
-                            imageUrl: drummer.imageUrl ?? "",),
+                          imageUrl: drummer.imageUrl ?? "",
+                        ),
                       ),
                     ),
                   ),
@@ -124,7 +121,6 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 Column(
                   children: [
-
                     if (professions.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -143,10 +139,8 @@ class _EditProfileState extends State<EditProfile> {
                               textEditingController.clear();
                               moreAboutTxt = "";
                               setWidget();
-
                             });
                           },
-
                         ),
                       ),
                     SizedBox(
@@ -154,18 +148,18 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                     Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: selectedItem
-                    ),
+                        child: selectedItem),
                     SizedBox(
                       height: 12,
                     ),
                     Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: moreAbout
-                    ),
+                        child: moreAbout),
                   ],
                 ),
-                SizedBox(height: 50,),
+                SizedBox(
+                  height: 50,
+                ),
                 GestureDetector(
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 16),
@@ -210,7 +204,6 @@ class _EditProfileState extends State<EditProfile> {
     drummer = widget.drummer!;
     super.initState();
     getProfessions();
-
   }
 
   void selectData() {
@@ -228,8 +221,10 @@ class _EditProfileState extends State<EditProfile> {
           });
         },
         (String imageUrl) {
-          print("Uploaded Image: ${imageUrl}&lastupdated=${Timestamp.now().microsecondsSinceEpoch.toString()}");
-          imageURL = "$imageUrl&lastupdated=${Timestamp.now().microsecondsSinceEpoch.toString()}";
+          print(
+              "Uploaded Image: ${imageUrl}&lastupdated=${Timestamp.now().microsecondsSinceEpoch.toString()}");
+          imageURL =
+              "$imageUrl&lastupdated=${Timestamp.now().microsecondsSinceEpoch.toString()}";
           drummer.imageUrl = imageURL;
           setState(() {
             readToUpload = true;
@@ -243,19 +238,20 @@ class _EditProfileState extends State<EditProfile> {
           });
         });
   }
+
   void getProfessions() async {
     List<Profession> fetchProfessions =
-    await FirebaseDBOperations.getProfessions();
-for(Profession profession in fetchProfessions){
-  if(drummer.occupation == profession.departmentName){
-    setState(() {
-      initialProfession = profession;
-      initialDesignation = widget.drummer!.jobTitle??"";
-      textEditingController.text = widget.drummer!.bio??"";
-    });
-    break;
-  }
-}
+        await FirebaseDBOperations.getProfessions();
+    for (Profession profession in fetchProfessions) {
+      if (drummer.occupation == profession.departmentName) {
+        setState(() {
+          initialProfession = profession;
+          initialDesignation = widget.drummer!.jobTitle ?? "";
+          textEditingController.text = widget.drummer!.bio ?? "";
+        });
+        break;
+      }
+    }
     setState(() {
       professions = fetchProfessions;
       setWidget();
@@ -279,39 +275,35 @@ for(Profession profession in fetchProfessions){
     //     .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
   }
 
-  void setWidget() async{
-
-    Future.delayed(Duration(milliseconds: 100),(){
+  void setWidget() async {
+    Future.delayed(Duration(milliseconds: 100), () {
       setState(() {
-        selectedItem = (initialDesignation.length>0) ? SearchDesignationDropdown(
-          initialDesignation: initialDesignation,
-          designations: initialProfession.designations??["$initialDesignation"],
-          designationsSelectedCallback: (String designation) {
-
-            setState(() {
-              selectedDesignation = designation;
-              drummer.jobTitle = designation;
-              setMoreAboutWidget();
-            });
-          },
-
-        ):
-        SearchDesignationDropdown(
-          designations: selectedProfession.designations??[],
-          designationsSelectedCallback: (String designation) {
-
-            setState(() {
-              selectedDesignation = designation;
-              drummer.jobTitle = designation;
-              setMoreAboutWidget();
-            });
-          },
-
-        );
+        selectedItem = (initialDesignation.length > 0)
+            ? SearchDesignationDropdown(
+                initialDesignation: initialDesignation,
+                designations:
+                    initialProfession.designations ?? ["$initialDesignation"],
+                designationsSelectedCallback: (String designation) {
+                  setState(() {
+                    selectedDesignation = designation;
+                    drummer.jobTitle = designation;
+                    setMoreAboutWidget();
+                  });
+                },
+              )
+            : SearchDesignationDropdown(
+                designations: selectedProfession.designations ?? [],
+                designationsSelectedCallback: (String designation) {
+                  setState(() {
+                    selectedDesignation = designation;
+                    drummer.jobTitle = designation;
+                    setMoreAboutWidget();
+                  });
+                },
+              );
 
         setMoreAboutWidget();
       });
-
     });
   }
 
@@ -326,7 +318,7 @@ for(Profession profession in fetchProfessions){
           hintText: "Tell us more about your role (optional)",
           contentPadding: EdgeInsets.all(16),
         ),
-        onChanged: (value){
+        onChanged: (value) {
           moreAboutTxt = value;
           drummer.bio = moreAboutTxt;
         },
