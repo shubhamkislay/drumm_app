@@ -41,6 +41,7 @@ class _UserProfileIconState extends State<UserProfileIcon> {
         )
             : RoundedButton(
             height: 26,
+            width: 26,
             assetPath: "images/user_profile_active.png",
             color: Colors.white,
             bgColor: Colors.black,

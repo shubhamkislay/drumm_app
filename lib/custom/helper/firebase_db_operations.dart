@@ -565,9 +565,14 @@ class FirebaseDBOperations {
     try {
       final WriteBatch batch = FirebaseFirestore.instance.batch();
 
+      DateTime currentTime = DateTime.now();
+      DateTime oneDayAgo = currentTime.subtract(Duration(days: 1));
+
+
       batch.update(articleRef, {
         'likes': FieldValue.increment(-1),
         'boosts': FieldValue.increment(-1),
+        'boostamp':Timestamp.fromDate(oneDayAgo),
       });
       batch.delete(userLikeRef);
 

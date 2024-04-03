@@ -47,6 +47,7 @@ class MultiSelectContainerWidget extends StatelessWidget {
             //     color: Colors.grey.shade900, width: 2.25),
             borderRadius: BorderRadius.circular(multiSelectRadius)),
       ),
+
       items: bandsCards,
       textStyles: const MultiSelectTextStyles(
         selectedTextStyle: TextStyle(
@@ -68,6 +69,8 @@ class MultiSelectContainerWidget extends StatelessWidget {
       onChange: onSelect,
       singleSelectedItem: true,
       itemsPadding: const EdgeInsets.all(0),
+
+
     );
   }
 }

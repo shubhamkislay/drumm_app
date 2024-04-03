@@ -144,6 +144,10 @@ class DiscoverHomeState extends State<DiscoverHome>
 
   Article? latestArticle;
 
+  String boostedText = "";
+
+  AlgoliaArticles fetchBoostedAlgoliaArticles = AlgoliaArticles();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -164,6 +168,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                 backgroundColor: Colors.grey.shade900.withOpacity(0.75),
                 child: CustomScrollView(
                   controller: _scrollController,
+                  physics: AlwaysScrollableScrollPhysics(),
                   slivers: [
                     SliverPadding(
                       padding: EdgeInsets.symmetric(
@@ -235,9 +240,10 @@ class DiscoverHomeState extends State<DiscoverHome>
                                               const SizedBox(
                                                 width: 8,
                                               ),
-                                              const Text(
-                                                "Search drumms",
+                                              Text(
+                                                "Search on Drumm",
                                                 style: TextStyle(
+                                                  fontFamily: APP_FONT_MEDIUM,
                                                     color: Colors.white38),
                                               )
                                             ],
@@ -328,7 +334,6 @@ class DiscoverHomeState extends State<DiscoverHome>
                                   const SizedBox(
                                     height: 12,
                                   ),
-
                                   Container(
                                     height: 225,
                                     alignment: Alignment.centerLeft,
@@ -419,7 +424,8 @@ class DiscoverHomeState extends State<DiscoverHome>
                                     child: ListView(
                                       controller: _pageController,
                                       scrollDirection: Axis.horizontal,
-                                      padding: EdgeInsets.symmetric(horizontal: 4),
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 4),
                                       children: questionCards,
                                     ),
                                   ),
@@ -472,11 +478,15 @@ class DiscoverHomeState extends State<DiscoverHome>
                                       const SizedBox(
                                         width: 4,
                                       ),
-                                      if (articleBands.isNotEmpty&&latestArticle!=null)
+                                      if (articleBands.isNotEmpty &&
+                                          latestArticle != null)
                                         InstagramDateTimeWidget(
                                             fontColor: Colors.white38,
                                             textSize: 12,
-                                            publishedAt: latestArticle?.publishedAt.toString()??articleBands
+                                            publishedAt: latestArticle
+                                                    ?.publishedAt
+                                                    .toString() ??
+                                                articleBands
                                                     .elementAt(0)
                                                     .article
                                                     ?.publishedAt
@@ -521,7 +531,8 @@ class DiscoverHomeState extends State<DiscoverHome>
                       ),
                     ),
                     SliverPadding(
-                      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 2, horizontal: 0),
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
@@ -534,11 +545,9 @@ class DiscoverHomeState extends State<DiscoverHome>
                                 crossAxisCount: 5,
                                 mainAxisSpacing: 8,
                                 crossAxisSpacing: 8,
-                                repeatPattern:
-                                    QuiltedGridRepeatPattern.same,
+                                repeatPattern: QuiltedGridRepeatPattern.same,
                                 pattern: [
                                   const QuiltedGridTile(3, 5),
-
                                   const QuiltedGridTile(4, 3),
                                   const QuiltedGridTile(2, 2),
                                   const QuiltedGridTile(3, 2),
@@ -546,9 +555,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                                   const QuiltedGridTile(2, 2),
                                   const QuiltedGridTile(3, 2),
                                   const QuiltedGridTile(3, 3),
-
                                   const QuiltedGridTile(3, 5),
-
                                   const QuiltedGridTile(2, 2),
                                   const QuiltedGridTile(4, 3),
                                   const QuiltedGridTile(3, 2),
@@ -556,7 +563,6 @@ class DiscoverHomeState extends State<DiscoverHome>
                                   const QuiltedGridTile(2, 2),
                                   const QuiltedGridTile(3, 3),
                                   const QuiltedGridTile(3, 2),
-
                                 ],
                               ),
                               childrenDelegate: (articleCards.isNotEmpty)
@@ -642,9 +648,9 @@ class DiscoverHomeState extends State<DiscoverHome>
     // TODO: implement initState
     loadingAnimation = LOADING_ASSET;
     _pageController = PageController(
-     // viewportFraction: 0.95,
+        // viewportFraction: 0.95,
 
-    );
+        );
     controller = CardSwiperController();
     super.initState();
     WidgetsBinding.instance?.addObserver(this);
@@ -708,6 +714,8 @@ class DiscoverHomeState extends State<DiscoverHome>
 
     bandList = await FirebaseDBOperations.getBandByUser();
 
+    List<Article> articleFetched = [];
+
     for (Band band in bandList) {
       bandMap.putIfAbsent(band.bandId ?? "", () => band);
     }
@@ -718,6 +726,22 @@ class DiscoverHomeState extends State<DiscoverHome>
     allBands.name = "For You";
     allBands.bandId = "For You";
     bandList.insert(0, allBands);
+
+    fetchBoostedAlgoliaArticles =
+        await FirebaseDBOperations.getBoostedArticlesData(null, null, false);
+    print("Size of boosted articles ${fetchBoostedAlgoliaArticles.articles!.length}");
+
+    if (fetchBoostedAlgoliaArticles.articles!.isNotEmpty) {
+      Band boostedBand = Band();
+      boostedBand.name = "Boosted";
+      boostedBand.bandId = "Boosted";
+      bandList.insert(0, boostedBand);
+
+      setState(() {
+        boostedText = "• ${fetchBoostedAlgoliaArticles.articles!.length}";
+      });
+    }
+
     bandList.forEach((element) {
       if (element.bandId == "For You") {
         mulList.add(
@@ -732,6 +756,63 @@ class DiscoverHomeState extends State<DiscoverHome>
                   "For You",
                   textAlign: TextAlign.center,
                 )),
+          ),
+        );
+      } else if (element.bandId == "Boosted") {
+        mulList.add(
+          MultiSelectCard(
+            value: element,
+            decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade900,
+                borderRadius: BorderRadius.circular(32),
+              ),
+              selectedDecoration: BoxDecoration(
+                color: Colors.indigo.shade700,
+                borderRadius: BorderRadius.circular(32),
+              ),
+            ),
+            textStyles: MultiSelectItemTextStyles(
+              selectedTextStyle: TextStyle(
+                color: Colors.white,
+                fontFamily: APP_FONT_MEDIUM,
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+              ),
+              disabledTextStyle: TextStyle(
+                color: Colors.white70,
+                fontFamily: APP_FONT_MEDIUM,
+                fontSize: 13,
+              ),
+              textStyle: TextStyle(
+                color: Colors.indigoAccent,
+                fontFamily: APP_FONT_MEDIUM,
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(width: 6,),
+                Container(
+                  padding: EdgeInsets.only(left: 4,top: 6,bottom: 4,right: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Image.asset(
+                    'images/boost_enabled.png', //'images/like_btn.png',
+                    height: 42,
+                    color: Colors.white,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                Text(boostedText),
+                SizedBox(width: 6,),
+
+              ],
+            ),
           ),
         );
       } else {
@@ -798,7 +879,7 @@ class DiscoverHomeState extends State<DiscoverHome>
     List<QuestionCard> fetchedQuestionCards = questions.map((question) {
       return QuestionCard(
         question: question,
-        deleteCallback: (question){
+        deleteCallback: (question) {
           getCommunityQuestion();
         },
       );
@@ -835,6 +916,8 @@ class DiscoverHomeState extends State<DiscoverHome>
             initialisedYoutubePlayer = false;
             if (selectedBandID == "For You") {
               getArticles(false);
+            } else if (selectedBandID == "Boosted") {
+              getBoostedArticles(false);
             } else {
               getArticlesForBands(selectedBand, false);
             }
@@ -854,32 +937,33 @@ class DiscoverHomeState extends State<DiscoverHome>
     //});
     controller = CardSwiperController();
     List<Article> articleFetched = [];
-    if (!fetchedAllBoosted) {
-      algoliaArticles = await FirebaseDBOperations.getBoostedArticlesData(
-          _startDocument, _lastDocument, reverse);
-      for (Article article in algoliaArticles?.articles ?? []) {
-        int boosts = article.boosts ?? 0;
-        if (boosts > 0) articleFetched.add(article);
-      }
-    } //await FirebaseDBOperations.getArticlesByBands();
-    if (articleFetched.length < 10) {
-      if (!fetchedAllBoosted) {
-        _lastDocument = null;
-        _startDocument = null;
-        fetchedAllBoosted = true;
-      }
-      algoliaArticles = await FirebaseDBOperations.getArticlesData(
-          _startDocument, _lastDocument, reverse);
-      setState(() {
-        latestArticle = algoliaArticles?.articles?.elementAt(0);
-      });
+    // if (!fetchedAllBoosted) {
+    //   algoliaArticles = await FirebaseDBOperations.getBoostedArticlesData(
+    //       _startDocument, _lastDocument, reverse);
+    //   for (Article article in algoliaArticles?.articles ?? []) {
+    //     int boosts = article.boosts ?? 0;
+    //     if (boosts > 0) articleFetched.add(article);
+    //   }
+    // } //await FirebaseDBOperations.getArticlesByBands();
+    // if (articleFetched.length < 10) {
+    //   if (!fetchedAllBoosted) {
+    //     _lastDocument = null;
+    //     _startDocument = null;
+    //     fetchedAllBoosted = true;
+    //   }
+    algoliaArticles = await FirebaseDBOperations.getArticlesData(
+        _startDocument, _lastDocument, reverse);
+    setState(() {
+      latestArticle = algoliaArticles?.articles?.elementAt(0);
+    });
 
-      for (Article article in algoliaArticles?.articles ?? []) {
-        int boosts = article.boosts ?? 0;
-        if (boosts == 0) articleFetched.add(article);
-      }
-      //articleFetched.addAll(algoliaArticles?.articles ?? []);
-    }
+    articleFetched.addAll(algoliaArticles?.articles ?? []);
+    // for (Article article in algoliaArticles?.articles ?? []) {
+    //   int boosts = article.boosts ?? 0;
+    //   if (boosts == 0) articleFetched.add(article);
+    // }
+    //articleFetched.addAll(algoliaArticles?.articles ?? []);
+    // }
 
     if (_lastDocument == null)
       _startDocument = algoliaArticles?.getStartDocument();
@@ -943,37 +1027,116 @@ class DiscoverHomeState extends State<DiscoverHome>
     return true;
   }
 
+  Future<bool> getBoostedArticles(bool reverse) async {
+    //setState(() {
+    //articles.clear();
+    //articleBands.clear();
+    //});
+    controller = CardSwiperController();
+    List<Article> articleFetched = [];
+    algoliaArticles = await FirebaseDBOperations.getBoostedArticlesData(
+        _startDocument, _lastDocument, reverse);
+    articleFetched.addAll(algoliaArticles?.articles ?? []);
+    // for (Article article in algoliaArticles?.articles ?? []) {
+    //   int boosts = article.boosts ?? 0;
+    //   if (boosts > 0) articleFetched.add(article);
+    // }
+
+    if (_lastDocument == null)
+      _startDocument = algoliaArticles?.getStartDocument();
+
+    _lastDocument = algoliaArticles?.getLastDocument();
+
+    if (articleFetched.isEmpty) {
+      setState(() {
+        loadingAnimation = NO_FOUND_ASSET;
+        loadAnimation = true;
+      });
+    } else {
+      List<ArticleBand> fetchedArticleBand = [];
+
+      for (Article article in articleFetched) {
+        for (Band band in bandList) {
+          List hooks = band.hooks ?? [];
+          if (hooks.contains(article.category)) {
+            ArticleBand articleBand = ArticleBand(article: article, band: band);
+            fetchedArticleBand.add(articleBand);
+            break;
+          }
+        }
+      }
+
+      if (selectedBandID == "Boosted") {
+        setState(() {
+          Article article =
+              fetchedArticleBand.elementAt(0).article ?? Article();
+          print("getArticles page $articlePage item ${article.title}");
+          try {} catch (e) {}
+          topIndex = 0;
+          initialisedYoutubePlayer = false;
+          loadAnimation = false;
+          queryID = algoliaArticles?.queryID;
+          loadingAnimation = LOADING_ASSET;
+          articles = articles + articleFetched;
+          articleBands = articleBands + fetchedArticleBand;
+          articleCards = bufferingCards +
+              fetchedArticleBand
+                  .map((article) => ArticleImageCard(
+                        article,
+                        articleBands: articleBands,
+                        lastDocument: _lastDocument,
+                        selectedBandID: selectedBandID,
+                      ))
+                  .toList();
+          bufferingCards = [];
+          undoIndex = 0;
+          try {
+            articleOnScreen = articleBands.elementAt(0).article ?? Article();
+            if (articleTop == "") {
+              articleTop = articleBands.elementAt(0).article?.articleId ?? "";
+            }
+          } catch (e) {
+            print("Error setting Article $e");
+          }
+        });
+      }
+    }
+    return true;
+  }
+
   Future<bool> getArticlesForBands(Band selectedBand, bool reverse) async {
     //articles.clear();
     //articleBands.clear();
     controller = CardSwiperController();
     List<Article> articleFetched = [];
-    if (!fetchedAllBoosted) {
-      algoliaArticles =
-          await FirebaseDBOperations.getBoostedArticlesDataForBand(
-              _startDocument, _lastDocument, reverse, selectedBand);
-      for (Article article in algoliaArticles?.articles ?? []) {
-        int boosts = article.boosts ?? 0;
-        if (boosts > 0) articleFetched.add(article);
-      }
-    }
+    // if (!fetchedAllBoosted) {
+    //   algoliaArticles =
+    //       await FirebaseDBOperations.getBoostedArticlesDataForBand(
+    //           _startDocument, _lastDocument, reverse, selectedBand);
+    //   for (Article article in algoliaArticles?.articles ?? []) {
+    //     int boosts = article.boosts ?? 0;
+    //     if (boosts > 0) articleFetched.add(article);
+    //   }
+    // }
 
-    if (articleFetched.length < 10) {
-      if (!fetchedAllBoosted) {
-        _lastDocument = null;
-        _startDocument = null;
-        fetchedAllBoosted = true;
-      }
-      algoliaArticles = await FirebaseDBOperations.getArticlesDataForBand(
-          _startDocument, _lastDocument, reverse, selectedBand);
-      setState(() {
-        latestArticle = algoliaArticles?.articles?.elementAt(0);
-      });
-      for (Article article in algoliaArticles?.articles ?? []) {
-        int boosts = article.boosts ?? 0;
-        if (boosts == 0) articleFetched.add(article);
-      }
-    }
+    // if (articleFetched.length < 10) {
+    //    if (!fetchedAllBoosted) {
+    //      _lastDocument = null;
+    //      _startDocument = null;
+    //      fetchedAllBoosted = true;
+    //    }
+    algoliaArticles = await FirebaseDBOperations.getArticlesDataForBand(
+        _startDocument, _lastDocument, reverse, selectedBand);
+    setState(() {
+      latestArticle = algoliaArticles?.articles?.elementAt(0);
+    });
+
+    articleFetched.addAll(algoliaArticles?.articles ?? []);
+    // for (Article article in algoliaArticles?.articles ?? []) {
+    //   int boosts = article.boosts ?? 0;
+    //   if (boosts == 0) articleFetched.add(article);
+    // }
+    //  }
 
     _lastDocument = algoliaArticles?.getLastDocument();
     _startDocument = algoliaArticles?.getStartDocument();

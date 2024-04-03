@@ -316,13 +316,13 @@ class ArticleImageCard extends StatelessWidget {
                                                     textAlign: TextAlign.left,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    maxFontSize: 20,
+                                                    maxFontSize: 17,
                                                     maxLines: 3,
                                                     minFontSize: 10,
                                                     style: TextStyle(
                                                         overflow:
                                                             TextOverflow.ellipsis,
-                                                        fontSize: 20,
+                                                        fontSize: 17,
                                                         fontWeight:
                                                             FontWeight.w600,
                                                         fontFamily:
@@ -520,14 +520,14 @@ class ArticleImageCard extends StatelessWidget {
       children: [
         returnWidget,
         if (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent))>0)
-        IgnorePointer(
+       if(false) IgnorePointer(
           child: Center(
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 12),
               child: Image.asset(
                 'images/boost_large.png', //'images/like_btn.png',
                 height: double.maxFinite,
-                color: Colors.grey.withOpacity(0.2),
+                color: Colors.grey.withOpacity(0.12),
                 fit: BoxFit.contain,
               ),
             ),
