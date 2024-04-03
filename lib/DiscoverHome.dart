@@ -521,7 +521,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                       ),
                     ),
                     SliverPadding(
-                      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 0),
+                      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 0),
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
@@ -532,16 +532,31 @@ class DiscoverHomeState extends State<DiscoverHome>
                               physics: const NeverScrollableScrollPhysics(),
                               gridDelegate: SliverQuiltedGridDelegate(
                                 crossAxisCount: 5,
-                                mainAxisSpacing: 10,
-                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 8,
+                                crossAxisSpacing: 8,
                                 repeatPattern:
-                                    QuiltedGridRepeatPattern.inverted,
+                                    QuiltedGridRepeatPattern.same,
                                 pattern: [
+                                  const QuiltedGridTile(3, 5),
+
                                   const QuiltedGridTile(4, 3),
                                   const QuiltedGridTile(2, 2),
                                   const QuiltedGridTile(3, 2),
                                   const QuiltedGridTile(3, 3),
                                   const QuiltedGridTile(2, 2),
+                                  const QuiltedGridTile(3, 2),
+                                  const QuiltedGridTile(3, 3),
+
+                                  const QuiltedGridTile(3, 5),
+
+                                  const QuiltedGridTile(2, 2),
+                                  const QuiltedGridTile(4, 3),
+                                  const QuiltedGridTile(3, 2),
+                                  const QuiltedGridTile(3, 3),
+                                  const QuiltedGridTile(2, 2),
+                                  const QuiltedGridTile(3, 3),
+                                  const QuiltedGridTile(3, 2),
+
                                 ],
                               ),
                               childrenDelegate: (articleCards.isNotEmpty)

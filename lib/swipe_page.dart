@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_swipe_button/flutter_swipe_button.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 
 import 'custom/SearchDesignationsDropdown.dart';
@@ -108,9 +109,9 @@ class SwipePageState extends State<SwipePage>
                           maxLines: 3,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18),
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14),
                                                ),
                        ),
                     ],
@@ -164,6 +165,7 @@ class SwipePageState extends State<SwipePage>
                           padding: const EdgeInsets.symmetric(horizontal: 24),
                           child: SearchProfessionDropdown(
                             colorTheme: Colors.black,
+                            isLight: true,
                             professions: professions,
                             hintText: "Field of expertise",
                             professionSelectedCallback: (Profession profession) {
@@ -188,32 +190,10 @@ class SwipePageState extends State<SwipePage>
                     ],
                   ),
                   Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if(true)   Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Flexible(child: Text("Expertise: ",style: TextStyle(
-                              color: Colors.white70,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                            ),),),
-                            Flexible(
-                              child: Text((selectedDesignation.isNotEmpty)? "${selectedDesignation} in ${selectedProfession.departmentName}": "${selectedProfession.departmentName}",
-                                textAlign: TextAlign.left,
-                                maxLines: 3,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),),
-                            ),
-                          ],
-                        ),
-                      ),
+                      const SizedBox(height: 0,),
+
 
                       Padding(
                         padding: const EdgeInsets.all(12.0),
@@ -225,7 +205,32 @@ class SwipePageState extends State<SwipePage>
                             fontSize: 26,
                         ),),
                       ),
-                      const SizedBox(height: 16,),
+                      if(true)   Container(
+                        padding: const EdgeInsets.all(12.0),
+                        height: 100,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Flexible(child: Text("Ask an Expert",style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),),),
+                            Flexible(
+                              child: Text((selectedDesignation.isNotEmpty)? "${selectedDesignation} in ${selectedProfession.departmentName}": "${selectedProfession.departmentName}",
+                                textAlign: TextAlign.center,
+                                maxLines: 3,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),),
+                            ),
+                          ],
+                        ),
+                      ),
+
                     // Add some space at the bottom for better visibility
                     ],
                   ),
@@ -242,7 +247,7 @@ class SwipePageState extends State<SwipePage>
                   } else if(page == 2){
 
                       setState(() {
-                      topicHead = "Post";
+                      topicHead = "Post your Question";
                     });
 
                   }
@@ -253,7 +258,7 @@ class SwipePageState extends State<SwipePage>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-              if(page>0)  Container(
+              if(page==1)  Container(
                   padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(
                       onTap: (){
@@ -286,17 +291,51 @@ class SwipePageState extends State<SwipePage>
                     },
                       child: Icon(Icons.arrow_circle_right_rounded,size: 64,)),
                 ),
+                // if(page==2&&false)
+                // GestureDetector(
+                //   onTap: (){
+                //     postQuestion();
+                //     Navigator.pop(context);
+                //   },
+                //   child: const Padding(
+                //     padding: EdgeInsets.all(8.0),
+                //     child: Icon(Icons.camera_rear,size: 60,),
+                //   ),
+                // ),
+
                 if(page==2)
-                GestureDetector(
-                  onTap: (){
-                    postQuestion();
-                    Navigator.pop(context);
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(Icons.check_circle_rounded,size: 60,),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 12,right: 12,bottom: 8),
+                      child: SwipeButton.expand(
+                        thumbPadding: const EdgeInsets.all(4),
+                        height: 64,
+                        thumb: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Image.asset(
+                             'images/audio-waves.png',
+                            fit: BoxFit.contain,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        borderRadius: BorderRadius.circular(22),
+                        child:  Text(
+                         "Swipe right to post",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        activeThumbColor: Colors.white,
+                        activeTrackColor: Colors.white.withOpacity(0.175),
+                        onSwipe: () {
+                          Vibrate.feedback(FeedbackType.success);
+                          postQuestion();
+                          Navigator.pop(context);
+
+                        },
+                      ),
+                    ),
                   ),
-                )
               ],
             ),
           ],
@@ -326,6 +365,7 @@ class SwipePageState extends State<SwipePage>
       setState(() {
         selectedItem = (selectedProfession.designations!.length>0) ? SearchDesignationDropdown(
           colorTheme: Colors.black,
+          isLight: true,
           hintText: "Role of the expert",
           designations: selectedProfession.designations??[],
           designationsSelectedCallback: (String designation) {
@@ -338,6 +378,7 @@ class SwipePageState extends State<SwipePage>
         ):
         SearchDesignationDropdown(
           colorTheme: Colors.black,
+          isLight: true,
           hintText: "Role of the expert",
           designations: selectedProfession.designations??[],
           designationsSelectedCallback: (String designation) {

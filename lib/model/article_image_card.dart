@@ -14,6 +14,7 @@ import 'package:drumm_app/home_feed.dart';
 import 'package:drumm_app/model/article.dart';
 import 'package:drumm_app/model/question.dart';
 import 'package:drumm_app/open_article_page.dart';
+import 'package:flutter/widgets.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import '../custom/helper/BottomUpPageRoute.dart';
@@ -40,6 +41,8 @@ class ArticleImageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int boosts = 0;
+    double curve = 12;
+    double borderWidth = 3;
     DateTime currentTime = DateTime.now();
     DateTime recent = currentTime.subtract(Duration(hours: 3));
     Timestamp boostTime = Timestamp.now();
@@ -60,7 +63,7 @@ class ArticleImageCard extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(13),
               color: Colors.grey.shade900, //COLOR_BACKGROUND,
-              border: Border.all(color: colorBorder, width: 4),
+              border: Border.all(color: colorBorder, width: borderWidth),
             ),
           )
         : LayoutBuilder(
@@ -113,9 +116,9 @@ class ArticleImageCard extends StatelessWidget {
               },
               child: (articleBand.article?.imageUrl != null)
                   ? Container(
-                      padding: const EdgeInsets.all(4),
+                      padding:  EdgeInsets.all(borderWidth),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(curve),
                           gradient: LinearGradient(
                               begin: Alignment.bottomLeft,
                               end: Alignment.topRight,
@@ -127,11 +130,11 @@ class ArticleImageCard extends StatelessWidget {
                       child: Container(
                         padding: EdgeInsets.all(0),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(curve),
                           color: COLOR_BACKGROUND,
                         ),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(curve-2),
                           child: Stack(
                             children: [
                               Hero(
@@ -253,7 +256,7 @@ class ArticleImageCard extends StatelessWidget {
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                          8),
+                                                          curve-4),
                                                   color: Colors.grey.shade800
                                                       .withOpacity(0.65)),
                                               child: Hero(
@@ -282,7 +285,7 @@ class ArticleImageCard extends StatelessWidget {
                                                 padding: EdgeInsets.all(2),
                                                 child: Image.asset(
                                                   'images/boost_enabled.png', //'images/like_btn.png',
-                                                  height: 18,
+                                                  height: 20,
                                                   color: Colors.white,
                                                   fit: BoxFit.contain,
                                                 ),
@@ -313,13 +316,13 @@ class ArticleImageCard extends StatelessWidget {
                                                     textAlign: TextAlign.left,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    maxFontSize: 17,
+                                                    maxFontSize: 20,
                                                     maxLines: 3,
                                                     minFontSize: 10,
                                                     style: TextStyle(
                                                         overflow:
                                                             TextOverflow.ellipsis,
-                                                        fontSize: 17,
+                                                        fontSize: 20,
                                                         fontWeight:
                                                             FontWeight.w600,
                                                         fontFamily:
@@ -391,12 +394,12 @@ class ArticleImageCard extends StatelessWidget {
                       width: MediaQuery.of(context).size.width,
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(curve+2),
                         color: Colors.grey.shade900,
                         //border: Border.all(color: Colors.blueGrey.withOpacity(0.15,),width: 2,)
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(4.0),
+                        padding:  EdgeInsets.all(borderWidth),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -414,7 +417,7 @@ class ArticleImageCard extends StatelessWidget {
                                               horizontal: 8, vertical: 4),
                                           decoration: BoxDecoration(
                                             borderRadius:
-                                                BorderRadius.circular(8),
+                                                BorderRadius.circular(curve-4),
                                             color:
                                                 Colors.white.withOpacity(0.1),
                                           ),
@@ -513,6 +516,24 @@ class ArticleImageCard extends StatelessWidget {
                     ),
             );
           });
-    return returnWidget;
+    return Stack(
+      children: [
+        returnWidget,
+        if (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent))>0)
+        IgnorePointer(
+          child: Center(
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              child: Image.asset(
+                'images/boost_large.png', //'images/like_btn.png',
+                height: double.maxFinite,
+                color: Colors.grey.withOpacity(0.2),
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

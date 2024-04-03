@@ -13,36 +13,63 @@ class SearchProfessionDropdown extends StatelessWidget {
   Profession? initialProfession;
   String? hintText;
   Color? colorTheme;
+  bool? isLight;
 
-  SearchProfessionDropdown({Key? key, required this.professions, this.hintText, this.initialProfession, this.colorTheme, required this.professionSelectedCallback}) : super(key: key);
+  SearchProfessionDropdown({Key? key, required this.professions, this.hintText, this.isLight,this.initialProfession, this.colorTheme, required this.professionSelectedCallback}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return CustomDropdown<Profession>.search(
-      hintText: hintText??'Select your field of expertise',
-      items: professions,
-      initialItem: initialProfession,
-      excludeSelected: false,
-      validateOnChange: true,
-      decoration: CustomDropdownDecoration(
-        closedFillColor: colorTheme??Colors.grey.shade900,
+    double curve = 16;
+    return Container(
+      color: Colors.transparent,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(curve),
+        child: CustomDropdown<Profession>.search(
+          hintText: hintText??'Select your field of expertise',
+          items: professions,
+          initialItem: initialProfession,
+          excludeSelected: false,
+          validateOnChange: true,
+          decoration: CustomDropdownDecoration(
+            closedFillColor: (isLight??false)?Colors.white:Colors.grey.shade900,
+                hintStyle: TextStyle(
+                  color: Colors.grey.shade400,
+                  fontWeight: FontWeight.w600
+                ),
+                listItemStyle: TextStyle(
+                    color: (isLight??false)?Colors.black:Colors.white,
+                    fontWeight: FontWeight.w600
+                ),
+                headerStyle: TextStyle(
+                    color: (isLight??false)?Colors.black:Colors.white,
+                    fontWeight: FontWeight.w600
+                ),
+            expandedBorderRadius: BorderRadius.circular(curve),
+            closedBorderRadius: BorderRadius.circular(curve),
+            expandedFillColor: (isLight??false)?Colors.white:Colors.grey.shade900,
+            searchFieldDecoration: SearchFieldDecoration(
+              fillColor: (isLight??false)?Colors.white:COLOR_PRIMARY_DARK,
+              hintStyle: TextStyle(
+                  color: Colors.grey.shade400,
+                  fontWeight: FontWeight.w600
+              ),
+              textStyle: TextStyle(
+                  color: (isLight??false)?Colors.black:Colors.white,
+                  fontWeight: FontWeight.w600
+              ),
 
-            closedShadow: null,
-         closedBorderRadius: BorderRadius.circular(0),
-        expandedFillColor: colorTheme??Colors.grey.shade900,
-        expandedBorderRadius: BorderRadius.circular(0),
-        searchFieldDecoration: SearchFieldDecoration(
-          fillColor: COLOR_PRIMARY_DARK,
-        ),
-          listItemDecoration: ListItemDecoration(
-              selectedColor: Colors.blue.shade600,
-              splashColor: Colors.blue.shade600
+            ),
+              listItemDecoration: ListItemDecoration(
+                  selectedColor: Colors.blue.shade600,
+                  splashColor: Colors.blue.shade600
+              ),
           ),
+          onChanged: (value) {
+            //log('changing value to: ${value.}');
+            professionSelectedCallback(value);
+          },
+        ),
       ),
-      onChanged: (value) {
-        //log('changing value to: ${value.}');
-        professionSelectedCallback(value);
-      },
     );
   }
 }

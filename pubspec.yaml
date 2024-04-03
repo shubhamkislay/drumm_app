@@ -233,6 +233,7 @@ flutter:
     - images/network.png
     - images/audio-waves-large.png
     - images/trash.png
+    - images/boost_large.png
   # - images/a_dot_ham.jpeg
 
   fonts:
