@@ -1353,6 +1353,9 @@ class FirebaseDBOperations {
   static Future<void> sendRingingNotification(
       String deviceToken, Jam jam) async {
     var url = Uri.https('fcm.googleapis.com', '/fcm/send');
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    print("${jam.toJson().toString()}");
+    Drummer drummer = await FirebaseDBOperations.getDrummer(uid ?? "");
     Map<String, String> header = {
       'Content-Type': 'application/json',
       'Authorization':
@@ -1364,16 +1367,13 @@ class FirebaseDBOperations {
         "body": jam.title,
         "title": "Drumm Call",
         "sound": "conga_drumm.caf",
-        "subtitle": "You asked"
+        //"subtitle": "You asked",
+        "image": "${drummer.imageUrl}"
       },
       "priority": "high",
       "content_available": true,
       "mutable_content": true,
-      "data": {
-        "bandId": jam.bandId,
-        "jamId": jam.jamId,
-        "ring": true
-      }
+      "data": {"jam": jam, "ring": true, "drummerID": uid, "open": true}
     });
 
     var response = await http.post(url, headers: header, body: body);
@@ -1405,6 +1405,7 @@ class FirebaseDBOperations {
     String subtitle = "Hey ${drummer.username}! Did you know?";
     //Due to conversion error, setting the timestamo for lastActive as null
     jam.lastActive = null;
+
     final body = jsonEncode({
       "to": deviceToken,
       "notification": {
@@ -1420,6 +1421,7 @@ class FirebaseDBOperations {
       "mutable_content": true,
       "data": {"jam": jam, "ring": false, "drummerID": uid, "open": true}
     });
+
     var response = await http.post(url, headers: header, body: body);
 
     if (response.statusCode == 200) {
@@ -1439,7 +1441,8 @@ class FirebaseDBOperations {
 
   static Future<void> sendNotificationToTopic(
       Jam jam, bool ring, bool open) async {
-    print("Sending notification");
+    print("Sending notification to topic");
+    print("${jam.toJson().toString()}");
     var url = Uri.https('fcm.googleapis.com', '/fcm/send');
     final uid = FirebaseAuth.instance.currentUser?.uid;
     Drummer drummer = await FirebaseDBOperations.getDrummer(uid ?? "");
@@ -1457,13 +1460,12 @@ class FirebaseDBOperations {
           'key=AAAA8pEyjik:APA91bFjoRwCsioHAgDsWYHhcmy63BQuxL3iUBBaYnE9s2SHMnJtl0oyD39Mdp0KphI53ldusblYoiCCvxNaKJEFVQbGVTrwMcqDu9w_Rpx_Vsjx_9TdE3xI54vqj0lNOPDqAb5GPwOp'
     };
 
-    String type = "notification";
+
     String subtitle = (ring)
         ? "${drummer.username} is drumming..."
         : (isBroadcast)
             ? "Welcome ${drummer.username} to Drumm"
             : "${drummer.username} is drumming...";
-    if (ring) type = "data";
 
     var notifcationBody =
         (jam.question != null) ? "${jam.question}\n\n${jam.title}" : jam.title;
@@ -1488,6 +1490,69 @@ class FirebaseDBOperations {
     if (response.statusCode == 200) {
       // If the server returns an OK response, then parse the JSON.
       print("Sent Notification to Topic");
+      Map<String, dynamic> json = jsonDecode(response.body);
+      /*List<dynamic> list = json['choices'];
+    String searchResult = list[0]["text”];*/
+    } else {
+      // If the server did not return an OK response,
+      // then throw an exception.
+      print("Failed to send topic notification ${response.statusCode}");
+      throw Exception(
+          'Failed to send topic notification ${response.statusCode}');
+    }
+  }
+
+  static Future<void> sendNotificationToDrummer(
+      String deviceToken,Jam jam, bool ring, bool open) async {
+    print("Sending notification to topic");
+    print("${jam.toJson().toString()}");
+    var url = Uri.https('fcm.googleapis.com', '/fcm/send');
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    Drummer drummer = await FirebaseDBOperations.getDrummer(uid ?? "");
+    bool isBroadcast = jam.broadcast ?? false;
+    var toParams = "";
+    if (isBroadcast) {
+      toParams = "/topics/" + 'creator';
+    } else {
+      toParams = "/topics/" + '${jam.bandId}';
+    }
+
+    Map<String, String> header = {
+      'Content-Type': 'application/json',
+      'Authorization':
+      'key=AAAA8pEyjik:APA91bFjoRwCsioHAgDsWYHhcmy63BQuxL3iUBBaYnE9s2SHMnJtl0oyD39Mdp0KphI53ldusblYoiCCvxNaKJEFVQbGVTrwMcqDu9w_Rpx_Vsjx_9TdE3xI54vqj0lNOPDqAb5GPwOp'
+    };
+
+
+    String subtitle = (ring)
+        ? "${drummer.username} is drumming..."
+        : (isBroadcast)
+        ? "Welcome ${drummer.username} to Drumm"
+        : "${drummer.username} is drumming...";
+
+    var notifcationBody =
+    (jam.question != null) ? "${jam.question}\n\n${jam.title}" : jam.title;
+    //Due to conversion error, setting the timestamo for lastActive as null
+    jam.lastActive = null;
+    final body = jsonEncode({
+      "to": "$deviceToken",
+      //if (!ring)
+      "notification": {
+        "body": notifcationBody,
+        "title": subtitle,
+        "sound": "conga_drumm.caf",
+        "image": "${drummer.imageUrl}"
+      },
+      "priority": "high",
+      "content_available": true,
+      "mutable_content": true,
+      "data": {"jam": jam, "ring": true, "drummerID": uid, "open": true}
+    });
+    var response = await http.post(url, headers: header, body: body);
+
+    if (response.statusCode == 200) {
+      // If the server returns an OK response, then parse the JSON.
+      print("Sent Notification to drummer");
       Map<String, dynamic> json = jsonDecode(response.body);
       /*List<dynamic> list = json['choices'];
     String searchResult = list[0]["text”];*/

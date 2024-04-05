@@ -80,7 +80,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                   ]),
             ),
           ).frosted(blur: 24, frostColor: COLOR_BACKGROUND),
-          IgnorePointer(
+         if(false) IgnorePointer(
             child: Positioned.fill(
               child: Align(
                 alignment: Alignment.bottomCenter,

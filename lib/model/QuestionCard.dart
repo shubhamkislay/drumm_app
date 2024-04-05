@@ -186,7 +186,7 @@ class _QuestionCardState extends State<QuestionCard> {
     Jam jam = Jam();
     jam.broadcast = false;
     jam.title = question.query;
-    jam.bandId = "";
+    jam.bandId = question.uid;
     jam.jamId = question.qid;
     jam.articleId = "";
     jam.startedBy = FirebaseAuth.instance.currentUser?.uid??"";
@@ -195,6 +195,8 @@ class _QuestionCardState extends State<QuestionCard> {
     jam.lastActive = Timestamp.now();
     jam.count = 0;
     jam.membersID = [];
+
+
     FirebaseDBOperations.addMemberToJam(question.qid ?? "",
         FirebaseAuth.instance.currentUser?.uid ?? "", true)
         .then((value) {
@@ -206,7 +208,9 @@ class _QuestionCardState extends State<QuestionCard> {
 
       //FirebaseDBOperations.sendNotificationToTopic(jam, false, true);
 
-      FirebaseDBOperations.sendRingingNotification(drummer.token??"", jam);
+      //FirebaseDBOperations.sendRingingNotification(drummer.token??"", jam);
+
+      FirebaseDBOperations.sendNotificationToDrummer(drummer.token??"",jam, false, true);
     });
 
     showModalBottomSheet(

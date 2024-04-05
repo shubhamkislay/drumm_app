@@ -1550,32 +1550,6 @@ class ArticleReelsState extends State<ArticleReels>
     });
   }
 
-  void openJamRoom(Jam jam, bool open) {
-    FirebaseDBOperations.sendNotificationToTopic(jam, false, open);
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.grey.shade900,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(0.0)),
-      ),
-      builder: (BuildContext context) {
-        return Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: ClipRRect(
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(0.0)),
-            child: JamRoomPage(
-              jam: jam,
-              open: open,
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   void joinOpenDrumm(ArticleBand aBand) {
     Jam jam = Jam();

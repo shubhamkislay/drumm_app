@@ -4,7 +4,9 @@ import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/model/algolia_article.dart';
+import 'package:drumm_app/model/question.dart';
 import 'package:drumm_app/professionDetailsPage.dart';
+import 'package:drumm_app/question_jam_room.dart';
 import 'package:drumm_app/register_user.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -193,7 +195,8 @@ class _MyAppState extends State<MyApp>
     bool ring = jsonDecode(message.data["ring"]);
     String drummerID = message.data["drummerID"].toString();
 
-    if (FirebaseAuth.instance.currentUser?.uid != drummerID)
+
+    if (FirebaseAuth.instance.currentUser?.uid != drummerID && !ring)
       addToNotification(message);
 
     print(
@@ -346,18 +349,20 @@ class _MyAppState extends State<MyApp>
       Map<String, dynamic> json = jsonDecode(message.data["jam"]);
       Jam jam = Jam.fromJson(json);
       bool open = jsonDecode(message.data["open"]);
+      bool ring = jsonDecode(message.data["ring"]);
       //joinRoom(jam);
       try{
         Navigator.pop(ConnectToChannel.jamRoomContext);
       }catch(e){
       }
-      if (jam.jamId != ConnectToChannel.channelID) joinRoom(jam, open, false);
+      if (jam.jamId != ConnectToChannel.channelID) joinRoom(jam, open, ring);
     });
 
     Future.delayed(const Duration(seconds: 2)).then((value) {
       FirebaseMessaging.instance.getInitialMessage().then((message) {
         if (message != null) {
           Map<String, dynamic> json = jsonDecode(message?.data["jam"]);
+          bool ring = jsonDecode(message.data["ring"]);
           // AnimatedSnackBar.material(
           //     'getInitialMessage: ${json}',
           //     type: AnimatedSnackBarType.success,
@@ -372,7 +377,7 @@ class _MyAppState extends State<MyApp>
           bool open = jsonDecode(message?.data["open"]);
           //joinRoom(jam);
           if (jam.jamId != ConnectToChannel.channelID)
-            joinRoom(jam, open, false);
+            joinRoom(jam, open, ring);
         }
       });
     });
@@ -414,6 +419,12 @@ class _MyAppState extends State<MyApp>
   }
 
   void joinRoom(Jam jam, bool open, bool ring) {
+
+    Question question = Question();
+    question.uid = jam.bandId;
+    question.query = jam.title;
+    question.qid = jam.jamId;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -428,7 +439,7 @@ class _MyAppState extends State<MyApp>
           child: ClipRRect(
             borderRadius:
                 const BorderRadius.vertical(top: Radius.circular(0.0)),
-            child: JamRoomPage(
+            child: (ring)?QuestionJamRoomPage(jam: jam, open: open, question: question):JamRoomPage(
               jam: jam,
               open: open,
               ring: ring,
@@ -444,6 +455,7 @@ class _MyAppState extends State<MyApp>
     bool open = jsonDecode(message.data["open"]);
     Map<String, dynamic> json = jsonDecode(message.data["jam"]);
     Jam jam = Jam.fromJson(json);
+    bool ring = jsonDecode(message.data["ring"]);
 
     print(
         "Drummer ID: ${drummerID}\nUID: ${FirebaseAuth.instance.currentUser?.uid}");
@@ -506,10 +518,12 @@ class _MyAppState extends State<MyApp>
                                           }catch(e){
 
                                           }
-                                          joinRoom(jam, open, false);
-                                          FirebaseDBOperations
-                                              .sendNotificationToTopic(
-                                              jam, false, open);
+                                          joinRoom(jam, open, ring);
+                                          if(!ring) {
+                                            FirebaseDBOperations
+                                                .sendNotificationToTopic(
+                                                jam, false, open);
+                                          }
                                         }
                                       },
                                       child: Text(
@@ -562,10 +576,12 @@ class _MyAppState extends State<MyApp>
                                                       }catch(e){
 
                                                       }
-                                                      joinRoom(jam, open, false);
-                                                      FirebaseDBOperations
-                                                          .sendNotificationToTopic(
-                                                          jam, false, open);
+                                                      joinRoom(jam, open, ring);
+                                                      if(!ring) {
+                                                        FirebaseDBOperations
+                                                            .sendNotificationToTopic(
+                                                            jam, false, open);
+                                                      }
                                                     }
                                                   },
                                                   child: Text(
@@ -594,10 +610,12 @@ class _MyAppState extends State<MyApp>
                                         }catch(e){
 
                                         }
-                                        joinRoom(jam, open, false);
-                                        FirebaseDBOperations
-                                            .sendNotificationToTopic(
-                                            jam, false, open);
+                                        joinRoom(jam, open, ring);
+                                        if(!ring) {
+                                          FirebaseDBOperations
+                                              .sendNotificationToTopic(
+                                              jam, false, open);
+                                        }
                                       }
                                     },
                                     child: const Padding(
@@ -623,10 +641,12 @@ class _MyAppState extends State<MyApp>
                             }catch(e){
 
                             }
-                            joinRoom(jam, open, false);
-                            FirebaseDBOperations
-                                .sendNotificationToTopic(
-                                jam, false, open);
+                            joinRoom(jam, open, ring);
+                            if(!ring) {
+                              FirebaseDBOperations
+                                  .sendNotificationToTopic(
+                                  jam, false, open);
+                            }
                           }
                         },
                       ),
@@ -639,66 +659,69 @@ class _MyAppState extends State<MyApp>
           });
         }
         else {
-          AnimatedSnackBar(
-              builder: ((context) {
-                return Wrap(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(colors: [
-                          Colors.grey.shade900,
-                          Colors.grey.shade900
-                        ]),
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: COLOR_PRIMARY_DARK,
-                              borderRadius: BorderRadius.circular(14),
+          setState(() {
+            AnimatedSnackBar(
+                builder: ((context) {
+                  return Wrap(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(colors: [
+                            Colors.grey.shade900,
+                            Colors.grey.shade900
+                          ]),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: COLOR_PRIMARY_DARK,
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ClipRRect(
+                                      borderRadius: BorderRadius.circular(4),
+                                      child: CachedNetworkImage(
+                                        imageUrl: drummerImage,
+                                        fit: BoxFit.cover,
+                                        width: 20,
+                                        height: 20,
+                                      )),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  Text(
+                                    "${drummer.username} joined the drumm",
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    softWrap: true,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                ],
+                              ),
                             ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ClipRRect(
-                                    borderRadius: BorderRadius.circular(4),
-                                    child: CachedNetworkImage(
-                                      imageUrl: drummerImage,
-                                      fit: BoxFit.cover,
-                                      width: 20,
-                                      height: 20,
-                                    )),
-                                const SizedBox(
-                                  width: 4,
-                                ),
-                                Text(
-                                  "${drummer.username} joined the drumm",
-                                  textAlign: TextAlign.center,
-                                  maxLines: 1,
-                                  softWrap: true,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(
-                                  width: 4,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                );
-              }),
-              duration: const Duration(seconds: 8),
-              mobileSnackBarPosition: MobileSnackBarPosition.bottom)
-              .show(context);
+                    ],
+                  );
+                }),
+                duration: const Duration(seconds: 8),
+                mobileSnackBarPosition: MobileSnackBarPosition.bottom)
+                .show(context);
+          });
+
         }
       }
     }
