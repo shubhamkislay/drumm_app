@@ -56,11 +56,11 @@ class ArticleImageCard extends StatelessWidget {
     Color colorBorder =
         (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
             ? COLOR_BOOST
-            : Colors.white12;
+            : Colors.grey.shade900.withOpacity(0.85);
     Color colorBorder2 =
         (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
             ? Colors.blueGrey
-            : Colors.white12;
+            : Colors.grey.shade900.withOpacity(0.85);
     Widget returnWidget = (loading ?? false)
         ? Container(
             alignment: Alignment.center,

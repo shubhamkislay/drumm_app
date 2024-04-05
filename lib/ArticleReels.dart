@@ -961,7 +961,16 @@ class ArticleReelsState extends State<ArticleReels>
           bandCategoryList.addAll(band.hooks ?? []);
         }
         if (fetchedBands.length < 1) bandCategoryList.add("general");
-      } else {
+      }
+      else if (widget.selectedBandId == "Boosted") {
+        List<Band> fetchedBands = await FirebaseDBOperations.getBandByUser();
+
+        for (Band band in fetchedBands) {
+          bandCategoryList.addAll(band.hooks ?? []);
+        }
+        if (fetchedBands.length < 1) bandCategoryList.add("general");
+      }
+      else {
         Band selectedBand =
             await FirebaseDBOperations.getBand(widget.selectedBandId ?? "");
         bandCategoryList.addAll(selectedBand.hooks ?? []);
@@ -977,6 +986,19 @@ class ArticleReelsState extends State<ArticleReels>
           .where('publishedAt', isNotEqualTo: null)
           .orderBy("publishedAt", descending: true)
           .limit(_pageSize);
+
+      if(widget.selectedBandId == "Boosted"){
+        DateTime currentTime = DateTime.now();
+        DateTime oneDayAgo = currentTime.subtract(Duration(hours: 3));
+        query = FirebaseFirestore.instance
+            .collection('articles')
+            .where('category', whereIn: bandCategoryList)
+            .where('country', isEqualTo: 'in')
+            .where('boostamp', isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
+        //.where('boosts', isGreaterThanOrEqualTo: 1)
+            .orderBy("boostamp", descending: true)
+            .limit(10);
+      }
 
       if (_lastDocument != null) {
         query = query.startAfterDocument(_lastDocument!);

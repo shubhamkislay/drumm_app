@@ -115,16 +115,17 @@ class _QuestionCardState extends State<QuestionCard> {
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(4, 12, 4, 4),
-                child: Flexible(
-                  child: Text("${widget.question?.query}".trim(),
-                    maxLines: 3,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontFamily: APP_FONT_LIGHT,
-                      fontWeight: FontWeight.w600,
-                      overflow: TextOverflow.ellipsis,
-                    ),),
-                ),
+                child: AutoSizeText("${widget.question?.query}".trim(),
+                  maxLines: 3,
+                  minFontSize: 12,
+                  maxFontSize: 16,
+                  //softWrap: true,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontFamily: APP_FONT_LIGHT,
+                    fontWeight: FontWeight.w600,
+                    overflow: TextOverflow.ellipsis,
+                  ),),
               ),
 
             ],

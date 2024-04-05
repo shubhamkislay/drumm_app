@@ -694,7 +694,10 @@ class DiscoverHomeState extends State<DiscoverHome>
       });
       if (selectedBandID == "For You") {
         getArticles(false);
-      } else {
+      } else if(selectedBandID == "Boosted"){
+        getBoostedArticles(false);
+      }
+      else {
         getArticlesForBands(selectedBand, false);
       } // Pass true to fetch more articles
     }
@@ -1051,6 +1054,8 @@ class DiscoverHomeState extends State<DiscoverHome>
       setState(() {
         loadingAnimation = NO_FOUND_ASSET;
         loadAnimation = true;
+        articleCards = bufferingCards;
+
       });
     } else {
       List<ArticleBand> fetchedArticleBand = [];
