@@ -210,7 +210,7 @@ class _QuestionCardState extends State<QuestionCard> {
 
       //FirebaseDBOperations.sendRingingNotification(drummer.token??"", jam);
 
-      FirebaseDBOperations.sendNotificationToDrummer(drummer.token??"",jam, false, true);
+      FirebaseDBOperations.sendNotificationToDrummer(drummer.token??"",jam, true, true);
     });
 
     showModalBottomSheet(

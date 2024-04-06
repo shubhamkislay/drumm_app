@@ -160,7 +160,7 @@ class _MyAppState extends State<MyApp>
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print("/// // onMessageReceived Foreground // ///:  ${message}");
       try {
-        bool broadcast = jsonDecode(message.data["broadcast"]);
+        bool broadcast = jsonDecode(message.data["broadcast"]??false)??false;
 
         if (broadcast) {
           setupPersonalisedNotification();
@@ -179,7 +179,7 @@ class _MyAppState extends State<MyApp>
   Future<void> _firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
     try {
-      bool broadcast = jsonDecode(message.data["broadcast"]);
+      bool broadcast = jsonDecode(message.data["broadcast"]??false)??false;
 
       if (broadcast) {
         setupPersonalisedNotification();
@@ -461,6 +461,11 @@ class _MyAppState extends State<MyApp>
         "Drummer ID: ${drummerID}\nUID: ${FirebaseAuth.instance.currentUser?.uid}");
 
     if (drummerID != FirebaseAuth.instance.currentUser?.uid) {
+
+      if(ring){
+        startCallingNotification(message);
+        return;
+      }
       bool existNotification = await notificationExists(message);
       Drummer drummer = await FirebaseDBOperations.getDrummer(drummerID);
       String drummerImage = drummer.imageUrl ?? "";
@@ -728,6 +733,7 @@ class _MyAppState extends State<MyApp>
   }
 
   void addToNotification(RemoteMessage message) async {
+    print("Adding to notification");
     SharedPreferences notiPref = await SharedPreferences.getInstance();
     List<String>? notifications = notiPref.getStringList("notifications");
     notifications ??= [];

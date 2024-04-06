@@ -89,12 +89,6 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
       height: MediaQuery.of(context).size.height * 0.9,
       child: Stack(
         children: [
-          // if (userJoined)
-          // Container(
-          //   alignment: Alignment.center,
-          //   padding: EdgeInsets.all(8),
-          //   child: Lottie.asset('images/wave_drumm.json',height: MediaQuery.of(context).size.height/2,fit:BoxFit.contain),
-          // ),
           Container(
             alignment: Alignment.center,
             width: double.infinity,
@@ -207,7 +201,6 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
               ],
             ),
           ),
-
           Row(
             children: [
               Padding(
@@ -225,7 +218,6 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
               ),
             ],
           ),
-
           SafeArea(
             child: Container(
               width: double.infinity,
@@ -348,17 +340,11 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
           widget.jam,
           false,
           (joined, userID) {
-            // print("$userID joinStatus $joined");
-            // // getLiveDetails();
-            // addUserToRoom(0);
+
           },
           widget.open,
           (val) {
-            // AnimatedSnackBar.material(
-            //     val,
-            //     type: AnimatedSnackBarType.success,
-            //     mobileSnackBarPosition: MobileSnackBarPosition.top
-            // ).show(context);
+
           },
           (userJoined) {
             // int currUserRid = drummer.rid??0;
@@ -371,6 +357,8 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
           },
           (userLeft) {
             // removeUserToRoom(userLeft);
+
+            print("User has left the question Jam room");
           },
           (rid, mute) {
             // for(DrummerJoinCard dj in drummerCards){
@@ -489,13 +477,19 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
 
   void removeUserToRoom(int rid) async {
     setState(() {
-      for (DrummerJoinCard dj in drummerCards) {
-        if (dj.drummerId == rid) {
-          //drummerCards.remove(dj);
-          drummerCards = List.from(drummerCards)..remove(dj);
-          break;
-        }
-      }
+      // for (DrummerJoinCard dj in drummerCards) {
+      //   if (dj.drummerId == rid) {
+      //     //drummerCards.remove(dj);
+      //     drummerCards = List.from(drummerCards)..remove(dj);
+      //     break;
+      //   }
+      // }
+      if(remoteJoinCard?.drummerId == rid)
+        setState(() {
+          remoteJoinCard = null;
+          remoteUserJoined = false;
+        });
+      return;
     });
   }
 
@@ -548,6 +542,8 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
     };
     ConnectionListener.onUserLeftCallback = (userLeft) {
       removeUserToRoom(userLeft);
+
+      print("ConnectionListener.onUserLeftCallback called User has left the channel ");
     };
     ConnectionListener.onRejoinSuccessCallback = () {
       setState(() {

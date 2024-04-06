@@ -1536,7 +1536,7 @@ class FirebaseDBOperations {
     jam.lastActive = null;
     final body = jsonEncode({
       "to": "$deviceToken",
-      //if (!ring)
+      if (!ring)
       "notification": {
         "body": notifcationBody,
         "title": subtitle,
@@ -1546,7 +1546,7 @@ class FirebaseDBOperations {
       "priority": "high",
       "content_available": true,
       "mutable_content": true,
-      "data": {"jam": jam, "ring": true, "drummerID": uid, "open": true}
+      "data": {"jam": jam, "ring": ring, "drummerID": uid, "open": true}
     });
     var response = await http.post(url, headers: header, body: body);
 
