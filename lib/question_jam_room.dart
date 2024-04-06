@@ -76,6 +76,8 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
 
   DrummerJoinCard? localJoinCard;
   DrummerJoinCard? remoteJoinCard;
+  
+  Drummer? loadingDrummer;
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +103,7 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ClipRRect(
+                if(false)ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: CachedNetworkImage(
                         imageUrl: widget.jam.imageUrl ?? "",
@@ -111,15 +113,14 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
                   height: 16,
                 ),
                 Container(
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.only(left: 16, right: 16),
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Text(
                     "\"${widget.jam.question}\"",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: APP_FONT_BOLD,
+                      fontSize: 24,
+                      fontFamily: APP_FONT_MEDIUM,
                     ),
                   ),
                 ),
@@ -128,71 +129,40 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (localDrummer != null && false)
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                SwipeablePageRoute(
-                                  builder: (context) => UserProfilePage(
-                                    drummer: localDrummer,
-                                    fromSearch: true,
-                                  ),
-                                ));
-                          },
-                          child: Column(
-                            children: [
-                              ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: CachedNetworkImage(
-                                      imageUrl: localDrummer?.imageUrl ?? "",
-                                      height: 120,
-                                      fit: BoxFit.cover)),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Text("You"),
-                            ],
-                          ),
-                        ),
-                      ),
-                    if (remoteDrummer != null && remoteUserJoined && false)
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                SwipeablePageRoute(
-                                  builder: (context) => UserProfilePage(
-                                    drummer: remoteDrummer,
-                                    fromSearch: true,
-                                  ),
-                                ));
-                          },
-                          child: Column(
-                            children: [
-                              ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: CachedNetworkImage(
-                                    imageUrl: remoteDrummer?.imageUrl ?? "",
-                                    height: 120,
-                                    fit: BoxFit.cover,
-                                  )),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Text("${remoteDrummer?.username}"),
-                            ],
-                          ),
-                        ),
-                      ),
                     if (userJoined)
-                      Container(height: 150,width: 150, child: localJoinCard),
+                      Expanded(
+                        child: SizedBox(
+                          width: (userJoined)?double.maxFinite:125,
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 24),
+                            //color: Colors.grey.shade900,
+                              height: 175, width: double.maxFinite,child: localJoinCard),
+                        ),
+                      ),
+                    if(!userJoined)
+                      Expanded(child: Container()),
                     if (remoteUserJoined)
-                      Container(height: 150,width: 150, child: remoteJoinCard),
+                      Expanded(
+                        child: SizedBox(
+                          width: (userJoined)?double.maxFinite:125,
+                          child: Container(
+                              margin: EdgeInsets.symmetric(horizontal: 24),
+                              height: 175,width: double.maxFinite, child: remoteJoinCard),
+                        ),
+                      ),
+                    if(!remoteUserJoined && loadingDrummer?.imageUrl!=null)
+                      Expanded(child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 24),
+                          height: 175,width: double.maxFinite, 
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: CachedNetworkImage(
+                              imageUrl: loadingDrummer?.imageUrl??"", height: 175, color: Colors.grey.shade900.withOpacity(0.5),),
+                          )),),
+                    if(!remoteUserJoined && loadingDrummer?.imageUrl==null)
+                      Expanded(child: Container()),
                   ],
                 ),
                 SizedBox(
@@ -216,6 +186,7 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
                   ),
                 ),
               ),
+              Text("Community Drumm",style: TextStyle(fontSize: 18,fontFamily: APP_FONT_MEDIUM),),
             ],
           ),
           SafeArea(
@@ -279,6 +250,7 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
                           },
                           child: Container(
                             padding: EdgeInsets.all(14),
+                            margin: EdgeInsets.symmetric(horizontal: 8),
                             decoration: BoxDecoration(
                                 color: COLOR_PRIMARY_DARK,
                                 border: Border.all(
@@ -418,6 +390,7 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
     // }
     //getDrummers();
 
+    getLoadingDrummer();
     listenToJamState();
   }
 
@@ -660,5 +633,21 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
         .then((value) => value.rid ?? 0);
     final updateMap = {rid: micMute};
     _muteStreamController.sink.add(updateMap);
+  }
+
+  void getLoadingDrummer() async{
+    String currentUserID = await FirebaseAuth.instance.currentUser?.uid??"";
+    String remoteUserID = "";
+    if(widget.question?.qid == currentUserID){
+      remoteUserID = widget.jam.startedBy!;
+    }else{
+      remoteUserID = widget.question!.qid!;
+    }
+    Drummer fetchDrummer = await getDrummer(remoteUserID);
+    setState(() {
+      loadingDrummer = fetchDrummer;
+    });
+    
+    
   }
 }
