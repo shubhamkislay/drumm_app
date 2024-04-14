@@ -241,7 +241,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                                                 width: 8,
                                               ),
                                               Text(
-                                                "Search on Drumm",
+                                                "Search on Drumm...",
                                                 style: TextStyle(
                                                   fontFamily: APP_FONT_MEDIUM,
                                                     color: Colors.white38),
@@ -536,6 +536,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
+                            double articlePadding = 7;
                             return GridView.custom(
                               shrinkWrap: true,
                               padding: EdgeInsets.symmetric(
@@ -543,8 +544,8 @@ class DiscoverHomeState extends State<DiscoverHome>
                               physics: const NeverScrollableScrollPhysics(),
                               gridDelegate: SliverQuiltedGridDelegate(
                                 crossAxisCount: 5,
-                                mainAxisSpacing: 8,
-                                crossAxisSpacing: 8,
+                                mainAxisSpacing: articlePadding,
+                                crossAxisSpacing: articlePadding,
                                 repeatPattern: QuiltedGridRepeatPattern.same,
                                 pattern: [
                                   const QuiltedGridTile(3, 5),

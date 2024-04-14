@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dismissible_page/dismissible_page.dart';
 import 'package:drumm_app/ArticleReels.dart';
 import 'package:drumm_app/HeroAnimation.dart';
 import 'package:drumm_app/custom/constants/Constants.dart';
@@ -15,6 +16,7 @@ import 'package:drumm_app/model/article.dart';
 import 'package:drumm_app/model/question.dart';
 import 'package:drumm_app/open_article_page.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import '../custom/helper/BottomUpPageRoute.dart';
@@ -42,12 +44,14 @@ class ArticleImageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int boosts = 0;
-    double curve = 12;
+    double curve = 8;
     double borderWidth = 3;
-    double bottomPadding = 54;
+    double bottomPadding = 64;
+    double horizontalPadding = 6;
     DateTime currentTime = DateTime.now();
     DateTime recent = currentTime.subtract(Duration(hours: 3));
     Timestamp boostTime = Timestamp.now();
+    Color fadeColor = Colors.grey.shade900; //.withOpacity(0.8);
     try {
       boostTime = articleBand.article!.boostamp ?? Timestamp.now();
       boosts = articleBand.article?.boosts ?? 0;
@@ -56,11 +60,11 @@ class ArticleImageCard extends StatelessWidget {
     Color colorBorder =
         (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
             ? COLOR_BOOST
-            : Colors.grey.shade900.withOpacity(0.85);
+            : fadeColor;
     Color colorBorder2 =
         (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
             ? Colors.blueGrey
-            : Colors.grey.shade900.withOpacity(0.85);
+            : fadeColor;
     Widget returnWidget = (loading ?? false)
         ? Container(
             alignment: Alignment.center,
@@ -75,6 +79,7 @@ class ArticleImageCard extends StatelessWidget {
         : LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
             double maxHeight = constraints.maxHeight / 2.5;
+            double maxTextSize = 17;
             return GestureDetector(
               onTap: () {
                 if (articleBands == null)
@@ -98,24 +103,43 @@ class ArticleImageCard extends StatelessWidget {
                   //       ),
                   //     ));
 
-                  Navigator.push(
-                    context,
-                    SwipeablePageRoute(
-                      builder: (context) => ArticleReels(
-                        preloadList: articleBands,
-                        lastDocument: lastDocument,
-                        selectedBandId: selectedBandID ?? "For You",
-                        articlePosition:
-                            articleBands?.indexOf(articleBand) ?? 0,
-                        userConnected: false,
-                        scrollController: ScrollController(),
-                        tag: articleBands
-                                ?.elementAt(
-                                    articleBands?.indexOf(articleBand) ?? 0)
-                                .article
-                                ?.articleId ??
-                            "",
-                      ),
+                  // Navigator.push(
+                  //   context,
+                  //   SwipeablePageRoute(
+                  //     builder: (context) => ArticleReels(
+                  //       preloadList: articleBands,
+                  //       lastDocument: lastDocument,
+                  //       selectedBandId: selectedBandID ?? "For You",
+                  //       articlePosition:
+                  //           articleBands?.indexOf(articleBand) ?? 0,
+                  //       userConnected: false,
+                  //       scrollController: ScrollController(),
+                  //       tag: articleBands
+                  //               ?.elementAt(
+                  //                   articleBands?.indexOf(articleBand) ?? 0)
+                  //               .article
+                  //               ?.articleId ??
+                  //           "",
+                  //     ),
+                  //   ),
+                  // );
+
+                  Vibrate.feedback(FeedbackType.selection);
+
+                  context.pushTransparentRoute(
+                    ArticleReels(
+                      preloadList: articleBands,
+                      lastDocument: lastDocument,
+                      selectedBandId: selectedBandID ?? "For You",
+                      articlePosition: articleBands?.indexOf(articleBand) ?? 0,
+                      userConnected: false,
+                      scrollController: ScrollController(),
+                      tag: articleBands
+                              ?.elementAt(
+                                  articleBands?.indexOf(articleBand) ?? 0)
+                              .article
+                              ?.articleId ??
+                          "",
                     ),
                   );
                 }
@@ -137,7 +161,7 @@ class ArticleImageCard extends StatelessWidget {
                         padding: EdgeInsets.all(0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(curve),
-                          color: COLOR_BACKGROUND,
+                          color: fadeColor,
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(curve - 2),
@@ -240,7 +264,7 @@ class ArticleImageCard extends StatelessWidget {
                                 alignment: Alignment.bottomCenter,
                                 child: Container(
                                   alignment: Alignment.bottomCenter,
-                                  height: 64,
+                                  height: double.infinity,
                                   margin:
                                       EdgeInsets.only(bottom: bottomPadding),
                                   decoration: BoxDecoration(
@@ -249,8 +273,8 @@ class ArticleImageCard extends StatelessWidget {
                                           begin: Alignment.topCenter,
                                           colors: [
                                         Colors.transparent,
-                                        //Colors.black,
-                                        Colors.black,
+                                        Colors.transparent,
+                                        fadeColor,
                                       ])),
                                 ),
                               ),
@@ -266,7 +290,7 @@ class ArticleImageCard extends StatelessWidget {
                                         Colors.transparent,
                                         //Colors.black.withOpacity(0.75),
                                         //Colors.black,
-                                        Colors.black,
+                                        Colors.transparent,
                                       ],
                                     ),
                                   ),
@@ -283,27 +307,25 @@ class ArticleImageCard extends StatelessWidget {
                                         children: [
                                           Flexible(
                                             child: Container(
-                                              padding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 6,
-                                                  vertical: 4),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 6, vertical: 2),
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: 2, vertical: 2),
                                               decoration: BoxDecoration(
                                                   borderRadius:
-                                                  BorderRadius.circular(
-                                                      curve-4),
+                                                      BorderRadius.circular(
+                                                          curve - 4),
                                                   color: Colors.grey.shade800
                                                       .withOpacity(0.65)),
                                               child: AutoSizeText(
                                                 "${articleBand.band?.name}",
                                                 textAlign: TextAlign.left,
-                                                overflow:
-                                                TextOverflow.ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
                                                 minFontSize: 8,
                                                 style: const TextStyle(
                                                     fontSize: 8,
-                                                    fontFamily:
-                                                    APP_FONT_MEDIUM,
+                                                    fontFamily: APP_FONT_MEDIUM,
                                                     //fontWeight: FontWeight.bold,
                                                     color: Colors.white),
                                               ),
@@ -339,8 +361,10 @@ class ArticleImageCard extends StatelessWidget {
                                                 Container(
                                                   alignment:
                                                       Alignment.bottomLeft,
-                                                  padding:
-                                                      const EdgeInsets.all(4.0),
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal:
+                                                          horizontalPadding,
+                                                      vertical: 2),
                                                   height: maxHeight,
                                                   child: AutoSizeText(
                                                     unescape.convert(articleBand
@@ -351,13 +375,13 @@ class ArticleImageCard extends StatelessWidget {
                                                     textAlign: TextAlign.left,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    maxFontSize: 17,
+                                                    maxFontSize: maxTextSize,
                                                     maxLines: 3,
                                                     minFontSize: 10,
                                                     style: TextStyle(
                                                         overflow: TextOverflow
                                                             .ellipsis,
-                                                        fontSize: 17,
+                                                        fontSize: maxTextSize,
                                                         fontWeight:
                                                             FontWeight.w600,
                                                         fontFamily:
@@ -373,18 +397,20 @@ class ArticleImageCard extends StatelessWidget {
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
                                               children: [
                                                 Flexible(
                                                   child: Container(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 4, bottom: 4),
+                                                    padding: EdgeInsets.only(
+                                                        left: horizontalPadding,
+                                                        bottom: 6),
                                                     decoration: BoxDecoration(
                                                         //borderRadius: BorderRadius.circular(12),
                                                         //color: Colors.grey.shade900.withOpacity(0.35),
                                                         ),
                                                     child: Text(
-                                                      "${articleBand.article?.source}",
+                                                      "${articleBand.article?.source}  •  ",
                                                       textAlign: TextAlign.left,
                                                       overflow:
                                                           TextOverflow.ellipsis,
@@ -399,11 +425,10 @@ class ArticleImageCard extends StatelessWidget {
                                                     ),
                                                   ),
                                                 ),
-                                                const Text(" • "),
                                                 Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 4, bottom: 4),
+                                                  padding: EdgeInsets.only(
+                                                      right: horizontalPadding,
+                                                      bottom: 6),
                                                   child:
                                                       InstagramDateTimeWidget(
                                                     textSize: 10,
@@ -491,12 +516,12 @@ class ArticleImageCard extends StatelessWidget {
                                   ""),
                               textAlign: TextAlign.left,
                               overflow: TextOverflow.ellipsis,
-                              maxFontSize: 17,
+                              maxFontSize: maxTextSize,
                               maxLines: 3,
                               minFontSize: 10,
-                              style: const TextStyle(
+                              style: TextStyle(
                                   overflow: TextOverflow.ellipsis,
-                                  fontSize: 17,
+                                  fontSize: maxTextSize,
                                   //fontWeight: FontWeight.bold,
                                   fontFamily: APP_FONT_MEDIUM,
                                   color: Colors.white),
@@ -511,14 +536,14 @@ class ArticleImageCard extends StatelessWidget {
                                   children: [
                                     Flexible(
                                       child: Container(
-                                        padding: const EdgeInsets.only(
-                                            left: 4, bottom: 4),
+                                        padding: EdgeInsets.only(
+                                            left: horizontalPadding, bottom: 4),
                                         decoration: BoxDecoration(
                                             //borderRadius: BorderRadius.circular(12),
                                             //color: Colors.grey.shade900.withOpacity(0.35),
                                             ),
                                         child: AutoSizeText(
-                                          "${articleBand.article?.source ?? ""}",
+                                          "${articleBand.article?.source ?? ""}  •  ",
                                           textAlign: TextAlign.left,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
@@ -531,7 +556,6 @@ class ArticleImageCard extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    const Text(" • "),
                                     Flexible(
                                       child: Container(
                                         padding: const EdgeInsets.only(

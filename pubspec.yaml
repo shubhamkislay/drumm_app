@@ -105,6 +105,7 @@ dependencies:
   cupertino_back_gesture: ^0.1.0
   swipeable_page_route: ^0.3.0
   animated_custom_dropdown: ^3.0.0
+  dismissible_page: ^1.0.2
 
 dev_dependencies:
   flutter_test:

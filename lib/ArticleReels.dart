@@ -8,6 +8,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dismissible_page/dismissible_page.dart';
 import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -195,304 +196,313 @@ class ArticleReelsState extends State<ArticleReels>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: COLOR_BACKGROUND,
-      body: Column(
-        children: [
-          Expanded(
-            child: Stack(
-              children: <Widget>[
-                Column(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        decoration: const BoxDecoration(
-                            color: COLOR_BACKGROUND,
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(24),
-                              bottomRight: Radius.circular(24),
-                            )),
-                        child: getNewsArticles(), //listDemoVertical()),
+    return DismissiblePage(
+      onDismissed: () => Navigator.of(context).pop(),
+      direction: DismissiblePageDismissDirection.multi,
+      isFullScreen: true,
+      disabled: false,
+      minRadius: 10,
+      maxRadius: 10,
+      dragSensitivity: 1.0,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Column(
+          children: [
+            Expanded(
+              child: Stack(
+                children: <Widget>[
+                  Column(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: const BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(24),
+                                bottomRight: Radius.circular(24),
+                              )),
+                          child: getNewsArticles(), //listDemoVertical()),
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    SafeArea(
-                      top: false,
-                      right: false,
-                      left: false,
-                      child: Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          //crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SoundPlayWidget(
-                              article: articleOnTop?.article ?? Article(),
-                              backgroundColor: COLOR_BACKGROUND,
-                              imageSize: 18,
-                              paddingSize: 46,
-                              play: false,
-                            ),
-                            Container(
-                              height: 46,
-                              width: 46,
-                              padding: const EdgeInsets.all(2),
-                              decoration: BoxDecoration(
-                                  color: COLOR_BACKGROUND,
-                                  borderRadius: BorderRadius.circular(44),
-                                  border: Border.all(
-                                      color: Colors.grey.shade900, width: 2.5)),
-                              child: ArticleDrummButton(
-                                  iconSize: 44,
-                                  articleOnScreen:
-                                      articleOnTop?.article ?? Article()),
-                            ),
-                            if (!showCurrentDrummWidget)
-                              JoinDrummButton(
-                                btnPadding: 12,
-                                height: 38,
-                                onTap: () {
-                                  drumJoinDialog();
-                                },
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      SafeArea(
+                        top: false,
+                        right: false,
+                        left: false,
+                        child: Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            //crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SoundPlayWidget(
+                                article: articleOnTop?.article ?? Article(),
+                                backgroundColor: COLOR_BACKGROUND,
+                                imageSize: 18,
+                                paddingSize: 46,
+                                play: false,
                               ),
-                            if (showCurrentDrummWidget)
-                              GestureDetector(
-                                onTap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.grey.shade900,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(0.0)),
-                                    ),
-                                    builder: (BuildContext context) {
-                                      return Padding(
-                                        padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              const BorderRadius.vertical(
-                                                  top: Radius.circular(0.0)),
-                                          child: JamRoomPage(
-                                            jam: currentJam,
-                                            open: openDrumm,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(64),
+                              Container(
+                                height: 46,
+                                width: 46,
+                                padding: const EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                    color: COLOR_BACKGROUND,
+                                    borderRadius: BorderRadius.circular(44),
                                     border: Border.all(
-                                        color: Colors.white, width: 2.5),
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        margin: const EdgeInsets.all(2.5),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(56),
-                                          child: CachedNetworkImage(
-                                            imageUrl: currentJam.imageUrl ?? "",
-                                            fit: BoxFit.cover,
-                                            height: 56,
-                                            width: 56,
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(42),
-                                              ),
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                margin: const EdgeInsets.all(2),
+                                        color: Colors.grey.shade900, width: 2.5)),
+                                child: ArticleDrummButton(
+                                    iconSize: 44,
+                                    articleOnScreen:
+                                        articleOnTop?.article ?? Article()),
+                              ),
+                              if (!showCurrentDrummWidget)
+                                JoinDrummButton(
+                                  btnPadding: 12,
+                                  height: 38,
+                                  onTap: () {
+                                    drumJoinDialog();
+                                  },
+                                ),
+                              if (showCurrentDrummWidget)
+                                GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.grey.shade900,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(0.0)),
+                                      ),
+                                      builder: (BuildContext context) {
+                                        return Padding(
+                                          padding: EdgeInsets.only(
+                                              bottom: MediaQuery.of(context)
+                                                  .viewInsets
+                                                  .bottom),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                const BorderRadius.vertical(
+                                                    top: Radius.circular(0.0)),
+                                            child: JamRoomPage(
+                                              jam: currentJam,
+                                              open: openDrumm,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(64),
+                                      border: Border.all(
+                                          color: Colors.white, width: 2.5),
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          margin: const EdgeInsets.all(2.5),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(56),
+                                            child: CachedNetworkImage(
+                                              imageUrl: currentJam.imageUrl ?? "",
+                                              fit: BoxFit.cover,
+                                              height: 56,
+                                              width: 56,
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Container(
                                                 decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(42),
-                                                  color: Colors.transparent,
-                                                  //gradient: LinearGradient(colors: JOIN_COLOR),
                                                 ),
-                                                child: Image.asset(
-                                                  'images/audio-waves.png',
-                                                  height: iconHeight,
-                                                  color: Colors.white,
-                                                  fit: BoxFit.contain,
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(8),
+                                                  margin: const EdgeInsets.all(2),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(42),
+                                                    color: Colors.transparent,
+                                                    //gradient: LinearGradient(colors: JOIN_COLOR),
+                                                  ),
+                                                  child: Image.asset(
+                                                    'images/audio-waves.png',
+                                                    height: iconHeight,
+                                                    color: Colors.white,
+                                                    fit: BoxFit.contain,
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(42),
-                                        ),
-                                        child: Container(
-                                          padding: const EdgeInsets.all(8),
-                                          margin: const EdgeInsets.all(2),
+                                        Container(
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(42),
-                                            color: Colors.transparent,
-                                            //gradient: LinearGradient(colors: JOIN_COLOR),
                                           ),
-                                          child: Image.asset(
-                                            'images/audio-waves.png',
-                                            height: iconHeight - 12,
-                                            color:
-                                                Colors.white.withOpacity(0.35),
-                                            fit: BoxFit.contain,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(8),
+                                            margin: const EdgeInsets.all(2),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(42),
+                                              color: Colors.transparent,
+                                              //gradient: LinearGradient(colors: JOIN_COLOR),
+                                            ),
+                                            child: Image.asset(
+                                              'images/audio-waves.png',
+                                              height: iconHeight - 12,
+                                              color:
+                                                  Colors.white.withOpacity(0.35),
+                                              fit: BoxFit.contain,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              LikeBtn(
+                                article: articleOnTop?.article ?? Article(),
+                                userBoosted: isBoosted,
+                                boostedCallback: (boost) {
+                                  setState(() {
+                                    if (boost) {
+                                      int currentBoosts =
+                                          articleOnTop?.article?.boosts ?? 0;
+                                      articleOnTop?.article?.boosts =
+                                          currentBoosts + 1;
+                                      articleOnTop?.article?.boostamp =
+                                          Timestamp.now();
+                                    } else {
+                                      int currentBoosts =
+                                          articleOnTop?.article?.boosts ?? 0;
+                                      articleOnTop?.article?.boosts =
+                                          currentBoosts - 1;
+                                    }
+                                    isBoosted = boost;
+                                  });
+                                },
+                              ),
+                              Container(
+                                height: 46,
+                                width: 46,
+                                decoration: BoxDecoration(
+                                    color: Colors.black,
+                                    borderRadius: BorderRadius.circular(44),
+                                    border: Border.all(
+                                        color: Colors.grey.shade900, width: 2.5)),
+                                child: Center(
+                                  child: ShareWidget(
+                                    article: articleOnTop?.article ?? Article(),
+                                    backgroundColor: COLOR_BACKGROUND,
+                                    iconHeight: 18,
                                   ),
                                 ),
                               ),
-                            LikeBtn(
-                              article: articleOnTop?.article ?? Article(),
-                              userBoosted: isBoosted,
-                              boostedCallback: (boost) {
-                                setState(() {
-                                  if (boost) {
-                                    int currentBoosts =
-                                        articleOnTop?.article?.boosts ?? 0;
-                                    articleOnTop?.article?.boosts =
-                                        currentBoosts + 1;
-                                    articleOnTop?.article?.boostamp =
-                                        Timestamp.now();
-                                  } else {
-                                    int currentBoosts =
-                                        articleOnTop?.article?.boosts ?? 0;
-                                    articleOnTop?.article?.boosts =
-                                        currentBoosts - 1;
-                                  }
-                                  isBoosted = boost;
-                                });
-                              },
-                            ),
-                            Container(
-                              height: 46,
-                              width: 46,
-                              decoration: BoxDecoration(
-                                  color: Colors.black,
-                                  borderRadius: BorderRadius.circular(44),
-                                  border: Border.all(
-                                      color: Colors.grey.shade900, width: 2.5)),
-                              child: Center(
-                                child: ShareWidget(
-                                  article: articleOnTop?.article ?? Article(),
-                                  backgroundColor: COLOR_BACKGROUND,
-                                  iconHeight: 18,
-                                ),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                  ],
-                ),
-                if (true)
-                  SafeArea(
-                    child: IgnorePointer(
-                      child: Container(
-                        alignment: Alignment.topCenter,
-                        height: 200,
-                        //padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(borderCurve),
-                          gradient: LinearGradient(
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                              colors: [
-                                Colors.transparent,
-                                //Colors.black,
-                                Colors.black.withOpacity(0.35),
-                              ]),
+                      )
+                    ],
+                  ),
+                  if (true)
+                    SafeArea(
+                      child: IgnorePointer(
+                        child: Container(
+                          alignment: Alignment.topCenter,
+                          height: 200,
+                          //padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(borderCurve),
+                            gradient: LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  //Colors.black,
+                                  Colors.black.withOpacity(0.35),
+                                ]),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                if (fromSearch)
-                  SafeArea(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          margin: const EdgeInsets.symmetric(vertical: 16),
-                          child: GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: const Icon(
-                              Icons.arrow_back_ios_new_rounded,
-                              size: 26,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 4,
-                        ),
-                        if (articleOnTop?.band != null)
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  SwipeablePageRoute(
-                                    builder: (context) => BandDetailsPage(
-                                      band: articleOnTop?.band,
-                                    ),
-                                  ));
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 8),
-                              //margin: const EdgeInsets.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade800
-                                    .withOpacity(0.35), //.withOpacity(0.8),
-                                //border: Border.all(color: Colors.grey.shade900.withOpacity(0.85),width: 2.5),
-                                borderRadius: BorderRadius.circular(24),
-                              ),
-                              child: Text(
-                                articleOnTop?.band?.name ?? "",
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                ),
-                              ),
-                            ),
-                          ),
-                        Expanded(
-                            child: Container(
-                          height: 5,
-                        )),
-                        if (isBoosted)
+                  if (fromSearch)
+                    SafeArea(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
                           Container(
-                            padding: EdgeInsets.all(12),
-                            child: Image.asset(
-                              'images/boost_enabled.png', //'images/like_btn.png',
-                              height: 28,
-                              color: Colors.white,
-                              fit: BoxFit.contain,
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            margin: const EdgeInsets.symmetric(vertical: 16),
+                            child: GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: const Icon(
+                                Icons.arrow_back_ios_new_rounded,
+                                size: 26,
+                              ),
                             ),
-                          )
-                      ],
+                          ),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          if (articleOnTop?.band != null)
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    SwipeablePageRoute(
+                                      builder: (context) => BandDetailsPage(
+                                        band: articleOnTop?.band,
+                                      ),
+                                    ));
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 8),
+                                //margin: const EdgeInsets.symmetric(horizontal: 10),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade800
+                                      .withOpacity(0.35), //.withOpacity(0.8),
+                                  //border: Border.all(color: Colors.grey.shade900.withOpacity(0.85),width: 2.5),
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                                child: Text(
+                                  articleOnTop?.band?.name ?? "",
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          Expanded(
+                              child: Container(
+                            height: 5,
+                          )),
+                          if (isBoosted)
+                            Container(
+                              padding: EdgeInsets.all(12),
+                              child: Image.asset(
+                                'images/boost_enabled.png', //'images/like_btn.png',
+                                height: 28,
+                                color: Colors.white,
+                                fit: BoxFit.contain,
+                              ),
+                            )
+                        ],
+                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
