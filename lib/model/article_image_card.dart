@@ -79,7 +79,7 @@ class ArticleImageCard extends StatelessWidget {
         : LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
             double maxHeight = constraints.maxHeight / 2.5;
-            double maxTextSize = 17;
+            double maxTextSize = 16;
             return GestureDetector(
               onTap: () {
                 if (articleBands == null)
@@ -273,7 +273,7 @@ class ArticleImageCard extends StatelessWidget {
                                           begin: Alignment.topCenter,
                                           colors: [
                                         Colors.transparent,
-                                        Colors.transparent,
+                                        //Colors.transparent,
                                         fadeColor,
                                       ])),
                                 ),
