@@ -46,12 +46,12 @@ class ArticleImageCard extends StatelessWidget {
     int boosts = 0;
     double curve = 8;
     double borderWidth = 3;
-    double bottomPadding = 64;
+    double bottomPadding = 56;
     double horizontalPadding = 6;
     DateTime currentTime = DateTime.now();
     DateTime recent = currentTime.subtract(Duration(hours: 3));
     Timestamp boostTime = Timestamp.now();
-    Color fadeColor = Colors.grey.shade900; //.withOpacity(0.8);
+    Color fadeColor = COLOR_ARTICLE_BACKGROUND; //.withOpacity(0.8);
     try {
       boostTime = articleBand.article!.boostamp ?? Timestamp.now();
       boosts = articleBand.article?.boosts ?? 0;
@@ -72,14 +72,14 @@ class ArticleImageCard extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(curve + 1),
-              color: Colors.grey.shade900, //COLOR_BACKGROUND,
+              color: fadeColor, //COLOR_BACKGROUND,
               border: Border.all(color: colorBorder, width: borderWidth),
             ),
           )
         : LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
             double maxHeight = constraints.maxHeight / 2.5;
-            double maxTextSize = 16;
+            double maxTextSize = 18;
             return GestureDetector(
               onTap: () {
                 if (articleBands == null)
@@ -91,39 +91,6 @@ class ArticleImageCard extends StatelessWidget {
                         ),
                       ));
                 else {
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (context) => ArticleReels(
-                  //         preloadList: articleBands,
-                  //         articlePosition: articleBands?.indexOf(articleBand)??0,
-                  //         userConnected: false,
-                  //         scrollController: ScrollController(),
-                  //         tag: articleBands?.elementAt(articleBands?.indexOf(articleBand)??0).article?.articleId??"",
-                  //       ),
-                  //     ));
-
-                  // Navigator.push(
-                  //   context,
-                  //   SwipeablePageRoute(
-                  //     builder: (context) => ArticleReels(
-                  //       preloadList: articleBands,
-                  //       lastDocument: lastDocument,
-                  //       selectedBandId: selectedBandID ?? "For You",
-                  //       articlePosition:
-                  //           articleBands?.indexOf(articleBand) ?? 0,
-                  //       userConnected: false,
-                  //       scrollController: ScrollController(),
-                  //       tag: articleBands
-                  //               ?.elementAt(
-                  //                   articleBands?.indexOf(articleBand) ?? 0)
-                  //               .article
-                  //               ?.articleId ??
-                  //           "",
-                  //     ),
-                  //   ),
-                  // );
-
                   Vibrate.feedback(FeedbackType.selection);
 
                   context.pushTransparentRoute(
@@ -192,74 +159,6 @@ class ArticleImageCard extends StatelessWidget {
                                       fit: BoxFit.cover),
                                 ),
                               ),
-                              if (false)
-                                Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                                  color: Colors.black,
-                                  width: double.maxFinite,
-                                  child: AutoSizeText(
-                                    unescape.convert(
-                                        articleBand.article?.meta ??
-                                            articleBand.article?.title ??
-                                            ""),
-                                    textAlign: TextAlign.left,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxFontSize: 15,
-                                    maxLines: 3,
-                                    minFontSize: 10,
-                                    style: TextStyle(
-                                        overflow: TextOverflow.ellipsis,
-                                        fontSize: 15,
-                                        //fontWeight: FontWeight.bold,
-                                        fontFamily: APP_FONT_MEDIUM,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              if (false)
-                                Container(
-                                  color: Colors.black,
-                                  padding:
-                                      const EdgeInsets.fromLTRB(8, 2, 8, 8),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Flexible(
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                              //borderRadius: BorderRadius.circular(12),
-                                              // color: Colors.black,
-                                              ),
-                                          child: AutoSizeText(
-                                            "${articleBand.article?.source}",
-                                            textAlign: TextAlign.left,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            minFontSize: 8,
-                                            style: const TextStyle(
-                                                fontSize: 10,
-                                                fontFamily: APP_FONT_MEDIUM,
-                                                //fontWeight: FontWeight.bold,
-                                                color: Colors.white70),
-                                          ),
-                                        ),
-                                      ),
-                                      const Text(" • "),
-                                      Container(
-                                        padding: const EdgeInsets.only(
-                                            right: 4, bottom: 4),
-                                        child: InstagramDateTimeWidget(
-                                          textSize: 10,
-                                          fontColor: Colors.white70,
-                                          publishedAt: articleBand
-                                                  .article?.publishedAt
-                                                  .toString() ??
-                                              "",
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
                               Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Container(
@@ -272,8 +171,9 @@ class ArticleImageCard extends StatelessWidget {
                                           end: Alignment.bottomCenter,
                                           begin: Alignment.topCenter,
                                           colors: [
+                                            Colors.transparent,
                                         Colors.transparent,
-                                        //Colors.transparent,
+                                        Colors.transparent,
                                         fadeColor,
                                       ])),
                                 ),
@@ -288,9 +188,8 @@ class ArticleImageCard extends StatelessWidget {
                                       begin: Alignment.topCenter,
                                       colors: [
                                         Colors.transparent,
-                                        //Colors.black.withOpacity(0.75),
-                                        //Colors.black,
-                                        Colors.transparent,
+                                        fadeColor,
+                                        //Colors.transparent,
                                       ],
                                     ),
                                   ),

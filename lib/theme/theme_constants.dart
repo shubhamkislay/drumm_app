@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 const int COLOR_PRIMARY_VAL = 0xff008cff;
 const COLOR_ACCENT = Colors.blue;
 const Color COLOR_PRIMARY_DARK = Color(0xff101010);
+const Color COLOR_ARTICLE_BACKGROUND = Color(0xff1e1e1e);
 const APP_FONT_LIGHT = "robotolight";//"poppinslight";//"robotolight";chakrapetchlight
 const APP_FONT_MEDIUM = "robotomedium";//"poppinsmedium";//"robotomedium";chakrapetchmedium
 const APP_FONT_BOLD = "robotobold";//"poppinsbold";//"robotobold";chakrapetchbold

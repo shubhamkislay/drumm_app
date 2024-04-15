@@ -536,7 +536,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
-                            double articlePadding = 7;
+                            double articlePadding = 10;
                             return GridView.custom(
                               shrinkWrap: true,
                               padding: EdgeInsets.symmetric(
@@ -546,9 +546,9 @@ class DiscoverHomeState extends State<DiscoverHome>
                                 crossAxisCount: 5,
                                 mainAxisSpacing: articlePadding,
                                 crossAxisSpacing: articlePadding,
-                                repeatPattern: QuiltedGridRepeatPattern.same,
+                                repeatPattern: QuiltedGridRepeatPattern.inverted,
                                 pattern: [
-                                  const QuiltedGridTile(3, 5),
+                                 // const QuiltedGridTile(3, 5),
                                   const QuiltedGridTile(4, 3),
                                   const QuiltedGridTile(2, 2),
                                   const QuiltedGridTile(3, 2),
@@ -556,7 +556,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                                   const QuiltedGridTile(2, 2),
                                   const QuiltedGridTile(3, 2),
                                   const QuiltedGridTile(3, 3),
-                                  const QuiltedGridTile(3, 5),
+                                  //const QuiltedGridTile(3, 5),
                                   const QuiltedGridTile(2, 2),
                                   const QuiltedGridTile(4, 3),
                                   const QuiltedGridTile(3, 2),
