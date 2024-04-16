@@ -47,7 +47,7 @@ class ArticleImageCard extends StatelessWidget {
     double curve = 8;
     double borderWidth = 3;
     double bottomPadding = 56;
-    double horizontalPadding = 6;
+    double horizontalPadding = 4;
     DateTime currentTime = DateTime.now();
     DateTime recent = currentTime.subtract(Duration(hours: 3));
     Timestamp boostTime = Timestamp.now();
@@ -79,7 +79,8 @@ class ArticleImageCard extends StatelessWidget {
         : LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
             double maxHeight = constraints.maxHeight / 2.5;
-            double maxTextSize = 18;
+            double maxTextSize = 15;
+            double minTextSize=11;
             return GestureDetector(
               onTap: () {
                 if (articleBands == null)
@@ -207,21 +208,22 @@ class ArticleImageCard extends StatelessWidget {
                                           Flexible(
                                             child: Container(
                                               padding: EdgeInsets.symmetric(
-                                                  horizontal: 6, vertical: 2),
+                                                  horizontal: 6, vertical: 3),
                                               margin: EdgeInsets.symmetric(
-                                                  horizontal: 2, vertical: 2),
+                                                  horizontal: 0, vertical: 0),
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                          curve - 4),
+                                                          curve -3),
                                                   color: Colors.grey.shade800
-                                                      .withOpacity(0.65)),
+                                                      .withOpacity(0.5)),
                                               child: AutoSizeText(
                                                 "${articleBand.band?.name}",
                                                 textAlign: TextAlign.left,
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
                                                 minFontSize: 8,
+                                                maxFontSize: 8,
                                                 style: const TextStyle(
                                                     fontSize: 8,
                                                     fontFamily: APP_FONT_MEDIUM,
@@ -255,43 +257,36 @@ class ArticleImageCard extends StatelessWidget {
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
                                           children: [
-                                            Column(
-                                              children: [
-                                                Container(
-                                                  alignment:
-                                                      Alignment.bottomLeft,
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal:
-                                                          horizontalPadding,
-                                                      vertical: 2),
-                                                  height: maxHeight,
-                                                  child: AutoSizeText(
-                                                    unescape.convert(articleBand
-                                                            .article?.meta ??
-                                                        articleBand
-                                                            .article?.title ??
-                                                        ""),
-                                                    textAlign: TextAlign.left,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxFontSize: maxTextSize,
-                                                    maxLines: 3,
-                                                    minFontSize: 10,
-                                                    style: TextStyle(
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        fontSize: maxTextSize,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        fontFamily:
-                                                            APP_FONT_MEDIUM,
-                                                        color: Colors.white),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 4,
-                                                ),
-                                              ],
+                                            Container(
+                                              alignment:
+                                                  Alignment.bottomLeft,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal:
+                                                      horizontalPadding,
+                                                  vertical: 6),
+                                              height: maxHeight,
+                                              child: AutoSizeText(
+                                                unescape.convert(articleBand
+                                                        .article?.meta ??
+                                                    articleBand
+                                                        .article?.title ??
+                                                    ""),
+                                                textAlign: TextAlign.left,
+                                                overflow:
+                                                    TextOverflow.ellipsis,
+                                                maxFontSize: maxTextSize,
+                                                maxLines: 2,
+                                                minFontSize: minTextSize,
+                                                style: TextStyle(
+                                                    overflow: TextOverflow
+                                                        .ellipsis,
+                                                    fontSize: maxTextSize,
+                                                    fontWeight:
+                                                        FontWeight.w600,
+                                                    fontFamily:
+                                                        APP_FONT_MEDIUM,
+                                                    color: Colors.white),
+                                              ),
                                             ),
                                             Row(
                                               mainAxisAlignment:
@@ -303,7 +298,7 @@ class ArticleImageCard extends StatelessWidget {
                                                   child: Container(
                                                     padding: EdgeInsets.only(
                                                         left: horizontalPadding,
-                                                        bottom: 6),
+                                                        bottom: 4),
                                                     decoration: BoxDecoration(
                                                         //borderRadius: BorderRadius.circular(12),
                                                         //color: Colors.grey.shade900.withOpacity(0.35),
@@ -318,20 +313,20 @@ class ArticleImageCard extends StatelessWidget {
                                                           fontSize: 10,
                                                           fontFamily:
                                                               APP_FONT_MEDIUM,
-                                                          //fontWeight: FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                           color:
-                                                              Colors.white70),
+                                                              Colors.white),
                                                     ),
                                                   ),
                                                 ),
                                                 Container(
                                                   padding: EdgeInsets.only(
                                                       right: horizontalPadding,
-                                                      bottom: 6),
+                                                      bottom: 4),
                                                   child:
                                                       InstagramDateTimeWidget(
                                                     textSize: 10,
-                                                    fontColor: Colors.white70,
+                                                    fontColor: Colors.white54,
                                                     publishedAt: articleBand
                                                             .article
                                                             ?.publishedAt
@@ -393,6 +388,7 @@ class ArticleImageCard extends StatelessWidget {
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 1,
                                               minFontSize: 8,
+                                              maxFontSize: 8,
                                               style: const TextStyle(
                                                   fontSize: 8,
                                                   fontFamily: APP_FONT_MEDIUM,
@@ -416,8 +412,8 @@ class ArticleImageCard extends StatelessWidget {
                               textAlign: TextAlign.left,
                               overflow: TextOverflow.ellipsis,
                               maxFontSize: maxTextSize,
-                              maxLines: 3,
-                              minFontSize: 10,
+                              maxLines: 2,
+                              minFontSize: minTextSize,
                               style: TextStyle(
                                   overflow: TextOverflow.ellipsis,
                                   fontSize: maxTextSize,
