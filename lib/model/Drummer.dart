@@ -72,4 +72,21 @@ class Drummer {
         followerCount = snapshot['followerCount'],
         followingCount = snapshot['followingCount'],
         imageUrl = snapshot['imageUrl'];
+
+  Drummer.fromJson(Map<String, dynamic> json)
+      : token = json['token'],
+        uid = json['uid'],
+        name = json['name'],
+        email = json['email'],
+        rid = json['rid'],
+        username = json['username'],
+        occupation = json['occupation'],
+        speaking = json['speaking'],
+        muted = json['muted'],
+        imageUrl = json['imageUrl'],
+        bio = json['bio'],
+        jobTitle = json['jobTitle'],
+        organisation = json['organisation'],
+        followerCount = json['followerCount'],
+        followingCount = json['followingCount'];
 }

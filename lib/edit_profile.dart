@@ -64,6 +64,8 @@ class _EditProfileState extends State<EditProfile> {
   Profession initialProfession = Profession();
 
   String initialDesignation = "";
+  String originalDesignation = "";
+  String originalDepartmentName = "";
 
   @override
   Widget build(BuildContext context) {
@@ -247,6 +249,8 @@ class _EditProfileState extends State<EditProfile> {
         setState(() {
           initialProfession = profession;
           initialDesignation = widget.drummer!.jobTitle ?? "";
+          originalDesignation = widget.drummer!.jobTitle ?? "";
+          originalDepartmentName = widget.drummer!.occupation!??"";
           textEditingController.text = widget.drummer!.bio ?? "";
         });
         break;
@@ -267,6 +271,10 @@ class _EditProfileState extends State<EditProfile> {
         .collection("users")
         .doc(uid)
         .set(drummer.toJson(), SetOptions(merge: true));
+
+    FirebaseDBOperations.unsubscribeToYourExpertise(originalDepartmentName??"",originalDesignation??"");
+
+    FirebaseDBOperations.subscribeToYourExpertise(widget.drummer?.occupation??"",widget.drummer?.jobTitle??"");
 
     // _checkOnboardingStatus(drummer.username??"");
     Navigator.pop(context);

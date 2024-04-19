@@ -20,6 +20,17 @@ class Question {
     'qid': qid,
     'hook': hook,
     'tags': tags,
+    'createdTime': createdTime.toString()
+  };
+
+  Map<String, dynamic> toFirestoreJson() => {
+    'query': query,
+    'departmentName':departmentName,
+    'designation':designation,
+    'uid': uid,
+    'qid': qid,
+    'hook': hook,
+    'tags': tags,
     'createdTime': createdTime
   };
 
@@ -32,4 +43,14 @@ class Question {
         hook = snapshot.data()['hook'],
   //tags = snapshot.data()['tags'],
         createdTime =  snapshot.data()['createdTime'];
+
+  Question.fromJson(Map<String, dynamic> json)
+      : query = json['query'],
+        uid = json['uid'],
+        qid = json['qid'],
+        departmentName = json['departmentName'],
+        designation = json['designation'],
+        hook = json['hook'].toString(),
+        createdTime = Timestamp.now()
+  ;
 }

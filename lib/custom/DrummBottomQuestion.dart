@@ -69,7 +69,7 @@ class _DrummBottomDialogState extends State<DrummBottomQuestionDialog> {
                   ),
                 ),
                 const SizedBox(width: 8,),
-                Container(
+               if(false) Container(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 8, vertical: 8),
                   //margin: const EdgeInsets.symmetric(horizontal: 10),

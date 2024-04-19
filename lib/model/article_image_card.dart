@@ -25,7 +25,7 @@ import '../theme/theme_constants.dart';
 import 'article_band.dart';
 import 'home_item.dart';
 
-class ArticleImageCard extends StatelessWidget {
+class ArticleImageCard extends StatefulWidget {
   final ArticleBand articleBand;
   List<ArticleBand>? articleBands;
   bool? loading;
@@ -42,19 +42,25 @@ class ArticleImageCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<ArticleImageCard> createState() => _ArticleImageCardState();
+}
+
+class _ArticleImageCardState extends State<ArticleImageCard> {
+  @override
   Widget build(BuildContext context) {
     int boosts = 0;
     double curve = 8;
     double borderWidth = 3;
-    double bottomPadding = 56;
+    double bottomPadding = 64;
     double horizontalPadding = 4;
+    int imageUrlLength = widget.articleBand.article?.imageUrl?.length??0;
     DateTime currentTime = DateTime.now();
     DateTime recent = currentTime.subtract(Duration(hours: 3));
     Timestamp boostTime = Timestamp.now();
     Color fadeColor = COLOR_ARTICLE_BACKGROUND; //.withOpacity(0.8);
     try {
-      boostTime = articleBand.article!.boostamp ?? Timestamp.now();
-      boosts = articleBand.article?.boosts ?? 0;
+      boostTime = widget.articleBand.article!.boostamp ?? Timestamp.now();
+      boosts = widget.articleBand.article?.boosts ?? 0;
     } catch (e) {}
 
     Color colorBorder =
@@ -65,7 +71,7 @@ class ArticleImageCard extends StatelessWidget {
         (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
             ? Colors.blueGrey
             : fadeColor;
-    Widget returnWidget = (loading ?? false)
+    Widget returnWidget = (widget.loading ?? false)
         ? Container(
             alignment: Alignment.center,
             width: MediaQuery.of(context).size.width,
@@ -79,16 +85,16 @@ class ArticleImageCard extends StatelessWidget {
         : LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
             double maxHeight = constraints.maxHeight / 2.5;
-            double maxTextSize = 15;
-            double minTextSize=11;
+            double maxTextSize = 17;
+            double minTextSize=12;
             return GestureDetector(
               onTap: () {
-                if (articleBands == null)
+                if (widget.articleBands == null)
                   Navigator.push(
                       context,
                       SwipeablePageRoute(
                         builder: (context) => OpenArticlePage(
-                          article: articleBand.article ?? Article(),
+                          article: widget.articleBand.article ?? Article(),
                         ),
                       ));
                 else {
@@ -96,15 +102,15 @@ class ArticleImageCard extends StatelessWidget {
 
                   context.pushTransparentRoute(
                     ArticleReels(
-                      preloadList: articleBands,
-                      lastDocument: lastDocument,
-                      selectedBandId: selectedBandID ?? "For You",
-                      articlePosition: articleBands?.indexOf(articleBand) ?? 0,
+                      preloadList: widget.articleBands,
+                      lastDocument: widget.lastDocument,
+                      selectedBandId: widget.selectedBandID ?? "For You",
+                      articlePosition: widget.articleBands?.indexOf(widget.articleBand) ?? 0,
                       userConnected: false,
                       scrollController: ScrollController(),
-                      tag: articleBands
+                      tag: widget.articleBands
                               ?.elementAt(
-                                  articleBands?.indexOf(articleBand) ?? 0)
+                                  widget.articleBands?.indexOf(widget.articleBand) ?? 0)
                               .article
                               ?.articleId ??
                           "",
@@ -112,7 +118,7 @@ class ArticleImageCard extends StatelessWidget {
                   );
                 }
               },
-              child: (articleBand.article?.imageUrl != null)
+              child: (widget.articleBand.article?.imageUrl != null && imageUrlLength>0)
                   ? Container(
                       padding: EdgeInsets.all(borderWidth),
                       decoration: BoxDecoration(
@@ -138,9 +144,9 @@ class ArticleImageCard extends StatelessWidget {
                               Container(
                                 margin: EdgeInsets.only(bottom: bottomPadding),
                                 child: Hero(
-                                  tag: articleBands
-                                          ?.elementAt(articleBands
-                                                  ?.indexOf(articleBand) ??
+                                  tag: widget.articleBands
+                                          ?.elementAt(widget.articleBands
+                                                  ?.indexOf(widget.articleBand) ??
                                               0)
                                           .article
                                           ?.articleId ??
@@ -149,15 +155,20 @@ class ArticleImageCard extends StatelessWidget {
                                       width: double.infinity,
                                       height: double.infinity,
                                       errorWidget: (context, url, error) {
-                                        return Container();
+                                       // setState(() {
+                                          imageUrlLength = 0;
+                                        //});
+                                          print("Error while loading image because ${error.toString()}");
+                                        return Container(color: Colors.black,);
                                       },
                                       placeholder: (context, url) => Container(
                                             color: Colors.grey.shade900,
                                           ),
                                       imageUrl:
-                                          articleBand.article?.imageUrl ?? "",
+                                          widget.articleBand.article?.imageUrl ?? "",
                                       alignment: Alignment.topCenter,
                                       fit: BoxFit.cover),
+
                                 ),
                               ),
                               Align(
@@ -218,7 +229,7 @@ class ArticleImageCard extends StatelessWidget {
                                                   color: Colors.grey.shade800
                                                       .withOpacity(0.5)),
                                               child: AutoSizeText(
-                                                "${articleBand.band?.name}",
+                                                "${widget.articleBand.band?.name}",
                                                 textAlign: TextAlign.left,
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
@@ -266,9 +277,9 @@ class ArticleImageCard extends StatelessWidget {
                                                   vertical: 6),
                                               height: maxHeight,
                                               child: AutoSizeText(
-                                                unescape.convert(articleBand
+                                                unescape.convert(widget.articleBand
                                                         .article?.meta ??
-                                                    articleBand
+                                                    widget.articleBand
                                                         .article?.title ??
                                                     ""),
                                                 textAlign: TextAlign.left,
@@ -304,7 +315,7 @@ class ArticleImageCard extends StatelessWidget {
                                                         //color: Colors.grey.shade900.withOpacity(0.35),
                                                         ),
                                                     child: Text(
-                                                      "${articleBand.article?.source}  •  ",
+                                                      "${widget.articleBand.article?.source}  •  ",
                                                       textAlign: TextAlign.left,
                                                       overflow:
                                                           TextOverflow.ellipsis,
@@ -327,7 +338,7 @@ class ArticleImageCard extends StatelessWidget {
                                                       InstagramDateTimeWidget(
                                                     textSize: 10,
                                                     fontColor: Colors.white54,
-                                                    publishedAt: articleBand
+                                                    publishedAt: widget.articleBand
                                                             .article
                                                             ?.publishedAt
                                                             .toString() ??
@@ -361,7 +372,7 @@ class ArticleImageCard extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            if (articleBand.article?.source != null)
+                            if (widget.articleBand.article?.source != null)
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -381,9 +392,9 @@ class ArticleImageCard extends StatelessWidget {
                                           ),
                                           child: Hero(
                                             tag:
-                                                "${articleBand.band?.name} ${articleBand.article?.articleId}",
+                                                "${widget.articleBand.band?.name} ${widget.articleBand.article?.articleId}",
                                             child: AutoSizeText(
-                                              "${articleBand.band?.name}",
+                                              "${widget.articleBand.band?.name}",
                                               textAlign: TextAlign.left,
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 1,
@@ -406,13 +417,13 @@ class ArticleImageCard extends StatelessWidget {
                               height: 4,
                             ),
                             AutoSizeText(
-                              unescape.convert(articleBand.article?.meta ??
-                                  articleBand.article?.title ??
+                              unescape.convert(widget.articleBand.article?.meta ??
+                                  widget.articleBand.article?.title ??
                                   ""),
                               textAlign: TextAlign.left,
                               overflow: TextOverflow.ellipsis,
-                              maxFontSize: maxTextSize,
-                              maxLines: 2,
+                              maxFontSize: maxTextSize+minTextSize,
+                              maxLines: 3,
                               minFontSize: minTextSize,
                               style: TextStyle(
                                   overflow: TextOverflow.ellipsis,
@@ -424,7 +435,7 @@ class ArticleImageCard extends StatelessWidget {
                             SizedBox(
                               height: 4,
                             ),
-                            if (articleBand.article?.source != null)
+                            if (widget.articleBand.article?.source != null)
                               Flexible(
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -438,7 +449,7 @@ class ArticleImageCard extends StatelessWidget {
                                             //color: Colors.grey.shade900.withOpacity(0.35),
                                             ),
                                         child: AutoSizeText(
-                                          "${articleBand.article?.source ?? ""}  •  ",
+                                          "${widget.articleBand.article?.source ?? ""}  •  ",
                                           textAlign: TextAlign.left,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
@@ -458,7 +469,7 @@ class ArticleImageCard extends StatelessWidget {
                                         child: InstagramDateTimeWidget(
                                           textSize: 10,
                                           fontColor: Colors.white70,
-                                          publishedAt: articleBand
+                                          publishedAt: widget.articleBand
                                                   .article?.publishedAt
                                                   .toString() ??
                                               "",

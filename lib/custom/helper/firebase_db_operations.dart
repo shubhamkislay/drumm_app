@@ -721,7 +721,7 @@ class FirebaseDBOperations {
       }
 
       // Prepare the data to be posted
-      Map<String, dynamic> questionData = question.toJson();
+      Question notifQuestion = question;
 
       // Post the question to Firestore
       await FirebaseFirestore.instance
@@ -729,12 +729,13 @@ class FirebaseDBOperations {
           .doc(uid)
           .collection('questions')
           .doc(question.qid)
-          .set(question.toJson())
+          .set(question.toFirestoreJson())
           .onError(
               (error, stackTrace) => print('Error posting question: $error'));
 
       print(
           'Question posted successfully Users/$uid/questions/${question.qid} \n ${question.toJson()}');
+      sendQuestionNotificationToTopic(notifQuestion);
     } catch (error) {
       print('Error posting question: $error');
       // Handle error as needed
@@ -748,6 +749,11 @@ class FirebaseDBOperations {
     //SharedPreferences prefs = await SharedPreferences.getInstance();
     //List<String> userInterests = prefs.getStringList('interestList')!;
 
+    Drummer currentDrummer = await getDrummer(FirebaseAuth.instance.currentUser?.uid??"");
+
+    String designation = currentDrummer.jobTitle??"";
+    String departmentName = currentDrummer.occupation??"";
+
     DateTime currentTime = DateTime.now();
 
     // Calculate the time one minute ago
@@ -757,11 +763,21 @@ class FirebaseDBOperations {
         .collectionGroup('questions')
         .where('createdTime',
             isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
+        .where('departmentName',isEqualTo: departmentName??"")
+        //.where('designation',isEqualTo: designation??"")
         .orderBy('createdTime', descending: true)
         //.where("hook", whereIn: userInterests)
         .get();
 
-    return List.from(data.docs.map((e) => Question.fromSnapshot(e)));
+    // List<Question> listOfQuestionsFetched = List.from(data.docs.map((e) => Question.fromSnapshot(e)));
+    // List<Question> finalList = [];
+    // for(Question question in listOfQuestionsFetched){
+    //   String designationQ = question.designation??"";
+    //   if(designationQ.isEmpty || designationQ == designation){
+    //     finalList.add(question);
+    //   }
+    // }
+    return List.from(data.docs.map((e) => Question.fromSnapshot(e)));//finalList;
   }
 
   static Future<List<Question>> getQuestionsAskedByUserId(String uid) async {
@@ -1335,6 +1351,32 @@ class FirebaseDBOperations {
     }
   }
 
+  static void subscribeToYourExpertise(String departmentName, String designation) async {
+    subscribeToTopic(convertToValidTopicName(departmentName));
+    subscribeToTopic(convertToValidTopicName(designation));
+  }
+  static void unsubscribeToYourExpertise(String departmentName, String designation) async {
+    unsubscribeFromTopic(convertToValidTopicName(departmentName));
+    unsubscribeFromTopic(convertToValidTopicName(designation));
+  }
+
+  static String convertToValidTopicName(String input) {
+    // Replace spaces with a valid separator character, such as '_'
+    String sanitized = input.replaceAll(' ', '_');
+
+    // Ensure the length of the sanitized string is within the valid range
+    const int maxLength = 900;
+    if (sanitized.length > maxLength) {
+      sanitized = sanitized.substring(0, maxLength);
+    }
+
+    // Ensure the sanitized string matches the pattern defined by _assertTopicName
+    RegExp validPattern = RegExp(r'^[a-zA-Z0-9-_.~%]+$');
+    sanitized = sanitized.replaceAll(RegExp(r'[^\w-_.~%]'), '');
+
+    return sanitized;
+  }
+
   static void unSubscribeToUserBands() async {
     //if (fetchedBands.isEmpty)
     fetchedBands = await FirebaseDBOperations.getBandByUser();
@@ -1346,7 +1388,9 @@ class FirebaseDBOperations {
 
   static void unsubscribeFromTopic(String topic) async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
-    await messaging.unsubscribeFromTopic(topic);
+    await messaging.unsubscribeFromTopic(topic).catchError((err){
+      print("Error while unsubscribing: $err ");
+    });
     print('Unsubscribed from topic: $topic');
   }
 
@@ -1490,6 +1534,63 @@ class FirebaseDBOperations {
     if (response.statusCode == 200) {
       // If the server returns an OK response, then parse the JSON.
       print("Sent Notification to Topic");
+      Map<String, dynamic> json = jsonDecode(response.body);
+      /*List<dynamic> list = json['choices'];
+    String searchResult = list[0]["text”];*/
+    } else {
+      // If the server did not return an OK response,
+      // then throw an exception.
+      print("Failed to send topic notification ${response.statusCode}");
+      throw Exception(
+          'Failed to send topic notification ${response.statusCode}');
+    }
+  }
+
+  static Future<void> sendQuestionNotificationToTopic(Question question) async {
+    print("Sending notification to topic");
+    var url = Uri.https('fcm.googleapis.com', '/fcm/send');
+    Drummer drummer = await FirebaseDBOperations.getDrummer(question.uid ?? "");
+    String departmentName = question.departmentName??"";
+    String designation = question.designation??"";
+
+    String topicName = "";
+    if(designation.isNotEmpty){
+      topicName = designation;
+    }else{
+      topicName = departmentName;
+    }
+    var toParams = "/topics/" + '${topicName}';
+
+
+
+    Map<String, String> header = {
+      'Content-Type': 'application/json',
+      'Authorization':
+      'key=AAAA8pEyjik:APA91bFjoRwCsioHAgDsWYHhcmy63BQuxL3iUBBaYnE9s2SHMnJtl0oyD39Mdp0KphI53ldusblYoiCCvxNaKJEFVQbGVTrwMcqDu9w_Rpx_Vsjx_9TdE3xI54vqj0lNOPDqAb5GPwOp'
+    };
+
+
+    String subtitle = "${drummer.username} wants to connect";
+
+    var notificationBody ="${question.query}";
+    final body = jsonEncode({
+      "to": "${toParams}",
+      "notification": {
+        "body": notificationBody,
+        "title": subtitle,
+        "sound": "conga_drumm.caf",
+        "image": "${drummer.imageUrl}"
+      },
+      "priority": "high",
+      "content_available": true,
+      "mutable_content": true,
+      "data": {"question": question,"drummer":drummer,"open": true}
+    });
+    var response = await http.post(url, headers: header, body: body);
+
+    if (response.statusCode == 200) {
+      // If the server returns an OK response, then parse the JSON.
+      print("Sent Notification to for question");
       Map<String, dynamic> json = jsonDecode(response.body);
       /*List<dynamic> list = json['choices'];
     String searchResult = list[0]["text”];*/

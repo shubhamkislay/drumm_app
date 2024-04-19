@@ -29,6 +29,8 @@ class _ProfessionDetailsPageState extends State<ProfessionDetailsPage> {
   String moreAboutTxt = "";
   bool moveToInterestPage = true;
   TextEditingController textEditingController = TextEditingController();
+  String currentDesignation = "";
+  String currentDepartmentName = "";
 
   @override
   Widget build(BuildContext context) {
@@ -214,6 +216,8 @@ class _ProfessionDetailsPageState extends State<ProfessionDetailsPage> {
         .collection("users")
         .doc(uid)
         .set(widget.drummer!.toJson(), SetOptions(merge: true));
+
+    FirebaseDBOperations.subscribeToYourExpertise(widget.drummer?.occupation??"",widget.drummer?.jobTitle??"");
 
     // _checkOnboardingStatus(drummer.username??"");
     Navigator.pushReplacement(
