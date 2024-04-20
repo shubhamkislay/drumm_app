@@ -6,10 +6,14 @@ class IconLabelButton extends StatelessWidget {
   String imageAsset;
   String label;
   double? height = 100;
-  IconLabelButton({Key? key, required this.imageAsset, required this.label, required this.onPressed,this.height}) : super(key: key);
+  Color? assetColor;
+  Color? textColor;
+  Color? backgroundColor;
+  IconLabelButton({Key? key, required this.imageAsset,this.assetColor,this.textColor,this.backgroundColor, required this.label, required this.onPressed,this.height}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: onPressed,
       child: Wrap(
@@ -17,10 +21,10 @@ class IconLabelButton extends StatelessWidget {
           Container(
             alignment: Alignment.center,
             height: height,
-            margin: EdgeInsets.symmetric(horizontal: 0),
-            padding: EdgeInsets.symmetric(vertical: 4,horizontal: 24),
+            margin: const EdgeInsets.symmetric(horizontal: 0),
+            padding: const EdgeInsets.symmetric(vertical: 4,horizontal: 24),
             decoration: BoxDecoration(
-                color: Colors.white,
+                color: backgroundColor ?? Colors.white,
                 borderRadius: BorderRadius.circular(24)
             ),
             child: Row(
@@ -28,13 +32,13 @@ class IconLabelButton extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset(
-                  color: Color(COLOR_PRIMARY_VAL),
+                  color: assetColor ?? const Color(COLOR_PRIMARY_VAL),
                   width: 24,
                   imageAsset,
                   height: 24,
                 ),
-                SizedBox(width: 12,),
-                Text(label,style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontFamily: APP_FONT_BOLD),)
+                const SizedBox(width: 12,),
+                Text(label,style: TextStyle(color: textColor??Colors.black,fontWeight: FontWeight.bold,fontFamily: APP_FONT_BOLD),)
               ],
             ),
           ),

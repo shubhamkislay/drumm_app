@@ -31,12 +31,15 @@ class _UserProfileIconState extends State<UserProfileIcon> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(17),
             clipBehavior: Clip.hardEdge,
-            child: CachedNetworkImage(
-                width: widget.iconSize??30,
-                height: widget.iconSize??30,
-                imageUrl: modifyImageUrl(
-                    drummer.imageUrl ?? "", "100x100"),
-                fit: BoxFit.cover),
+            child: Hero(
+              tag: drummer.imageUrl ?? "",
+              child: CachedNetworkImage(
+                  width: widget.iconSize??30,
+                  height: widget.iconSize??30,
+                  imageUrl: modifyImageUrl(
+                      drummer.imageUrl ?? "", "100x100"),
+                  fit: BoxFit.cover),
+            ),
           ),
         )
             : RoundedButton(

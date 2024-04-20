@@ -130,34 +130,23 @@ with AutomaticKeepAliveClientMixin<BandSearchPage>{
                 ),
               ),
             ),
-          if (loaded)
-            if(false)Container(
-              alignment: Alignment.bottomLeft,
-              height: 100,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [Colors.transparent, Colors.black])),
-            ),
-          if (false)
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 16,horizontal: 32),
+          IgnorePointer(
+            child: Align(
               alignment: Alignment.bottomCenter,
-              child: IconLabelButton(
-                imageAsset: "images/team_active.png",
-                label: "Create New Band",
-                height: 40,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CreateBand(),
-                    ),
-                  );
-                },
+              child: Container(
+                alignment: Alignment.bottomCenter,
+                height: 175,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        end: Alignment.bottomCenter,
+                        begin: Alignment.topCenter,
+                        colors: [
+                          Colors.transparent,
+                          COLOR_BACKGROUND
+                        ])),
               ),
             ),
+          ),
           if (loaded)
           Container(
             width: double.infinity,
@@ -170,6 +159,9 @@ with AutomaticKeepAliveClientMixin<BandSearchPage>{
               children: [
                 IconLabelButton(
                   label: 'Explore Bands',
+                  backgroundColor: Colors.blue.shade700,
+                  textColor: Colors.white,
+                  assetColor: Colors.white,
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -196,7 +188,7 @@ with AutomaticKeepAliveClientMixin<BandSearchPage>{
                     padding: EdgeInsets.all(8),
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Color(COLOR_PRIMARY_VAL)),
+                        color: Colors.blue.shade700,),
                   ),
                 )
               ],

@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
 import 'package:drumm_app/band_details_page.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
@@ -138,14 +139,20 @@ class BandImageCardState extends State<BandImageCard> {
   }
   void onSelected(){
     if (!widget.onlySelectable!) {
-      Navigator.push(
-          context,
-          SwipeablePageRoute(
-            builder: (context) =>
-                BandDetailsPage(
-                  band: widget.band,
-                ),
-          ));
+      // Navigator.push(
+      //     context,
+      //     SwipeablePageRoute(
+      //       builder: (context) =>
+      //           BandDetailsPage(
+      //             band: widget.band,
+      //           ),
+      //     ));
+
+      context.pushTransparentRoute(
+        BandDetailsPage(
+          band: widget.band,
+        ),
+      );
 
     } else {
       if(!(widget.selected??false)) {

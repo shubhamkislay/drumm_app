@@ -154,7 +154,7 @@ class _LauncherPageState extends State<LauncherPage>
             ),
             child: BottomTabBar(tabController: tabController, refreshDiscover: () { refreshHomePage(); },),
           ),
-          TutotrialManager(),
+          //TutotrialManager(),
         ],
       ),
     );

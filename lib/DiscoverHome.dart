@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'dart:collection';
 import 'package:blur/blur.dart';
+import 'package:dismissible_page/dismissible_page.dart';
 import 'package:drumm_app/CommunityQuestionsPage.dart';
 import 'package:drumm_app/MultiSelectContainerWidget.dart';
 import 'package:drumm_app/model/article_image_card.dart';
 import 'package:drumm_app/search_result_page.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -168,7 +172,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                 backgroundColor: Colors.grey.shade900.withOpacity(0.75),
                 child: CustomScrollView(
                   controller: _scrollController,
-                  physics: AlwaysScrollableScrollPhysics(),
+                  physics: const AlwaysScrollableScrollPhysics(),
                   slivers: [
                     SliverPadding(
                       padding: EdgeInsets.symmetric(
@@ -191,14 +195,20 @@ class DiscoverHomeState extends State<DiscoverHome>
                                     ),
                                     child: GestureDetector(
                                         onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    UserProfilePage(
-                                                  fromSearch: true,
-                                                ),
-                                              ));
+                                          // Navigator.push(
+                                          //     context,
+                                          //     MaterialPageRoute(
+                                          //       builder: (context) =>
+                                          //           UserProfilePage(
+                                          //         fromSearch: true,
+                                          //       ),
+                                          //     ));
+
+                                          context.pushTransparentRoute(
+                                            UserProfilePage(
+                                              fromSearch: true,
+                                            ),
+                                          );
                                         },
                                         child: UserProfileIcon(
                                           iconSize: 32,
@@ -240,7 +250,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                                               const SizedBox(
                                                 width: 8,
                                               ),
-                                              Text(
+                                              const Text(
                                                 "Search on Drumm...",
                                                 style: TextStyle(
                                                   fontFamily: APP_FONT_MEDIUM,
@@ -272,7 +282,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                     if (drummCards.isNotEmpty)
                       SliverPadding(
                         padding:
-                            EdgeInsets.symmetric(vertical: 2, horizontal: 0),
+                            const EdgeInsets.symmetric(vertical: 2, horizontal: 0),
                         sliver: SliverList(
                           delegate: SliverChildBuilderDelegate(
                             (context, index) {
@@ -289,7 +299,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                                         context: context,
                                         isScrollControlled: true,
                                         backgroundColor: COLOR_PRIMARY_DARK,
-                                        shape: RoundedRectangleBorder(
+                                        shape: const RoundedRectangleBorder(
                                           borderRadius: BorderRadius.vertical(
                                               top: Radius.circular(0.0)),
                                         ),
@@ -301,7 +311,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                                                     .bottom),
                                             child: ClipRRect(
                                               borderRadius:
-                                                  BorderRadius.vertical(
+                                                  const BorderRadius.vertical(
                                                       top:
                                                           Radius.circular(0.0)),
                                               child: LiveDrumms(),
@@ -324,7 +334,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                                                 fontSize: 20),
                                           ),
                                         ),
-                                        Icon(
+                                        const Icon(
                                           Icons.arrow_forward_ios_rounded,
                                           size: 16,
                                         )
@@ -340,7 +350,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                                     child: PageView(
                                       controller: _pageController,
                                       scrollDirection: Axis.horizontal,
-                                      physics: AlwaysScrollableScrollPhysics(),
+                                      physics: const AlwaysScrollableScrollPhysics(),
                                       //padding: EdgeInsets.symmetric(horizontal: 4),
                                       children: drummCards,
                                     ),
@@ -356,7 +366,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                     if (questionCards.isNotEmpty)
                       SliverPadding(
                         padding:
-                            EdgeInsets.symmetric(vertical: 2, horizontal: 0),
+                            const EdgeInsets.symmetric(vertical: 2, horizontal: 0),
                         sliver: SliverList(
                           delegate: SliverChildBuilderDelegate(
                             (context, index) {
@@ -373,7 +383,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                                         context: context,
                                         isScrollControlled: true,
                                         backgroundColor: COLOR_PRIMARY_DARK,
-                                        shape: RoundedRectangleBorder(
+                                        shape: const RoundedRectangleBorder(
                                           borderRadius: BorderRadius.vertical(
                                               top: Radius.circular(0.0)),
                                         ),
@@ -385,7 +395,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                                                     .bottom),
                                             child: ClipRRect(
                                               borderRadius:
-                                                  BorderRadius.vertical(
+                                                  const BorderRadius.vertical(
                                                       top:
                                                           Radius.circular(0.0)),
                                               child: CommunityQuestionsPage(),
@@ -408,7 +418,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                                                 fontSize: 20),
                                           ),
                                         ),
-                                        Icon(
+                                        const Icon(
                                           Icons.arrow_forward_ios_rounded,
                                           size: 16,
                                         )
@@ -425,7 +435,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                                       controller: _pageController,
                                       scrollDirection: Axis.horizontal,
                                       padding:
-                                          EdgeInsets.symmetric(horizontal: 4),
+                                          const EdgeInsets.symmetric(horizontal: 4),
                                       children: questionCards,
                                     ),
                                   ),
@@ -438,7 +448,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                         ),
                       ),
                     SliverPadding(
-                      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 0),
+                      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 0),
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
@@ -526,13 +536,36 @@ class DiscoverHomeState extends State<DiscoverHome>
                                 ),
                                 height: 30,
                                 child: multiSelectContainer),
+                          if (bandsCards.isEmpty)  Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            height: 30,
+                            child: ListView.builder(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              itemCount: 10,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Container(
+                                  //color: Colors.grey.shade900,
+                                  //height: 8,
+                                  height: 30,
+                                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                                  width: index == 0 ?70:128,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.shade900,
+                                      borderRadius: BorderRadius.circular(16)
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                           const SizedBox(height: 12),
+
                         ],
                       ),
                     ),
                     SliverPadding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 2, horizontal: 0),
+                      padding: const EdgeInsets.only(top: 2,bottom: 100),
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
@@ -548,22 +581,43 @@ class DiscoverHomeState extends State<DiscoverHome>
                                 crossAxisSpacing: articlePadding,
                                 repeatPattern: QuiltedGridRepeatPattern.inverted,
                                 pattern: [
-                                 // const QuiltedGridTile(3, 5),
+                                 // // const QuiltedGridTile(3, 5),
+                                 //  const QuiltedGridTile(4, 3),
+                                 //  const QuiltedGridTile(2, 2),
+                                 //  const QuiltedGridTile(3, 2),
+                                 //  const QuiltedGridTile(3, 3),
+                                 //  const QuiltedGridTile(2, 2),
+                                 //  const QuiltedGridTile(3, 2),
+                                 //  const QuiltedGridTile(3, 3),
+                                 //  //const QuiltedGridTile(3, 5),
+                                 //  const QuiltedGridTile(2, 2),
+                                 //  const QuiltedGridTile(4, 3),
+                                 //  const QuiltedGridTile(3, 2),
+                                 //  const QuiltedGridTile(3, 3),
+                                 //  const QuiltedGridTile(2, 2),
+                                 //  const QuiltedGridTile(3, 3),
+                                 //  const QuiltedGridTile(3, 2),
+
+                                  ////////////////////////////
+
+                                  const QuiltedGridTile(5, 3),
+                                  const QuiltedGridTile(3, 2),
+                                  const QuiltedGridTile(4, 2),
                                   const QuiltedGridTile(4, 3),
-                                  const QuiltedGridTile(2, 2),
                                   const QuiltedGridTile(3, 2),
-                                  const QuiltedGridTile(3, 3),
-                                  const QuiltedGridTile(2, 2),
+                                  const QuiltedGridTile(4, 3),
                                   const QuiltedGridTile(3, 2),
-                                  const QuiltedGridTile(3, 3),
+                                  //const QuiltedGridTile(3, 3),
                                   //const QuiltedGridTile(3, 5),
-                                  const QuiltedGridTile(2, 2),
-                                  const QuiltedGridTile(4, 3),
-                                  const QuiltedGridTile(3, 2),
-                                  const QuiltedGridTile(3, 3),
-                                  const QuiltedGridTile(2, 2),
-                                  const QuiltedGridTile(3, 3),
-                                  const QuiltedGridTile(3, 2),
+                                  // const QuiltedGridTile(2, 2),
+                                  // const QuiltedGridTile(4, 3),
+                                  // const QuiltedGridTile(3, 2),
+                                  // const QuiltedGridTile(3, 3),
+                                  // const QuiltedGridTile(2, 2),
+                                  // const QuiltedGridTile(3, 3),
+                                  // const QuiltedGridTile(3, 2),
+
+
                                 ],
                               ),
                               childrenDelegate: (articleCards.isNotEmpty)
@@ -591,7 +645,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                 Container(
                   width: double.maxFinite,
                   alignment: Alignment.bottomCenter,
-                  margin: EdgeInsets.only(bottom: 12),
+                  margin: const EdgeInsets.only(bottom: 12),
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
@@ -611,12 +665,12 @@ class DiscoverHomeState extends State<DiscoverHome>
                     },
                     child: Container(
                       padding:
-                          EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                          const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                       decoration: BoxDecoration(
                         color: Colors.blue,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text(
+                      child: const Text(
                         "New articles available",
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 16, color: Colors.white),
@@ -624,6 +678,23 @@ class DiscoverHomeState extends State<DiscoverHome>
                     ),
                   ),
                 ),
+              IgnorePointer(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    alignment: Alignment.bottomCenter,
+                    height: 175,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            end: Alignment.bottomCenter,
+                            begin: Alignment.topCenter,
+                            colors: [
+                              Colors.transparent,
+                              COLOR_BACKGROUND
+                            ])),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -709,7 +780,7 @@ class DiscoverHomeState extends State<DiscoverHome>
     print("Okay");
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _scrollController.animateTo(0,
-          duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+          duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
     });
   }
 
@@ -776,7 +847,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                 borderRadius: BorderRadius.circular(32),
               ),
             ),
-            textStyles: MultiSelectItemTextStyles(
+            textStyles: const MultiSelectItemTextStyles(
               selectedTextStyle: TextStyle(
                 color: Colors.white,
                 fontFamily: APP_FONT_MEDIUM,
@@ -798,9 +869,9 @@ class DiscoverHomeState extends State<DiscoverHome>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(width: 6,),
+                const SizedBox(width: 6,),
                 Container(
-                  padding: EdgeInsets.only(left: 4,top: 6,bottom: 4,right: 2),
+                  padding: const EdgeInsets.only(left: 4,top: 6,bottom: 4,right: 2),
                   decoration: BoxDecoration(
                     color: Colors.transparent,
                     borderRadius: BorderRadius.circular(16),
@@ -813,7 +884,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                   ),
                 ),
                 Text(boostedText),
-                SizedBox(width: 6,),
+                const SizedBox(width: 6,),
 
               ],
             ),
@@ -911,6 +982,7 @@ class DiscoverHomeState extends State<DiscoverHome>
           selectedBand = selectedItem;
           selectedBandID = selectedBand.bandId ?? "For You";
           fetchedAllBoosted = false;
+          _scrollController.jumpTo(0);
           setState(() {
             articles = [];
             bufferingCards = [];

@@ -51,7 +51,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
     int boosts = 0;
     double curve = 8;
     double borderWidth = 3;
-    double bottomPadding = 64;
+    double bottomPadding = 100;
     double horizontalPadding = 4;
     int imageUrlLength = widget.articleBand.article?.imageUrl?.length??0;
     DateTime currentTime = DateTime.now();
@@ -86,7 +86,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
             builder: (BuildContext context, BoxConstraints constraints) {
             double maxHeight = constraints.maxHeight / 2.5;
             double maxTextSize = 17;
-            double minTextSize=12;
+            double minTextSize=14;
             return GestureDetector(
               onTap: () {
                 if (widget.articleBands == null)
@@ -159,7 +159,18 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                           imageUrlLength = 0;
                                         //});
                                           print("Error while loading image because ${error.toString()}");
-                                        return Container(color: Colors.black,);
+                                        //return Container(color: Colors.black,);
+
+
+                                        return Container(
+                                          color: COLOR_BACKGROUND,
+                                          height: 300,
+                                          padding: const EdgeInsets.all(48),
+                                          child: Image.asset(
+                                            "images/drumm_logo.png",
+                                            color: Colors.white12,
+                                          ),
+                                        );
                                       },
                                       placeholder: (context, url) => Container(
                                             color: Colors.grey.shade900,
@@ -193,7 +204,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                               if (true)
                                 Container(
                                   alignment: Alignment.bottomLeft,
-                                  padding: const EdgeInsets.all(4),
+                                  padding: const EdgeInsets.all(4.5),
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
                                       end: Alignment.bottomCenter,
@@ -225,7 +236,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                          curve -3),
+                                                          curve -2),
                                                   color: Colors.grey.shade800
                                                       .withOpacity(0.5)),
                                               child: AutoSizeText(
@@ -286,7 +297,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                                 overflow:
                                                     TextOverflow.ellipsis,
                                                 maxFontSize: maxTextSize,
-                                                maxLines: 2,
+                                                maxLines: 3,
                                                 minFontSize: minTextSize,
                                                 style: TextStyle(
                                                     overflow: TextOverflow

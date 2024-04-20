@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dismissible_page/dismissible_page.dart';
 import 'package:drumm_app/custom/helper/image_uploader.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -65,516 +66,525 @@ class BandDetailsPageState extends State<BandDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: COLOR_PRIMARY_DARK,
-      body: Container(
-        color: Colors.black,
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  if (band?.name != null)
-                    Container(
-                      height: 375,
-                      child: Stack(
-                        children: [
-                          CachedNetworkImage(
-                            height: double.maxFinite,
-                            width: double.maxFinite,
-                            imageUrl:modifyImageUrl(band?.url ?? "","100x100"),//widget.band?.imageUrl ?? "",
-                            fit: BoxFit.cover,
-                            alignment: Alignment.topCenter,
-                            errorWidget: (context, url, error) {
-                              return Container(color: Colors.grey.shade900);
-                            },
-                          ),
-                          Container(
-                            alignment: Alignment.topCenter,
-                            decoration: const BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [Colors.transparent, Colors.black]),
+    return DismissiblePage(
+      onDismissed: () => Navigator.of(context).pop(),
+      direction: DismissiblePageDismissDirection.multi,
+      isFullScreen: true,
+      disabled: false,
+      minRadius: 10,
+      maxRadius: 10,
+      dragSensitivity: 1.0,
+      child: Scaffold(
+        backgroundColor: COLOR_PRIMARY_DARK,
+        body: Container(
+          color: Colors.black,
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    if (band?.name != null)
+                      Container(
+                        height: 375,
+                        child: Stack(
+                          children: [
+                            CachedNetworkImage(
+                              height: double.maxFinite,
+                              width: double.maxFinite,
+                              imageUrl:modifyImageUrl(band?.url ?? "","100x100"),//widget.band?.imageUrl ?? "",
+                              fit: BoxFit.cover,
+                              alignment: Alignment.topCenter,
+                              errorWidget: (context, url, error) {
+                                return Container(color: Colors.grey.shade900);
+                              },
                             ),
-                          ).frosted(blur: 6, frostColor: Colors.black),
-                          Center(
-                            child: SizedBox(
-                              width: 200,
-                              height: 200,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(4),
-                                child: Hero(
-                                  tag: band?.url ?? "",
-                                  child: CachedNetworkImage(
-                                    imageUrl:modifyImageUrl(band?.url ?? "","300x300"),
-                                    fit: BoxFit.cover,
+                            Container(
+                              alignment: Alignment.topCenter,
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [Colors.transparent, Colors.black]),
+                              ),
+                            ).frosted(blur: 6, frostColor: Colors.black),
+                            Center(
+                              child: SizedBox(
+                                width: 200,
+                                height: 200,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: Hero(
+                                    tag: band?.url ?? "",
+                                    child: CachedNetworkImage(
+                                      imageUrl:modifyImageUrl(band?.url ?? "","300x300"),
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          // SafeArea(
-                          //     child: Container(
-                          //         alignment: Alignment.topCenter,
-                          //         child: Text(
-                          //           "${band?.category}",
-                          //           textAlign: TextAlign.center,
-                          //           style: const TextStyle(
-                          //               fontSize: 24,
-                          //               fontWeight: FontWeight.bold),
-                          //         ))),
-                          Container(
-                            alignment: Alignment.bottomCenter,
-                            child: Container(
+                            // SafeArea(
+                            //     child: Container(
+                            //         alignment: Alignment.topCenter,
+                            //         child: Text(
+                            //           "${band?.category}",
+                            //           textAlign: TextAlign.center,
+                            //           style: const TextStyle(
+                            //               fontSize: 24,
+                            //               fontWeight: FontWeight.bold),
+                            //         ))),
+                            Container(
                               alignment: Alignment.bottomCenter,
-                              width: MediaQuery.of(context).size.width,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 6, horizontal: 8),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          AutoSizeText(
-                                            "${band?.name}",
-                                            maxFontSize: 42,
-                                            minFontSize: 24,
-                                            style: const TextStyle(
-                                                overflow: TextOverflow.ellipsis,
-                                                fontFamily: APP_FONT_BOLD,
-                                                fontWeight: FontWeight.bold),
-                                            maxLines: 4,
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 2,
-                                      ),
-                                      if (drummer != null)
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      UserProfilePage(
-                                                    drummer: drummer,
-                                                    fromSearch: true,
-                                                  ),
-                                                ));
-                                          },
-                                          child: Row(
-                                            children: [
-                                              const Text(
-                                                "Founded by",
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    fontFamily: APP_FONT_MEDIUM,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    color: Colors.white54),
-                                              ),
-                                              Text(
-                                                " @${drummer?.username}",
-                                                style: const TextStyle(
-                                                    fontSize: 12,
-                                                    fontFamily: APP_FONT_MEDIUM,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white),
-                                              ),
-                                            ],
-                                          ),
+                              child: Container(
+                                alignment: Alignment.bottomCenter,
+                                width: MediaQuery.of(context).size.width,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 6, horizontal: 8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            AutoSizeText(
+                                              "${band?.name}",
+                                              maxFontSize: 42,
+                                              minFontSize: 24,
+                                              style: const TextStyle(
+                                                  overflow: TextOverflow.ellipsis,
+                                                  fontFamily: APP_FONT_BOLD,
+                                                  fontWeight: FontWeight.bold),
+                                              maxLines: 4,
+                                            ),
+                                          ],
                                         ),
-                                      //Text("${widget.band?.badges}"),
-                                    ],
+                                        const SizedBox(
+                                          height: 2,
+                                        ),
+                                        if (drummer != null)
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        UserProfilePage(
+                                                      drummer: drummer,
+                                                      fromSearch: true,
+                                                    ),
+                                                  ));
+                                            },
+                                            child: Row(
+                                              children: [
+                                                const Text(
+                                                  "Founded by",
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontFamily: APP_FONT_MEDIUM,
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                      color: Colors.white54),
+                                                ),
+                                                Text(
+                                                  " @${drummer?.username}",
+                                                  style: const TextStyle(
+                                                      fontSize: 12,
+                                                      fontFamily: APP_FONT_MEDIUM,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.white),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        //Text("${widget.band?.badges}"),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+
+                    Wrap(
+                      runSpacing: 8.0,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      runAlignment: WrapAlignment.spaceBetween,
+                      spacing: 4,
+                      alignment: WrapAlignment.spaceEvenly,
+                      children: categoryList.map(
+                            (hook) => Container(
+                              padding: const EdgeInsets.symmetric(vertical: 2,horizontal: 12),
+                              decoration: BoxDecoration(
+                                color: COLOR_PRIMARY_DARK,
+                                border: Border.all(color: Colors.grey.shade900,width: 1.25),
+                                borderRadius: BorderRadius.circular(32),
+                              ),
+                              child: Text(hook,style: const TextStyle(color: Colors.white,fontFamily: APP_FONT_MEDIUM),),
+                            ),
+                      ).toList(),
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: memberCards,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Container(
+                      color: Colors.black,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: ExpandableText(
+                        band?.description ?? "",
+                        expandText: 'show more',
+                        collapseText: 'show less',
+                        maxLines: 2,
+                        linkColor: Colors.blue,
+                        style: const TextStyle(
+                          fontFamily: APP_FONT_LIGHT,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    if (!joined)
+                      GestureDetector(
+                        onTap: () {
+                          joinBand();
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(12),
+                          margin: const EdgeInsets.symmetric(horizontal: 20),
+                          width: double.maxFinite,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: const Text(
+                            "Join the Band",
+                            style: TextStyle(
+                                color: Colors.black, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    if(band?.foundedBy==FirebaseAuth.instance.currentUser?.uid)
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditBand(
+                                band: widget.band??Band(),
+                              ),
+                            ),
+                          );
+                        },
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              margin: const EdgeInsets.symmetric(horizontal: 20),
+                              decoration: BoxDecoration(
+                                  color: COLOR_PRIMARY_DARK,
+                                  borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.grey.shade900,width: 3),
+                              ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                      "Edit"
+                                  ),
+                                  SizedBox(width: 8,),
+                                  Icon(
+                                    Icons.edit,
+                                    size: 20,
                                   ),
                                 ],
+                                mainAxisAlignment: MainAxisAlignment.center,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-
-                  Wrap(
-                    runSpacing: 8.0,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    runAlignment: WrapAlignment.spaceBetween,
-                    spacing: 4,
-                    alignment: WrapAlignment.spaceEvenly,
-                    children: categoryList.map(
-                          (hook) => Container(
-                            padding: const EdgeInsets.symmetric(vertical: 2,horizontal: 12),
-                            decoration: BoxDecoration(
-                              color: COLOR_PRIMARY_DARK,
-                              border: Border.all(color: Colors.grey.shade900,width: 1.25),
-                              borderRadius: BorderRadius.circular(32),
+                            const SizedBox(
+                              height: 12,
                             ),
-                            child: Text(hook,style: const TextStyle(color: Colors.white,fontFamily: APP_FONT_MEDIUM),),
-                          ),
-                    ).toList(),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: memberCards,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Container(
-                    color: Colors.black,
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: ExpandableText(
-                      band?.description ?? "",
-                      expandText: 'show more',
-                      collapseText: 'show less',
-                      maxLines: 2,
-                      linkColor: Colors.blue,
-                      style: const TextStyle(
-                        fontFamily: APP_FONT_LIGHT,
+                          ],
+                        ),
                       ),
+                    if (joined)
+                      GestureDetector(
+                        onTap: () {
+                          leaveBand();
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(12),
+                          margin: const EdgeInsets.symmetric(horizontal: 20),
+                          width: double.maxFinite,
+                          decoration: BoxDecoration(
+                              color: Colors.grey.shade900,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: const Text(
+                            "Joined",
+                            style: TextStyle(
+                                color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 30,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  if (!joined)
-                    GestureDetector(
-                      onTap: () {
-                        joinBand();
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(12),
-                        margin: const EdgeInsets.symmetric(horizontal: 20),
-                        width: double.maxFinite,
-                        decoration: BoxDecoration(
+                    if (joined)
+                      Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Image.asset(
+                            "images/drumm_logo.png",
+                            height: 32,
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(8)),
-                        child: const Text(
-                          "Join the Band",
-                          style: TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  if(band?.foundedBy==FirebaseAuth.instance.currentUser?.uid)
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditBand(
-                              band: widget.band??Band(),
-                            ),
-                          ),
-                        );
-                      },
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            margin: const EdgeInsets.symmetric(horizontal: 20),
-                            decoration: BoxDecoration(
-                                color: COLOR_PRIMARY_DARK,
-                                borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.grey.shade900,width: 3),
-                            ),
-                            child: Row(
-                              children: [
-                                Text(
-                                    "Edit"
-                                ),
-                                SizedBox(width: 8,),
-                                Icon(
-                                  Icons.edit,
-                                  size: 20,
-                                ),
-                              ],
-                              mainAxisAlignment: MainAxisAlignment.center,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                        ],
-                      ),
-                    ),
-                  if (joined)
-                    GestureDetector(
-                      onTap: () {
-                        leaveBand();
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(12),
-                        margin: const EdgeInsets.symmetric(horizontal: 20),
-                        width: double.maxFinite,
-                        decoration: BoxDecoration(
-                            color: Colors.grey.shade900,
-                            borderRadius: BorderRadius.circular(8)),
-                        child: const Text(
-                          "Joined",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  if (joined)
-                    Container(
-                        alignment: Alignment.center,
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Image.asset(
-                          "images/drumm_logo.png",
-                          height: 32,
-                          color: Colors.white,
-                        )),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  if (joined)
-                    Container(
-                      padding: const EdgeInsets.all(1),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: const BoxDecoration(
-                          // color: (jamImageCards.isNotEmpty)
-                          //     ? COLOR_PRIMARY_DARK
-                          //     : Colors.black,
-                          color: COLOR_PRIMARY_DARK,
-                          border: Border(
-                            top: BorderSide(
-                              color: Colors.white24,
-                              width: 1.0,
-                            ),
                           )),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // if (jamImageCards.isNotEmpty)
-                          //   Container(
-                          //     alignment: Alignment.topCenter,
-                          //     child: GridView.custom(
-                          //       shrinkWrap: true,
-                          //       physics: const NeverScrollableScrollPhysics(),
-                          //       padding: const EdgeInsets.symmetric(
-                          //           horizontal: 2, vertical: 2),
-                          //       gridDelegate: SliverQuiltedGridDelegate(
-                          //         crossAxisCount: 3,
-                          //         mainAxisSpacing: 3,
-                          //         crossAxisSpacing: 3,
-                          //         repeatPattern: QuiltedGridRepeatPattern.inverted,
-                          //         pattern: [
-                          //           const QuiltedGridTile(2, 1),
-                          //           const QuiltedGridTile(2, 1),
-                          //           const QuiltedGridTile(2, 1),
-                          //         ],
-                          //       ),
-                          //       childrenDelegate: SliverChildBuilderDelegate(
-                          //         childCount: jamImageCards.length,
-                          //             (context, index) => jamImageCards.elementAt(index),
-                          //       ),
-                          //     ),
-                          //   ),
-                          if (jamImageCards.isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.all(3.0),
-                              child: GridView.count(
-                                  childAspectRatio: 1,
-                                  crossAxisCount: 2,
-                                  mainAxisSpacing: 6, // Number of columns
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 2),
-                                  crossAxisSpacing: 6,
-                                  children: jamImageCards),
-                            ),
-                          if (jamImageCards.isEmpty)
-                            Container(
-                              height: 200,
-                              color: COLOR_PRIMARY_DARK,
-                              width: MediaQuery.of(context).size.width,
-                              child: const Center(
-                                child: Text(
-                                    "There are currently no active drumms",style: TextStyle(
-                                  fontFamily: APP_FONT_LIGHT,
-                                ),),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    if (joined)
+                      Container(
+                        padding: const EdgeInsets.all(1),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: const BoxDecoration(
+                            // color: (jamImageCards.isNotEmpty)
+                            //     ? COLOR_PRIMARY_DARK
+                            //     : Colors.black,
+                            color: COLOR_PRIMARY_DARK,
+                            border: Border(
+                              top: BorderSide(
+                                color: Colors.white24,
+                                width: 1.0,
                               ),
-                            ),
-                          const SizedBox(
-                            height: 100,
-                          ),
-                        ],
-                      ),
-                    )
-                ],
-              ),
-            ),
-            if (joined)
-              Container(
-                width: double.infinity,
-                alignment: /*jamImageCards.isNotEmpty ?*/
-                    Alignment.bottomCenter, //:Alignment.center,
-                margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 32),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    IconLabelButton(
-                      label: 'Join Open Drumm',
-                      onPressed: () {
-                        Jam jam = Jam();
-                        jam.broadcast = false;
-                        jam.title = widget.band?.name;
-                        jam.bandId = widget.band?.bandId;
-                        jam.jamId = widget.band?.bandId;
-                        jam.articleId = widget.band?.bandId;
-                        jam.lastActive = Timestamp.now();
-                        jam.startedBy = "";
-                        jam.imageUrl = widget.band?.url;
-                        jam.count = 0;
-                        jam.membersID=[];
-                        //FirebaseDBOperations.createOpenDrumm(jam);
-                        FirebaseDBOperations.addMemberToJam(
-                                jam.jamId ?? "",
-                                FirebaseAuth.instance.currentUser?.uid ?? "",
-                                true)
-                            .then((value) {
-                          print("Added the member ${value}");
-                          if (!value) {
-                            FirebaseDBOperations.createOpenDrumm(jam);
-                          }
-                          FirebaseDBOperations.sendNotificationToTopic(jam,false,true);
-                        });
-
-                        Navigator.pop(context);
-                        try{
-                          Navigator.pop(ConnectToChannel.jamRoomContext);
-                        }catch(e){
-
-                        }
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: COLOR_PRIMARY_DARK,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(0.0)),
-                          ),
-                          builder: (BuildContext context) {
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).viewInsets.bottom),
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(0.0)),
-                                child: JamRoomPage(
-                                  jam: jam,
-                                  open: true,
+                            )),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // if (jamImageCards.isNotEmpty)
+                            //   Container(
+                            //     alignment: Alignment.topCenter,
+                            //     child: GridView.custom(
+                            //       shrinkWrap: true,
+                            //       physics: const NeverScrollableScrollPhysics(),
+                            //       padding: const EdgeInsets.symmetric(
+                            //           horizontal: 2, vertical: 2),
+                            //       gridDelegate: SliverQuiltedGridDelegate(
+                            //         crossAxisCount: 3,
+                            //         mainAxisSpacing: 3,
+                            //         crossAxisSpacing: 3,
+                            //         repeatPattern: QuiltedGridRepeatPattern.inverted,
+                            //         pattern: [
+                            //           const QuiltedGridTile(2, 1),
+                            //           const QuiltedGridTile(2, 1),
+                            //           const QuiltedGridTile(2, 1),
+                            //         ],
+                            //       ),
+                            //       childrenDelegate: SliverChildBuilderDelegate(
+                            //         childCount: jamImageCards.length,
+                            //             (context, index) => jamImageCards.elementAt(index),
+                            //       ),
+                            //     ),
+                            //   ),
+                            if (jamImageCards.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.all(3.0),
+                                child: GridView.count(
+                                    childAspectRatio: 1,
+                                    crossAxisCount: 2,
+                                    mainAxisSpacing: 6, // Number of columns
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    padding:
+                                        const EdgeInsets.symmetric(horizontal: 2),
+                                    crossAxisSpacing: 6,
+                                    children: jamImageCards),
+                              ),
+                            if (jamImageCards.isEmpty)
+                              Container(
+                                height: 200,
+                                color: COLOR_PRIMARY_DARK,
+                                width: MediaQuery.of(context).size.width,
+                                child: const Center(
+                                  child: Text(
+                                      "There are currently no active drumms",style: TextStyle(
+                                    fontFamily: APP_FONT_LIGHT,
+                                  ),),
                                 ),
                               ),
-                            );
-                          },
-                        );
-                      },
-                      imageAsset: 'images/drumm_logo.png',
-                      height: 40,
-                    ),
-                    const SizedBox(width: 8),
-                    GestureDetector(
-                      onTap: () {
-                        print('Ask a question');
-                        Navigator.pop(context);
-
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: COLOR_PRIMARY_DARK,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(0.0)),
-                          ),
-                          builder: (BuildContext context) {
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).viewInsets.bottom),
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(0.0)),
-                                child: CreateJam(
-                                    title: widget.band?.name,
-                                    bandId: widget.band?.bandId,
-                                    imageUrl: widget.band?.url),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      child: Container(
-                        child: const Icon(Icons.add),
-                        padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Color(COLOR_PRIMARY_VAL)),
-                      ),
-                    )
+                            const SizedBox(
+                              height: 100,
+                            ),
+                          ],
+                        ),
+                      )
                   ],
                 ),
               ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: const Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        size: 28,
+              if (joined)
+                Container(
+                  width: double.infinity,
+                  alignment: /*jamImageCards.isNotEmpty ?*/
+                      Alignment.bottomCenter, //:Alignment.center,
+                  margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 32),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconLabelButton(
+                        label: 'Join Open Drumm',
+                        onPressed: () {
+                          Jam jam = Jam();
+                          jam.broadcast = false;
+                          jam.title = widget.band?.name;
+                          jam.bandId = widget.band?.bandId;
+                          jam.jamId = widget.band?.bandId;
+                          jam.articleId = widget.band?.bandId;
+                          jam.lastActive = Timestamp.now();
+                          jam.startedBy = "";
+                          jam.imageUrl = widget.band?.url;
+                          jam.count = 0;
+                          jam.membersID=[];
+                          //FirebaseDBOperations.createOpenDrumm(jam);
+                          FirebaseDBOperations.addMemberToJam(
+                                  jam.jamId ?? "",
+                                  FirebaseAuth.instance.currentUser?.uid ?? "",
+                                  true)
+                              .then((value) {
+                            print("Added the member ${value}");
+                            if (!value) {
+                              FirebaseDBOperations.createOpenDrumm(jam);
+                            }
+                            FirebaseDBOperations.sendNotificationToTopic(jam,false,true);
+                          });
+
+                          Navigator.pop(context);
+                          try{
+                            Navigator.pop(ConnectToChannel.jamRoomContext);
+                          }catch(e){
+
+                          }
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: COLOR_PRIMARY_DARK,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(0.0)),
+                            ),
+                            builder: (BuildContext context) {
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                    bottom:
+                                        MediaQuery.of(context).viewInsets.bottom),
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(0.0)),
+                                  child: JamRoomPage(
+                                    jam: jam,
+                                    open: true,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        imageAsset: 'images/drumm_logo.png',
+                        height: 40,
                       ),
-                    ),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () {
+                          print('Ask a question');
+                          Navigator.pop(context);
+
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: COLOR_PRIMARY_DARK,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(0.0)),
+                            ),
+                            builder: (BuildContext context) {
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                    bottom:
+                                        MediaQuery.of(context).viewInsets.bottom),
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(0.0)),
+                                  child: CreateJam(
+                                      title: widget.band?.name,
+                                      bandId: widget.band?.bandId,
+                                      imageUrl: widget.band?.url),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: Container(
+                          child: const Icon(Icons.add),
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color(COLOR_PRIMARY_VAL)),
+                        ),
+                      )
+                    ],
                   ),
                 ),
-                SafeArea(
-                  child: GestureDetector(
-                    onTap: (){
-                      Vibrate.feedback(FeedbackType.selection);
-                      generateLink();
-                    },
-                    child:  Padding(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SafeArea(
+                    child: Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: ShareWidget(
+                      child: GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: const Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          size: 28,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  SafeArea(
+                    child: GestureDetector(
+                      onTap: (){
+                        Vibrate.feedback(FeedbackType.selection);
+                        generateLink();
+                      },
+                      child:  Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: ShareWidget(
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
