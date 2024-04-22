@@ -28,6 +28,7 @@ class SearchProfessionDropdown extends StatelessWidget {
           hintText: hintText??'Select your field of expertise',
           items: professions,
           initialItem: initialProfession,
+          overlayHeight: 450,
           excludeSelected: false,
           validateOnChange: true,
           decoration: CustomDropdownDecoration(
@@ -38,7 +39,8 @@ class SearchProfessionDropdown extends StatelessWidget {
                 ),
                 listItemStyle: TextStyle(
                     color: (isLight??false)?Colors.black:Colors.white,
-                    fontWeight: FontWeight.w600
+                  fontSize: 14,
+                  fontFamily: APP_FONT_LIGHT,
                 ),
                 headerStyle: TextStyle(
                     color: (isLight??false)?Colors.black:Colors.white,
@@ -61,7 +63,7 @@ class SearchProfessionDropdown extends StatelessWidget {
             ),
               listItemDecoration: ListItemDecoration(
                   selectedColor: Colors.blue.shade600,
-                  splashColor: Colors.blue.shade600
+                  splashColor: Colors.blue.shade600,
               ),
           ),
           onChanged: (value) {

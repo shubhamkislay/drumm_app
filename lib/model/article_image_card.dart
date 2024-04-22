@@ -85,7 +85,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
         : LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
             double maxHeight = constraints.maxHeight / 2.5;
-            double maxTextSize = 16;
+            double maxTextSize = 17;
             double minTextSize=14;
             return GestureDetector(
               onTap: () {

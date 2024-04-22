@@ -935,8 +935,30 @@ class ArticleReelsState extends State<ArticleReels>
                                             fontWeight: FontWeight.w600
                                           ),
                                         ),
+                                        // child:  RichText(
+                                        //   text: TextSpan(
+                                        //     text: unescape.convert(
+                                        //       "\"${widget.preloadList?.elementAt(index).article?.question ?? widget.preloadList?.elementAt(index).article?.title??""}\"" ??
+                                        //           ""),
+                                        //     style: TextStyle(
+                                        //         fontFamily: APP_FONT_LIGHT,
+                                        //         color: Colors.white,
+                                        //         fontWeight: FontWeight.w600,
+                                        //         fontSize: 15),
+                                        //     children: <TextSpan>[
+                                        //       TextSpan(
+                                        //         text: '  •  Drumm AI',
+                                        //         style: TextStyle(
+                                        //             fontFamily: APP_FONT_MEDIUM,
+                                        //             color: Colors.white24,
+                                        //             fontSize: 13),
+                                        //       ),
+                                        //     ],
+                                        //   ),
+                                        // ),
                                       ),
                                     ),
+                                    //Text("  •  Drumm AI")
                                   ],
                                 ),
                               ),

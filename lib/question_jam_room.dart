@@ -541,15 +541,16 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
       updateSpeech(userId, talking);
     };
     ConnectionListener.onUserMutedCallback = (rid, mute) {
-      for (DrummerJoinCard dj in drummerCards) {
-        if (dj.drummerId == rid) {
+      //for (DrummerJoinCard dj in drummerCards) {
+        //if (dj.drummerId == rid) {
+      print("onUserMutedCallback rid: $rid");
           setState(() {
             final updateMap = {rid: mute};
             _muteStreamController.sink.add(updateMap);
             if (mute) _speechStreamController.sink.add({rid: false});
           });
-        }
-      }
+        //}
+      //}
     };
   }
 
@@ -590,20 +591,21 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
   }
 
   void updateSpeech(int rid, bool talking) async {
+    print("UpdateSPeech $rid");
     if (rid == 0 && talking && micMute) {
       if (!shownWarning) {
-        // AnimatedSnackBar.material(
-        //     'You are talking on mute',
-        //     type: AnimatedSnackBarType.warning,
-        //     mobileSnackBarPosition: MobileSnackBarPosition.bottom
-        // ).show(context);
-        // shownWarning = true;
-        // Vibrate.feedback(FeedbackType.heavy);
-        // Future.delayed(Duration(
-        //   milliseconds: 10000
-        // ),() {
-        //   shownWarning = false;
-        // },);
+        AnimatedSnackBar.material(
+            'You are talking on mute',
+            type: AnimatedSnackBarType.warning,
+            mobileSnackBarPosition: MobileSnackBarPosition.bottom
+        ).show(context);
+        shownWarning = true;
+        Vibrate.feedback(FeedbackType.heavy);
+        Future.delayed(Duration(
+          milliseconds: 10000
+        ),() {
+          shownWarning = false;
+        },);
       }
     }
 

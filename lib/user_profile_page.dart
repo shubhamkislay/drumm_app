@@ -398,7 +398,9 @@ class _UserProfilePageState extends State<UserProfilePage>
     }
     //getArticles(uid);
     checkIfUserisFollowing();
-    getDrummerQuestion(uid ?? "");
+    String currId = FirebaseAuth.instance.currentUser?.uid??"";
+    if(uid==currId)
+      getDrummerQuestion(uid ?? "");
   }
 
   Future<void> _refreshData() async {

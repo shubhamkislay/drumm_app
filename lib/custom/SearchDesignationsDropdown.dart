@@ -29,6 +29,7 @@ class SearchDesignationDropdown extends StatelessWidget {
           hintText: hintText??'What\'s your role?',
           items: designations,
           initialItem: initialDesignation,
+          overlayHeight: 450,
 
           //initialItem: designations.elementAt(0),
           decoration: CustomDropdownDecoration(
@@ -36,6 +37,7 @@ class SearchDesignationDropdown extends StatelessWidget {
             expandedBorderRadius: BorderRadius.circular(curve),
             closedBorderRadius: BorderRadius.circular(curve),
             expandedFillColor: (isLight??false)?Colors.white:Colors.grey.shade900,
+
 
             searchFieldDecoration: SearchFieldDecoration(
               fillColor: (isLight??false)?Colors.white:COLOR_PRIMARY_DARK,
@@ -50,7 +52,7 @@ class SearchDesignationDropdown extends StatelessWidget {
             ),
             listItemDecoration: ListItemDecoration(
               selectedColor: Colors.blue.shade600,
-              splashColor: Colors.blue.shade600
+              splashColor: Colors.blue.shade600,
             ),
             hintStyle: TextStyle(
                 color: Colors.grey.shade400,
@@ -58,7 +60,8 @@ class SearchDesignationDropdown extends StatelessWidget {
             ),
             listItemStyle: TextStyle(
                 color: (isLight??false)?Colors.black:Colors.white,
-                fontWeight: FontWeight.w600
+                fontSize: 14,
+                fontFamily: APP_FONT_LIGHT
             ),
             headerStyle: TextStyle(
                 color: (isLight??false)?Colors.black:Colors.white,

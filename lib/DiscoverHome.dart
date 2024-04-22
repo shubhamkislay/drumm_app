@@ -642,43 +642,8 @@ class DiscoverHomeState extends State<DiscoverHome>
                   ],
                 ),
               ),
-              if (showNewArticleWidget)
-                Container(
-                  width: double.maxFinite,
-                  alignment: Alignment.bottomCenter,
-                  margin: const EdgeInsets.only(bottom: 12),
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        showNewArticleWidget = false;
-                        getToTop();
 
-                        _lastDocument = null;
-                        _startDocument = null;
-                        fetchedAllBoosted = false;
 
-                        if (selectedBandID == "For You") {
-                          getArticles(false);
-                        } else {
-                          getArticlesForBands(selectedBand, false);
-                        }
-                      });
-                    },
-                    child: Container(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Text(
-                        "New articles available",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
               IgnorePointer(
                 child: Align(
                   alignment: Alignment.bottomCenter,
@@ -693,6 +658,43 @@ class DiscoverHomeState extends State<DiscoverHome>
                               Colors.transparent,
                               COLOR_BACKGROUND
                             ])),
+                  ),
+                ),
+              ),
+              if (showNewArticleWidget)
+              Container(
+                width: double.maxFinite,
+                alignment: Alignment.bottomCenter,
+                margin: const EdgeInsets.only(bottom: 12),
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      showNewArticleWidget = false;
+                      getToTop();
+
+                      _lastDocument = null;
+                      _startDocument = null;
+                      fetchedAllBoosted = false;
+
+                      if (selectedBandID == "For You") {
+                        getArticles(false);
+                      } else {
+                        getArticlesForBands(selectedBand, false);
+                      }
+                    });
+                  },
+                  child: Container(
+                    padding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: const Text(
+                      "New articles available",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
                   ),
                 ),
               ),

@@ -224,7 +224,9 @@ class _MyAppState extends State<MyApp>
   }
 
   void drumJoinDialog(Question question, Drummer drummer) {
-    if (drummer.uid != question.uid) {
+    print("SHOWING DRUMM JOIN DIALOG!!!!");
+    String currId = FirebaseAuth.instance.currentUser!.uid;
+    if (drummer.uid != currId) {
       Vibrate.feedback(FeedbackType.selection);
 
       print("SHOWING DRUMM JOIN DIALOG!!!!");
@@ -233,7 +235,7 @@ class _MyAppState extends State<MyApp>
         builder: (BuildContext context) {
           return DrummBottomQuestionDialog(
             question: question,
-            deleteItem: (drummer.uid != question.uid) ? false : true,
+            deleteItem: false,
             startDrumming: () {
               Vibrate.feedback(FeedbackType.success);
               joinOpenDrumm(question, drummer);
