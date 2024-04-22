@@ -71,7 +71,7 @@ class _QuestionCardState extends State<QuestionCard> {
         width: cardWidth,
         //height: cardHeight,
         decoration: BoxDecoration(
-          color:Colors.grey.shade900,
+          color:COLOR_ARTICLE_BACKGROUND,//Colors.grey.shade900,
             borderRadius: BorderRadius.circular(curve),
         ),
         padding: const EdgeInsets.all(8),

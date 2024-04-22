@@ -104,6 +104,7 @@ class _LauncherPageState extends State<LauncherPage>
   bool isTutorialDone = true;
 
   Drummer drummer = Drummer();
+  bool showTutorial = true;
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +137,15 @@ class _LauncherPageState extends State<LauncherPage>
                       physics:
                           const NeverScrollableScrollPhysics(), //const BouncingScrollPhysics(),
                       children: [
-                        DiscoverHome(key: discoverHomeKey,),//const NewsFeed(),
+                        DiscoverHome(key: discoverHomeKey,scrolled: (){
+                          setState(() {
+                            if(showTutorial)
+                            finishedTutorial();
+                            showTutorial = false;
+
+                          });
+                        },),//const NewsFeed(),
+
                         //ExplorePage(),
                         SwipePage(),
                         BandSearchPage(),
@@ -154,12 +163,23 @@ class _LauncherPageState extends State<LauncherPage>
             ),
             child: BottomTabBar(tabController: tabController, refreshDiscover: () { refreshHomePage(); },),
           ),
-          //TutotrialManager(),
+         if(showTutorial) TutotrialManager(),
         ],
       ),
     );
   }
 
+  void finishedTutorial() async {
+
+    // Future.delayed(const Duration(milliseconds: 750),(){
+    //   FirebaseDBOperations.ANIMATION_CONTROLLER.forward();
+    // });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isTutorialDone = true;
+    });
+    await prefs.setBool('isTutorialDone', true);
+  }
 
   void initDeepLinkData() {
     metadata = BranchContentMetaData()
@@ -393,9 +413,11 @@ class _TutotrialManagerState extends State<TutotrialManager> {
   Widget build(BuildContext context) {
     return Container(
       child: (!isTutorialDone)?
-        TutorialScreen(finishTutorial: () {
-          finishedTutorial();
-        },):Container(height: 0,width: 0,),
+        // TutorialScreen(finishTutorial: () {
+        //   finishedTutorial();
+        // },)
+
+      getTutorial():getTutorial()//Container(height: 0,width: 0,),
     );
   }
 
@@ -409,6 +431,46 @@ class _TutotrialManagerState extends State<TutotrialManager> {
       isTutorialDone = true;
     });
     await prefs.setBool('isTutorialDone', true);
+  }
+
+  IgnorePointer getTutorial(){
+
+    return IgnorePointer(
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Stack(
+          children: [
+           if(false) Container(
+            ).frosted(blur: 10,frostColor: Colors.black),
+            Container(
+              alignment: Alignment.bottomCenter,
+              //height: 500,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      end: Alignment.bottomCenter,
+                      begin: Alignment.topCenter,
+                      colors: [
+                        Colors.transparent,
+                        //COLOR_BACKGROUND,
+                        Color(COLOR_PRIMARY_VAL)
+                      ])),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(Icons.keyboard_arrow_up_rounded,size: 60,),
+                  SizedBox(height: 10,),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: Text("Scroll up to explore latest news",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 26),textAlign: TextAlign.center,),
+                  ),
+                  SizedBox(height: 75,),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void setOnboarded() async {

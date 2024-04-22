@@ -27,7 +27,7 @@ class OnBoarding extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double textSize = 38;
+    double textSize = 36;
     Color offText = Colors.grey;
     return MaterialApp(
       color: Colors.black,
@@ -279,7 +279,7 @@ class OnBoarding extends StatelessWidget {
                       "Dive into a world of latest and endless news topics and discover stories that matter to you.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: Colors.white54,
+                          color: Colors.white70,
                           fontSize: textSize / 2.25,
                           fontFamily: APP_FONT_MEDIUM,
                           fontWeight: FontWeight.w500),
@@ -328,7 +328,7 @@ class OnBoarding extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontFamily: APP_FONT_MEDIUM,
-                          color: Colors.white54, fontSize: textSize / 2.25),
+                          color: Colors.white70, fontSize: textSize / 2.25),
                     ),
                     const SizedBox(
                       height: 64,
@@ -374,7 +374,7 @@ class OnBoarding extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontFamily: APP_FONT_MEDIUM,
-                          color: Colors.white54, fontSize: textSize / 2.25),
+                          color: Colors.white70, fontSize: textSize / 2.25),
                     ),
                     const SizedBox(
                       height: 64,

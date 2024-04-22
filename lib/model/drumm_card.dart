@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/model/Drummer.dart';
 import 'package:drumm_app/model/band.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/custom/helper/remove_duplicate.dart';
@@ -14,6 +15,7 @@ import 'package:drumm_app/jam_room_page.dart';
 import 'package:drumm_app/model/jam.dart';
 import 'package:drumm_app/model/question.dart';
 import 'package:drumm_app/open_article_page.dart';
+import 'package:flutter/widgets.dart';
 
 import '../custom/helper/image_uploader.dart';
 import '../theme/theme_constants.dart';
@@ -34,16 +36,17 @@ class DrummCard extends StatefulWidget {
 }
 
 class _DrummCardState extends State<DrummCard> {
-  double curve = 12;
+  double curve = 8;
   Drummer drummer = Drummer();
   Band band = Band();
+  double bottomPadding = 80;
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(curve),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 4),
         //width: widget.width ?? double.maxFinite,
         child: Stack(
           children: [
@@ -54,9 +57,9 @@ class _DrummCardState extends State<DrummCard> {
                   borderRadius: BorderRadius.circular(curve),
                   gradient: LinearGradient(colors: [
                     Colors.blue.shade700,
-                    Colors.grey.shade700,
+                    Colors.blue.shade400,
                   ])),
-              padding: EdgeInsets.all(3),
+              padding: EdgeInsets.all(2),
               child: GestureDetector(
                 onTap: () {
                   //Navigator.pop(context);
@@ -67,89 +70,81 @@ class _DrummCardState extends State<DrummCard> {
                   joinDrumm();
                 },
                 child: Container(
-                  padding: EdgeInsets.all(0),
+                  //padding: EdgeInsets.all(0),
+                  padding: EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(curve),
-                    color: COLOR_BACKGROUND,
+                    color: Colors.black,//COLOR_ARTICLE_BACKGROUND,
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(curve - 2),
                     child: Stack(
                       children: [
-                        CachedNetworkImage(
-                            height: double.maxFinite,
-                            width: double.maxFinite,
-                            placeholder: (context, url) => Container(
-                                  color: Colors.grey.shade900,
-                                ),
-                            errorWidget: (context, url, error) => Container(
-                                  color: COLOR_PRIMARY_DARK,
-                                ),
-                            imageUrl: widget.jam.imageUrl ?? "",
-                            fit: BoxFit.cover),
                         Container(
-                          alignment: Alignment.bottomLeft,
-                          padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  end: Alignment.bottomCenter,
-                                  begin: Alignment.topCenter,
-                                  colors: [
-                                // Colors.grey.shade900.withOpacity(0.75),
-                                Colors.transparent,
-                                //Colors.black87,
-                                Colors.grey.shade900
-                                    //RandomColorBackground.generateRandomVibrantColor()
-                                    .withOpacity(0.85),
-                              ])),
-                          //RandomColorBackground.generateRandomVibrantColor().withOpacity(0.55),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Wrap(
-                                children: [
-                                  if (false)
-                                    Container(
-                                      padding: EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          color: Colors.grey.shade700
-                                              .withOpacity(0.75)),
-                                      child: AutoSizeText(
-                                        "${widget.jam.count} joined",
-                                        textAlign: TextAlign.left,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                        minFontSize: 8,
-                                        style: TextStyle(
-                                            fontSize: 8,
-                                            //fontWeight: FontWeight.bold,
-                                            fontFamily: APP_FONT_MEDIUM,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(6.0),
-                                child: AutoSizeText(
-                                  widget.jam.question ?? widget.jam.title ?? "",
-                                  textAlign: TextAlign.left,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxFontSize: 18,
-                                  maxLines: 3,
-                                  minFontSize: 8,
-                                  style: TextStyle(
+                          margin: EdgeInsets.only(bottom: bottomPadding),
+                          child: CachedNetworkImage(
+                              height: double.maxFinite,
+                              width: double.maxFinite,
+                              placeholder: (context, url) => Container(
+                                    color: Colors.grey.shade900,
+                                  ),
+                              errorWidget: (context, url, error) => Container(
+                                    color: COLOR_PRIMARY_DARK,
+                                  ),
+                              imageUrl: widget.jam.imageUrl ?? "",
+                              fit: BoxFit.cover),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            alignment: Alignment.bottomCenter,
+                            height: double.infinity,
+                            margin:
+                            EdgeInsets.only(bottom: bottomPadding),
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    end: Alignment.bottomCenter,
+                                    begin: Alignment.topCenter,
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.transparent,
+                                      COLOR_ARTICLE_BACKGROUND,
+                                    ])),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            alignment: Alignment.bottomLeft,
+                            padding: EdgeInsets.all(4),
+                            height: bottomPadding,
+                            color: COLOR_ARTICLE_BACKGROUND,
+                            //RandomColorBackground.generateRandomVibrantColor().withOpacity(0.55),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Flexible(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(6.0),
+                                    child: AutoSizeText(
+                                      widget.jam.question ?? widget.jam.title ?? "",
+                                      textAlign: TextAlign.left,
                                       overflow: TextOverflow.ellipsis,
-                                      fontSize: 18,
-                                      fontFamily: APP_FONT_MEDIUM,
-                                      //fontWeight: FontWeight.bold,
-                                      color: Colors.white),
+                                      maxFontSize: 15,
+                                      maxLines: 3,
+                                      minFontSize: 11,
+                                      style: TextStyle(
+                                          overflow: TextOverflow.ellipsis,
+                                          fontSize: 15,
+                                          fontFamily: APP_FONT_MEDIUM,
+                                          //fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         )
                       ],

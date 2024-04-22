@@ -85,7 +85,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
         : LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
             double maxHeight = constraints.maxHeight / 2.5;
-            double maxTextSize = 17;
+            double maxTextSize = 16;
             double minTextSize=14;
             return GestureDetector(
               onTap: () {
@@ -172,9 +172,9 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                           ),
                                         );
                                       },
-                                      placeholder: (context, url) => Container(
-                                            color: Colors.grey.shade900,
-                                          ),
+                                      // placeholder: (context, url) => Container(
+                                      //       color: Colors.grey.shade900,
+                                      //     ),
                                       imageUrl:
                                           widget.articleBand.article?.imageUrl ?? "",
                                       alignment: Alignment.topCenter,
@@ -227,6 +227,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
+
                                           Flexible(
                                             child: Container(
                                               padding: EdgeInsets.symmetric(

@@ -43,7 +43,8 @@ import 'model/question.dart';
 import 'user_profile_page.dart';
 
 class DiscoverHome extends StatefulWidget {
-  const DiscoverHome({Key? key}) : super(key: key);
+  VoidCallback? scrolled;
+  DiscoverHome({Key? key, this.scrolled}) : super(key: key);
 
   @override
   State<DiscoverHome> createState() => DiscoverHomeState();
@@ -65,6 +66,7 @@ class DiscoverHomeState extends State<DiscoverHome>
   List<MultiSelectCard<dynamic>> bandsCards = [];
   Drummer drummer = Drummer();
   double horizontalPadding = 10;
+
   List<ArticleImageCard> articleCards = [];
   late String loadingAnimation;
   final String LOADING_ASSET = "images/pulse_white.json";
@@ -151,6 +153,8 @@ class DiscoverHomeState extends State<DiscoverHome>
   String boostedText = "";
 
   AlgoliaArticles fetchBoostedAlgoliaArticles = AlgoliaArticles();
+
+  bool scrolled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -279,6 +283,9 @@ class DiscoverHomeState extends State<DiscoverHome>
                         ),
                       ),
                     ),
+                    SliverPadding(
+                      padding: EdgeInsets.only(top: 16),
+                    ),
                     if (drummCards.isNotEmpty)
                       SliverPadding(
                         padding:
@@ -290,9 +297,6 @@ class DiscoverHomeState extends State<DiscoverHome>
                               // Example:
                               return Column(
                                 children: [
-                                  const SizedBox(
-                                    height: 16,
-                                  ),
                                   GestureDetector(
                                     onTap: () {
                                       showModalBottomSheet(
@@ -347,7 +351,8 @@ class DiscoverHomeState extends State<DiscoverHome>
                                   Container(
                                     height: 225,
                                     alignment: Alignment.centerLeft,
-                                    child: PageView(
+                                    padding: EdgeInsets.symmetric(horizontal: 8),
+                                    child: ListView(
                                       controller: _pageController,
                                       scrollDirection: Axis.horizontal,
                                       physics: const AlwaysScrollableScrollPhysics(),
@@ -374,9 +379,6 @@ class DiscoverHomeState extends State<DiscoverHome>
                               // Example:
                               return Column(
                                 children: [
-                                  const SizedBox(
-                                    height: 16,
-                                  ),
                                   GestureDetector(
                                     onTap: () {
                                       showModalBottomSheet(
@@ -456,7 +458,6 @@ class DiscoverHomeState extends State<DiscoverHome>
                             // Example:
                             return Column(
                               children: [
-                                const SizedBox(height: 12),
                                 Container(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: horizontalPadding),
@@ -683,7 +684,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                   alignment: Alignment.bottomCenter,
                   child: Container(
                     alignment: Alignment.bottomCenter,
-                    height: 175,
+                    height: 200,
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
                             end: Alignment.bottomCenter,
@@ -755,6 +756,11 @@ class DiscoverHomeState extends State<DiscoverHome>
     double remainingScrollDistance = maxScrollExtent - currentScrollPosition;
 
     // Check if the remaining scroll distance is less than the threshold
+    //print("Scrolled up");
+    if(!scrolled) {
+      widget.scrolled!();
+      scrolled = true;
+    }
     if (remainingScrollDistance < threshold &&
         !_scrollController.position.outOfRange &&
         bufferingCards.isEmpty) {
@@ -934,7 +940,7 @@ class DiscoverHomeState extends State<DiscoverHome>
     drumms = broadcastJams + fetchedDrumms;
     userDrummCards = drumms.map((jam) {
       return DrummCard(
-        //width: double.maxFinite,
+        width: 130,
         jam,
       );
     }).toList();
