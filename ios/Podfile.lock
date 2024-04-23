@@ -41,8 +41,6 @@ PODS:
   - AppAuth/Core (1.7.2)
   - AppAuth/ExternalUserAgent (1.7.2):
     - AppAuth/Core
-  - audio_session (0.0.1):
-    - Flutter
   - audioplayers_darwin (0.0.1):
     - Flutter
   - aws_polly (0.0.1):
@@ -339,8 +337,6 @@ PODS:
     - Flutter
   - iris_method_channel (0.0.1):
     - Flutter
-  - just_audio (0.0.1):
-    - Flutter
   - leveldb-library (1.22.4)
   - nanopb (2.30909.1):
     - nanopb/decode (= 2.30909.1)
@@ -379,7 +375,6 @@ PODS:
 
 DEPENDENCIES:
   - agora_rtc_engine (from `.symlinks/plugins/agora_rtc_engine/ios`)
-  - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
   - aws_polly (from `.symlinks/plugins/aws_polly/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
@@ -406,7 +401,6 @@ DEPENDENCIES:
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - iris_method_channel (from `.symlinks/plugins/iris_method_channel/ios`)
-  - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - ogg_opus_player (from `.symlinks/plugins/ogg_opus_player/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
@@ -473,8 +467,6 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   agora_rtc_engine:
     :path: ".symlinks/plugins/agora_rtc_engine/ios"
-  audio_session:
-    :path: ".symlinks/plugins/audio_session/ios"
   audioplayers_darwin:
     :path: ".symlinks/plugins/audioplayers_darwin/ios"
   aws_polly:
@@ -522,8 +514,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   iris_method_channel:
     :path: ".symlinks/plugins/iris_method_channel/ios"
-  just_audio:
-    :path: ".symlinks/plugins/just_audio/ios"
   ogg_opus_player:
     :path: ".symlinks/plugins/ogg_opus_player/ios"
   path_provider_foundation:
@@ -555,7 +545,6 @@ SPEC CHECKSUMS:
   AgoraIrisRTC_iOS: 2caf892fa827777fe43b6ac7d12e9b42579eb865
   AgoraRtcEngine_iOS: 267c0980c1fb97e056d05b850f8629b05b6e467a
   AppAuth: ca2458caccec349cc1e26d8d9e8fd7d22f1d01f3
-  audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
   aws_polly: 9f95d0e3ee34be8f2f3df76ef39865d561f1a636
   AWSAuthCore: 78d09e86a9db5a972dea9d046dbbc01bc6513960
@@ -618,7 +607,6 @@ SPEC CHECKSUMS:
   image_cropper: a3291c624a953049bc6a02e1f8c8ceb162a24b25
   image_picker_ios: 99dfe1854b4fa34d0364e74a78448a0151025425
   iris_method_channel: 0617c689164d8154c020c50f63ca79f92b8a7b9d
-  just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   leveldb-library: 06a69cc7582d64b29424a63e085e683cc188230a
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   ogg_opus_player: 01dc6eaa63d1e061f0065f41845a0a9ea76b9396

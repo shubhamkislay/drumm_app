@@ -15,7 +15,6 @@ import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:flutter_onboarding_slider/background_final_button.dart';
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:drumm_app/bands_page.dart';
 import 'package:drumm_app/custom/ai_summary.dart';
 import 'package:drumm_app/custom/create_bottom_sheet.dart';
@@ -29,6 +28,7 @@ import 'package:drumm_app/profile_page.dart';
 import 'package:drumm_app/search_page.dart';
 import 'package:drumm_app/swipe_page.dart';
 import 'package:drumm_app/user_profile_page.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'BottomJamWindow.dart';
@@ -479,7 +479,7 @@ class _TutotrialManagerState extends State<TutotrialManager> {
     setState(() {
       isTutorialDone = checkTutorial;
       if (!isTutorialDone) {
-        playWelcomeAudio();
+        //playWelcomeAudio();
       }
     });
     await prefs.setBool('isOnboarded', false);

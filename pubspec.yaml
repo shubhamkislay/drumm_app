@@ -88,12 +88,12 @@ dependencies:
   toggle_switch: ^2.1.0
   flutter_local_notifications: ^16.2.0
   aws_polly: ^2.1.1
-  just_audio: ^0.9.36
   audioplayers: ^4.1.0
   path_provider: ^2.1.1
   ogg_opus_player: ^0.7.0
   sign_in_with_apple: ^4.3.0
   crypto: ^3.0.3
+  just_audio: ^0.9.36
   flutter_branch_sdk: ^6.6.0
   share_plus: ^7.2.1
   youtube_player_flutter: ^8.1.2
