@@ -76,10 +76,10 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
                           gradient: LinearGradient(
                             begin: Alignment.bottomLeft,
                             end: Alignment.topRight,
-                            colors: (widget.talking)? [
+                            colors:  (!widget.muted) ? (widget.talking)? [
                               Colors.blueAccent,
                               Colors.blue
-                            ] : (!widget.muted) ? [
+                            ] : [
                               Colors.grey.shade700,
                               Colors.grey.shade700
                             ]:[
@@ -107,7 +107,7 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
                                 imageUrl: modifyImageUrl(drummer?.imageUrl ??"","300x300"), fit: BoxFit.cover,fadeInCurve: Curves.easeIn,placeholder: (context, url) => Container(color: Colors.grey.shade900,),),
                             ),
                           ),
-                         if(widget.muted&&!widget.talking) Container(
+                         if(widget.muted) Container(
                              alignment: Alignment.bottomRight,
                              padding: EdgeInsets.all(12),
                              child: Container(

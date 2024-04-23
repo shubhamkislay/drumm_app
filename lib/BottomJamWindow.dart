@@ -24,6 +24,8 @@ class _BottomJamWindowState extends State<BottomJamWindow> {
   late Jam currentJam = Jam();
   bool openDrumm = false;
   bool oneOnOne = false;
+
+  bool mute=true;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -53,11 +55,13 @@ class _BottomJamWindowState extends State<BottomJamWindow> {
                 child: (oneOnOne)?
               QuestionJamRoomPage(
                 jam: currentJam,
+                micMute: mute,
                 open: openDrumm, question: ConnectToChannel.jamQuestion,
               )
                   :JamRoomPage(
                   jam: currentJam,
                   open: openDrumm,
+                  micMute: mute,
                 ),
               ),
             );
@@ -164,7 +168,7 @@ class _BottomJamWindowState extends State<BottomJamWindow> {
   }
 
   void listenToJamState() {
-    ConnectionListener.onConnectionChanged = (connected, jam, open) {
+    ConnectionListener.onConnectionChanged = (connected, jam, open,micMute) {
       // Handle the channelID change here
       // print("onConnectionChanged called in Launcher");
       setState(() {
@@ -173,8 +177,11 @@ class _BottomJamWindowState extends State<BottomJamWindow> {
         openDrumm = open;
         currentJam = jam;
         userConnected = connected;
+        mute = micMute;
 
-        print("Jam is ${jam.title}");
+        print("mic Mute is $micMute");
+
+        //print("Jam is ${jam.title}");
 
         if(jam.jamId == ConnectToChannel.questionJamId) {
 

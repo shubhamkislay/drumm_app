@@ -65,7 +65,7 @@ class DiscoverHomeState extends State<DiscoverHome>
   late MultiSelectContainerWidget multiSelectContainer;
   List<MultiSelectCard<dynamic>> bandsCards = [];
   Drummer drummer = Drummer();
-  double horizontalPadding = 10;
+  double horizontalPadding = 8;
 
   List<ArticleImageCard> articleCards = [];
   late String loadingAnimation;
@@ -649,7 +649,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                   alignment: Alignment.bottomCenter,
                   child: Container(
                     alignment: Alignment.bottomCenter,
-                    height: 200,
+                    height: 150,
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
                             end: Alignment.bottomCenter,

@@ -39,7 +39,8 @@ class JamRoomPage extends StatefulWidget {
   Jam jam;
   bool open;
   bool? ring;
-  JamRoomPage({Key? key, required this.jam, required this.open, this.ring})
+  bool? micMute;
+  JamRoomPage({Key? key, required this.jam, required this.open, this.ring, this.micMute})
       : super(key: key);
 
   @override
@@ -549,7 +550,11 @@ class _JamRoomPageState extends State<JamRoomPage> {
     if (startedBy.isNotEmpty) getDrummer(startedBy);
     if (widget.jam.bandId != null) getBand(widget.jam.bandId);
     setState(() {
-      micMute = ConnectToChannel.getMuteState();
+      micMute = widget.micMute??ConnectToChannel.getMuteState();
+
+      updateLocalUserMic(micMute);
+      ConnectToChannel.setMute(micMute);
+      print("Calling initState with micMute as ${micMute}");
     });
 
     if (widget.jam.articleId != null) {
@@ -568,6 +573,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
     //   drummerCards = [];
     //   drummerCards.clear();
     // });
+    bool muted = rid == 0?widget.micMute??true:true;
     if (rid == 0) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       rid = await FirebaseDBOperations.getDrummer(
@@ -577,7 +583,9 @@ class _JamRoomPageState extends State<JamRoomPage> {
           .then((value) => value.rid ?? rid);
     }
 
-    DrummerJoinCard drummerJoinCard = DrummerJoinCard(rid, true, false, _muteStreamController.stream,
+
+
+    DrummerJoinCard drummerJoinCard = DrummerJoinCard(rid, muted, false, _muteStreamController.stream,
         _speechStreamController.stream);
     bool alreadyAdded = false;
     for (DrummerJoinCard drummerCard in drummerCards) {

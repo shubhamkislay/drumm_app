@@ -417,7 +417,7 @@ class _TutotrialManagerState extends State<TutotrialManager> {
         //   finishedTutorial();
         // },)
 
-      getTutorial():getTutorial()//Container(height: 0,width: 0,),
+      getTutorial():Container(height: 0,width: 0,),
     );
   }
 

@@ -42,12 +42,14 @@ class QuestionJamRoomPage extends StatefulWidget {
   Jam jam;
   bool open;
   bool? ring;
+  bool? micMute;
   Question? question;
   QuestionJamRoomPage(
       {Key? key,
       required this.jam,
       required this.open,
       this.ring,
+        this.micMute,
       required this.question})
       : super(key: key);
 
@@ -56,7 +58,7 @@ class QuestionJamRoomPage extends StatefulWidget {
 }
 
 class _JamRoomPageState extends State<QuestionJamRoomPage> {
-  bool micMute = true;
+
   int mJoined = 1;
   List<dynamic> memberList = [];
   List<DrummerJoinCard> drummerCards = [];
@@ -78,9 +80,11 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
   DrummerJoinCard? remoteJoinCard;
   
   Drummer? loadingDrummer;
+  bool micMute = true;
 
   @override
   Widget build(BuildContext context) {
+
     jamRoomContext = context;
     ConnectToChannel.jamRoomContext = context;
     ConnectToChannel.questionJamId = widget.jam.jamId ?? "";
@@ -305,6 +309,8 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
     // TODO: implement initState
     super.initState();
 
+
+
     if (widget.jam.jamId != ConnectToChannel.jam?.jamId) {
       ConnectToChannel.jamRoomContext = context;
       ConnectToChannel.USERIDS_IN_DRUMM = [];
@@ -379,7 +385,11 @@ class _JamRoomPageState extends State<QuestionJamRoomPage> {
     if (startedBy.isNotEmpty) getDrummer(startedBy);
     // if (widget.jam.bandId != null) getBand(widget.jam.bandId);
     setState(() {
-      micMute = ConnectToChannel.getMuteState();
+      micMute = widget.micMute??ConnectToChannel.getMuteState();
+
+      updateLocalUserMic(micMute);
+      ConnectToChannel.setMute(micMute);
+      print("Calling initState with micMute as ${micMute}");
     });
 
     // if (widget.jam.articleId != null) {

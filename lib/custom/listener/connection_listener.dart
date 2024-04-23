@@ -1,7 +1,7 @@
 import 'package:drumm_app/model/jam.dart';
 
 class ConnectionListener {
-  static Function(bool,Jam,bool)? onConnectionChanged;
+  static Function(bool,Jam,bool,bool)? onConnectionChanged;
   static Function(bool,Jam,bool)? onConnectionChangedinRoom;
   static Function(bool,Jam,bool)? onConnectionChangedinCard;
   static Function(bool,Jam,bool)? onConnectionChangedinVerticalHomeFeed;
@@ -13,10 +13,10 @@ class ConnectionListener {
   static Function()? onConnectionInterruptedCallback;
   static Function()? onRejoinSuccessCallback;
 
-  static void updateConnectionDetails(bool connected, Jam? jam,bool open) {
+  static void updateConnectionDetails(bool connected, Jam? jam,bool open, bool micMute) {
 
     if (onConnectionChanged != null) {
-      onConnectionChanged!(connected,jam!,open);
+      onConnectionChanged!(connected,jam!,open,micMute);
      // print("onConnectionChanged is cccalled!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
     if (onConnectionChangedinRoom != null) {

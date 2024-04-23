@@ -219,7 +219,7 @@ class ConnectToChannel {
           }
 
           ConnectionListener.updateConnectionDetails(
-              _isJoined, ConnectToChannel.jam, openJam);
+              _isJoined, ConnectToChannel.jam, openJam,micMute);
           //joinCallback(_isJoined, connection.localUid ?? uid);
           ConnectionListener.updateJoinCallback(_isJoined, connection.localUid ?? uid);
         }
@@ -297,7 +297,7 @@ class ConnectToChannel {
           //rejoinSuccess();
           ConnectionListener.rejoinSuccessCallback();
           ConnectionListener.updateConnectionDetails(
-              _isJoined, ConnectToChannel.jam, openJam);
+              _isJoined, ConnectToChannel.jam, openJam,micMute);
           //joinCallback(_isJoined, connection.localUid ?? uid);
           ConnectionListener.updateJoinCallback(_isJoined, connection.localUid ?? uid);
         }
@@ -324,18 +324,18 @@ class ConnectToChannel {
           }
         }
         ConnectionListener.updateConnectionDetails(
-            _isJoined, ConnectToChannel.jam, openJam);
+            _isJoined, ConnectToChannel.jam, openJam,micMute);
 
         for (AudioVolumeInfo audioVolumeInfo in speakers) {
         //  print("Speaker info: ${audioVolumeInfo.uid}");
           if (audioVolumeInfo.volume! > 50) {
            // remoteCallback("Speaker ${audioVolumeInfo.uid} is talking");
-            //userTalking(audioVolumeInfo.uid??0,true);
+            userTalking(audioVolumeInfo.uid??0,true);
             ConnectionListener.updateUserTalking(audioVolumeInfo.uid??0,true);
           }
           else
             {
-              //userTalking(audioVolumeInfo.uid??0,false);
+              userTalking(audioVolumeInfo.uid??0,false);
               ConnectionListener.updateUserTalking(audioVolumeInfo.uid??0,false);
             }
         }
@@ -468,7 +468,7 @@ class ConnectToChannel {
     //dispose();
     _isJoined = false;
     ConnectionListener.updateConnectionDetails(
-        _isJoined, ConnectToChannel.jam, openJam);
+        _isJoined, ConnectToChannel.jam, openJam,micMute);
     jam = null;
   }
 }
