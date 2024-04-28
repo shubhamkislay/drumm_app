@@ -49,7 +49,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
   @override
   Widget build(BuildContext context) {
     int boosts = 0;
-    double curve = 8;
+    double curve = 12;
     double borderWidth = 2.5;
     double bottomPadding = 100;
     double horizontalPadding = 8;
@@ -66,11 +66,11 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
     Color colorBorder =
         (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
             ? COLOR_BOOST
-            : COLOR_ARTICLE_BACKGROUND;//fadeColor;
+            : Colors.grey.shade900;//COLOR_ARTICLE_BACKGROUND;//fadeColor;
     Color colorBorder2 =
         (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
             ? Colors.blueGrey
-            : COLOR_ARTICLE_BACKGROUND;//fadeColor;
+            : Colors.grey.shade900;//COLOR_ARTICLE_BACKGROUND;//fadeColor;
     Widget returnWidget = (widget.loading ?? false)
         ? Container(
             alignment: Alignment.center,
@@ -85,7 +85,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
         : LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
             double maxHeight = constraints.maxHeight / 2.5;
-            double maxTextSize = 18;
+            double maxTextSize = 20;
             double minTextSize=13;
             return GestureDetector(
               onTap: () {
@@ -263,6 +263,23 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                         ],
                                       ),
                                     ),
+                                    if (boosts > 0 &&
+                                        boostTime.compareTo(
+                                            Timestamp.fromDate(
+                                                recent)) >
+                                            0)
+                                      Align(
+                                        alignment: Alignment.topRight,
+                                        child: Container(
+                                          padding: EdgeInsets.all(8),
+                                          child: Image.asset(
+                                            'images/boost_enabled.png', //'images/like_btn.png',
+                                            height: 20,
+                                            color: Colors.white,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      ),
                                   ],
                                 ),
                               ),
@@ -293,7 +310,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                       fontWeight:
                                       FontWeight.w600,
                                       fontFamily:
-                                      APP_FONT_BOLD,
+                                      APP_FONT_MEDIUM,
                                       color: Colors.white),
                                 ),
                               ),

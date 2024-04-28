@@ -115,10 +115,11 @@ class _BottomTabBarState extends State<BottomTabBar> {
            if(false) UserProfileIcon(),
           ],
           onTap: (index) {
-            Vibrate.feedback(FeedbackType.selection);
+
             if (index !=
                 1 //2 This should be 2 for Wave Mode. Currently it's commented
             ) {
+              Vibrate.feedback(FeedbackType.selection);
               setState(() {
               if (currentPage == 0 && index == 0) {
                 //print("Calling refresh $currentPage");
@@ -129,6 +130,7 @@ class _BottomTabBarState extends State<BottomTabBar> {
               //print("CurrentPage $currentPage");
               });
             } else {
+              Vibrate.feedback(FeedbackType.impact);
               widget.tabController.animateTo(currentPage);
               //Vibrate.feedback(FeedbackType.selection);
 

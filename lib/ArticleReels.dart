@@ -198,7 +198,7 @@ class ArticleReelsState extends State<ArticleReels>
   Widget build(BuildContext context) {
     return DismissiblePage(
       onDismissed: () => Navigator.of(context).pop(),
-      direction: DismissiblePageDismissDirection.multi,
+      direction: DismissiblePageDismissDirection.horizontal,
       isFullScreen: true,
       disabled: false,
       minRadius: 10,
