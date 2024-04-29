@@ -31,6 +31,7 @@ import 'package:drumm_app/user_profile_page.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'AskQuestionPage.dart';
 import 'BottomJamWindow.dart';
 import 'BottomTabBar.dart';
 import 'DiscoverHome.dart';
@@ -147,7 +148,8 @@ class _LauncherPageState extends State<LauncherPage>
                         },),//const NewsFeed(),
 
                         //ExplorePage(),
-                        SwipePage(),
+                        //SwipePage(),
+                        AskQuestionPage(),
                         BandSearchPage(),
                         //UserProfilePage(),
                         //CustomSwiper(),
@@ -444,14 +446,13 @@ class _TutotrialManagerState extends State<TutotrialManager> {
             ).frosted(blur: 10,frostColor: Colors.black),
             Container(
               alignment: Alignment.bottomCenter,
-              //height: 500,
+              height: 500,
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                       end: Alignment.bottomCenter,
                       begin: Alignment.topCenter,
                       colors: [
                         Colors.transparent,
-                        //COLOR_BACKGROUND,
                         Color(COLOR_PRIMARY_VAL)
                       ])),
               child: Column(

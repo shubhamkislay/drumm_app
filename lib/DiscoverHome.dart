@@ -102,8 +102,6 @@ class DiscoverHomeState extends State<DiscoverHome>
 
   AlgoliaArticles? algoliaArticles;
   AlgoliaArticles? freshArticles;
-  List<Article> freshArticleFetched = [];
-  List<ArticleBand> fetchedArticleBand = [];
 
   HashMap<String, Band> bandMap = HashMap();
 

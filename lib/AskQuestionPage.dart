@@ -2,8 +2,11 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/custom/SearchProfessionDropdown.dart';
+import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/custom/rounded_button.dart';
+import 'package:drumm_app/model/algolia_article.dart';
 import 'package:drumm_app/model/question.dart';
+import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,16 +16,17 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 
 import 'custom/SearchDesignationsDropdown.dart';
 import 'custom/helper/firebase_db_operations.dart';
+import 'model/article.dart';
 import 'model/profession.dart';
 
-class SwipePage extends StatefulWidget {
-  SwipePage({Key? key}) : super(key: key);
+class AskQuestionPage extends StatefulWidget {
+  AskQuestionPage({Key? key}) : super(key: key);
 
   @override
-  State<SwipePage> createState() => SwipePageState();
+  State<AskQuestionPage> createState() => AskQuestionPageState();
 }
 
-class SwipePageState extends State<SwipePage>
+class AskQuestionPageState extends State<AskQuestionPage>
     with SingleTickerProviderStateMixin {
   //final CardSwiperController controller = CardSwiperController();
   var cards = [];
@@ -43,10 +47,15 @@ class SwipePageState extends State<SwipePage>
   List<Profession> professions = [];
 
   Profession selectedProfession = Profession();
+  List<Article> fetchedArticles = [];
 
   String selectedDesignation = "";
 
   Widget selectedItem = Container();
+  var nameTxt = TextEditingController();
+  DocumentSnapshot<Map<String, dynamic>>? _lastDocument = null;
+  DocumentSnapshot<Map<String, dynamic>>? _startDocument = null;
+  AlgoliaArticles? algoliaArticles = AlgoliaArticles();
 
 
   @override
@@ -57,6 +66,7 @@ class SwipePageState extends State<SwipePage>
     getHooks();
     getProfessions();
     observeText();
+    getArticleQuestion();
 
   }
 
@@ -70,13 +80,16 @@ class SwipePageState extends State<SwipePage>
             begin: Alignment.bottomLeft,
             end: Alignment.topRight,
             colors: [
-              Colors.blue.shade400,
-              Colors.blue.shade700,
-              Colors.blue.shade900
+              // Colors.blue.shade400,
+              // Colors.blue.shade700,
+              // Colors.blue.shade900,
+              COLOR_ARTICLE_BACKGROUND,
+              COLOR_ARTICLE_BACKGROUND,
             ]
         ),
       ),
       child: SafeArea(
+        bottom: false,
         child: Column(
           children: [
             Stack(
@@ -103,8 +116,8 @@ class SwipePageState extends State<SwipePage>
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                       Flexible(
-                         child: Text(
+                      Flexible(
+                        child: Text(
                           topicHead,
                           maxLines: 3,
                           textAlign: TextAlign.center,
@@ -112,8 +125,8 @@ class SwipePageState extends State<SwipePage>
                               color: Colors.white70,
                               fontWeight: FontWeight.w600,
                               fontSize: 14),
-                                               ),
-                       ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -128,7 +141,8 @@ class SwipePageState extends State<SwipePage>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const SizedBox(),
-                       SingleChildScrollView(
+                    if(false)
+                      SingleChildScrollView(
                         child: TextField(
                           keyboardType: TextInputType.text,
                           textInputAction: TextInputAction.done,
@@ -146,14 +160,113 @@ class SwipePageState extends State<SwipePage>
                             });
                           },
                           style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold
                           ),
                           decoration: InputDecoration(
                               hintText: 'Ask anything...', fillColor: Colors.transparent),
                         ),
                       ),
-                      const SizedBox(), // Add some space at the bottom for better visibility
+
+                       (fetchedArticles.isNotEmpty)?
+                       Expanded(
+                         child: ListView.builder(
+                           itemCount: fetchedArticles.length,
+                           itemBuilder: (context, index) {
+                           return GestureDetector(
+                             onTap: (){
+                               FocusScope.of(context).unfocus();
+                               setState(() {
+                                 question = "${fetchedArticles.elementAt(index).question}  •  ${fetchedArticles.elementAt(index).meta}";
+                                 if (question.isNotEmpty && page < 2) {
+                                 page += 1;
+                                 pageController.animateToPage(
+                                     page, duration: Duration(milliseconds: 200),
+                                     curve: Curves.easeIn);
+                                 }
+                               });
+                         
+                         
+                             },
+                             child: Container(
+                               padding: EdgeInsets.symmetric(vertical: 18,horizontal: 4),
+                               margin: EdgeInsets.symmetric(horizontal: 12),
+
+                               width: double.maxFinite,
+                               decoration: BoxDecoration(
+                                   color: Colors.transparent,
+                                 border: Border(
+                                   bottom: BorderSide(
+                                     color: Colors.grey.withOpacity(0.05),
+
+                                   )
+                                 )
+                               ),
+                               child: Row(
+                                 children: [
+                                   Expanded(
+                                     child: Text("${fetchedArticles.elementAt(index).question}  •  ${fetchedArticles.elementAt(index).meta}",style: TextStyle(
+                                       fontSize: 17,
+                                       fontFamily: APP_FONT_BOLD,
+                                       color: Colors.white70
+                                     ),),
+                                   ),
+                                   Icon(Icons.transit_enterexit_rounded,color: Colors.white70,),
+                                 ],
+                               ),
+                             ),
+                           );
+                         },),
+                       ):const SizedBox(),
+                      Container(
+                        color: COLOR_BACKGROUND,
+                        width: double.maxFinite,
+                        padding: EdgeInsets.symmetric(vertical: 8,horizontal: 2),
+                        child: SafeArea(
+                          top: false,
+                          child: TextField(
+                            controller: questionTextController,
+                            autofocus: true,
+                            maxLength: 60,
+
+                            decoration: InputDecoration(
+                                hintText: "Ask anything...",
+                                hoverColor: Colors.white,
+                                fillColor: COLOR_BACKGROUND,
+                                hintStyle: TextStyle(
+                                  color: Colors.white24,
+                                  fontFamily: APP_FONT_MEDIUM,
+                                )),
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontFamily: APP_FONT_MEDIUM,
+                              color: Colors.white,
+                            ),
+                            textInputAction: TextInputAction.done,
+                            onChanged: (value){
+                              setState(() {
+                                question = value;
+                              });
+                            },
+                            onEditingComplete: (){
+                              FocusScope.of(context).unfocus();
+                              if(question.length>2) {
+
+                                setState(() {
+                                  questionTextController.text = question;
+                                  if (page < 2) {
+                                    page += 1;
+                                  }
+                                });
+
+                                pageController.animateToPage(
+                                    page, duration: Duration(milliseconds: 200),
+                                    curve: Curves.easeIn);
+                              }
+                            },
+                          ),
+                        ),
+                      ),// Add some space at the bottom for better visibility
                     ],
                   ),
                   Column(
@@ -200,10 +313,10 @@ class SwipePageState extends State<SwipePage>
                         child: Text(question,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                             fontSize: 26,
-                        ),),
+                          ),),
                       ),
                       if(true)   Container(
                         padding: const EdgeInsets.all(12.0),
@@ -231,7 +344,7 @@ class SwipePageState extends State<SwipePage>
                         ),
                       ),
 
-                    // Add some space at the bottom for better visibility
+                      // Add some space at the bottom for better visibility
                     ],
                   ),
                 ],
@@ -246,7 +359,7 @@ class SwipePageState extends State<SwipePage>
                     });
                   } else if(page == 2){
 
-                      setState(() {
+                    setState(() {
                       topicHead = "Post your Question";
                     });
 
@@ -258,39 +371,44 @@ class SwipePageState extends State<SwipePage>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-              if(page==1)  Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                      onTap: (){
-                        FocusScope.of(context).unfocus();
-                        setState(() {
-                          page-=1;
-                        });
-
-                        pageController.animateToPage(page, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
-                      },
-                      child: Icon(Icons.arrow_circle_left_rounded,size: 64,)),
+                if(page==1)  SafeArea(
+                  child: Container(
+                    padding: const EdgeInsets.all(16.0),
+                    child: GestureDetector(
+                        onTap: (){
+                          FocusScope.of(context).unfocus();
+                          setState(() {
+                            page-=1;
+                          });
+                  
+                          pageController.animateToPage(page, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                        },
+                        child: Icon(Icons.arrow_back_ios_rounded,size: 32,)),
+                  ),
                 ),
                 if(page==0)
                   Container(),
-                if(page==0 && question.length>2 || page==1&&selectedProfession.departmentName!=null)
-                Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: (){
-                      FocusScope.of(context).unfocus();
-                      setState(() {
-
-                        if(page<2) {
-                          page+=1;
-                        }
-                      });
-
-                      pageController.animateToPage(page, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
-
-                    },
-                      child: Icon(Icons.arrow_circle_right_rounded,size: 64,)),
-                ),
+                if(//page==0 && question.length>2 ||
+                    page==1&&selectedProfession.departmentName!=null)
+                  SafeArea(
+                    child: Container(
+                      padding: const EdgeInsets.all(16.0),
+                      child: GestureDetector(
+                          onTap: (){
+                            FocusScope.of(context).unfocus();
+                            setState(() {
+                    
+                              if(page<2) {
+                                page+=1;
+                              }
+                            });
+                    
+                            pageController.animateToPage(page, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                    
+                          },
+                          child: Icon(Icons.arrow_forward_ios_rounded,size: 32,)),
+                    ),
+                  ),
                 // if(page==2&&false)
                 // GestureDetector(
                 //   onTap: (){
@@ -305,34 +423,36 @@ class SwipePageState extends State<SwipePage>
 
                 if(page==2)
                   Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 12,right: 12,bottom: 8),
-                      child: SwipeButton.expand(
-                        thumbPadding: const EdgeInsets.all(4),
-                        height: 64,
-                        thumb: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Image.asset(
-                             'images/audio-waves.png',
-                            fit: BoxFit.contain,
-                            color: Colors.blue,
+                    child: SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 12,right: 12,bottom: 8),
+                        child: SwipeButton.expand(
+                          thumbPadding: const EdgeInsets.all(4),
+                          height: 64,
+                          thumb: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Image.asset(
+                              'images/audio-waves.png',
+                              fit: BoxFit.contain,
+                              color: Colors.blue,
+                            ),
                           ),
-                        ),
-                        borderRadius: BorderRadius.circular(22),
-                        child:  Text(
-                         "Swipe right to post",
-                          style: TextStyle(
-                            color: Colors.white,
+                          borderRadius: BorderRadius.circular(22),
+                          child:  Text(
+                            "Swipe right to post",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
                           ),
+                          activeThumbColor: Colors.white,
+                          activeTrackColor: Colors.white.withOpacity(0.175),
+                          onSwipe: () {
+                            Vibrate.feedback(FeedbackType.success);
+                            postQuestion();
+                            Navigator.pop(context);
+                      
+                          },
                         ),
-                        activeThumbColor: Colors.white,
-                        activeTrackColor: Colors.white.withOpacity(0.175),
-                        onSwipe: () {
-                          Vibrate.feedback(FeedbackType.success);
-                          postQuestion();
-                          Navigator.pop(context);
-
-                        },
                       ),
                     ),
                   ),
@@ -342,6 +462,17 @@ class SwipePageState extends State<SwipePage>
         ),
       ),
     );
+  }
+
+  getArticleQuestion() async{
+    AlgoliaArticles fetchAlgoliaArticles = await FirebaseDBOperations.getArticlesData(
+        _startDocument, _lastDocument, false);
+    algoliaArticles = fetchAlgoliaArticles;
+    setState(() {
+      fetchedArticles = algoliaArticles?.articles??[];
+    });
+
+
   }
 
   void getHooks() async {
@@ -420,6 +551,8 @@ class SwipePageState extends State<SwipePage>
       professions = fetchProfessions;
     });
   }
+
+
 
 
 }

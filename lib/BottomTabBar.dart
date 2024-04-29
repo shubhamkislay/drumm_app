@@ -1,3 +1,4 @@
+import 'package:drumm_app/AskQuestionPage.dart';
 import 'package:drumm_app/custom/helper/BottomUpPageRoute.dart';
 import 'package:drumm_app/swipe_page.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
@@ -141,20 +142,21 @@ class _BottomTabBarState extends State<BottomTabBar> {
                 context: context,
                 isScrollControlled: true,
                 useSafeArea: true,
-                backgroundColor: COLOR_PRIMARY_DARK,
+                backgroundColor: Colors.transparent,//COLOR_PRIMARY_DARK,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(0.0)),
+                      top: Radius.circular(12.0)),
                 ),
                 builder: (BuildContext context) {
-                  return Padding(
+                  return Container(
+                      color: Colors.transparent,
                     padding: EdgeInsets.only(
                         bottom:
                         MediaQuery.of(context).viewInsets.bottom),
                     child: ClipRRect(
                       borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(0.0)),
-                      child: SwipePage(),
+                          top: Radius.circular(12.0)),
+                      child: AskQuestionPage(),//SwipePage(),
                     ),
                   );
                 },
