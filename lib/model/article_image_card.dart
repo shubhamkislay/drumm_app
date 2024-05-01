@@ -66,11 +66,11 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
     Color colorBorder =
         (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
             ? COLOR_BOOST
-            : Colors.grey.shade900;//COLOR_ARTICLE_BACKGROUND;//fadeColor;
+            : Colors.grey.shade800.withOpacity(0.65);//COLOR_ARTICLE_BACKGROUND;//fadeColor;
     Color colorBorder2 =
         (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
             ? Colors.blueGrey
-            : Colors.grey.shade900;//COLOR_ARTICLE_BACKGROUND;//fadeColor;
+            : Colors.grey.shade800.withOpacity(0.65);//COLOR_ARTICLE_BACKGROUND;//fadeColor;
     Widget returnWidget = (widget.loading ?? false)
         ? Container(
             alignment: Alignment.center,
@@ -308,7 +308,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                           .ellipsis,
                                       fontSize: maxTextSize,
                                       fontWeight:
-                                      FontWeight.w600,
+                                      FontWeight.w700,
                                       fontFamily:
                                       APP_FONT_MEDIUM,
                                       color: Colors.white),
@@ -440,7 +440,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                   overflow: TextOverflow.ellipsis,
                                   fontSize: maxTextSize,
                                   //fontWeight: FontWeight.bold,
-                                  fontFamily: APP_FONT_MEDIUM,
+                                  fontFamily: APP_FONT_BOLD,
                                   color: Colors.white),
                             ),
                             SizedBox(

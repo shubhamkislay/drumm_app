@@ -780,6 +780,28 @@ class FirebaseDBOperations {
     return List.from(data.docs.map((e) => Question.fromSnapshot(e)));//finalList;
   }
 
+  static Future<List<String>> getGeneratedAMAQuestions() async {
+    try {
+      // Access the Firestore collection and document
+      DocumentSnapshot<Map<String, dynamic>>? docSnapshot = await FirebaseFirestore.instance
+          .collection('generated_questions')
+          .doc('questions')
+          .get();
+
+      // Check if the document exists and contains the 'questions' field
+      if (docSnapshot?.exists ?? false && docSnapshot?.data() != null) {
+        List<String> questions =
+        List<String>.from(docSnapshot!.data()!['questions'] ?? []);
+        return questions;
+      } else {
+        return []; // Return an empty list if the document doesn't exist or doesn't contain the 'questions' field
+      }
+    } catch (error) {
+      print('Error retrieving questions: $error');
+      return []; // Return an empty list if an error occurs
+    }
+  }
+
   static Future<List<Question>> getQuestionsAskedByUserId(String uid) async {
     print("getQuestionsAsked triggered");
     //SharedPreferences prefs = await SharedPreferences.getInstance();

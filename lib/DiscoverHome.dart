@@ -536,7 +536,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                                 height: 30,
                                 child: multiSelectContainer),
                           if (bandsCards.isEmpty)  Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
                             height: 30,
                             child: ListView.builder(
                               physics: const AlwaysScrollableScrollPhysics(),

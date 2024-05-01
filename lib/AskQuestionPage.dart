@@ -49,6 +49,8 @@ class AskQuestionPageState extends State<AskQuestionPage>
   Profession selectedProfession = Profession();
   List<Article> fetchedArticles = [];
 
+  List<String> fetchedAMAQuestions = [];
+
   String selectedDesignation = "";
 
   Widget selectedItem = Container();
@@ -66,7 +68,8 @@ class AskQuestionPageState extends State<AskQuestionPage>
     getHooks();
     getProfessions();
     observeText();
-    getArticleQuestion();
+    //getArticleQuestion();
+    getAMAQuestions();
 
   }
 
@@ -168,16 +171,16 @@ class AskQuestionPageState extends State<AskQuestionPage>
                         ),
                       ),
 
-                       (fetchedArticles.isNotEmpty)?
+                       (fetchedAMAQuestions.isNotEmpty)?
                        Expanded(
                          child: ListView.builder(
-                           itemCount: fetchedArticles.length,
+                           itemCount: fetchedAMAQuestions.length,
                            itemBuilder: (context, index) {
                            return GestureDetector(
                              onTap: (){
                                FocusScope.of(context).unfocus();
                                setState(() {
-                                 question = "${fetchedArticles.elementAt(index).question}  •  ${fetchedArticles.elementAt(index).meta}";
+                                 question = "${fetchedAMAQuestions.elementAt(index)}";
                                  if (question.isNotEmpty && page < 2) {
                                  page += 1;
                                  pageController.animateToPage(
@@ -205,7 +208,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
                                child: Row(
                                  children: [
                                    Expanded(
-                                     child: Text("${fetchedArticles.elementAt(index).question}  •  ${fetchedArticles.elementAt(index).meta}",style: TextStyle(
+                                     child: Text("${fetchedAMAQuestions.elementAt(index)}",style: TextStyle(
                                        fontSize: 17,
                                        fontFamily: APP_FONT_BOLD,
                                        color: Colors.white70
@@ -472,6 +475,15 @@ class AskQuestionPageState extends State<AskQuestionPage>
       fetchedArticles = algoliaArticles?.articles??[];
     });
 
+
+  }
+
+  getAMAQuestions() async{
+    List<String> askQuestions = await FirebaseDBOperations.getGeneratedAMAQuestions();
+
+    setState(() {
+      fetchedAMAQuestions = askQuestions;
+    });
 
   }
 
