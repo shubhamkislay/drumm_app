@@ -106,6 +106,7 @@ dependencies:
   swipeable_page_route: ^0.3.0
   animated_custom_dropdown: ^3.0.0
   dismissible_page: ^1.0.2
+  chip_list: ^2.4.4+8
 
 dev_dependencies:
   flutter_test:

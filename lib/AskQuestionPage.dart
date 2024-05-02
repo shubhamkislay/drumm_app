@@ -14,6 +14,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_swipe_button/flutter_swipe_button.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 
+import 'custom/DrummChipList.dart';
 import 'custom/SearchDesignationsDropdown.dart';
 import 'custom/helper/firebase_db_operations.dart';
 import 'model/article.dart';
@@ -45,6 +46,8 @@ class AskQuestionPageState extends State<AskQuestionPage>
   String selectedHook = "";
 
   List<Profession> professions = [];
+  List<String> designations = [];
+  Map<String, Profession> designationProfessionMapping = Map();
 
   Profession selectedProfession = Profession();
   List<Article> fetchedArticles = [];
@@ -59,6 +62,8 @@ class AskQuestionPageState extends State<AskQuestionPage>
   DocumentSnapshot<Map<String, dynamic>>? _startDocument = null;
   AlgoliaArticles? algoliaArticles = AlgoliaArticles();
 
+  int? selectedIndex;
+
 
   @override
   void initState() {
@@ -66,7 +71,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
     pageController = PageController();
     super.initState();
     getHooks();
-    getProfessions();
+    //getProfessions();
     observeText();
     //getArticleQuestion();
     getAMAQuestions();
@@ -77,7 +82,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
   Widget build(BuildContext context) {
     return Container(
       //height: MediaQuery.of(context).size.height*0.5,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         //color: Colors.grey.shade900,
         gradient: LinearGradient(
             begin: Alignment.bottomLeft,
@@ -124,7 +129,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
                           topicHead,
                           maxLines: 3,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white70,
                               fontWeight: FontWeight.w600,
                               fontSize: 14),
@@ -138,7 +143,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
             Expanded(
               child: PageView(
                 controller: pageController,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -162,11 +167,11 @@ class AskQuestionPageState extends State<AskQuestionPage>
                               question = val;
                             });
                           },
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold
                           ),
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               hintText: 'Ask anything...', fillColor: Colors.transparent),
                         ),
                       ),
@@ -184,7 +189,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
                                  if (question.isNotEmpty && page < 2) {
                                  page += 1;
                                  pageController.animateToPage(
-                                     page, duration: Duration(milliseconds: 200),
+                                     page, duration: const Duration(milliseconds: 200),
                                      curve: Curves.easeIn);
                                  }
                                });
@@ -192,8 +197,8 @@ class AskQuestionPageState extends State<AskQuestionPage>
                          
                              },
                              child: Container(
-                               padding: EdgeInsets.symmetric(vertical: 18,horizontal: 4),
-                               margin: EdgeInsets.symmetric(horizontal: 12),
+                               padding: const EdgeInsets.symmetric(vertical: 18,horizontal: 4),
+                               margin: const EdgeInsets.symmetric(horizontal: 12),
 
                                width: double.maxFinite,
                                decoration: BoxDecoration(
@@ -208,13 +213,13 @@ class AskQuestionPageState extends State<AskQuestionPage>
                                child: Row(
                                  children: [
                                    Expanded(
-                                     child: Text("${fetchedAMAQuestions.elementAt(index)}",style: TextStyle(
+                                     child: Text("${fetchedAMAQuestions.elementAt(index)}",style: const TextStyle(
                                        fontSize: 17,
                                        fontFamily: APP_FONT_BOLD,
                                        color: Colors.white70
                                      ),),
                                    ),
-                                   Icon(Icons.transit_enterexit_rounded,color: Colors.white70,),
+                                   const Icon(Icons.transit_enterexit_rounded,color: Colors.white70,),
                                  ],
                                ),
                              ),
@@ -224,7 +229,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
                       Container(
                         color: COLOR_BACKGROUND,
                         width: double.maxFinite,
-                        padding: EdgeInsets.symmetric(vertical: 8,horizontal: 2),
+                        padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 2),
                         child: SafeArea(
                           top: false,
                           child: TextField(
@@ -232,7 +237,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
                             autofocus: true,
                             maxLength: 60,
 
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                                 hintText: "Ask anything...",
                                 hoverColor: Colors.white,
                                 fillColor: COLOR_BACKGROUND,
@@ -240,7 +245,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
                                   color: Colors.white24,
                                   fontFamily: APP_FONT_MEDIUM,
                                 )),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 20,
                               fontFamily: APP_FONT_MEDIUM,
                               color: Colors.white,
@@ -263,7 +268,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
                                 });
 
                                 pageController.animateToPage(
-                                    page, duration: Duration(milliseconds: 200),
+                                    page, duration: const Duration(milliseconds: 200),
                                     curve: Curves.easeIn);
                               }
                             },
@@ -272,7 +277,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
                       ),// Add some space at the bottom for better visibility
                     ],
                   ),
-                  Column(
+                  if(false)Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
 
@@ -296,7 +301,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
 
                           ),
                         ),
-                      SizedBox(
+                      const SizedBox(
                         height: 12,
                       ),
                       Padding(
@@ -304,6 +309,44 @@ class AskQuestionPageState extends State<AskQuestionPage>
                           child: selectedItem
                       ),
                     ],
+                  ),
+                  SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const SizedBox(),
+                        Center(
+                          child: ChipList(
+                            shouldWrap: true,
+                            showCheckmark: true,//(selectedIndex==0)?false:true,
+                            listOfChipNames: designations,
+                            activeBgColorList:[const Color(COLOR_PRIMARY_VAL)],//(selectedIndex==0)?[Colors.white]: [Color(COLOR_PRIMARY_VAL)],
+                            inactiveBgColorList: [Colors.grey.shade800.withOpacity(0.5)],
+                            inactiveBorderColorList: [Colors.transparent],
+                            activeTextColorList: [Colors.white],//(selectedIndex==0)?[Colors.black]: [Colors.white],
+                            extraOnToggle: (index) {
+
+
+                             setState(() {
+                               selectedIndex = index;
+                                 selectedDesignation =
+                                     designations.elementAt(index);
+                                 selectedProfession =
+                                     designationProfessionMapping["${selectedDesignation}"] ??
+                                         Profession();
+                              });
+
+                            },
+
+                            inactiveTextColorList: [Colors.white70],
+                            listOfChipIndicesCurrentlySeclected: [selectedIndex],
+                            activeBorderColorList: [const Color(COLOR_PRIMARY_VAL)],
+
+                          ),
+                        ),
+                        const SizedBox(),
+                      ],
+                    ),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -315,7 +358,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
                         padding: const EdgeInsets.all(12.0),
                         child: Text(question,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 26,
@@ -328,7 +371,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Flexible(child: Text("Ask an Expert",style: TextStyle(
+                            const Flexible(child: Text("Ask an Expert",style: TextStyle(
                               color: Colors.white70,
                               fontWeight: FontWeight.w600,
                               fontSize: 14,
@@ -337,7 +380,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
                               child: Text((selectedDesignation.isNotEmpty)? "${selectedDesignation} in ${selectedProfession.departmentName}": "${selectedProfession.departmentName}",
                                 textAlign: TextAlign.center,
                                 maxLines: 3,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
@@ -357,6 +400,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
                       topicHead = "";
                     });
                   } else if(page == 1){
+                    getProfessions();
                     setState(() {
                       topicHead = "Ask an expert";
                     });
@@ -384,9 +428,9 @@ class AskQuestionPageState extends State<AskQuestionPage>
                             page-=1;
                           });
                   
-                          pageController.animateToPage(page, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                          pageController.animateToPage(page, duration: const Duration(milliseconds: 200), curve: Curves.easeIn);
                         },
-                        child: Icon(Icons.arrow_back_ios_rounded,size: 32,)),
+                        child: const Icon(Icons.arrow_back_ios_rounded,size: 32,)),
                   ),
                 ),
                 if(page==0)
@@ -406,10 +450,10 @@ class AskQuestionPageState extends State<AskQuestionPage>
                               }
                             });
                     
-                            pageController.animateToPage(page, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                            pageController.animateToPage(page, duration: const Duration(milliseconds: 200), curve: Curves.easeIn);
                     
                           },
-                          child: Icon(Icons.arrow_forward_ios_rounded,size: 32,)),
+                          child: const Icon(Icons.arrow_forward_ios_rounded,size: 32,)),
                     ),
                   ),
                 // if(page==2&&false)
@@ -441,7 +485,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
                             ),
                           ),
                           borderRadius: BorderRadius.circular(22),
-                          child:  Text(
+                          child:  const Text(
                             "Swipe right to post",
                             style: TextStyle(
                               color: Colors.white,
@@ -504,7 +548,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
 
   void setWidget() async{
 
-    Future.delayed(Duration(milliseconds: 100),(){
+    Future.delayed(const Duration(milliseconds: 100),(){
       setState(() {
         selectedItem = (selectedProfession.designations!.length>0) ? SearchDesignationDropdown(
           colorTheme: Colors.black,
@@ -559,9 +603,22 @@ class AskQuestionPageState extends State<AskQuestionPage>
   void getProfessions() async {
     List<Profession> fetchProfessions =
     await FirebaseDBOperations.getProfessions();
+    List<String> fetchedDesignations = [];
+    for(Profession profession in fetchProfessions){
+      List<dynamic> fDesignations = profession.designations??[];
+      for(dynamic designation in fDesignations) {
+        fetchedDesignations?.add(designation.toString());
+        designationProfessionMapping["${designation}"] = profession;
+      }
+    }
+    //designations.add("Select One");
     setState(() {
       professions = fetchProfessions;
+      designations.addAll(List<String>.from(fetchedDesignations));
     });
+
+
+
   }
 
 

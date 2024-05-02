@@ -241,6 +241,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  chip_list:
+    dependency: "direct main"
+    description:
+      name: chip_list
+      sha256: "4abca0c956e246dc6a20c3a5dacd84a5422c29de89134492d4290c424ca0b5e0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.4+8"
   cli_util:
     dependency: transitive
     description:
