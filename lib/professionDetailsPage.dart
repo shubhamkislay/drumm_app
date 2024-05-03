@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'InterestPage.dart';
+import 'custom/ProfessionChipSelectionWidget.dart';
 import 'custom/SearchProfessionDropdown.dart';
 import 'model/Drummer.dart';
 import 'model/band.dart';
@@ -46,24 +47,37 @@ class _ProfessionDetailsPageState extends State<ProfessionDetailsPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: 150,),
-                    Image.asset(
+                    SizedBox(height: 0,),
+                   if(false) Image.asset(
                       "images/verify.png",
-                      width: 130,
-                      height: 130,
+                      width: 150,
+                      height: 150,
                       color: Colors.white,
                     ),
                     SizedBox(
                       height: 12,
                     ),
                     const Text(
-                      "What's your expertise?",
-                      style: TextStyle(fontSize: 22, fontFamily: APP_FONT_MEDIUM),
+                      "Select your Expertise",
+                      style: TextStyle(fontSize: 26, fontFamily: APP_FONT_MEDIUM),
                     ),
                     SizedBox(
-                      height: 32,
+                      height: 16,
                     ),
-                    if (professions.isNotEmpty)
+                    ProfessionChipSelectionWidget(
+                      selectedCallback: (selectedDesign, selectedProfess) {
+
+                        setState(() {
+                          selectedProfession = selectedProfess;
+                          widget.drummer?.occupation = selectedProfession.departmentName;
+                          selectedDesignation = selectedDesign;
+                          widget.drummer?.jobTitle = selectedDesignation;
+                        });
+
+                        saveUserDetails();
+                      },
+                    ),
+                    if (professions.isNotEmpty &&false)
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: SearchProfessionDropdown(
@@ -85,17 +99,18 @@ class _ProfessionDetailsPageState extends State<ProfessionDetailsPage> {
 
                         ),
                       ),
+
                     SizedBox(
                       height: 12,
                     ),
-                      Padding(
+                    if(false)  Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: selectedItem
                       ),
                     SizedBox(
                       height: 12,
                     ),
-                    Padding(
+                   if(false) Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: moreAbout
                     ),
@@ -103,7 +118,7 @@ class _ProfessionDetailsPageState extends State<ProfessionDetailsPage> {
                 ),
               ),
             ),
-            if(selectedDesignation.isNotEmpty&&selectedProfession.departmentName!.isNotEmpty)
+            if(selectedDesignation.isNotEmpty&&selectedProfession.departmentName!.isNotEmpty&&false)
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: GestureDetector(

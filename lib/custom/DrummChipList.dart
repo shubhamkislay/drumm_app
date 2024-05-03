@@ -448,7 +448,9 @@ class _ChipListState extends State<ChipList> {
       verticalDirection: widget.verticalDirection,
       children: List.generate(
         widget.listOfChipNames.length,
-            (index) => Padding(
+            (index) {
+          Color colorChip = _tileColorizer(index);
+          return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: ChoiceChip(
             showCheckmark: widget.showCheckmark,
@@ -477,9 +479,12 @@ class _ChipListState extends State<ChipList> {
                 ? widget.inactiveBgColorList.first
                 : widget.inactiveBgColorList[index],
             selected: _checkChipSelectionStatus(index),
-            selectedColor: _tileColorizer(index),
+            selectedColor: colorChip,
             onSelected: (val) {
               // update other chips depending on value of [supportsMultiSelect]
+              setState(() {
+                colorChip = Colors.blue;
+              });
               _handleOnSelected(index);
 
               if (widget.extraOnToggle != null) {
@@ -494,7 +499,7 @@ class _ChipListState extends State<ChipList> {
               setState(() {});
             },
           ),
-        ),
+        );},
       ),
     )
         : SingleChildScrollView(

@@ -1,5 +1,3 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/custom/SearchProfessionDropdown.dart';
 import 'package:drumm_app/custom/constants/Constants.dart';
@@ -15,6 +13,7 @@ import 'package:flutter_swipe_button/flutter_swipe_button.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 
 import 'custom/DrummChipList.dart';
+import 'custom/ProfessionChipSelectionWidget.dart';
 import 'custom/SearchDesignationsDropdown.dart';
 import 'custom/helper/firebase_db_operations.dart';
 import 'model/article.dart';
@@ -37,9 +36,8 @@ class AskQuestionPageState extends State<AskQuestionPage>
 
   List<String> hookList = [];
   int page = 0;
-  TextEditingController questionTextController= TextEditingController(
-      text: ""
-  );
+  TextEditingController questionTextController =
+      TextEditingController(text: "");
   String question = "";
   String topicHead = "";
 
@@ -57,13 +55,13 @@ class AskQuestionPageState extends State<AskQuestionPage>
   String selectedDesignation = "";
 
   Widget selectedItem = Container();
+  Widget chipWidget = Container();
   var nameTxt = TextEditingController();
   DocumentSnapshot<Map<String, dynamic>>? _lastDocument = null;
   DocumentSnapshot<Map<String, dynamic>>? _startDocument = null;
   AlgoliaArticles? algoliaArticles = AlgoliaArticles();
 
   int? selectedIndex;
-
 
   @override
   void initState() {
@@ -75,27 +73,12 @@ class AskQuestionPageState extends State<AskQuestionPage>
     observeText();
     //getArticleQuestion();
     getAMAQuestions();
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      //height: MediaQuery.of(context).size.height*0.5,
-      decoration: const BoxDecoration(
-        //color: Colors.grey.shade900,
-        gradient: LinearGradient(
-            begin: Alignment.bottomLeft,
-            end: Alignment.topRight,
-            colors: [
-              // Colors.blue.shade400,
-              // Colors.blue.shade700,
-              // Colors.blue.shade900,
-              COLOR_ARTICLE_BACKGROUND,
-              COLOR_ARTICLE_BACKGROUND,
-            ]
-        ),
-      ),
+      color: COLOR_ARTICLE_BACKGROUND,
       child: SafeArea(
         bottom: false,
         child: Column(
@@ -149,94 +132,73 @@ class AskQuestionPageState extends State<AskQuestionPage>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const SizedBox(),
-                    if(false)
-                      SingleChildScrollView(
-                        child: TextField(
-                          keyboardType: TextInputType.text,
-                          textInputAction: TextInputAction.done,
-                          cursorColor: Colors.white,
-                          maxLines: null,
-                          autofocus: true,
-                          maxLength: 60,
-                          cursorHeight: 32,
-                          cursorWidth: 5,
-                          textAlign: TextAlign.center,
-                          controller: questionTextController,
-                          onChanged: (val){
-                            setState(() {
-                              question = val;
-                            });
-                          },
-                          style: const TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold
-                          ),
-                          decoration: const InputDecoration(
-                              hintText: 'Ask anything...', fillColor: Colors.transparent),
-                        ),
-                      ),
-
-                       (fetchedAMAQuestions.isNotEmpty)?
-                       Expanded(
-                         child: ListView.builder(
-                           itemCount: fetchedAMAQuestions.length,
-                           itemBuilder: (context, index) {
-                           return GestureDetector(
-                             onTap: (){
-                               FocusScope.of(context).unfocus();
-                               setState(() {
-                                 question = "${fetchedAMAQuestions.elementAt(index)}";
-                                 if (question.isNotEmpty && page < 2) {
-                                 page += 1;
-                                 pageController.animateToPage(
-                                     page, duration: const Duration(milliseconds: 200),
-                                     curve: Curves.easeIn);
-                                 }
-                               });
-                         
-                         
-                             },
-                             child: Container(
-                               padding: const EdgeInsets.symmetric(vertical: 18,horizontal: 4),
-                               margin: const EdgeInsets.symmetric(horizontal: 12),
-
-                               width: double.maxFinite,
-                               decoration: BoxDecoration(
-                                   color: Colors.transparent,
-                                 border: Border(
-                                   bottom: BorderSide(
-                                     color: Colors.grey.withOpacity(0.05),
-
-                                   )
-                                 )
-                               ),
-                               child: Row(
-                                 children: [
-                                   Expanded(
-                                     child: Text("${fetchedAMAQuestions.elementAt(index)}",style: const TextStyle(
-                                       fontSize: 17,
-                                       fontFamily: APP_FONT_BOLD,
-                                       color: Colors.white70
-                                     ),),
-                                   ),
-                                   const Icon(Icons.transit_enterexit_rounded,color: Colors.white70,),
-                                 ],
-                               ),
-                             ),
-                           );
-                         },),
-                       ):const SizedBox(),
+                      (fetchedAMAQuestions.isNotEmpty)
+                          ? Expanded(
+                              child: ListView.builder(
+                                itemCount: fetchedAMAQuestions.length,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      FocusScope.of(context).unfocus();
+                                      setState(() {
+                                        question =
+                                            "${fetchedAMAQuestions.elementAt(index)}";
+                                        if (question.isNotEmpty && page < 2) {
+                                          page += 1;
+                                          pageController.animateToPage(page,
+                                              duration: const Duration(
+                                                  milliseconds: 200),
+                                              curve: Curves.easeIn);
+                                        }
+                                      });
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 18, horizontal: 4),
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 12),
+                                      width: double.maxFinite,
+                                      decoration: BoxDecoration(
+                                          color: Colors.transparent,
+                                          border: Border(
+                                              bottom: BorderSide(
+                                            color:
+                                                Colors.grey.withOpacity(0.05),
+                                          ))),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              "${fetchedAMAQuestions.elementAt(index)}",
+                                              style: const TextStyle(
+                                                  fontSize: 17,
+                                                  fontFamily: APP_FONT_BOLD,
+                                                  color: Colors.white70),
+                                            ),
+                                          ),
+                                          const Icon(
+                                            Icons.transit_enterexit_rounded,
+                                            color: Colors.white70,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
+                          : const SizedBox(),
                       Container(
                         color: COLOR_BACKGROUND,
                         width: double.maxFinite,
-                        padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 2),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 2),
                         child: SafeArea(
                           top: false,
                           child: TextField(
                             controller: questionTextController,
                             autofocus: true,
                             maxLength: 60,
-
                             decoration: const InputDecoration(
                                 hintText: "Ask anything...",
                                 hoverColor: Colors.white,
@@ -251,15 +213,14 @@ class AskQuestionPageState extends State<AskQuestionPage>
                               color: Colors.white,
                             ),
                             textInputAction: TextInputAction.done,
-                            onChanged: (value){
+                            onChanged: (value) {
                               setState(() {
                                 question = value;
                               });
                             },
-                            onEditingComplete: (){
+                            onEditingComplete: () {
                               FocusScope.of(context).unfocus();
-                              if(question.length>2) {
-
+                              if (question.length > 2) {
                                 setState(() {
                                   questionTextController.text = question;
                                   if (page < 2) {
@@ -267,47 +228,14 @@ class AskQuestionPageState extends State<AskQuestionPage>
                                   }
                                 });
 
-                                pageController.animateToPage(
-                                    page, duration: const Duration(milliseconds: 200),
+                                pageController.animateToPage(page,
+                                    duration: const Duration(milliseconds: 200),
                                     curve: Curves.easeIn);
                               }
                             },
                           ),
                         ),
-                      ),// Add some space at the bottom for better visibility
-                    ],
-                  ),
-                  if(false)Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-
-                      if (professions.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
-                          child: SearchProfessionDropdown(
-                            colorTheme: Colors.black,
-                            isLight: true,
-                            professions: professions,
-                            hintText: "Field of expertise",
-                            professionSelectedCallback: (Profession profession) {
-                              setState(() {
-                                selectedProfession = profession;
-                                selectedDesignation = "";
-                                selectedItem = Container();
-                                setWidget();
-
-                              });
-                            },
-
-                          ),
-                        ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
-                          child: selectedItem
-                      ),
+                      ), // Add some space at the bottom for better visibility
                     ],
                   ),
                   SingleChildScrollView(
@@ -315,34 +243,20 @@ class AskQuestionPageState extends State<AskQuestionPage>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const SizedBox(),
-                        Center(
-                          child: ChipList(
-                            shouldWrap: true,
-                            showCheckmark: true,//(selectedIndex==0)?false:true,
-                            listOfChipNames: designations,
-                            activeBgColorList:[const Color(COLOR_PRIMARY_VAL)],//(selectedIndex==0)?[Colors.white]: [Color(COLOR_PRIMARY_VAL)],
-                            inactiveBgColorList: [Colors.grey.shade800.withOpacity(0.5)],
-                            inactiveBorderColorList: [Colors.transparent],
-                            activeTextColorList: [Colors.white],//(selectedIndex==0)?[Colors.black]: [Colors.white],
-                            extraOnToggle: (index) {
-
-
-                             setState(() {
-                               selectedIndex = index;
-                                 selectedDesignation =
-                                     designations.elementAt(index);
-                                 selectedProfession =
-                                     designationProfessionMapping["${selectedDesignation}"] ??
-                                         Profession();
-                              });
-
-                            },
-
-                            inactiveTextColorList: [Colors.white70],
-                            listOfChipIndicesCurrentlySeclected: [selectedIndex],
-                            activeBorderColorList: [const Color(COLOR_PRIMARY_VAL)],
-
-                          ),
+                        ProfessionChipSelectionWidget(
+                          selectedCallback: (selectedDesign, selectedProfess) {
+                            FocusScope.of(context).unfocus();
+                            setState(() {
+                              selectedDesignation = selectedDesign;
+                              selectedProfession = selectedProfess;
+                              if (page < 2) {
+                                page += 1;
+                              }
+                            });
+                            pageController.animateToPage(page,
+                                duration: const Duration(milliseconds: 200),
+                                curve: Curves.easeIn);
+                          },
                         ),
                         const SizedBox(),
                       ],
@@ -351,128 +265,110 @@ class AskQuestionPageState extends State<AskQuestionPage>
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 0,),
-
+                      const SizedBox(
+                        height: 0,
+                      ),
 
                       Padding(
                         padding: const EdgeInsets.all(12.0),
-                        child: Text(question,
+                        child: Text(
+                          question,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 26,
-                          ),),
-                      ),
-                      if(true)   Container(
-                        padding: const EdgeInsets.all(12.0),
-                        height: 100,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Flexible(child: Text("Ask an Expert",style: TextStyle(
-                              color: Colors.white70,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                            ),),),
-                            Flexible(
-                              child: Text((selectedDesignation.isNotEmpty)? "${selectedDesignation} in ${selectedProfession.departmentName}": "${selectedProfession.departmentName}",
-                                textAlign: TextAlign.center,
-                                maxLines: 3,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
+                      if (true)
+                        Container(
+                          padding: const EdgeInsets.all(12.0),
+                          height: 100,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Flexible(
+                                child: Text(
+                                  "Ask an Expert",
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                child: Text(
+                                  (selectedDesignation.isNotEmpty)
+                                      ? "${selectedDesignation} \n ${selectedProfession.departmentName}"
+                                      : "${selectedProfession.departmentName}",
+                                  textAlign: TextAlign.center,
+                                  maxLines: 3,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
 
                       // Add some space at the bottom for better visibility
                     ],
                   ),
                 ],
-                onPageChanged: (page){
-                  if(page==0){
+                onPageChanged: (page) {
+                  if (page == 0) {
                     setState(() {
                       topicHead = "";
                     });
-                  } else if(page == 1){
-                    getProfessions();
+                  } else if (page == 1) {
                     setState(() {
                       topicHead = "Ask an expert";
                     });
-                  } else if(page == 2){
-
+                  } else if (page == 2) {
                     setState(() {
                       topicHead = "Post your Question";
                     });
-
                   }
-
                 },
               ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                if(page==1)  SafeArea(
-                  child: Container(
-                    padding: const EdgeInsets.all(16.0),
-                    child: GestureDetector(
-                        onTap: (){
-                          FocusScope.of(context).unfocus();
-                          setState(() {
-                            page-=1;
-                          });
-                  
-                          pageController.animateToPage(page, duration: const Duration(milliseconds: 200), curve: Curves.easeIn);
-                        },
-                        child: const Icon(Icons.arrow_back_ios_rounded,size: 32,)),
-                  ),
-                ),
-                if(page==0)
-                  Container(),
-                if(//page==0 && question.length>2 ||
-                    page==1&&selectedProfession.departmentName!=null)
+                if (page == 1)
                   SafeArea(
                     child: Container(
                       padding: const EdgeInsets.all(16.0),
                       child: GestureDetector(
-                          onTap: (){
+                          onTap: () {
                             FocusScope.of(context).unfocus();
                             setState(() {
-                    
-                              if(page<2) {
-                                page+=1;
-                              }
+                              page -= 1;
                             });
-                    
-                            pageController.animateToPage(page, duration: const Duration(milliseconds: 200), curve: Curves.easeIn);
-                    
+
+                            pageController.animateToPage(page,
+                                duration: const Duration(milliseconds: 200),
+                                curve: Curves.easeIn);
                           },
-                          child: const Icon(Icons.arrow_forward_ios_rounded,size: 32,)),
+                          child: const Icon(
+                            Icons.arrow_back_ios_rounded,
+                            size: 32,
+                          )),
                     ),
                   ),
-                // if(page==2&&false)
-                // GestureDetector(
-                //   onTap: (){
-                //     postQuestion();
-                //     Navigator.pop(context);
-                //   },
-                //   child: const Padding(
-                //     padding: EdgeInsets.all(8.0),
-                //     child: Icon(Icons.camera_rear,size: 60,),
-                //   ),
-                // ),
-
-                if(page==2)
+                if (page == 0) Container(),
+                if (page == 2)
                   Expanded(
                     child: SafeArea(
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 12,right: 12,bottom: 8),
+                        padding: const EdgeInsets.only(
+                            left: 12, right: 12, bottom: 8),
                         child: SwipeButton.expand(
                           thumbPadding: const EdgeInsets.all(4),
                           height: 64,
@@ -481,23 +377,22 @@ class AskQuestionPageState extends State<AskQuestionPage>
                             child: Image.asset(
                               'images/audio-waves.png',
                               fit: BoxFit.contain,
-                              color: Colors.blue,
+                              color: Colors.black.withOpacity(0.5),
                             ),
                           ),
                           borderRadius: BorderRadius.circular(22),
-                          child:  const Text(
+                          child: const Text(
                             "Swipe right to post",
                             style: TextStyle(
                               color: Colors.white,
                             ),
                           ),
                           activeThumbColor: Colors.white,
-                          activeTrackColor: Colors.white.withOpacity(0.175),
+                          activeTrackColor: Colors.black.withOpacity(0.3),
                           onSwipe: () {
                             Vibrate.feedback(FeedbackType.success);
                             postQuestion();
                             Navigator.pop(context);
-                      
                           },
                         ),
                       ),
@@ -511,24 +406,23 @@ class AskQuestionPageState extends State<AskQuestionPage>
     );
   }
 
-  getArticleQuestion() async{
-    AlgoliaArticles fetchAlgoliaArticles = await FirebaseDBOperations.getArticlesData(
-        _startDocument, _lastDocument, false);
+  getArticleQuestion() async {
+    AlgoliaArticles fetchAlgoliaArticles =
+        await FirebaseDBOperations.getArticlesData(
+            _startDocument, _lastDocument, false);
     algoliaArticles = fetchAlgoliaArticles;
     setState(() {
-      fetchedArticles = algoliaArticles?.articles??[];
+      fetchedArticles = algoliaArticles?.articles ?? [];
     });
-
-
   }
 
-  getAMAQuestions() async{
-    List<String> askQuestions = await FirebaseDBOperations.getGeneratedAMAQuestions();
+  getAMAQuestions() async {
+    List<String> askQuestions =
+        await FirebaseDBOperations.getGeneratedAMAQuestions();
 
     setState(() {
       fetchedAMAQuestions = askQuestions;
     });
-
   }
 
   void getHooks() async {
@@ -546,46 +440,39 @@ class AskQuestionPageState extends State<AskQuestionPage>
     });
   }
 
-  void setWidget() async{
-
-    Future.delayed(const Duration(milliseconds: 100),(){
+  void setWidget() async {
+    Future.delayed(const Duration(milliseconds: 100), () {
       setState(() {
-        selectedItem = (selectedProfession.designations!.length>0) ? SearchDesignationDropdown(
-          colorTheme: Colors.black,
-          isLight: true,
-          hintText: "Role of the expert",
-          designations: selectedProfession.designations??[],
-          designationsSelectedCallback: (String designation) {
-
-            setState(() {
-              selectedDesignation = designation;
-            });
-          },
-
-        ):
-        SearchDesignationDropdown(
-          colorTheme: Colors.black,
-          isLight: true,
-          hintText: "Role of the expert",
-          designations: selectedProfession.designations??[],
-          designationsSelectedCallback: (String designation) {
-
-            setState(() {
-              selectedDesignation = designation;
-            });
-          },
-
-        );
-
+        selectedItem = (selectedProfession.designations!.length > 0)
+            ? SearchDesignationDropdown(
+                colorTheme: Colors.black,
+                isLight: true,
+                hintText: "Role of the expert",
+                designations: selectedProfession.designations ?? [],
+                designationsSelectedCallback: (String designation) {
+                  setState(() {
+                    selectedDesignation = designation;
+                  });
+                },
+              )
+            : SearchDesignationDropdown(
+                colorTheme: Colors.black,
+                isLight: true,
+                hintText: "Role of the expert",
+                designations: selectedProfession.designations ?? [],
+                designationsSelectedCallback: (String designation) {
+                  setState(() {
+                    selectedDesignation = designation;
+                  });
+                },
+              );
       });
-
     });
   }
 
-  void postQuestion() async{
-
+  void postQuestion() async {
     DocumentReference questionRef =
-    FirebaseFirestore.instance.collection("questions").doc();
+        FirebaseFirestore.instance.collection("questions").doc();
     String pushId = questionRef.id;
 
     Question newQuestion = Question();
@@ -593,35 +480,9 @@ class AskQuestionPageState extends State<AskQuestionPage>
     newQuestion.departmentName = selectedProfession.departmentName;
     newQuestion.designation = selectedDesignation;
     newQuestion.uid = FirebaseAuth.instance.currentUser?.uid;
-    newQuestion.createdTime =  Timestamp.now();
+    newQuestion.createdTime = Timestamp.now();
     newQuestion.qid = pushId;
 
     FirebaseDBOperations.postQuestion(newQuestion);
-
   }
-
-  void getProfessions() async {
-    List<Profession> fetchProfessions =
-    await FirebaseDBOperations.getProfessions();
-    List<String> fetchedDesignations = [];
-    for(Profession profession in fetchProfessions){
-      List<dynamic> fDesignations = profession.designations??[];
-      for(dynamic designation in fDesignations) {
-        fetchedDesignations?.add(designation.toString());
-        designationProfessionMapping["${designation}"] = profession;
-      }
-    }
-    //designations.add("Select One");
-    setState(() {
-      professions = fetchProfessions;
-      designations.addAll(List<String>.from(fetchedDesignations));
-    });
-
-
-
-  }
-
-
-
-
 }

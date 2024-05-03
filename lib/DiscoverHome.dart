@@ -5,6 +5,7 @@ import 'package:dismissible_page/dismissible_page.dart';
 import 'package:drumm_app/CommunityQuestionsPage.dart';
 import 'package:drumm_app/MultiSelectContainerWidget.dart';
 import 'package:drumm_app/model/article_image_card.dart';
+import 'package:drumm_app/professionDetailsPage.dart';
 import 'package:drumm_app/search_result_page.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -210,6 +211,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                                             UserProfilePage(
                                               fromSearch: true,
                                             ),
+                                            // ProfessionDetailsPage()
                                           );
                                         },
                                         child: UserProfileIcon(
