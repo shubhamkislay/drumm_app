@@ -250,9 +250,9 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                                   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1,
                                                   minFontSize: 10,
-                                                  maxFontSize: 10,
+                                                  maxFontSize: 11,
                                                   style: const TextStyle(
-                                                      fontSize: 8,
+                                                      fontSize: 11,
                                                       fontFamily: APP_FONT_MEDIUM,
                                                       //fontWeight: FontWeight.bold,
                                                       color: Colors.white),
