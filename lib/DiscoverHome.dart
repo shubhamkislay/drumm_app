@@ -570,7 +570,7 @@ class DiscoverHomeState extends State<DiscoverHome>
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
-                            double articlePadding = 8;
+                            double articlePadding = 10;
                             return GridView.custom(
                               shrinkWrap: true,
                               padding: EdgeInsets.symmetric(

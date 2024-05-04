@@ -251,7 +251,8 @@ class ArticleReelsState extends State<ArticleReels>
                                     color: COLOR_BACKGROUND,
                                     borderRadius: BorderRadius.circular(44),
                                     border: Border.all(
-                                        color: Colors.grey.shade900, width: 2.5)),
+                                        color: Colors.grey.shade900,
+                                        width: 2.5)),
                                 child: ArticleDrummButton(
                                     iconSize: 44,
                                     articleOnScreen:
@@ -309,7 +310,8 @@ class ArticleReelsState extends State<ArticleReels>
                                             borderRadius:
                                                 BorderRadius.circular(56),
                                             child: CachedNetworkImage(
-                                              imageUrl: currentJam.imageUrl ?? "",
+                                              imageUrl:
+                                                  currentJam.imageUrl ?? "",
                                               fit: BoxFit.cover,
                                               height: 56,
                                               width: 56,
@@ -323,10 +325,12 @@ class ArticleReelsState extends State<ArticleReels>
                                                 child: Container(
                                                   padding:
                                                       const EdgeInsets.all(8),
-                                                  margin: const EdgeInsets.all(2),
+                                                  margin:
+                                                      const EdgeInsets.all(2),
                                                   decoration: BoxDecoration(
                                                     borderRadius:
-                                                        BorderRadius.circular(42),
+                                                        BorderRadius.circular(
+                                                            42),
                                                     color: Colors.transparent,
                                                     //gradient: LinearGradient(colors: JOIN_COLOR),
                                                   ),
@@ -358,8 +362,8 @@ class ArticleReelsState extends State<ArticleReels>
                                             child: Image.asset(
                                               'images/audio-waves.png',
                                               height: iconHeight - 12,
-                                              color:
-                                                  Colors.white.withOpacity(0.35),
+                                              color: Colors.white
+                                                  .withOpacity(0.35),
                                               fit: BoxFit.contain,
                                             ),
                                           ),
@@ -397,7 +401,8 @@ class ArticleReelsState extends State<ArticleReels>
                                     color: Colors.black,
                                     borderRadius: BorderRadius.circular(44),
                                     border: Border.all(
-                                        color: Colors.grey.shade900, width: 2.5)),
+                                        color: Colors.grey.shade900,
+                                        width: 2.5)),
                                 child: Center(
                                   child: ShareWidget(
                                     article: articleOnTop?.article ?? Article(),
@@ -638,8 +643,7 @@ class ArticleReelsState extends State<ArticleReels>
                             "",
                         progressIndicatorBuilder:
                             (context, url, downloadProgress) {
-
-                          double opacity = downloadProgress.progress??0;
+                          double opacity = downloadProgress.progress ?? 0;
                           return ClipRRect(
                             borderRadius: BorderRadius.circular(12),
                             child: Container(
@@ -650,21 +654,24 @@ class ArticleReelsState extends State<ArticleReels>
                                 child: SizedBox(
                                   width: 225,
                                   height: 225,
-                                  child:  (downloadProgress.progress == null)
-                              ? CircularProgressIndicator(
-                                    value: downloadProgress.progress,
-                                    color: Colors.white.withOpacity(0.07),
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white.withOpacity(0.07)),
-
-                                  )
-                              : CircularProgressIndicator(
-                                    value: downloadProgress.progress,
-                                    color: Colors.white70,//.withOpacity(1.0-opacity),
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white70),
-
-                                  ),
+                                  child: (downloadProgress.progress == null)
+                                      ? CircularProgressIndicator(
+                                          value: downloadProgress.progress,
+                                          color: Colors.white.withOpacity(0.07),
+                                          strokeWidth: 2,
+                                          valueColor: AlwaysStoppedAnimation<
+                                                  Color>(
+                                              Colors.white.withOpacity(0.07)),
+                                        )
+                                      : CircularProgressIndicator(
+                                          value: downloadProgress.progress,
+                                          color: Colors
+                                              .white70, //.withOpacity(1.0-opacity),
+                                          strokeWidth: 2,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  Colors.white70),
+                                        ),
                                 ),
                               ),
                             ),
@@ -672,7 +679,8 @@ class ArticleReelsState extends State<ArticleReels>
                         },
                         errorWidget: (context, url, error) {
                           return ClipRRect(
-                            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                            borderRadius:
+                                BorderRadius.vertical(top: Radius.circular(12)),
                             child: Container(
                               color: COLOR_BACKGROUND,
                               height: 300,
@@ -743,7 +751,8 @@ class ArticleReelsState extends State<ArticleReels>
                                   unescape.convert(widget.preloadList
                                           ?.elementAt(index)
                                           .article
-                                          ?.meta?.trim() ??
+                                          ?.meta
+                                          ?.trim() ??
                                       widget.preloadList
                                           ?.elementAt(index)
                                           .article
@@ -923,17 +932,16 @@ class ArticleReelsState extends State<ArticleReels>
                                             vertical: 4, horizontal: 4),
                                         child: Text(
                                           unescape.convert(
-                                              "\"${widget.preloadList?.elementAt(index).article?.question ?? widget.preloadList?.elementAt(index).article?.title??""}\"" ??
+                                              "\"${widget.preloadList?.elementAt(index).article?.question ?? widget.preloadList?.elementAt(index).article?.title ?? ""}\"" ??
                                                   ""),
                                           textAlign: TextAlign.left,
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15,
-                                            fontFamily: APP_FONT_LIGHT,
-                                            fontWeight: FontWeight.w600
-                                          ),
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                              fontFamily: APP_FONT_LIGHT,
+                                              fontWeight: FontWeight.w600),
                                         ),
                                         // child:  RichText(
                                         //   text: TextSpan(
@@ -993,16 +1001,14 @@ class ArticleReelsState extends State<ArticleReels>
           bandCategoryList.addAll(band.hooks ?? []);
         }
         if (fetchedBands.length < 1) bandCategoryList.add("general");
-      }
-      else if (widget.selectedBandId == "Boosted") {
+      } else if (widget.selectedBandId == "Boosted") {
         List<Band> fetchedBands = await FirebaseDBOperations.getBandByUser();
 
         for (Band band in fetchedBands) {
           bandCategoryList.addAll(band.hooks ?? []);
         }
         if (fetchedBands.length < 1) bandCategoryList.add("general");
-      }
-      else {
+      } else {
         Band selectedBand =
             await FirebaseDBOperations.getBand(widget.selectedBandId ?? "");
         bandCategoryList.addAll(selectedBand.hooks ?? []);
@@ -1019,15 +1025,16 @@ class ArticleReelsState extends State<ArticleReels>
           .orderBy("publishedAt", descending: true)
           .limit(_pageSize);
 
-      if(widget.selectedBandId == "Boosted"){
+      if (widget.selectedBandId == "Boosted") {
         DateTime currentTime = DateTime.now();
         DateTime oneDayAgo = currentTime.subtract(Duration(hours: 3));
         query = FirebaseFirestore.instance
             .collection('articles')
             .where('category', whereIn: bandCategoryList)
             .where('country', isEqualTo: 'in')
-            .where('boostamp', isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
-        //.where('boosts', isGreaterThanOrEqualTo: 1)
+            .where('boostamp',
+                isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
+            //.where('boosts', isGreaterThanOrEqualTo: 1)
             .orderBy("boostamp", descending: true)
             .limit(10);
       }
@@ -1369,7 +1376,6 @@ class ArticleReelsState extends State<ArticleReels>
 
     _pageController = PageController(
       initialPage: widget.articlePosition ?? 0,
-
     );
     //_pageController.addListener(_pageListener);
     //widget.scrollController.addListener(_handleScroll);
@@ -1552,19 +1558,21 @@ class ArticleReelsState extends State<ArticleReels>
     List<Jam> broadcastJams = await FirebaseDBOperations.getBroadcastJams();
     drumms = broadcastJams + fetchedDrumms;
 
-    setState(() {
-      loaded = true;
-      drummCards = drumms.map((jam) {
-        return DrummCard(
-          jam,
-        );
-      }).toList();
-
-      print("drummCards returned");
+    if (mounted) {
       setState(() {
         loaded = true;
+        drummCards = drumms.map((jam) {
+          return DrummCard(
+            jam,
+          );
+        }).toList();
+
+        print("drummCards returned");
+        setState(() {
+          loaded = true;
+        });
       });
-    });
+    }
   }
 
   Future<void> getOpenDrumms() async {
@@ -1581,7 +1589,6 @@ class ArticleReelsState extends State<ArticleReels>
       }).toList();
     });
   }
-
 
   void joinOpenDrumm(ArticleBand aBand) {
     Jam jam = Jam();
