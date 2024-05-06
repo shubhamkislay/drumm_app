@@ -62,6 +62,7 @@ class AskQuestionPageState extends State<AskQuestionPage>
   AlgoliaArticles? algoliaArticles = AlgoliaArticles();
 
   int? selectedIndex;
+  Widget pfWidget = Container();
 
   @override
   void initState() {

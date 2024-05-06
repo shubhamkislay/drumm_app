@@ -50,14 +50,15 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
   Widget build(BuildContext context) {
     int boosts = 0;
     double curve = 14;
-    double borderWidth = 2.5;
+    double borderWidth = 2.75;
     double bottomPadding = 100;
     double horizontalPadding = 10;
-    int imageUrlLength = widget.articleBand.article?.imageUrl?.length??0;
+    int imageUrlLength = widget.articleBand.article?.imageUrl?.length ?? 0;
     DateTime currentTime = DateTime.now();
     DateTime recent = currentTime.subtract(Duration(hours: 3));
     Timestamp boostTime = Timestamp.now();
-    Color fadeColor = COLOR_BACKGROUND;//COLOR_ARTICLE_BACKGROUND; //.withOpacity(0.8);
+    Color fadeColor =
+        COLOR_BACKGROUND; //COLOR_ARTICLE_BACKGROUND; //.withOpacity(0.8);
     try {
       boostTime = widget.articleBand.article!.boostamp ?? Timestamp.now();
       boosts = widget.articleBand.article?.boosts ?? 0;
@@ -66,11 +67,13 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
     Color colorBorder =
         (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
             ? COLOR_BOOST
-            : Colors.grey.shade800.withOpacity(0.35);//COLOR_ARTICLE_BACKGROUND;//fadeColor;
+            : Colors.grey.shade800
+                .withOpacity(0.65); //COLOR_ARTICLE_BACKGROUND;//fadeColor;
     Color colorBorder2 =
         (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
             ? Colors.blueGrey
-            : Colors.grey.shade800.withOpacity(0.35);//COLOR_ARTICLE_BACKGROUND;//fadeColor;
+            : Colors.grey.shade800
+                .withOpacity(0.65); //COLOR_ARTICLE_BACKGROUND;//fadeColor;
     Widget returnWidget = (widget.loading ?? false)
         ? Container(
             alignment: Alignment.center,
@@ -81,11 +84,21 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
               color: fadeColor, //COLOR_BACKGROUND,
               border: Border.all(color: colorBorder, width: borderWidth),
             ),
+            child: Container(
+              color: COLOR_BACKGROUND,
+              //height: 300,
+              padding: const EdgeInsets.all(48),
+              child: Image.asset(
+                "images/drumm_logo.png",
+                color: Colors.grey.shade900.withOpacity(0.75),
+                fit: BoxFit.cover,
+              ),
+            ),
           )
         : LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
             double maxHeight = constraints.maxHeight / 2.5;
-            double maxTextSize = 18;
+            double maxTextSize = 19;
             double minTextSize = 13;
             return GestureDetector(
               onTap: () {
@@ -105,12 +118,14 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                       preloadList: widget.articleBands,
                       lastDocument: widget.lastDocument,
                       selectedBandId: widget.selectedBandID ?? "For You",
-                      articlePosition: widget.articleBands?.indexOf(widget.articleBand) ?? 0,
+                      articlePosition:
+                          widget.articleBands?.indexOf(widget.articleBand) ?? 0,
                       userConnected: false,
                       scrollController: ScrollController(),
                       tag: widget.articleBands
-                              ?.elementAt(
-                                  widget.articleBands?.indexOf(widget.articleBand) ?? 0)
+                              ?.elementAt(widget.articleBands
+                                      ?.indexOf(widget.articleBand) ??
+                                  0)
                               .article
                               ?.articleId ??
                           "",
@@ -118,19 +133,20 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                   );
                 }
               },
-              child: (widget.articleBand.article?.imageUrl != null && imageUrlLength>0)
+              child: (widget.articleBand.article?.imageUrl != null &&
+                      imageUrlLength > 0)
                   ? Container(
                       padding: EdgeInsets.all(borderWidth),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(curve),
-                          gradient: LinearGradient(
-                              begin: Alignment.bottomLeft,
-                              end: Alignment.topRight,
-                              colors: [
-                                //Colors.white12,
-                                colorBorder2,
-                                colorBorder,
-                              ]),
+                        borderRadius: BorderRadius.circular(curve),
+                        gradient: LinearGradient(
+                            begin: Alignment.bottomLeft,
+                            end: Alignment.topRight,
+                            colors: [
+                              //Colors.white12,
+                              colorBorder2,
+                              colorBorder,
+                            ]),
                         //border: Border.all(color: colorBorder,width: borderWidth)
                       ),
                       child: Container(
@@ -143,27 +159,27 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                           borderRadius: BorderRadius.circular(curve - 2),
                           child: Column(
                             children: [
-                             if(false) Align(
-                                alignment: Alignment.topCenter,
-                                child: Container(
+                              if (false)
+                                Align(
                                   alignment: Alignment.topCenter,
-                                  height: double.infinity,
-                                  margin:
-                                  EdgeInsets.only(top: bottomPadding),
-                                  decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                          end: Alignment.topCenter,
-                                          begin: Alignment.bottomCenter,
-                                          colors: [
-                                            Colors.transparent,
-                                            Colors.transparent,
-                                            Colors.transparent,
-                                            Colors.transparent,
-                                            Colors.transparent,
-                                            fadeColor,
-                                          ])),
+                                  child: Container(
+                                    alignment: Alignment.topCenter,
+                                    height: double.infinity,
+                                    margin: EdgeInsets.only(top: bottomPadding),
+                                    decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                            end: Alignment.topCenter,
+                                            begin: Alignment.bottomCenter,
+                                            colors: [
+                                          Colors.transparent,
+                                          Colors.transparent,
+                                          Colors.transparent,
+                                          Colors.transparent,
+                                          Colors.transparent,
+                                          fadeColor,
+                                        ])),
+                                  ),
                                 ),
-                              ),
                               Expanded(
                                 child: Stack(
                                   children: [
@@ -171,11 +187,12 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                       //margin: EdgeInsets.only(top: bottomPadding),
                                       child: Hero(
                                         tag: widget.articleBands
-                                            ?.elementAt(widget.articleBands
-                                            ?.indexOf(widget.articleBand) ??
-                                            0)
-                                            .article
-                                            ?.articleId ??
+                                                ?.elementAt(widget.articleBands
+                                                        ?.indexOf(widget
+                                                            .articleBand) ??
+                                                    0)
+                                                .article
+                                                ?.articleId ??
                                             "",
                                         child: CachedNetworkImage(
                                             width: double.infinity,
@@ -184,14 +201,15 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                               // setState(() {
                                               imageUrlLength = 0;
                                               //});
-                                              print("Error while loading image because ${error.toString()}");
+                                              print(
+                                                  "Error while loading image because ${error.toString()}");
                                               //return Container(color: Colors.black,);
-
 
                                               return Container(
                                                 color: COLOR_BACKGROUND,
                                                 height: 300,
-                                                padding: const EdgeInsets.all(48),
+                                                padding:
+                                                    const EdgeInsets.all(48),
                                                 child: Image.asset(
                                                   "images/drumm_logo.png",
                                                   color: Colors.white12,
@@ -201,11 +219,11 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                             // placeholder: (context, url) => Container(
                                             //       color: Colors.grey.shade900,
                                             //     ),
-                                            imageUrl:
-                                            widget.articleBand.article?.imageUrl ?? "",
+                                            imageUrl: widget.articleBand.article
+                                                    ?.imageUrl ??
+                                                "",
                                             alignment: Alignment.topCenter,
                                             fit: BoxFit.cover),
-
                                       ),
                                     ),
                                     Align(
@@ -215,45 +233,50 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                         height: double.infinity,
                                         decoration: BoxDecoration(
                                             gradient: LinearGradient(
-                                                end:  Alignment.bottomCenter,
+                                                end: Alignment.bottomCenter,
                                                 begin: Alignment.topCenter,
                                                 colors: [
-                                                  Colors.transparent,
-                                                  Colors.transparent,
-                                                  fadeColor,
-                                                ])),
+                                              Colors.transparent,
+                                              Colors.transparent,
+                                              fadeColor,
+                                            ])),
                                       ),
                                     ),
                                     Align(
                                       alignment: Alignment.bottomLeft,
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
                                           Flexible(
                                             child: Container(
                                               margin: EdgeInsets.symmetric(
-                                                  horizontal: horizontalPadding-2),
-                                              padding:  EdgeInsets.symmetric(
+                                                  horizontal:
+                                                      horizontalPadding - 2),
+                                              padding: EdgeInsets.symmetric(
                                                   horizontal: 6, vertical: 3),
                                               decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(
-                                                    curve - 4),
-                                                color:
-                                                Colors.white.withOpacity(0.1),
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        curve - 4),
+                                                color: Colors.white
+                                                    .withOpacity(0.1),
                                               ),
                                               child: Hero(
                                                 tag:
-                                                "${widget.articleBand.band?.name} ${widget.articleBand.article?.articleId}",
+                                                    "${widget.articleBand.band?.name} ${widget.articleBand.article?.articleId}",
                                                 child: AutoSizeText(
                                                   "${widget.articleBand.band?.name}",
                                                   textAlign: TextAlign.left,
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   maxLines: 1,
                                                   minFontSize: 10,
                                                   maxFontSize: 11,
                                                   style: const TextStyle(
                                                       fontSize: 11,
-                                                      fontFamily: APP_FONT_MEDIUM,
+                                                      fontFamily:
+                                                          APP_FONT_MEDIUM,
                                                       //fontWeight: FontWeight.bold,
                                                       color: Colors.white),
                                                 ),
@@ -265,8 +288,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                     ),
                                     if (boosts > 0 &&
                                         boostTime.compareTo(
-                                            Timestamp.fromDate(
-                                                recent)) >
+                                                Timestamp.fromDate(recent)) >
                                             0)
                                       Align(
                                         alignment: Alignment.topRight,
@@ -284,85 +306,67 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                 ),
                               ),
                               Container(
-                                alignment:
-                                Alignment.topLeft,
+                                alignment: Alignment.topLeft,
                                 padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                    horizontalPadding,
-                                    vertical: 6),
+                                    horizontal: horizontalPadding, vertical: 6),
                                 //height: maxHeight,
                                 child: AutoSizeText(
-                                  unescape.convert(widget.articleBand
-                                      .article?.meta ??
-                                      widget.articleBand
-                                          .article?.title ??
-                                      ""),
+                                  unescape.convert(
+                                      widget.articleBand.article?.meta ??
+                                          widget.articleBand.article?.title ??
+                                          ""),
                                   textAlign: TextAlign.left,
-                                  overflow:
-                                  TextOverflow.ellipsis,
+                                  overflow: TextOverflow.ellipsis,
                                   maxFontSize: maxTextSize,
                                   maxLines: 2,
                                   minFontSize: minTextSize,
                                   style: TextStyle(
-                                      overflow: TextOverflow
-                                          .ellipsis,
+                                      overflow: TextOverflow.ellipsis,
                                       fontSize: maxTextSize,
-                                      fontWeight:FontWeight.w600,
-                                      fontFamily:
-                                      APP_FONT_MEDIUM,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: APP_FONT_MEDIUM,
                                       color: Colors.white),
                                 ),
                               ),
                               Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.start,
-                                crossAxisAlignment:
-                                CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Flexible(
                                     child: Container(
                                       padding: EdgeInsets.only(
-                                          left: horizontalPadding,
-                                          bottom: 12),
+                                          left: horizontalPadding, bottom: 12),
                                       decoration: BoxDecoration(
-                                        //borderRadius: BorderRadius.circular(12),
-                                        //color: Colors.grey.shade900.withOpacity(0.35),
-                                      ),
+                                          //borderRadius: BorderRadius.circular(12),
+                                          //color: Colors.grey.shade900.withOpacity(0.35),
+                                          ),
                                       child: Text(
                                         "${widget.articleBand.article?.source}  •  ",
                                         textAlign: TextAlign.left,
-                                        overflow:
-                                        TextOverflow.ellipsis,
+                                        overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         style: const TextStyle(
                                             fontSize: 10,
-                                            fontFamily:
-                                            APP_FONT_MEDIUM,
+                                            fontFamily: APP_FONT_MEDIUM,
                                             fontWeight: FontWeight.bold,
-                                            color:
-                                            Colors.white),
+                                            color: Colors.white),
                                       ),
                                     ),
                                   ),
                                   Container(
                                     padding: EdgeInsets.only(
-                                        right: horizontalPadding,
-                                        bottom: 12),
-                                    child:
-                                    InstagramDateTimeWidget(
+                                        right: horizontalPadding, bottom: 12),
+                                    child: InstagramDateTimeWidget(
                                       textSize: 10,
                                       fontColor: Colors.white54,
-                                      publishedAt: widget.articleBand
-                                          .article
-                                          ?.publishedAt
-                                          .toString() ??
+                                      publishedAt: widget
+                                              .articleBand.article?.publishedAt
+                                              .toString() ??
                                           "",
                                     ),
                                   ),
                                 ],
                               ),
-
-
                             ],
                           ),
                         ),
@@ -427,12 +431,13 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                               height: 4,
                             ),
                             AutoSizeText(
-                              unescape.convert(widget.articleBand.article?.meta ??
-                                  widget.articleBand.article?.title ??
-                                  ""),
+                              unescape.convert(
+                                  widget.articleBand.article?.meta ??
+                                      widget.articleBand.article?.title ??
+                                      ""),
                               textAlign: TextAlign.left,
                               overflow: TextOverflow.ellipsis,
-                              maxFontSize: maxTextSize+minTextSize,
+                              maxFontSize: maxTextSize + minTextSize,
                               maxLines: 3,
                               minFontSize: minTextSize,
                               style: TextStyle(
