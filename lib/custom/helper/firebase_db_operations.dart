@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:algolia/algolia.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/model/Stats.dart';
 import 'package:drumm_app/model/profession.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart' as realtime;
@@ -1373,6 +1374,24 @@ class FirebaseDBOperations {
     if (data.exists) drummer = Drummer.fromSnapshot(data);
 
     return drummer;
+  }
+
+  static Future<Stats> getDrummerStats(String uid) async {
+    Stats stats = Stats();
+     print("getDrummerStats triggered");
+    var data = await FirebaseFirestore.instance
+        .collection('stats')
+        .doc(uid)
+        .get()
+        .onError((error, stackTrace) {
+      var data;
+      DocumentSnapshot<Map<String, dynamic>> snapshot = data;
+      print("Stats does not exists");
+      return snapshot;
+    });
+    if (data.exists) stats = Stats.fromSnapshot(data);
+
+    return stats;
   }
 
   static Future<Article> getArticle(String articleId) async {

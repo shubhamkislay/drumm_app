@@ -1,9 +1,11 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:drumm_app/SettingsPage.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -23,6 +25,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'custom/constants/Constants.dart';
 import 'custom/helper/image_uploader.dart';
 import 'model/QuestionCard.dart';
+import 'model/Stats.dart';
 import 'model/question.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -40,11 +43,19 @@ class _UserProfilePageState extends State<UserProfilePage>
   Drummer? drummer = Drummer();
 
   String? currentID = "";
+  int touchedIndex = -1;
 
   bool followed = false;
   bool fromSearch = false;
   List<Question> questions = [];
   List<QuestionCard> questionCards = [];
+  List<PieChartSectionData> pieChartList = [];
+
+  int totalState = 0;
+  int magnitude = 0;
+
+  double badgeOffset = 2;
+
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +82,8 @@ class _UserProfilePageState extends State<UserProfilePage>
                 imageUrl: modifyImageUrl(drummer?.imageUrl ?? "",
                     "100x100"), //widget.drummer?.imageUrl ?? "",
                 fit: BoxFit.cover,
-                placeholder: (context, url) => Container(color: COLOR_PRIMARY_DARK),
+                placeholder: (context, url) =>
+                    Container(color: COLOR_PRIMARY_DARK),
                 errorWidget: (context, url, error) =>
                     Container(color: COLOR_PRIMARY_DARK),
               ),
@@ -92,27 +104,28 @@ class _UserProfilePageState extends State<UserProfilePage>
                     ]),
               ),
             ).frosted(blur: 24, frostColor: COLOR_BACKGROUND),
-           if(false) IgnorePointer(
-              child: Positioned.fill(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
+            if (false)
+              IgnorePointer(
+                child: Positioned.fill(
+                  child: Align(
                     alignment: Alignment.bottomCenter,
-                    height: 100,
-                    width: double.maxFinite,
-                    decoration: BoxDecoration(
-                        color: Colors.blue,
-                        gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.transparent,
-                              Colors.black,
-                            ])),
+                    child: Container(
+                      alignment: Alignment.bottomCenter,
+                      height: 100,
+                      width: double.maxFinite,
+                      decoration: BoxDecoration(
+                          color: Colors.blue,
+                          gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                Colors.black,
+                              ])),
+                    ),
                   ),
                 ),
               ),
-            ),
             RefreshIndicator(
               onRefresh: _refreshData,
               child: SingleChildScrollView(
@@ -150,6 +163,19 @@ class _UserProfilePageState extends State<UserProfilePage>
                           fontFamily: APP_FONT_BOLD,
                           fontWeight: FontWeight.bold),
                     ),
+
+                    const SizedBox(
+                      height: 0,
+                    ),
+                    Text(
+                      "@${drummer?.username}",
+                      style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.white54,
+                          fontFamily: APP_FONT_BOLD,
+                          fontWeight: FontWeight.bold),
+                    ),
+
                     const SizedBox(
                       height: 4,
                     ),
@@ -207,20 +233,201 @@ class _UserProfilePageState extends State<UserProfilePage>
                           ),
                         ),
                       ),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    if (questionCards.isNotEmpty)
-                    Container(
+
+                   if(false) Container(
                         padding: EdgeInsets.symmetric(horizontal: 12),
                         width: double.maxFinite,
                         child: Text(
-                          "Questions",
+                          "Stats",
                           style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               fontFamily: APP_FONT_BOLD),
                         )),
+                   if(false) SizedBox(
+                      height: 8,
+                    ),
+
+                    if(pieChartList.isNotEmpty)
+                    AspectRatio(
+                      aspectRatio: 1,
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: Stack(
+                          children: [
+                            PieChart(
+                              PieChartData(
+                                pieTouchData: PieTouchData(
+                                  touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                                    setState(() {
+                                      if (!event.isInterestedForInteractions ||
+                                          pieTouchResponse == null ||
+                                          pieTouchResponse.touchedSection == null) {
+                                        touchedIndex = -1;
+                                        return;
+                                      }
+                                      touchedIndex = pieTouchResponse
+                                          .touchedSection!.touchedSectionIndex;
+                                    });
+                                  },
+                                ),
+                                borderData: FlBorderData(
+                                  show: false,
+                                ),
+                                sectionsSpace:2,
+                                centerSpaceRadius: 125,
+                                centerSpaceColor: Colors.transparent,
+                                sections: pieChartList,
+                              ),
+                            ),
+                            if(pieChartList.isNotEmpty)
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            color: Colors.orange,
+                                            width: 10,
+                                            height: 10,
+                                          ),
+                                          SizedBox(width: 8,),
+                                          Text("Entertainment", style: TextStyle(color: Colors.white,fontSize: 12),),
+                                        ],
+                                      ),
+                                      SizedBox(height: 4,),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            color: Colors.green,
+                                            width: 10,
+                                            height: 10,
+                                          ),
+                                          SizedBox(width: 8,),
+                                          Text("Business", style: TextStyle(color: Colors.white,fontSize: 12),),
+                                        ],
+                                      ),
+                                      SizedBox(height: 4,),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            color: Colors.yellow,
+                                            width: 10,
+                                            height: 10,
+                                          ),
+                                          SizedBox(width: 8,),
+                                          Text("Science", style: TextStyle(color: Colors.white,fontSize: 12),),
+                                        ],
+                                      ),
+                                      SizedBox(height: 4,),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            color: Colors.indigoAccent,
+                                            width: 10,
+                                            height: 10,
+                                          ),
+                                          SizedBox(width: 8,),
+                                          Text("Technology", style: TextStyle(color: Colors.white,fontSize: 12),),
+                                        ],
+                                      ),
+                                      SizedBox(height: 4,),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            color: Colors.purpleAccent,
+                                            width: 10,
+                                            height: 10,
+                                          ),
+                                          SizedBox(width: 8,),
+                                          Text("Sports", style: TextStyle(color: Colors.white,fontSize: 12),),
+                                        ],
+                                      ),
+                                      SizedBox(height: 4,),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            color: Colors.white,
+                                            width: 10,
+                                            height: 10,
+                                          ),
+                                          SizedBox(width: 8,),
+                                          Text("Politics", style: TextStyle(color: Colors.white,fontSize: 12),),
+                                        ],
+                                      ),
+                                      SizedBox(height: 4,),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            color: Colors.red,
+                                            width: 10,
+                                            height: 10,
+                                          ),
+                                          SizedBox(width: 8,),
+                                          Text("Health", style: TextStyle(color: Colors.white,fontSize: 12),),
+                                        ],
+                                      ),
+                                      SizedBox(height: 4,),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            color: Colors.grey,
+                                            width: 10,
+                                            height: 10,
+                                          ),
+                                          SizedBox(width: 8,),
+                                          Text("General", style: TextStyle(color: Colors.white,fontSize: 12),),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if(pieChartList.isNotEmpty)
+                      SizedBox(
+                        height: 32,
+                        child: AutoSizeText(
+                          textAlign: TextAlign.center,
+                          "Lvl. ${magnitude}",
+                          maxFontSize: 32,
+                          minFontSize: 14,
+                          style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: APP_FONT_BOLD),
+                        ),
+                      ),
+
+                    SizedBox(
+                      height: 24,
+                    ),
+                    if (questionCards.isNotEmpty)
+                      Container(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          width: double.maxFinite,
+                          child: Text(
+                            "Questions",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: APP_FONT_BOLD),
+                          )),
                     SizedBox(
                       height: 8,
                     ),
@@ -237,7 +444,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                           children: questionCards,
                         ),
                       ),
-                    if (questionCards.isEmpty&&false)
+                    if (questionCards.isEmpty && false)
                       Container(
                         alignment: Alignment.bottomCenter,
                         height: 100,
@@ -274,7 +481,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                         ),
                       ),
                     ),
-                  if (drummer?.username != null)
+                  if (drummer?.username != null&&false)
                     SafeArea(
                       child: Container(
                           alignment: Alignment.topCenter,
@@ -355,6 +562,8 @@ class _UserProfilePageState extends State<UserProfilePage>
     }
   }
 
+
+
   Future<bool> getDrummerQuestion(String uid) async {
     questionCards.clear();
     //getUserBands();
@@ -398,9 +607,10 @@ class _UserProfilePageState extends State<UserProfilePage>
     }
     //getArticles(uid);
     checkIfUserisFollowing();
-    String currId = FirebaseAuth.instance.currentUser?.uid??"";
-    if(uid==currId)
-      getDrummerQuestion(uid ?? "");
+    String currId = FirebaseAuth.instance.currentUser?.uid ?? "";
+    if (uid == currId) getDrummerQuestion(uid ?? "");
+
+    getPieChartList();
   }
 
   Future<void> _refreshData() async {
@@ -445,4 +655,250 @@ class _UserProfilePageState extends State<UserProfilePage>
   void updateList(Question? question) {
     getDrummerQuestion(FirebaseAuth.instance.currentUser!.uid ?? "");
   }
+
+  List<PieChartSectionData> showingSections(Stats drummerState) {
+    return List.generate(8, (i) {
+      final isTouched = i == touchedIndex;
+      final fontSize = 14.0;//isTouched ? 20.0 : 16.0;
+      final radius = 4.0;//isTouched ? 110.0 : 100.0;
+      final widgetSize = 42.0;//isTouched ? 55.0 : 40.0;
+      const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
+
+      switch (i) {
+        case 1:
+          return PieChartSectionData(
+            color: Colors.green,
+            value: drummerState.business?.toDouble()??0.1,
+            title: '',
+            radius: radius,
+            titleStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xffffffff),
+              shadows: shadows,
+            ),
+            // badgeWidget: _Badge(
+            //   'images/money-bag.png',
+            //   size: widgetSize,
+            //   borderColor: Colors.black,
+            // ),
+            // badgePositionPercentageOffset: badgeOffset,
+          );
+        case 0:
+          return PieChartSectionData(
+            color: Colors.orange,
+            value: drummerState.entertainment?.toDouble()??0.1,
+            title: '',
+            radius: radius,
+            titleStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xffffffff),
+              shadows: shadows,
+            ),
+            // badgeWidget: _Badge(
+            //   'images/movie.png',
+            //   size: widgetSize,
+            //   borderColor: Colors.black,
+            // ),
+            // badgePositionPercentageOffset: badgeOffset,
+          );
+        case 2:
+          return PieChartSectionData(
+            color: Colors.yellow,
+            value: drummerState.science?.toDouble()??0.1,
+            title: '',
+            radius: radius,
+            titleStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xffffffff),
+              shadows: shadows,
+            ),
+            // badgeWidget: _Badge(
+            //   'images/atom.png',
+            //   size: widgetSize,
+            //   borderColor: Colors.black,
+            // ),
+            // badgePositionPercentageOffset: badgeOffset,
+          );
+        case 4:
+          return PieChartSectionData(
+            color: Colors.purpleAccent,
+            value: drummerState.sports?.toDouble()??0.1,
+            title: '',
+            radius: radius,
+            titleStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xffffffff),
+              shadows: shadows,
+            ),
+            // badgeWidget: _Badge(
+            //   'images/football.png',
+            //   size: widgetSize,
+            //   borderColor: Colors.black,
+            // ),
+            // badgePositionPercentageOffset: badgeOffset,
+          );
+        case 6:
+          return PieChartSectionData(
+            color: Colors.red,
+            value: drummerState.health?.toDouble()??0.1,
+            title: '',
+            radius: radius,
+            titleStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xffffffff),
+              shadows: shadows,
+            ),
+            // badgeWidget: _Badge(
+            //   'images/healthcare.png',
+            //   size: widgetSize,
+            //   borderColor: Colors.black,
+            // ),
+            // badgePositionPercentageOffset: badgeOffset,
+          );
+        case 5:
+          return PieChartSectionData(
+            color: Colors.white,
+            value: drummerState.politics?.toDouble()??0.1,
+            title: '',
+            radius: radius,
+            titleStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xffffffff),
+              shadows: shadows,
+            ),
+            // badgeWidget: _Badge(
+            //   'images/goverment.png',
+            //   size: widgetSize,
+            //   borderColor: Colors.black,
+            // ),
+            // badgePositionPercentageOffset: badgeOffset,
+          );
+        case 3:
+          return PieChartSectionData(
+            color: Colors.indigoAccent,
+            value: drummerState.technology?.toDouble()??0.1,
+            title: '',
+            radius: radius,
+            titleStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xffffffff),
+              shadows: shadows,
+            ),
+            // badgeWidget: _Badge(
+            //   'images/cpu.png',
+            //   size: widgetSize,
+            //   borderColor: Colors.black,
+            // ),
+            // badgePositionPercentageOffset: badgeOffset,
+          );
+        case 7:
+          return PieChartSectionData(
+            color: Colors.grey,
+            value: drummerState.general?.toDouble()??0.1,
+            title: '',
+            radius: radius,
+            titleStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xffffffff),
+              shadows: shadows,
+            ),
+            // badgeWidget: _Badge(
+            //   'images/world.png',
+            //   size: widgetSize,
+            //   borderColor: Colors.black,
+            // ),
+            // badgePositionPercentageOffset: badgeOffset,
+          );
+        default:
+          throw Exception('Oh no');
+      }
+    });
+  }
+
+  void getPieChartList() async{
+    Stats drummerState = await FirebaseDBOperations.getDrummerStats(FirebaseAuth.instance.currentUser?.uid??"");
+    if(drummerState==null){
+      print("Drummer Stats is null");
+    }
+
+    totalState = drummerState.general??0;
+    totalState +=  drummerState.science??0;
+    totalState +=  drummerState.sports??0;
+    totalState +=  drummerState.technology??0;
+    totalState +=  drummerState.health??0;
+    totalState +=  drummerState.politics??0;
+    totalState +=  drummerState.entertainment??0;
+    totalState +=  drummerState.business??0;
+
+
+
+    List<PieChartSectionData> fetchPieChartList = showingSections(drummerState);
+    bool containsValue = false;
+
+    if(totalState >0) {
+      containsValue = true;
+      print("Contain value: $totalState");
+    }else{
+      print("Does not contain value;");
+    }
+
+    if(containsValue) {
+      setState(() {
+        pieChartList = fetchPieChartList;
+        magnitude = totalState;
+      });
+    }
+
+  }
 }
+
+class _Badge extends StatelessWidget {
+  const _Badge(
+      this.svgAsset, {
+        required this.size,
+        required this.borderColor,
+      });
+  final String svgAsset;
+  final double size;
+  final Color borderColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: PieChart.defaultDuration,
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        shape: BoxShape.circle,
+        // border: Border.all(
+        //   color: borderColor,
+        //   width: 2,
+        // ),
+        boxShadow: <BoxShadow>[
+          // BoxShadow(
+          //   color: Colors.black.withOpacity(.5),
+          //   offset: const Offset(3, 3),
+          //   blurRadius: 3,
+          // ),
+        ],
+      ),
+      padding: EdgeInsets.all(size * 0.25),
+      child: Center(
+        child: Image.asset(
+            svgAsset,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+

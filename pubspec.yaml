@@ -107,6 +107,7 @@ dependencies:
   animated_custom_dropdown: ^3.0.0
   dismissible_page: ^1.0.2
   chip_list: ^2.4.4+8
+  fl_chart: ^0.68.0
 
 dev_dependencies:
   flutter_test:
@@ -236,6 +237,15 @@ flutter:
     - images/audio-waves-large.png
     - images/trash.png
     - images/boost_large.png
+
+    - images/atom.png
+    - images/cpu.png
+    - images/football.png
+    - images/goverment.png
+    - images/healthcare.png
+    - images/money-bag.png
+    - images/movie.png
+    - images/world.png
   # - images/a_dot_ham.jpeg
 
   fonts:
