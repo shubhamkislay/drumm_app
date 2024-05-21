@@ -16,6 +16,7 @@ class ShareWidget extends StatelessWidget {
   double? iconHeight;
   Article? article;
   Color? backgroundColor;
+  VoidCallback? onPressed;
   BranchContentMetaData metadata = BranchContentMetaData();
   BranchLinkProperties lp = BranchLinkProperties();
   late BranchUniversalObject buo;
@@ -31,6 +32,7 @@ class ShareWidget extends StatelessWidget {
   ShareWidget(
       {Key? key,
         this.backgroundColor,
+        this.onPressed,
         this.iconHeight,this.article})
       : super(key: key);
 
@@ -41,6 +43,7 @@ class ShareWidget extends StatelessWidget {
     if(article!=null) {
       widgetParent = GestureDetector(
         onTap: (){
+          onPressed;
           Vibrate.feedback(FeedbackType.selection);
           generateLink();
         },

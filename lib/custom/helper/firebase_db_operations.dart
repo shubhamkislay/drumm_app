@@ -834,6 +834,39 @@ class FirebaseDBOperations {
 
   }
 
+  static Future<void> incrementCategoryPoints(String category, int increment) async {
+    // Reference to the Firestore collection where user data is stored
+    var usersCollection = FirebaseFirestore.instance.collection('stats');
+
+    // Get the user document by user ID
+    var userDoc = usersCollection.doc(getCurrentUserID());
+
+    try {
+      // Run a transaction to ensure atomic increment
+      return FirebaseFirestore.instance.runTransaction((transaction) async {
+        // Get the snapshot of the user's document
+        var snapshot = await transaction.get(userDoc);
+
+        // Check if the document exists
+        if (!snapshot.exists) {
+          // If the document does not exist, create it with the initial point value for the category
+          transaction.set(userDoc, {
+            category: increment,
+          });
+        } else {
+          // If the document exists, increment the points for the category
+          int currentPoints = snapshot.data()?[category] ?? 0;
+          transaction.update(userDoc, {
+            category: currentPoints + increment,
+          });
+        }
+      });
+    } catch (e) {
+      print('Error updating points: $e');
+      throw Exception('Failed to update points for category $category');
+    }
+  }
+
   static Future<List<Drummer>> getBandMembers() async {
     print("getQuestionsAsked triggered");
     SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -15,9 +15,11 @@ class SoundPlayWidget extends StatefulWidget {
   double? imageSize;
   double? paddingSize;
   Color? backgroundColor;
+  VoidCallback? onPressed;
   SoundPlayWidget({super.key, required this.article, required this.play,this.imageSize,
     this.paddingSize,
     this.backgroundColor,
+    this.onPressed,
   });
 
   @override
@@ -30,6 +32,7 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        widget.onPressed;
         if(status == "loading"){
           try {
             //audioPlayer.stop();

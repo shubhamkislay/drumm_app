@@ -131,6 +131,8 @@ class ArticleReelsState extends State<ArticleReels>
 
   Color setColor = Colors.white;
 
+  Timer? _timer;
+
   double iconHeight = 52;
 
   Color iconBGColor = Colors.transparent;
@@ -242,6 +244,9 @@ class ArticleReelsState extends State<ArticleReels>
                                 imageSize: 18,
                                 paddingSize: 46,
                                 play: false,
+                                onPressed: (){
+                                  addStatsToUser(articleOnTop??ArticleBand(),STATE_TYPE_MODERATE);
+                                },
                               ),
                               Container(
                                 height: 46,
@@ -256,7 +261,11 @@ class ArticleReelsState extends State<ArticleReels>
                                 child: ArticleDrummButton(
                                     iconSize: 44,
                                     articleOnScreen:
-                                        articleOnTop?.article ?? Article()),
+                                        articleOnTop?.article ?? Article(),
+                                  onPressed: (){
+                                   //
+                                  },
+                                ),
                               ),
                               if (!showCurrentDrummWidget)
                                 JoinDrummButton(
@@ -376,6 +385,7 @@ class ArticleReelsState extends State<ArticleReels>
                                 article: articleOnTop?.article ?? Article(),
                                 userBoosted: isBoosted,
                                 boostedCallback: (boost) {
+                                  addStatsToUser(articleOnTop??ArticleBand(),STATE_TYPE_INTENSE);
                                   setState(() {
                                     if (boost) {
                                       int currentBoosts =
@@ -408,6 +418,9 @@ class ArticleReelsState extends State<ArticleReels>
                                     article: articleOnTop?.article ?? Article(),
                                     backgroundColor: COLOR_BACKGROUND,
                                     iconHeight: 18,
+                                    onPressed: (){
+                                      addStatsToUser(articleOnTop??ArticleBand(),STATE_TYPE_INTENSE);
+                                    },
                                   ),
                                 ),
                               ),
@@ -570,11 +583,25 @@ class ArticleReelsState extends State<ArticleReels>
                         widget.preloadList?.elementAt(value).article?.boosts ??
                             0;
                   } catch (e) {}
+
+
+
                   setState(() {
                     currentVisiblePageIndex = value;
                     articleOnTop = widget.preloadList?.elementAt(value);
                     isBoosted = (boosts > 0 &&
                         boostTime.compareTo(Timestamp.fromDate(recent)) > 0);
+                  });
+
+                  _timer?.cancel();
+
+                  // Start a new timer
+                  _timer = Timer(Duration(seconds: 7), () {
+                    // Execute your logic here
+                    print('Executed logic for page $value after 7 seconds');
+
+                    addStatsToUser(articleOnTop??ArticleBand(),STATE_TYPE_MILD);
+
                   });
 
                   try {
@@ -1286,79 +1313,6 @@ class ArticleReelsState extends State<ArticleReels>
     // print("Scroll Position changing ${widget.scrollController.position}");
   }
 
-  void getPalette(String url) async {
-    if (url.length < 1) {
-      //setState(() {
-      backgroundColor = [Colors.black, COLOR_PRIMARY_DARK];
-      //});
-      return;
-    }
-    try {
-      PaletteGenerator paletteGenerator =
-          await PaletteGenerator.fromImageProvider(
-        NetworkImage(url),
-        maximumColorCount: 3,
-      ).catchError((e) {});
-      List<Color> extractedColors = [];
-      extractedColors.add((paletteGenerator.darkMutedColor != null)
-          ? paletteGenerator.darkMutedColor?.color ?? COLOR_PRIMARY_DARK
-          : (paletteGenerator.darkVibrantColor != null)
-              ? paletteGenerator.darkVibrantColor?.color ?? COLOR_PRIMARY_DARK
-              : (paletteGenerator.lightVibrantColor != null)
-                  ? paletteGenerator.lightVibrantColor?.color
-                          .withOpacity(0.5) ??
-                      COLOR_PRIMARY_DARK
-                  : (paletteGenerator.lightMutedColor != null)
-                      ? paletteGenerator.lightMutedColor?.color
-                              .withOpacity(0.5) ??
-                          COLOR_PRIMARY_DARK
-                      : (paletteGenerator.dominantColor != null)
-                          ? paletteGenerator.dominantColor?.color
-                                  .withOpacity(0.5) ??
-                              COLOR_PRIMARY_DARK
-                          : Colors.grey.shade900);
-      extractedColors.add((paletteGenerator.dominantColor != null)
-          ? paletteGenerator.dominantColor?.color.withOpacity(0.5) ??
-              COLOR_PRIMARY_DARK
-          : (paletteGenerator.lightMutedColor != null)
-              ? paletteGenerator.lightMutedColor?.color.withOpacity(0.5) ??
-                  COLOR_PRIMARY_DARK
-              : (paletteGenerator.lightVibrantColor != null)
-                  ? paletteGenerator.lightVibrantColor?.color
-                          .withOpacity(0.5) ??
-                      COLOR_PRIMARY_DARK
-                  : (paletteGenerator.darkVibrantColor != null)
-                      ? paletteGenerator.darkVibrantColor?.color ??
-                          COLOR_PRIMARY_DARK
-                      : (paletteGenerator.darkMutedColor != null)
-                          ? paletteGenerator.darkMutedColor?.color ??
-                              COLOR_PRIMARY_DARK
-                          : Colors.grey.shade900);
-      //extractedColors.add(paletteGenerator.darkMutedColor?.color??Colors.grey.shade900);
-      //paletteGenerator.
-      List<Color> opacityColor = paletteGenerator.colors.toList();
-      //extractedColors.add(COLOR_PRIMARY_DARK);
-
-      for (Color color in opacityColor) {
-        //extractedColors.add(color.withOpacity(0.5));
-      }
-
-      if (extractedColors.length >= 2) {
-        //setState(() {
-        backgroundColor = extractedColors;
-        //});
-      } else {
-        //setState(() {
-        backgroundColor = [Colors.black, COLOR_PRIMARY_DARK];
-        //});
-      }
-    } catch (e) {
-      //setState(() {
-      backgroundColor = [Colors.black, COLOR_PRIMARY_DARK];
-      //});
-    }
-  }
-
   @override
   void initState() {
     // TODO: implement initState
@@ -1388,14 +1342,6 @@ class ArticleReelsState extends State<ArticleReels>
     getCurrentDrummer();
   }
 
-  void _pageListener() {
-    //print("Pagecontroller page is ${_pageController.page}");
-    if (_pageController.page == _pageController.page!.ceilToDouble()) {
-      // Load more data
-
-      //getArticlesData(false);
-    }
-  }
 
   void getBandsList() async {
     bandList = await FirebaseDBOperations.getBandByUser();
@@ -1442,6 +1388,11 @@ class ArticleReelsState extends State<ArticleReels>
       setState(() {
         articleOnTop =
             fetchedArticleBand.elementAt(widget.articlePosition ?? 0);
+
+
+        addStatsToUser(articleOnTop??ArticleBand(),STATE_TYPE_MODERATE);
+        print("Moderate interaction as this article was pressed ${articleOnTop!.article?.meta}");
+
         isBoosted =
             (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0);
         fromSearch = true;
@@ -1516,6 +1467,7 @@ class ArticleReelsState extends State<ArticleReels>
     // widget.scrollController.removeListener(_handleScroll);
     widget.scrollController.dispose();
     WidgetsBinding.instance.removeObserver(this);
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -1661,6 +1613,7 @@ class ArticleReelsState extends State<ArticleReels>
         return DrummBottomDialog(
           articleBand: articleOnTop,
           startDrumming: () {
+            addStatsToUser(articleOnTop??ArticleBand(),STATE_TYPE_INTENSE);
             ArticleBand? articleBand = ArticleBand();
             articleBand = articleOnTop;
             Vibrate.feedback(FeedbackType.success);
@@ -1669,5 +1622,18 @@ class ArticleReelsState extends State<ArticleReels>
         );
       },
     );
+  }
+
+  void addStatsToUser(ArticleBand articleBand, String type) {
+
+    int points = 0;
+    if(type == STATE_TYPE_MILD){
+      points = 1;
+    }else if(type == STATE_TYPE_MODERATE){
+      points = 3;
+    }else{
+      points = 10;
+    }
+    FirebaseDBOperations.incrementCategoryPoints(articleBand.article?.category??"general",points);
   }
 }

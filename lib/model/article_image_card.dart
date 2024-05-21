@@ -50,7 +50,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
   Widget build(BuildContext context) {
     int boosts = 0;
     double curve = 14;
-    double borderWidth = 2.75;
+    double borderWidth = 4;
     double bottomPadding = 100;
     double horizontalPadding = 10;
     int imageUrlLength = widget.articleBand.article?.imageUrl?.length ?? 0;
@@ -68,12 +68,12 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
         (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
             ? COLOR_BOOST
             : Colors.grey.shade800
-                .withOpacity(0.65); //COLOR_ARTICLE_BACKGROUND;//fadeColor;
+                .withOpacity(0.25); //COLOR_ARTICLE_BACKGROUND;//fadeColor;
     Color colorBorder2 =
         (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
             ? Colors.blueGrey
             : Colors.grey.shade800
-                .withOpacity(0.65); //COLOR_ARTICLE_BACKGROUND;//fadeColor;
+                .withOpacity(0.25); //COLOR_ARTICLE_BACKGROUND;//fadeColor;
     Widget returnWidget = (widget.loading ?? false)
         ? Container(
             alignment: Alignment.center,
@@ -323,8 +323,8 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                   style: TextStyle(
                                       overflow: TextOverflow.ellipsis,
                                       fontSize: maxTextSize,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: APP_FONT_MEDIUM,
+                                      fontWeight: FontWeight.w200,
+                                      fontFamily: APP_FONT_BOLD,
                                       color: Colors.white),
                                 ),
                               ),

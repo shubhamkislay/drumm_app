@@ -10,7 +10,8 @@ import 'custom/rounded_button.dart';
 class ArticleDrummButton extends StatelessWidget {
   Article articleOnScreen;
   double? iconSize;
-  ArticleDrummButton({Key? key,required this.articleOnScreen, this.iconSize}) : super(key: key);
+  VoidCallback? onPressed;
+  ArticleDrummButton({Key? key,required this.articleOnScreen, this.iconSize, this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +21,7 @@ class ArticleDrummButton extends StatelessWidget {
       color: Colors.white,
       bgColor: COLOR_PRIMARY_DARK,
       onPressed: () {
+        onPressed;
         Vibrate.feedback(FeedbackType.selection);
         showModalBottomSheet(
           context: context,
