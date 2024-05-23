@@ -1,13 +1,19 @@
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dashed_circular_progress_bar/dashed_circular_progress_bar.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:drumm_app/SettingsPage.dart';
+import 'package:drumm_app/model/StateItem.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -19,6 +25,7 @@ import 'package:drumm_app/model/Drummer.dart';
 import 'package:drumm_app/model/article.dart';
 import 'package:drumm_app/model/article_image_card.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
+import 'package:mrx_charts/mrx_charts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
@@ -53,9 +60,15 @@ class _UserProfilePageState extends State<UserProfilePage>
 
   int totalState = 0;
   int magnitude = 0;
+  int drummScore = 0;
+  int level = 1;
+  int mod = 0;
+  String topVibe = "";
 
   double badgeOffset = 2;
 
+  ValueNotifier<double> _valueNotifier = ValueNotifier(1);
+  List<ChartLayer> chartLayer = [];
 
   @override
   Widget build(BuildContext context) {
@@ -73,37 +86,39 @@ class _UserProfilePageState extends State<UserProfilePage>
         backgroundColor: COLOR_BACKGROUND,
         body: Stack(
           children: [
-            Hero(
-              tag: drummer?.imageUrl ?? "",
-              child: CachedNetworkImage(
+            if (false)
+              Hero(
+                tag: drummer?.imageUrl ?? "",
+                child: CachedNetworkImage(
+                  height: double.maxFinite,
+                  width: double.maxFinite,
+                  alignment: Alignment.center,
+                  imageUrl: modifyImageUrl(drummer?.imageUrl ?? "",
+                      "100x100"), //widget.drummer?.imageUrl ?? "",
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      Container(color: COLOR_PRIMARY_DARK),
+                  errorWidget: (context, url, error) =>
+                      Container(color: COLOR_PRIMARY_DARK),
+                ),
+              ),
+            if (false)
+              Container(
+                alignment: Alignment.topCenter,
                 height: double.maxFinite,
                 width: double.maxFinite,
-                alignment: Alignment.center,
-                imageUrl: modifyImageUrl(drummer?.imageUrl ?? "",
-                    "100x100"), //widget.drummer?.imageUrl ?? "",
-                fit: BoxFit.cover,
-                placeholder: (context, url) =>
-                    Container(color: COLOR_PRIMARY_DARK),
-                errorWidget: (context, url, error) =>
-                    Container(color: COLOR_PRIMARY_DARK),
-              ),
-            ),
-            Container(
-              alignment: Alignment.topCenter,
-              height: double.maxFinite,
-              width: double.maxFinite,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.transparent,
-                      COLOR_BACKGROUND,
-                      COLOR_BACKGROUND
-                    ]),
-              ),
-            ).frosted(blur: 24, frostColor: COLOR_BACKGROUND),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.transparent,
+                        COLOR_BACKGROUND,
+                        COLOR_BACKGROUND
+                      ]),
+                ),
+              ).frosted(blur: 24, frostColor: COLOR_BACKGROUND),
             if (false)
               IgnorePointer(
                 child: Positioned.fill(
@@ -133,287 +148,323 @@ class _UserProfilePageState extends State<UserProfilePage>
 
                 child: Column(
                   children: [
-                    const SizedBox(
-                      height: 150,
-                    ),
-                    if (drummer?.imageUrl != null)
-                      Center(
-                        child: SizedBox(
-                          width: 175,
-                          height: 175,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: CachedNetworkImage(
-                              imageUrl: modifyImageUrl(
-                                  drummer?.imageUrl ?? "", "300x300"),
-                              placeholder: (context, url) {
-                                return Container();
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Text(
-                      drummer?.name ?? "",
-                      style: const TextStyle(
-                          fontSize: 24,
-                          fontFamily: APP_FONT_BOLD,
-                          fontWeight: FontWeight.bold),
-                    ),
-
-                    const SizedBox(
-                      height: 0,
-                    ),
-                    Text(
-                      "@${drummer?.username}",
-                      style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.white54,
-                          fontFamily: APP_FONT_BOLD,
-                          fontWeight: FontWeight.bold),
-                    ),
-
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Text(
-                      "${drummer?.jobTitle ?? ""}\n${drummer?.occupation ?? ""}",
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          fontFamily: APP_FONT_MEDIUM, color: Colors.white),
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
                     Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: ExpandableText(
-                        drummer?.bio ?? "",
-                        expandText: 'show more',
-                        collapseText: 'show less',
-                        maxLines: 2,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: APP_FONT_MEDIUM, color: Colors.white54),
-                        linkColor: Colors.blue,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade900.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(CURVE),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    if (drummer?.uid == currentID)
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditProfile(
-                                        drummer: drummer,
-                                      )));
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.all(12),
-                          margin: EdgeInsets.symmetric(horizontal: 12),
-                          width: double.maxFinite,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 150,
                           ),
-                          child: Text(
-                            "Edit Profile",
-                            style: TextStyle(
-                                fontFamily: APP_FONT_BOLD,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-
-                   if(false) Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        width: double.maxFinite,
-                        child: Text(
-                          "Stats",
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: APP_FONT_BOLD),
-                        )),
-                   if(false) SizedBox(
-                      height: 8,
-                    ),
-
-                    if(pieChartList.isNotEmpty)
-                    AspectRatio(
-                      aspectRatio: 1,
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: Stack(
-                          children: [
-                            PieChart(
-                              PieChartData(
-                                pieTouchData: PieTouchData(
-                                  touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                                    setState(() {
-                                      if (!event.isInterestedForInteractions ||
-                                          pieTouchResponse == null ||
-                                          pieTouchResponse.touchedSection == null) {
-                                        touchedIndex = -1;
-                                        return;
-                                      }
-                                      touchedIndex = pieTouchResponse
-                                          .touchedSection!.touchedSectionIndex;
-                                    });
-                                  },
-                                ),
-                                borderData: FlBorderData(
-                                  show: false,
-                                ),
-                                sectionsSpace:2,
-                                centerSpaceRadius: 125,
-                                centerSpaceColor: Colors.transparent,
-                                sections: pieChartList,
-                              ),
-                            ),
-                            if(pieChartList.isNotEmpty)
-                              Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            color: Colors.orange,
-                                            width: 10,
-                                            height: 10,
-                                          ),
-                                          SizedBox(width: 8,),
-                                          Text("Entertainment", style: TextStyle(color: Colors.white,fontSize: 12),),
-                                        ],
-                                      ),
-                                      SizedBox(height: 4,),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            color: Colors.green,
-                                            width: 10,
-                                            height: 10,
-                                          ),
-                                          SizedBox(width: 8,),
-                                          Text("Business", style: TextStyle(color: Colors.white,fontSize: 12),),
-                                        ],
-                                      ),
-                                      SizedBox(height: 4,),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            color: Colors.yellow,
-                                            width: 10,
-                                            height: 10,
-                                          ),
-                                          SizedBox(width: 8,),
-                                          Text("Science", style: TextStyle(color: Colors.white,fontSize: 12),),
-                                        ],
-                                      ),
-                                      SizedBox(height: 4,),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            color: Colors.indigoAccent,
-                                            width: 10,
-                                            height: 10,
-                                          ),
-                                          SizedBox(width: 8,),
-                                          Text("Technology", style: TextStyle(color: Colors.white,fontSize: 12),),
-                                        ],
-                                      ),
-                                      SizedBox(height: 4,),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            color: Colors.purpleAccent,
-                                            width: 10,
-                                            height: 10,
-                                          ),
-                                          SizedBox(width: 8,),
-                                          Text("Sports", style: TextStyle(color: Colors.white,fontSize: 12),),
-                                        ],
-                                      ),
-                                      SizedBox(height: 4,),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            color: Colors.white,
-                                            width: 10,
-                                            height: 10,
-                                          ),
-                                          SizedBox(width: 8,),
-                                          Text("Politics", style: TextStyle(color: Colors.white,fontSize: 12),),
-                                        ],
-                                      ),
-                                      SizedBox(height: 4,),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            color: Colors.red,
-                                            width: 10,
-                                            height: 10,
-                                          ),
-                                          SizedBox(width: 8,),
-                                          Text("Health", style: TextStyle(color: Colors.white,fontSize: 12),),
-                                        ],
-                                      ),
-                                      SizedBox(height: 4,),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            color: Colors.grey,
-                                            width: 10,
-                                            height: 10,
-                                          ),
-                                          SizedBox(width: 8,),
-                                          Text("General", style: TextStyle(color: Colors.white,fontSize: 12),),
-                                        ],
-                                      ),
-                                    ],
+                          if (drummer?.imageUrl != null)
+                            Center(
+                              child: SizedBox(
+                                width: 175,
+                                height: 175,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: CachedNetworkImage(
+                                    imageUrl: modifyImageUrl(
+                                        drummer?.imageUrl ?? "", "300x300"),
+                                    placeholder: (context, url) {
+                                      return Container();
+                                    },
                                   ),
                                 ),
                               ),
-                          ],
-                        ),
+                            ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          Text(
+                            "@${drummer?.username}",
+                            style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.white30,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          Text(
+                            drummer?.name ?? "",
+                            style: const TextStyle(
+                                fontSize: 24,
+                                fontFamily: APP_FONT_BOLD,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            height: 0,
+                          ),
+                          Text(
+                            "${drummer?.jobTitle ?? ""}\n${drummer?.occupation ?? ""}",
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                fontFamily: APP_FONT_MEDIUM,
+                                color: Colors.white),
+                          ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: ExpandableText(
+                              drummer?.bio ?? "",
+                              expandText: 'show more',
+                              collapseText: 'show less',
+                              maxLines: 2,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontFamily: APP_FONT_MEDIUM,
+                                  color: Colors.white54),
+                              linkColor: Colors.blue,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+
+                              Container(
+                                //margin: EdgeInsets.symmetric(horizontal: 16),
+                                padding: EdgeInsets.fromLTRB(6, 6, 12, 6),
+                                decoration: BoxDecoration(
+                                    color:
+                                    Colors.grey.shade900.withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(32),
+                                    border: Border.all(
+                                      color:
+                                      Colors.grey.shade800.withOpacity(0.35),
+                                      width: 2,
+                                    )),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      height: 24,
+                                      width: 24,
+                                      padding: const EdgeInsets.all(4.0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(24),
+                                        color: Colors.grey.shade800
+                                            .withOpacity(0.25),
+                                      ),
+                                      child:
+                                      DashedCircularProgressBar.aspectRatio(
+                                        aspectRatio: 1, // width ÷ height
+                                        valueNotifier: _valueNotifier,
+                                        progress: magnitude.toDouble(),
+                                        // startAngle: 225,
+                                        // sweepAngle: 270,
+                                        foregroundColor: Colors.lightBlueAccent,
+                                        backgroundColor: Colors.grey.shade800
+                                            .withOpacity(0.25),
+                                        foregroundStrokeWidth: 4,
+                                        backgroundStrokeWidth: 4,
+                                        animation: true,
+                                        seekSize: 0,
+                                        seekColor: Colors.grey.shade900,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 6,
+                                    ),
+                                    Text(
+                                      '${level}',
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: 12,
+                              ),
+                              Container(
+                                // margin: EdgeInsets.all(12),
+                                padding: EdgeInsets.fromLTRB(6, 6, 12, 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade900.withOpacity(0.35),
+                                  borderRadius: BorderRadius.circular(32),
+                                  border: Border.all(
+                                    color:
+                                    Colors.grey.shade800.withOpacity(0.35),
+                                      width: 2,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      height: 24,
+                                      width: 24,
+                                      padding: const EdgeInsets.all(6.0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(24),
+                                        color: Colors.grey.shade800
+                                            .withOpacity(0.25),
+                                      ),
+                                      child: Image.asset(
+                                        "images/drumm_logo.png",
+                                        height: 24,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 6,
+                                    ),
+                                    Text(
+                                      "${totalState}",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: 12,
+                              ),
+                              if (chartLayer.isNotEmpty)
+                              Container(
+                                // margin: EdgeInsets.all(12),
+                                padding: EdgeInsets.fromLTRB(6, 6, 12, 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade900.withOpacity(0.35),
+                                  borderRadius: BorderRadius.circular(32),
+                                  border: Border.all(
+                                    color:
+                                    Colors.grey.shade800.withOpacity(0.35),
+                                      width: 2,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      height: 24,
+                                      width: 24,
+                                      child: Chart(
+                                        layers: chartLayer,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 6,
+                                    ),
+                                    Text(
+                                      "${topVibe}",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          if (drummer?.uid == currentID)
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => EditProfile(
+                                              drummer: drummer,
+                                            )));
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.all(12),
+                                margin: EdgeInsets.symmetric(horizontal: 12),
+                                width: double.maxFinite,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  "Edit Profile",
+                                  style: TextStyle(
+                                      fontFamily: APP_FONT_BOLD,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          if (chartLayer.isNotEmpty && false)
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade900.withOpacity(0.35),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    flex: 4,
+                                    child: Container(
+                                      height: 100,
+                                      width: 100,
+                                      child: Chart(
+                                        padding: EdgeInsets.all(2),
+                                        layers: chartLayer,
+                                      ),
+                                    ),
+                                  ),
+                                  //Container(height: 120,width: 4, color: Colors.black12.withOpacity(0.075),),
+                                  Expanded(
+                                    flex: 4,
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          'Top Vibe',
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              //fontWeight: FontWeight.w800,
+                                              fontSize: 12),
+                                        ),
+                                        Text(
+                                          '${topVibe}',
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              //fontWeight: FontWeight.w800,
+                                              fontSize: 24),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 24,
+                                  )
+                                ],
+                              ),
+                            ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                        ],
                       ),
                     ),
-                    if(pieChartList.isNotEmpty)
-                      SizedBox(
-                        height: 32,
-                        child: AutoSizeText(
-                          textAlign: TextAlign.center,
-                          "Lvl. ${magnitude}",
-                          maxFontSize: 32,
-                          minFontSize: 14,
-                          style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: APP_FONT_BOLD),
-                        ),
-                      ),
-
                     SizedBox(
                       height: 24,
                     ),
@@ -481,7 +532,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                         ),
                       ),
                     ),
-                  if (drummer?.username != null&&false)
+                  if (drummer?.username != null && false)
                     SafeArea(
                       child: Container(
                           alignment: Alignment.topCenter,
@@ -562,8 +613,6 @@ class _UserProfilePageState extends State<UserProfilePage>
     }
   }
 
-
-
   Future<bool> getDrummerQuestion(String uid) async {
     questionCards.clear();
     //getUserBands();
@@ -610,7 +659,8 @@ class _UserProfilePageState extends State<UserProfilePage>
     String currId = FirebaseAuth.instance.currentUser?.uid ?? "";
     if (uid == currId) getDrummerQuestion(uid ?? "");
 
-    getPieChartList();
+    //getPieChartList(uid ?? "");
+    getLayers(uid ?? "");
   }
 
   Future<void> _refreshData() async {
@@ -656,216 +706,186 @@ class _UserProfilePageState extends State<UserProfilePage>
     getDrummerQuestion(FirebaseAuth.instance.currentUser!.uid ?? "");
   }
 
-  List<PieChartSectionData> showingSections(Stats drummerState) {
-    return List.generate(8, (i) {
-      final isTouched = i == touchedIndex;
-      final fontSize = 14.0;//isTouched ? 20.0 : 16.0;
-      final radius = 4.0;//isTouched ? 110.0 : 100.0;
-      final widgetSize = 42.0;//isTouched ? 55.0 : 40.0;
-      const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
-
-      switch (i) {
-        case 1:
-          return PieChartSectionData(
-            color: Colors.green,
-            value: drummerState.business?.toDouble()??0.1,
-            title: '',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff),
-              shadows: shadows,
-            ),
-            // badgeWidget: _Badge(
-            //   'images/money-bag.png',
-            //   size: widgetSize,
-            //   borderColor: Colors.black,
-            // ),
-            // badgePositionPercentageOffset: badgeOffset,
-          );
-        case 0:
-          return PieChartSectionData(
-            color: Colors.orange,
-            value: drummerState.entertainment?.toDouble()??0.1,
-            title: '',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff),
-              shadows: shadows,
-            ),
-            // badgeWidget: _Badge(
-            //   'images/movie.png',
-            //   size: widgetSize,
-            //   borderColor: Colors.black,
-            // ),
-            // badgePositionPercentageOffset: badgeOffset,
-          );
-        case 2:
-          return PieChartSectionData(
-            color: Colors.yellow,
-            value: drummerState.science?.toDouble()??0.1,
-            title: '',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff),
-              shadows: shadows,
-            ),
-            // badgeWidget: _Badge(
-            //   'images/atom.png',
-            //   size: widgetSize,
-            //   borderColor: Colors.black,
-            // ),
-            // badgePositionPercentageOffset: badgeOffset,
-          );
-        case 4:
-          return PieChartSectionData(
-            color: Colors.purpleAccent,
-            value: drummerState.sports?.toDouble()??0.1,
-            title: '',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff),
-              shadows: shadows,
-            ),
-            // badgeWidget: _Badge(
-            //   'images/football.png',
-            //   size: widgetSize,
-            //   borderColor: Colors.black,
-            // ),
-            // badgePositionPercentageOffset: badgeOffset,
-          );
-        case 6:
-          return PieChartSectionData(
-            color: Colors.red,
-            value: drummerState.health?.toDouble()??0.1,
-            title: '',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff),
-              shadows: shadows,
-            ),
-            // badgeWidget: _Badge(
-            //   'images/healthcare.png',
-            //   size: widgetSize,
-            //   borderColor: Colors.black,
-            // ),
-            // badgePositionPercentageOffset: badgeOffset,
-          );
-        case 5:
-          return PieChartSectionData(
-            color: Colors.white,
-            value: drummerState.politics?.toDouble()??0.1,
-            title: '',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff),
-              shadows: shadows,
-            ),
-            // badgeWidget: _Badge(
-            //   'images/goverment.png',
-            //   size: widgetSize,
-            //   borderColor: Colors.black,
-            // ),
-            // badgePositionPercentageOffset: badgeOffset,
-          );
-        case 3:
-          return PieChartSectionData(
-            color: Colors.indigoAccent,
-            value: drummerState.technology?.toDouble()??0.1,
-            title: '',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff),
-              shadows: shadows,
-            ),
-            // badgeWidget: _Badge(
-            //   'images/cpu.png',
-            //   size: widgetSize,
-            //   borderColor: Colors.black,
-            // ),
-            // badgePositionPercentageOffset: badgeOffset,
-          );
-        case 7:
-          return PieChartSectionData(
-            color: Colors.grey,
-            value: drummerState.general?.toDouble()??0.1,
-            title: '',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff),
-              shadows: shadows,
-            ),
-            // badgeWidget: _Badge(
-            //   'images/world.png',
-            //   size: widgetSize,
-            //   borderColor: Colors.black,
-            // ),
-            // badgePositionPercentageOffset: badgeOffset,
-          );
-        default:
-          throw Exception('Oh no');
-      }
-    });
-  }
-
-  void getPieChartList() async{
-    Stats drummerState = await FirebaseDBOperations.getDrummerStats(FirebaseAuth.instance.currentUser?.uid??"");
-    if(drummerState==null){
+  void getLayers(String uid) async {
+    Stats drummerState = await FirebaseDBOperations.getDrummerStats(uid);
+    if (drummerState == null) {
       print("Drummer Stats is null");
     }
-
-    totalState = drummerState.general??0;
-    totalState +=  drummerState.science??0;
-    totalState +=  drummerState.sports??0;
-    totalState +=  drummerState.technology??0;
-    totalState +=  drummerState.health??0;
-    totalState +=  drummerState.politics??0;
-    totalState +=  drummerState.entertainment??0;
-    totalState +=  drummerState.business??0;
-
-
-
-    List<PieChartSectionData> fetchPieChartList = showingSections(drummerState);
     bool containsValue = false;
 
-    if(totalState >0) {
+    String setVibe = "Top Vibe";
+
+    int max = 0;
+    int getScore = drummerState.general??0;
+    if(max<getScore) {
+      max = getScore;
+      setVibe = "General";
+    }
+    getScore = drummerState.science??0;
+    if(max<getScore) {
+      max = getScore;
+      setVibe = "Science";
+    }
+
+    getScore = drummerState.sports??0;
+    if(max<getScore!) {
+      max = getScore;
+      setVibe = "Sports";
+    }
+
+    getScore = drummerState.technology??0;
+    if(max<getScore) {
+      max = getScore;
+      setVibe = "Technology";
+    }
+
+    getScore = drummerState.health??0;
+    if(max<getScore) {
+      max = getScore;
+      setVibe = "Health";
+    }
+
+    getScore = drummerState.politics??0;
+    if(max<getScore) {
+      max = getScore;
+      setVibe = "Politics";
+    }
+
+    getScore = drummerState.entertainment??0;
+    if(max<getScore) {
+      max = getScore;
+      setVibe = "Entertainment";
+    }
+
+    getScore = drummerState.business??0;
+    if(max<getScore) {
+      max = getScore;
+      setVibe = "Business";
+    }
+
+    print("Top vibe: ${setVibe}");
+
+    totalState = drummerState.general ?? 0;
+    totalState += drummerState.science ?? 0;
+    totalState += drummerState.sports ?? 0;
+    totalState += drummerState.technology ?? 0;
+    totalState += drummerState.health ?? 0;
+    totalState += drummerState.politics ?? 0;
+    totalState += drummerState.entertainment ?? 0;
+    totalState += drummerState.business ?? 0;
+
+    List<StatsItem> stateItemList = [];
+    stateItemList.add(StatsItem(
+      drummerState.general ?? 0,
+      "General",
+      Colors.tealAccent,
+    ));
+    stateItemList.add(StatsItem(
+      drummerState.science ?? 0,
+      "Science",
+      Colors.cyanAccent,
+    ));
+    stateItemList.add(StatsItem(
+      drummerState.sports ?? 0,
+      "Sports",
+      Colors.lightBlueAccent,
+    ));
+    stateItemList.add(StatsItem(
+      drummerState.technology ?? 0,
+      "Technology",
+      Colors.indigoAccent,
+    ));
+    stateItemList.add(StatsItem(
+      drummerState.health ?? 0,
+      "Health",
+      Colors.redAccent,
+    ));
+    stateItemList.add(StatsItem(
+      drummerState.politics ?? 0,
+      "Politics",
+      Colors.pinkAccent,
+    ));
+    stateItemList.add(StatsItem(
+      drummerState.entertainment ?? 0,
+      "Entertainment",
+      Colors.purpleAccent,
+    ));
+    stateItemList.add(StatsItem(
+      drummerState.business ?? 0,
+      "Business",
+      Colors.orangeAccent,
+    ));
+
+    List<ChartLayer> finalLayer = [
+      getGroupPieLayer(stateItemList),
+      ChartTooltipLayer(
+        shape: () => ChartTooltipPieShape<ChartGroupPieDataItem>(
+          onTextName: (item) => item.label,
+          onTextValue: (item) => '€${item.amount.toString()}',
+          radius: 10.0,
+          backgroundColor: Colors.white,
+          padding: const EdgeInsets.all(24.0),
+          nameTextStyle: const TextStyle(
+            color: Color(0xFF8043F9),
+            fontWeight: FontWeight.w700,
+            height: 1.47,
+            fontSize: 12.0,
+          ),
+          valueTextStyle: const TextStyle(
+            color: Color(0xFF1B0E41),
+            fontWeight: FontWeight.w700,
+            fontSize: 12.0,
+          ),
+        ),
+      )
+    ];
+
+
+    if (totalState > 0) {
       containsValue = true;
       print("Contain value: $totalState");
-    }else{
+    } else {
       print("Does not contain value;");
     }
-
-    if(containsValue) {
+    if (containsValue) {
       setState(() {
-        pieChartList = fetchPieChartList;
-        magnitude = totalState;
+        topVibe = setVibe;
+        chartLayer = finalLayer;
+        drummScore = totalState;
+        mod = totalState ~/ 100;
+        magnitude = totalState - (mod * 100);
+        level = mod + 1;
       });
     }
+  }
 
+  ChartGroupPieLayer getGroupPieLayer(List<StatsItem> stateItemList) {
+    List<ChartGroupPieDataItem> chartGroupPieDataItemList = List.from(
+      stateItemList.map(
+        (e) => ChartGroupPieDataItem(
+          amount: e.score?.toDouble() ?? 0.1,
+          color: e.itemColor ?? Colors.grey,
+          label: '${e.category}',
+        ),
+      ),
+    );
+    return ChartGroupPieLayer(
+      items: List.generate(
+        1,
+        (index) => chartGroupPieDataItemList,
+      ),
+      settings: const ChartGroupPieSettings(
+          radius: 24, thickness: 2.5, gapSweepAngle: 30),
+    );
   }
 }
 
 class _Badge extends StatelessWidget {
   const _Badge(
-      this.svgAsset, {
-        required this.size,
-        required this.borderColor,
-      });
+    this.svgAsset, {
+    required this.size,
+    required this.borderColor,
+  });
   final String svgAsset;
   final double size;
   final Color borderColor;
@@ -894,11 +914,10 @@ class _Badge extends StatelessWidget {
       padding: EdgeInsets.all(size * 0.25),
       child: Center(
         child: Image.asset(
-            svgAsset,
+          svgAsset,
           color: Colors.white,
         ),
       ),
     );
   }
 }
-
