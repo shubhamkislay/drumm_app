@@ -68,12 +68,12 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
         (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
             ? COLOR_BOOST
             : Colors.grey.shade800
-                .withOpacity(0.35); //COLOR_ARTICLE_BACKGROUND;//fadeColor;
+                .withOpacity(0.225); //COLOR_ARTICLE_BACKGROUND;//fadeColor;
     Color colorBorder2 =
         (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
             ? Colors.blueGrey
             : Colors.grey.shade800
-                .withOpacity(0.35); //COLOR_ARTICLE_BACKGROUND;//fadeColor;
+                .withOpacity(0.225); //COLOR_ARTICLE_BACKGROUND;//fadeColor;
     Widget returnWidget = (widget.loading ?? false)
         ? Container(
             alignment: Alignment.center,
@@ -98,8 +98,8 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
         : LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
             double maxHeight = constraints.maxHeight / 2.5;
-            double maxTextSize = 19;
-            double minTextSize = 13;
+            double maxTextSize = 20;
+            double minTextSize = 14;
             return GestureDetector(
               onTap: () {
                 if (widget.articleBands == null)

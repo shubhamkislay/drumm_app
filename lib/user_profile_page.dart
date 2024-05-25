@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dashed_circular_progress_bar/dashed_circular_progress_bar.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:drumm_app/SettingsPage.dart';
+import 'package:drumm_app/StatsDescriptionBox.dart';
 import 'package:drumm_app/model/StateItem.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,10 +26,12 @@ import 'package:drumm_app/model/Drummer.dart';
 import 'package:drumm_app/model/article.dart';
 import 'package:drumm_app/model/article_image_card.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:mrx_charts/mrx_charts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
+import 'custom/TutorialBox.dart';
 import 'custom/constants/Constants.dart';
 import 'custom/helper/image_uploader.dart';
 import 'model/QuestionCard.dart';
@@ -69,6 +72,9 @@ class _UserProfilePageState extends State<UserProfilePage>
 
   ValueNotifier<double> _valueNotifier = ValueNotifier(1);
   List<ChartLayer> chartLayer = [];
+  List<ChartLayer> largeChartLayer = [];
+
+  List<StatsItem> stateList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +134,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                       alignment: Alignment.bottomCenter,
                       height: 100,
                       width: double.maxFinite,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           color: Colors.blue,
                           gradient: LinearGradient(
                               begin: Alignment.topCenter,
@@ -217,7 +223,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                               collapseText: 'show less',
                               maxLines: 2,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontFamily: APP_FONT_MEDIUM,
                                   color: Colors.white54),
                               linkColor: Colors.blue,
@@ -231,143 +237,209 @@ class _UserProfilePageState extends State<UserProfilePage>
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
 
-                              Container(
-                                //margin: EdgeInsets.symmetric(horizontal: 16),
-                                padding: EdgeInsets.fromLTRB(6, 6, 12, 6),
-                                decoration: BoxDecoration(
-                                    color:
-                                    Colors.grey.shade900.withOpacity(0.5),
+                              GestureDetector(
+                                onTap: (){
+                                  Vibrate.feedback(FeedbackType.light);
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return StatsDescriptionBox(
+                                        boxType: BOX_TYPE_ALERT,
+                                        autoUpdate: true,
+                                        chartLayer: [],
+                                        stateList:[],
+                                        tutorialImageAsset: "images/team_active.png",
+                                        tutorialMessageTitle: totalState.toString(),
+                                        type: "Drumm Score",
+                                        tutorialMessage: DRUMM_SCORE_DESCRIPTION,
+                                        //TUTORIAL_MESSAGE_BANDS_TITLE,
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  // margin: EdgeInsets.all(12),
+                                  padding: const EdgeInsets.fromLTRB(6, 6, 12, 6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade900.withOpacity(0.35),
                                     borderRadius: BorderRadius.circular(32),
                                     border: Border.all(
                                       color:
                                       Colors.grey.shade800.withOpacity(0.35),
                                       width: 2,
-                                    )),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      height: 24,
-                                      width: 24,
-                                      padding: const EdgeInsets.all(4.0),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(24),
-                                        color: Colors.grey.shade800
-                                            .withOpacity(0.25),
-                                      ),
-                                      child:
-                                      DashedCircularProgressBar.aspectRatio(
-                                        aspectRatio: 1, // width ÷ height
-                                        valueNotifier: _valueNotifier,
-                                        progress: magnitude.toDouble(),
-                                        // startAngle: 225,
-                                        // sweepAngle: 270,
-                                        foregroundColor: Colors.lightBlueAccent,
-                                        backgroundColor: Colors.grey.shade800
-                                            .withOpacity(0.25),
-                                        foregroundStrokeWidth: 4,
-                                        backgroundStrokeWidth: 4,
-                                        animation: true,
-                                        seekSize: 0,
-                                        seekColor: Colors.grey.shade900,
-                                      ),
                                     ),
-                                    SizedBox(
-                                      width: 6,
-                                    ),
-                                    Text(
-                                      '${level}',
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 12,
-                              ),
-                              Container(
-                                // margin: EdgeInsets.all(12),
-                                padding: EdgeInsets.fromLTRB(6, 6, 12, 6),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade900.withOpacity(0.35),
-                                  borderRadius: BorderRadius.circular(32),
-                                  border: Border.all(
-                                    color:
-                                    Colors.grey.shade800.withOpacity(0.35),
-                                      width: 2,
                                   ),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      height: 24,
-                                      width: 24,
-                                      padding: const EdgeInsets.all(6.0),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(24),
-                                        color: Colors.grey.shade800
-                                            .withOpacity(0.25),
-                                      ),
-                                      child: Image.asset(
-                                        "images/drumm_logo.png",
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
                                         height: 24,
-                                        color: Colors.white,
+                                        width: 24,
+                                        padding: const EdgeInsets.all(6.0),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(24),
+                                          color: Colors.grey.shade800
+                                              .withOpacity(0.25),
+                                        ),
+                                        child: Image.asset(
+                                          "images/drumm_logo.png",
+                                          height: 24,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 6,
-                                    ),
-                                    Text(
-                                      "${totalState}",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700,
+                                      const SizedBox(
+                                        width: 6,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 12,
-                              ),
-                              if (chartLayer.isNotEmpty)
-                              Container(
-                                // margin: EdgeInsets.all(12),
-                                padding: EdgeInsets.fromLTRB(6, 6, 12, 6),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade900.withOpacity(0.35),
-                                  borderRadius: BorderRadius.circular(32),
-                                  border: Border.all(
-                                    color:
-                                    Colors.grey.shade800.withOpacity(0.35),
-                                      width: 2,
+                                      Text(
+                                        "${totalState}",
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      height: 24,
-                                      width: 24,
-                                      child: Chart(
-                                        layers: chartLayer,
+                              ),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              GestureDetector(
+                                onTap: (){
+                                  Vibrate.feedback(FeedbackType.light);
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return StatsDescriptionBox(
+                                        boxType: BOX_TYPE_ALERT,
+                                        autoUpdate: true,
+                                        chartLayer: [],
+                                        stateList:[],
+                                        tutorialImageAsset: "images/team_active.png",
+                                        tutorialMessageTitle: level.toString(),
+                                        type: "Level",
+                                        magnitude: magnitude,
+                                        checkLevel: true,
+                                        valueNotifier:_valueNotifier,
+                                        tutorialMessage: DRUMM_LEVEL_DESCRIPTION,
+                                        //TUTORIAL_MESSAGE_BANDS_TITLE,
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  //margin: EdgeInsets.symmetric(horizontal: 16),
+                                  padding: const EdgeInsets.fromLTRB(6, 6, 12, 6),
+                                  decoration: BoxDecoration(
+                                      color:
+                                      Colors.grey.shade900.withOpacity(0.5),
+                                      borderRadius: BorderRadius.circular(32),
+                                      border: Border.all(
+                                        color:
+                                        Colors.grey.shade800.withOpacity(0.35),
+                                        width: 2,
+                                      )),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: 24,
+                                        width: 24,
+                                        padding: const EdgeInsets.all(4.0),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(24),
+                                          color: Colors.grey.shade800
+                                              .withOpacity(0.25),
+                                        ),
+                                        child:
+                                        DashedCircularProgressBar.aspectRatio(
+                                          aspectRatio: 1, // width ÷ height
+                                          valueNotifier: _valueNotifier,
+                                          progress: magnitude.toDouble(),
+                                          // startAngle: 225,
+                                          // sweepAngle: 270,
+                                          foregroundColor: Colors.lightBlueAccent,
+                                          backgroundColor: Colors.grey.shade800
+                                              .withOpacity(0.25),
+                                          foregroundStrokeWidth: 4,
+                                          backgroundStrokeWidth: 4,
+                                          animation: true,
+                                          seekSize: 0,
+                                          seekColor: Colors.grey.shade900,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 6,
-                                    ),
-                                    Text(
-                                      "${topVibe}",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
+                                      const SizedBox(
+                                        width: 6,
                                       ),
+                                      Text(
+                                        '${level}',
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              if (largeChartLayer.isNotEmpty)
+                              GestureDetector(
+                                onTap: (){
+                                  Vibrate.feedback(FeedbackType.light);
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return StatsDescriptionBox(
+                                        boxType: BOX_TYPE_ALERT,
+                                        autoUpdate: true,
+                                        chartLayer: largeChartLayer,
+                                        stateList:stateList,
+                                        tutorialImageAsset: "images/team_active.png",
+                                        tutorialMessageTitle: topVibe,
+                                        type: "Top Vibe",
+                                        tutorialMessage: TOP_VIBE_DESCRIPTION,
+                                       //TUTORIAL_MESSAGE_BANDS_TITLE,
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  // margin: EdgeInsets.all(12),
+                                  padding: const EdgeInsets.fromLTRB(6, 6, 12, 6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade900.withOpacity(0.35),
+                                    borderRadius: BorderRadius.circular(32),
+                                    border: Border.all(
+                                      color:
+                                      Colors.grey.shade800.withOpacity(0.35),
+                                        width: 2,
                                     ),
-                                  ],
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: 24,
+                                        width: 24,
+                                        child: Chart(
+                                          layers: chartLayer,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 6,
+                                      ),
+                                      Text(
+                                        "${topVibe}",
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
@@ -387,14 +459,14 @@ class _UserProfilePageState extends State<UserProfilePage>
                               },
                               child: Container(
                                 alignment: Alignment.center,
-                                padding: EdgeInsets.all(12),
-                                margin: EdgeInsets.symmetric(horizontal: 12),
+                                padding: const EdgeInsets.all(12),
+                                margin: const EdgeInsets.symmetric(horizontal: 12),
                                 width: double.maxFinite,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: Text(
+                                child: const Text(
                                   "Edit Profile",
                                   style: TextStyle(
                                       fontFamily: APP_FONT_BOLD,
@@ -406,90 +478,37 @@ class _UserProfilePageState extends State<UserProfilePage>
                           const SizedBox(
                             height: 12,
                           ),
-                          if (chartLayer.isNotEmpty && false)
-                            Container(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 12),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade900.withOpacity(0.35),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    flex: 4,
-                                    child: Container(
-                                      height: 100,
-                                      width: 100,
-                                      child: Chart(
-                                        padding: EdgeInsets.all(2),
-                                        layers: chartLayer,
-                                      ),
-                                    ),
-                                  ),
-                                  //Container(height: 120,width: 4, color: Colors.black12.withOpacity(0.075),),
-                                  Expanded(
-                                    flex: 4,
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          'Top Vibe',
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              //fontWeight: FontWeight.w800,
-                                              fontSize: 12),
-                                        ),
-                                        Text(
-                                          '${topVibe}',
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              //fontWeight: FontWeight.w800,
-                                              fontSize: 24),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 24,
-                                  )
-                                ],
-                              ),
-                            ),
                           const SizedBox(
                             height: 16,
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 24,
                     ),
                     if (questionCards.isNotEmpty)
                       Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
                           width: double.maxFinite,
-                          child: Text(
+                          child: const Text(
                             "Questions",
                             style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: APP_FONT_BOLD),
                           )),
-                    SizedBox(
+                    const SizedBox(
                       height: 8,
                     ),
                     if (questionCards.isNotEmpty)
                       Container(
                         alignment: Alignment.topCenter,
-                        padding: EdgeInsets.symmetric(horizontal: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
                         //height: double.maxFinite,//MediaQuery.of(context).size.height,
                         child: ListView(
-                          padding: EdgeInsets.all(0),
-                          physics: NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.all(0),
+                          physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           scrollDirection: Axis.vertical,
                           children: questionCards,
@@ -500,12 +519,12 @@ class _UserProfilePageState extends State<UserProfilePage>
                         alignment: Alignment.bottomCenter,
                         height: 100,
                         width: double.maxFinite,
-                        child: Text(
+                        child: const Text(
                           "There's nothing here",
                           textAlign: TextAlign.center,
                         ),
                       ),
-                    SizedBox(
+                    const SizedBox(
                       height: 100,
                     ),
                   ],
@@ -525,7 +544,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                         padding: const EdgeInsets.all(8.0),
                         child: GestureDetector(
                           onTap: () => Navigator.pop(context),
-                          child: Icon(
+                          child: const Icon(
                             Icons.arrow_back_ios_new_rounded,
                             size: 36,
                           ),
@@ -536,7 +555,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                     SafeArea(
                       child: Container(
                           alignment: Alignment.topCenter,
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           child: Text(
                             "@${drummer?.username}",
                             textAlign: TextAlign.center,
@@ -554,8 +573,8 @@ class _UserProfilePageState extends State<UserProfilePage>
                       },
                       child: Container(
                           alignment: Alignment.topCenter,
-                          padding: EdgeInsets.all(8),
-                          child: Icon(
+                          padding: const EdgeInsets.all(8),
+                          child: const Icon(
                             Icons.settings_outlined,
                             size: 32,
                           )),
@@ -783,7 +802,7 @@ class _UserProfilePageState extends State<UserProfilePage>
     stateItemList.add(StatsItem(
       drummerState.science ?? 0,
       "Science",
-      Colors.cyanAccent,
+      Colors.lightGreenAccent,
     ));
     stateItemList.add(StatsItem(
       drummerState.sports ?? 0,
@@ -817,27 +836,11 @@ class _UserProfilePageState extends State<UserProfilePage>
     ));
 
     List<ChartLayer> finalLayer = [
-      getGroupPieLayer(stateItemList),
-      ChartTooltipLayer(
-        shape: () => ChartTooltipPieShape<ChartGroupPieDataItem>(
-          onTextName: (item) => item.label,
-          onTextValue: (item) => '€${item.amount.toString()}',
-          radius: 10.0,
-          backgroundColor: Colors.white,
-          padding: const EdgeInsets.all(24.0),
-          nameTextStyle: const TextStyle(
-            color: Color(0xFF8043F9),
-            fontWeight: FontWeight.w700,
-            height: 1.47,
-            fontSize: 12.0,
-          ),
-          valueTextStyle: const TextStyle(
-            color: Color(0xFF1B0E41),
-            fontWeight: FontWeight.w700,
-            fontSize: 12.0,
-          ),
-        ),
-      )
+      getGroupPieLayer(stateItemList,false),
+    ];
+
+    List<ChartLayer> largeFinalLayer = [
+      getGroupPieLayer(stateItemList,true),
     ];
 
 
@@ -850,7 +853,9 @@ class _UserProfilePageState extends State<UserProfilePage>
     if (containsValue) {
       setState(() {
         topVibe = setVibe;
+        stateList = stateItemList;
         chartLayer = finalLayer;
+        largeChartLayer = largeFinalLayer;
         drummScore = totalState;
         mod = totalState ~/ 100;
         magnitude = totalState - (mod * 100);
@@ -859,7 +864,7 @@ class _UserProfilePageState extends State<UserProfilePage>
     }
   }
 
-  ChartGroupPieLayer getGroupPieLayer(List<StatsItem> stateItemList) {
+  ChartGroupPieLayer getGroupPieLayer(List<StatsItem> stateItemList,bool large) {
     List<ChartGroupPieDataItem> chartGroupPieDataItemList = List.from(
       stateItemList.map(
         (e) => ChartGroupPieDataItem(
@@ -874,7 +879,9 @@ class _UserProfilePageState extends State<UserProfilePage>
         1,
         (index) => chartGroupPieDataItemList,
       ),
-      settings: const ChartGroupPieSettings(
+      settings: (large)?const ChartGroupPieSettings(
+          radius: 50, thickness: 12, gapSweepAngle: 24):
+      const ChartGroupPieSettings(
           radius: 24, thickness: 2.5, gapSweepAngle: 30),
     );
   }
@@ -896,7 +903,7 @@ class _Badge extends StatelessWidget {
       duration: PieChart.defaultDuration,
       width: size,
       height: size,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.transparent,
         shape: BoxShape.circle,
         // border: Border.all(

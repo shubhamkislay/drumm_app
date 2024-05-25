@@ -27,6 +27,12 @@ const ALERT_EXPLORE_BANDS_SHARED_PREF = "explorebands";
 const TUTORIAL_MESSAGE_BANDS_TITLE = "Welcome to Bands!";
 const TUTORIAL_MESSAGE_BANDS = "A band is a community with similar interests. Here, you can check out the drumms that are currently active for the band. You can also join open drumm to connect with your band members without drumming a particular article";
 
+const TOP_VIBE_DESCRIPTION = "Top Vibe is the category of the news articles that the user mostly vibes with";
+
+const DRUMM_LEVEL_DESCRIPTION = "Current level of the drummer. It increases with the drumm score.";
+
+const DRUMM_SCORE_DESCRIPTION = "Total score earned by the drummer. The drumm score increase when the drummer opens an articles, starts a drumm, or joins an existing drumm.";
+
 const String STATE_TYPE_MILD = "MILD";
 const String STATE_TYPE_MODERATE = "MODERATE";
 const String STATE_TYPE_INTENSE = "INTENSE";
