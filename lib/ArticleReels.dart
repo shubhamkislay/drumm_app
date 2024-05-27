@@ -6,6 +6,7 @@ import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dismissible_page/dismissible_page.dart';
@@ -53,6 +54,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'ArticleDrummButton.dart';
 import 'JoinDrummButton.dart';
 import 'LikeBtn.dart';
+import 'ScorePopup.dart';
 import 'ShareWidget.dart';
 import 'SoundPlayWidget.dart';
 import 'band_details_page.dart';
@@ -161,6 +163,7 @@ class ArticleReelsState extends State<ArticleReels>
   bool fromSearch = false;
 
   List<Jam> openDrumms = [];
+  CountDownController countDownController = CountDownController();
 
   List<DrummCard> openDrummCards =
       []; //Colors.white.withOpacity(0.1); // Number of documents to fetch per page
@@ -195,6 +198,8 @@ class ArticleReelsState extends State<ArticleReels>
   bool isBoosted = false;
 
   bool errorImage = false;
+
+  bool showCounter = true;
 
   @override
   Widget build(BuildContext context) {
@@ -244,8 +249,8 @@ class ArticleReelsState extends State<ArticleReels>
                                 imageSize: 18,
                                 paddingSize: 46,
                                 play: false,
-                                onPressed: (){
-                                  addStatsToUser(articleOnTop??ArticleBand(),STATE_TYPE_MODERATE);
+                                onPressed: () {
+                                  addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_MODERATE);
                                 },
                               ),
                               Container(
@@ -259,11 +264,11 @@ class ArticleReelsState extends State<ArticleReels>
                                         color: Colors.grey.shade900,
                                         width: 2.5)),
                                 child: ArticleDrummButton(
-                                    iconSize: 44,
-                                    articleOnScreen:
-                                        articleOnTop?.article ?? Article(),
-                                  onPressed: (){
-                                   //
+                                  iconSize: 44,
+                                  articleOnScreen:
+                                      articleOnTop?.article ?? Article(),
+                                  onPressed: () {
+                                    //
                                   },
                                 ),
                               ),
@@ -385,7 +390,7 @@ class ArticleReelsState extends State<ArticleReels>
                                 article: articleOnTop?.article ?? Article(),
                                 userBoosted: isBoosted,
                                 boostedCallback: (boost) {
-                                  addStatsToUser(articleOnTop??ArticleBand(),STATE_TYPE_INTENSE);
+                                  addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_INTENSE);
                                   setState(() {
                                     if (boost) {
                                       int currentBoosts =
@@ -418,8 +423,8 @@ class ArticleReelsState extends State<ArticleReels>
                                     article: articleOnTop?.article ?? Article(),
                                     backgroundColor: COLOR_BACKGROUND,
                                     iconHeight: 18,
-                                    onPressed: (){
-                                      addStatsToUser(articleOnTop??ArticleBand(),STATE_TYPE_INTENSE);
+                                    onPressed: () {
+                                      addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_INTENSE);
                                     },
                                   ),
                                 ),
@@ -508,11 +513,59 @@ class ArticleReelsState extends State<ArticleReels>
                               padding: EdgeInsets.all(12),
                               child: Image.asset(
                                 'images/boost_enabled.png', //'images/like_btn.png',
-                                height: 28,
+                                height: 18,
                                 color: Colors.white,
                                 fit: BoxFit.contain,
                               ),
-                            )
+                            ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: CircularCountDownTimer(
+                              duration: 7,
+                              initialDuration: 0,
+                              controller: countDownController,
+                              width: 24,
+                              height: 24,
+                              ringColor: (showCounter)? Colors.grey.shade700.withOpacity(0.5):Colors.transparent,
+                              ringGradient: null,
+                              fillColor: (showCounter)?Colors.white:Colors.transparent,
+                              fillGradient: null,
+                              backgroundColor:(showCounter)? Colors.black12:Colors.transparent,
+                              backgroundGradient: null,
+                              strokeWidth:2.0,
+                              strokeCap: StrokeCap.round,
+                              textStyle: TextStyle(
+                                  fontSize: 12.0,
+                                  color: (showCounter)? Colors.white:Colors.transparent,
+                                  fontWeight: FontWeight.bold),
+                              textFormat: CountdownTextFormat.S,
+                              isReverse: false,
+                              isReverseAnimation: false,
+                              isTimerTextShown: true,
+                              autoStart: true,
+                              onStart: () {
+                                debugPrint('Countdown Started');
+                              },
+                              onComplete: () {
+                                debugPrint('Countdown Ended');
+                                setState(() {
+                                  showCounter = false;
+                                });
+                              },
+                              onChange: (String timeStamp) {
+                                debugPrint('Countdown Changed $timeStamp');
+                              },
+                              timeFormatterFunction:
+                                  (defaultFormatterFunction, duration) {
+                                if (duration.inSeconds == 0) {
+                                  return "0";
+                                } else {
+                                  return Function.apply(
+                                      defaultFormatterFunction, [duration]);
+                                }
+                              },
+                            ),
+                          )
                         ],
                       ),
                     ),
@@ -584,8 +637,6 @@ class ArticleReelsState extends State<ArticleReels>
                             0;
                   } catch (e) {}
 
-
-
                   setState(() {
                     currentVisiblePageIndex = value;
                     articleOnTop = widget.preloadList?.elementAt(value);
@@ -600,8 +651,14 @@ class ArticleReelsState extends State<ArticleReels>
                     // Execute your logic here
                     print('Executed logic for page $value after 7 seconds');
 
-                    addStatsToUser(articleOnTop??ArticleBand(),STATE_TYPE_MILD);
+                    addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_MODERATE);
+                  });
 
+                  countDownController.reset();
+                  countDownController.start();
+
+                  setState(() {
+                    showCounter = true;
                   });
 
                   try {
@@ -1015,6 +1072,27 @@ class ArticleReelsState extends State<ArticleReels>
     );
   }
 
+  void _showScoreIncrement(int score) {
+    Vibrate.feedback(FeedbackType.light);
+    final overlay = Overlay.of(context);
+    final overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: 60.0,
+         right: 20.0,
+        left: MediaQuery.of(context).size.width / 2 - 50,
+        child: ScorePopup(
+          score: score,
+        ),
+      ),
+    );
+
+    overlay?.insert(overlayEntry);
+
+    Future.delayed(Duration(seconds: 1), () {
+      overlayEntry.remove();
+    });
+  }
+
   Future<void> getArticlesData(bool refresh) async {
     try {
       // SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1328,6 +1406,7 @@ class ArticleReelsState extends State<ArticleReels>
     _lastDocument = widget.lastDocument;
     refreshFeed();
 
+
     _pageController = PageController(
       initialPage: widget.articlePosition ?? 0,
     );
@@ -1342,23 +1421,10 @@ class ArticleReelsState extends State<ArticleReels>
     getCurrentDrummer();
   }
 
-
   void getBandsList() async {
     bandList = await FirebaseDBOperations.getBandByUser();
   }
 
-  void _checkAndScheduleRefresh() {
-    final now = DateTime.now();
-    if (now.difference(_lastRefreshTime!) >= refreshInterval) {
-      // Call your refresh() function if it hasn't been called within the refreshInterval
-      refreshFeed();
-      _lastRefreshTime = now;
-    } else {
-      // Calculate the remaining time until the next refresh and schedule the timer
-      final remainingTime = refreshInterval - now.difference(_lastRefreshTime!);
-      _startRefreshTimer(remainingTime);
-    }
-  }
 
   void refreshFeed() async {
     if (widget.preloadList == null) {
@@ -1389,9 +1455,9 @@ class ArticleReelsState extends State<ArticleReels>
         articleOnTop =
             fetchedArticleBand.elementAt(widget.articlePosition ?? 0);
 
-
-        addStatsToUser(articleOnTop??ArticleBand(),STATE_TYPE_MODERATE);
-        print("Moderate interaction as this article was pressed ${articleOnTop!.article?.meta}");
+        addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_MILD);
+        print(
+            "Moderate interaction as this article was pressed ${articleOnTop!.article?.meta}");
 
         isBoosted =
             (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0);
@@ -1401,22 +1467,18 @@ class ArticleReelsState extends State<ArticleReels>
         print("Article position is ${widget.articlePosition}");
       });
       //jumpToArticle();
+
+      _timer?.cancel();
+
+      // Start a new timer
+      _timer = Timer(Duration(seconds: 7), () {
+        // Execute your logic here
+
+        addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_MODERATE);
+      });
     }
   }
 
-  void _stopRefreshTimer() {
-    _refreshTimer?.cancel(); // Stop the timer if it's active
-  }
-
-  void _startRefreshTimer(Duration duration) {
-    _refreshTimer?.cancel(); // Cancel any existing timer
-    _refreshTimer = Timer(duration, () {
-      // Call your refresh() function when the timer fires
-      refreshFeed();
-      _lastRefreshTime = DateTime.now(); // Update the last refresh time
-      _checkAndScheduleRefresh(); // Reschedule the next refresh
-    });
-  }
 
   void initToken() {
     requestPermissions();
@@ -1613,7 +1675,7 @@ class ArticleReelsState extends State<ArticleReels>
         return DrummBottomDialog(
           articleBand: articleOnTop,
           startDrumming: () {
-            addStatsToUser(articleOnTop??ArticleBand(),STATE_TYPE_INTENSE);
+            addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_INTENSE);
             ArticleBand? articleBand = ArticleBand();
             articleBand = articleOnTop;
             Vibrate.feedback(FeedbackType.success);
@@ -1625,15 +1687,19 @@ class ArticleReelsState extends State<ArticleReels>
   }
 
   void addStatsToUser(ArticleBand articleBand, String type) {
-
     int points = 0;
-    if(type == STATE_TYPE_MILD){
+    if (type == STATE_TYPE_MILD) {
       points = 1;
-    }else if(type == STATE_TYPE_MODERATE){
-      points = 3;
-    }else{
-      points = 10;
+    } else if (type == STATE_TYPE_MODERATE) {
+      points = 7;
+    } else {
+      points = 15;
     }
-    FirebaseDBOperations.incrementCategoryPoints(articleBand.article?.category??"general",points);
+
+    if(type!=STATE_TYPE_MILD) {
+      _showScoreIncrement(points);
+    }
+    FirebaseDBOperations.incrementCategoryPoints(
+        articleBand.article?.category ?? "general", points);
   }
 }
