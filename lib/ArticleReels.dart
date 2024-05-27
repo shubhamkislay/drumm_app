@@ -1689,11 +1689,11 @@ class ArticleReelsState extends State<ArticleReels>
   void addStatsToUser(ArticleBand articleBand, String type) {
     int points = 0;
     if (type == STATE_TYPE_MILD) {
-      points = 1;
+      points = STATE_TYPE_MILD_SCORE;
     } else if (type == STATE_TYPE_MODERATE) {
-      points = 7;
+      points = STATE_TYPE_MODERATE_SCORE;
     } else {
-      points = 15;
+      points = STATE_TYPE_INTENSE_SCORE;
     }
 
     if(type!=STATE_TYPE_MILD) {
