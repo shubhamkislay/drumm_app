@@ -746,39 +746,45 @@ class FirebaseDBOperations {
 
 
   static Future<List<Question>> getQuestionsAsked() async {
-    print("getQuestionsAsked triggered");
-    //SharedPreferences prefs = await SharedPreferences.getInstance();
-    //List<String> userInterests = prefs.getStringList('interestList')!;
+    try {
+      print("getQuestionsAsked triggered");
+      //SharedPreferences prefs = await SharedPreferences.getInstance();
+      //List<String> userInterests = prefs.getStringList('interestList')!;
 
-    Drummer currentDrummer = await getDrummer(FirebaseAuth.instance.currentUser?.uid??"");
+      Drummer currentDrummer = await getDrummer(
+          FirebaseAuth.instance.currentUser?.uid ?? "");
 
-    String designation = currentDrummer.jobTitle??"";
-    String departmentName = currentDrummer.occupation??"";
+      String designation = currentDrummer.jobTitle ?? "";
+      String departmentName = currentDrummer.occupation ?? "";
 
-    DateTime currentTime = DateTime.now();
+      DateTime currentTime = DateTime.now();
 
-    // Calculate the time one minute ago
-    DateTime oneDayAgo = currentTime.subtract(Duration(days: 1));
+      // Calculate the time one minute ago
+      DateTime oneDayAgo = currentTime.subtract(Duration(days: 1));
 
-    var data = await FirebaseFirestore.instance
-        .collectionGroup('questions')
-        .where('createdTime',
-            isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
-        .where('departmentName',isEqualTo: departmentName??"")
-        //.where('designation',isEqualTo: designation??"")
-        .orderBy('createdTime', descending: true)
-        //.where("hook", whereIn: userInterests)
-        .get();
+      var data = await FirebaseFirestore.instance
+          .collectionGroup('questions')
+          .where('createdTime',
+          isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
+          .where('departmentName', isEqualTo: departmentName ?? "")
+      //.where('designation',isEqualTo: designation??"")
+          .orderBy('createdTime', descending: true)
+      //.where("hook", whereIn: userInterests)
+          .get();
 
-    // List<Question> listOfQuestionsFetched = List.from(data.docs.map((e) => Question.fromSnapshot(e)));
-    // List<Question> finalList = [];
-    // for(Question question in listOfQuestionsFetched){
-    //   String designationQ = question.designation??"";
-    //   if(designationQ.isEmpty || designationQ == designation){
-    //     finalList.add(question);
-    //   }
-    // }
-    return List.from(data.docs.map((e) => Question.fromSnapshot(e)));//finalList;
+      // List<Question> listOfQuestionsFetched = List.from(data.docs.map((e) => Question.fromSnapshot(e)));
+      // List<Question> finalList = [];
+      // for(Question question in listOfQuestionsFetched){
+      //   String designationQ = question.designation??"";
+      //   if(designationQ.isEmpty || designationQ == designation){
+      //     finalList.add(question);
+      //   }
+      // }
+      return List.from(
+          data.docs.map((e) => Question.fromSnapshot(e))); //finalList;
+    }catch(e){
+      return [];
+    }
   }
 
   static Future<List<String>> getGeneratedAMAQuestions() async {
