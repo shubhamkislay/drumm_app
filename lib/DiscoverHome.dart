@@ -351,14 +351,18 @@ class DiscoverHomeState extends State<DiscoverHome>
                                   Container(
                                     height: 225,
                                     alignment: Alignment.centerLeft,
-                                    padding: EdgeInsets.symmetric(horizontal: 8),
-                                    child: ListView(
+                                    padding: EdgeInsets.symmetric(horizontal: 4),
+                                    child: PageView(
                                       controller: _pageController,
                                       scrollDirection: Axis.horizontal,
+                                      pageSnapping: false,
                                       physics: const AlwaysScrollableScrollPhysics(),
                                       //padding: EdgeInsets.symmetric(horizontal: 4),
                                       children: drummCards,
                                     ),
+                                  ),
+                                  const SizedBox(
+                                    height: 12,
                                   ),
                                 ],
                               );
@@ -942,7 +946,7 @@ class DiscoverHomeState extends State<DiscoverHome>
     drumms = broadcastJams + fetchedDrumms;
     userDrummCards = drumms.map((jam) {
       return DrummCard(
-        width: 130,
+        width: MediaQuery.of(context).size.width*0.85,
         jam,
       );
     }).toList();

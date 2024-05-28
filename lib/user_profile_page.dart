@@ -232,217 +232,223 @@ class _UserProfilePageState extends State<UserProfilePage>
                           const SizedBox(
                             height: 8,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
 
-                              GestureDetector(
-                                onTap: (){
-                                  Vibrate.feedback(FeedbackType.light);
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return StatsDescriptionBox(
-                                        boxType: BOX_TYPE_ALERT,
-                                        autoUpdate: true,
-                                        chartLayer: [],
-                                        stateList:[],
-                                        tutorialImageAsset: "images/team_active.png",
-                                        tutorialMessageTitle: totalState.toString(),
-                                        type: "Drumm Score",
-                                        tutorialMessage: DRUMM_SCORE_DESCRIPTION,
-                                        //TUTORIAL_MESSAGE_BANDS_TITLE,
+                                  GestureDetector(
+                                    onTap: (){
+                                      Vibrate.feedback(FeedbackType.light);
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return StatsDescriptionBox(
+                                            boxType: BOX_TYPE_ALERT,
+                                            autoUpdate: true,
+                                            chartLayer: [],
+                                            stateList:[],
+                                            tutorialImageAsset: "images/team_active.png",
+                                            tutorialMessageTitle: totalState.toString(),
+                                            type: "Drumm Score",
+                                            tutorialMessage: DRUMM_SCORE_DESCRIPTION,
+                                            //TUTORIAL_MESSAGE_BANDS_TITLE,
+                                          );
+                                        },
                                       );
                                     },
-                                  );
-                                },
-                                child: Container(
-                                  // margin: EdgeInsets.all(12),
-                                  padding: const EdgeInsets.fromLTRB(6, 6, 12, 6),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade900.withOpacity(0.35),
-                                    borderRadius: BorderRadius.circular(32),
-                                    border: Border.all(
-                                      color:
-                                      Colors.grey.shade800.withOpacity(0.35),
-                                      width: 2,
+                                    child: Container(
+                                      // margin: EdgeInsets.all(12),
+                                      padding: const EdgeInsets.fromLTRB(6, 6, 12, 6),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade900.withOpacity(0.35),
+                                        borderRadius: BorderRadius.circular(32),
+                                        border: Border.all(
+                                          color:
+                                          Colors.grey.shade800.withOpacity(0.35),
+                                          width: 2,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            height: 24,
+                                            width: 24,
+                                            padding: const EdgeInsets.all(6.0),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(24),
+                                              color: Colors.grey.shade800
+                                                  .withOpacity(0.25),
+                                            ),
+                                            child: Image.asset(
+                                              "images/drumm_logo.png",
+                                              height: 24,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 6,
+                                          ),
+                                          Text(
+                                            "${totalState}",
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        height: 24,
-                                        width: 24,
-                                        padding: const EdgeInsets.all(6.0),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(24),
-                                          color: Colors.grey.shade800
-                                              .withOpacity(0.25),
-                                        ),
-                                        child: Image.asset(
-                                          "images/drumm_logo.png",
-                                          height: 24,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 6,
-                                      ),
-                                      Text(
-                                        "${totalState}",
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ],
+                                  const SizedBox(
+                                    width: 12,
                                   ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 12,
-                              ),
-                              GestureDetector(
-                                onTap: (){
-                                  Vibrate.feedback(FeedbackType.light);
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return StatsDescriptionBox(
-                                        boxType: BOX_TYPE_ALERT,
-                                        autoUpdate: true,
-                                        chartLayer: [],
-                                        stateList:[],
-                                        tutorialImageAsset: "images/team_active.png",
-                                        tutorialMessageTitle: level.toString(),
-                                        type: "Level",
-                                        magnitude: magnitude,
-                                        checkLevel: true,
-                                        valueNotifier:_valueNotifier,
-                                        tutorialMessage: DRUMM_LEVEL_DESCRIPTION,
-                                        //TUTORIAL_MESSAGE_BANDS_TITLE,
+                                  GestureDetector(
+                                    onTap: (){
+                                      Vibrate.feedback(FeedbackType.light);
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return StatsDescriptionBox(
+                                            boxType: BOX_TYPE_ALERT,
+                                            autoUpdate: true,
+                                            chartLayer: [],
+                                            stateList:[],
+                                            tutorialImageAsset: "images/team_active.png",
+                                            tutorialMessageTitle: level.toString(),
+                                            type: "Level",
+                                            magnitude: magnitude,
+                                            checkLevel: true,
+                                            valueNotifier:_valueNotifier,
+                                            tutorialMessage: DRUMM_LEVEL_DESCRIPTION,
+                                            //TUTORIAL_MESSAGE_BANDS_TITLE,
+                                          );
+                                        },
                                       );
                                     },
-                                  );
-                                },
-                                child: Container(
-                                  //margin: EdgeInsets.symmetric(horizontal: 16),
-                                  padding: const EdgeInsets.fromLTRB(6, 6, 12, 6),
-                                  decoration: BoxDecoration(
-                                      color:
-                                      Colors.grey.shade900.withOpacity(0.5),
-                                      borderRadius: BorderRadius.circular(32),
-                                      border: Border.all(
-                                        color:
-                                        Colors.grey.shade800.withOpacity(0.35),
-                                        width: 2,
-                                      )),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        height: 24,
-                                        width: 24,
-                                        padding: const EdgeInsets.all(4.0),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(24),
-                                          color: Colors.grey.shade800
-                                              .withOpacity(0.25),
-                                        ),
-                                        child:
-                                        DashedCircularProgressBar.aspectRatio(
-                                          aspectRatio: 1, // width ÷ height
-                                          valueNotifier: _valueNotifier,
-                                          progress: magnitude.toDouble(),
-                                          // startAngle: 225,
-                                          // sweepAngle: 270,
-                                          foregroundColor: Colors.lightBlueAccent,
-                                          backgroundColor: Colors.grey.shade800
-                                              .withOpacity(0.25),
-                                          foregroundStrokeWidth: 4,
-                                          backgroundStrokeWidth: 4,
-                                          animation: true,
-                                          seekSize: 0,
-                                          seekColor: Colors.grey.shade900,
-                                        ),
+                                    child: Container(
+                                      //margin: EdgeInsets.symmetric(horizontal: 16),
+                                      padding: const EdgeInsets.fromLTRB(6, 6, 12, 6),
+                                      decoration: BoxDecoration(
+                                          color:
+                                          Colors.grey.shade900.withOpacity(0.5),
+                                          borderRadius: BorderRadius.circular(32),
+                                          border: Border.all(
+                                            color:
+                                            Colors.grey.shade800.withOpacity(0.35),
+                                            width: 2,
+                                          )),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            height: 24,
+                                            width: 24,
+                                            padding: const EdgeInsets.all(4.0),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(24),
+                                              color: Colors.grey.shade800
+                                                  .withOpacity(0.25),
+                                            ),
+                                            child:
+                                            DashedCircularProgressBar.aspectRatio(
+                                              aspectRatio: 1, // width ÷ height
+                                              valueNotifier: _valueNotifier,
+                                              progress: magnitude.toDouble(),
+                                              // startAngle: 225,
+                                              // sweepAngle: 270,
+                                              foregroundColor: Colors.lightBlueAccent,
+                                              backgroundColor: Colors.grey.shade800
+                                                  .withOpacity(0.25),
+                                              foregroundStrokeWidth: 4,
+                                              backgroundStrokeWidth: 4,
+                                              animation: true,
+                                              seekSize: 0,
+                                              seekColor: Colors.grey.shade900,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 6,
+                                          ),
+                                          Text(
+                                            '${level}',
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 16),
+                                          ),
+                                        ],
                                       ),
-                                      const SizedBox(
-                                        width: 6,
-                                      ),
-                                      Text(
-                                        '${level}',
-                                        style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 16),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 12,
-                              ),
-                              if (largeChartLayer.isNotEmpty)
-                              GestureDetector(
-                                onTap: (){
-                                  Vibrate.feedback(FeedbackType.light);
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return StatsDescriptionBox(
-                                        boxType: BOX_TYPE_ALERT,
-                                        autoUpdate: true,
-                                        chartLayer: largeChartLayer,
-                                        stateList:stateList,
-                                        tutorialImageAsset: "images/team_active.png",
-                                        tutorialMessageTitle: topVibe,
-                                        type: "Top Vibe",
-                                        tutorialMessage: TOP_VIBE_DESCRIPTION,
-                                       //TUTORIAL_MESSAGE_BANDS_TITLE,
-                                      );
-                                    },
-                                  );
-                                },
-                                child: Container(
-                                  // margin: EdgeInsets.all(12),
-                                  padding: const EdgeInsets.fromLTRB(6, 6, 12, 6),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade900.withOpacity(0.35),
-                                    borderRadius: BorderRadius.circular(32),
-                                    border: Border.all(
-                                      color:
-                                      Colors.grey.shade800.withOpacity(0.35),
-                                        width: 2,
                                     ),
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        height: 24,
-                                        width: 24,
-                                        child: Chart(
-                                          layers: chartLayer,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 6,
-                                      ),
-                                      Text(
-                                        "${topVibe}",
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
+                                  const SizedBox(
+                                    width: 12,
                                   ),
-                                ),
+                                  if (largeChartLayer.isNotEmpty)
+                                  GestureDetector(
+                                    onTap: (){
+                                      Vibrate.feedback(FeedbackType.light);
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return StatsDescriptionBox(
+                                            boxType: BOX_TYPE_ALERT,
+                                            autoUpdate: true,
+                                            chartLayer: largeChartLayer,
+                                            stateList:stateList,
+                                            tutorialImageAsset: "images/team_active.png",
+                                            tutorialMessageTitle: topVibe,
+                                            type: "Top Vibe",
+                                            tutorialMessage: TOP_VIBE_DESCRIPTION,
+                                           //TUTORIAL_MESSAGE_BANDS_TITLE,
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                      // margin: EdgeInsets.all(12),
+                                      padding: const EdgeInsets.fromLTRB(6, 6, 12, 6),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade900.withOpacity(0.35),
+                                        borderRadius: BorderRadius.circular(32),
+                                        border: Border.all(
+                                          color:
+                                          Colors.grey.shade800.withOpacity(0.35),
+                                            width: 2,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            height: 24,
+                                            width: 24,
+                                            child: Chart(
+                                              layers: chartLayer,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 6,
+                                          ),
+                                          Text(
+                                            "${topVibe}",
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                           const SizedBox(
                             height: 8,
@@ -546,7 +552,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                           onTap: () => Navigator.pop(context),
                           child: const Icon(
                             Icons.arrow_back_ios_new_rounded,
-                            size: 36,
+                            size: 28,
                           ),
                         ),
                       ),

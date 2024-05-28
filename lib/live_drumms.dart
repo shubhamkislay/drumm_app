@@ -110,15 +110,15 @@ class LiveDrummsState extends State<LiveDrumms>
                         if (drummCards.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 16),
+                                horizontal: 8, vertical: 4),
                             child: GridView.count(
                                 crossAxisCount: 2, // Number of columns
-                                childAspectRatio: 0.8,
+                                childAspectRatio: 0.6,
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
                                 padding: const EdgeInsets.symmetric(horizontal: 0),
-                                crossAxisSpacing: 8,
-                                mainAxisSpacing: 8,
+                                crossAxisSpacing: 2,
+                                mainAxisSpacing: 2,
                                 children: drummCards),
                           ),
                         if (drummCards.isEmpty && loaded)

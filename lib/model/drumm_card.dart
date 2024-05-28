@@ -18,7 +18,9 @@ import 'package:drumm_app/open_article_page.dart';
 import 'package:flutter/widgets.dart';
 
 import '../custom/helper/image_uploader.dart';
+import '../custom/instagram_date_time_widget.dart';
 import '../theme/theme_constants.dart';
+import 'home_item.dart';
 
 typedef void JamCallback(Jam jam);
 
@@ -36,13 +38,40 @@ class DrummCard extends StatefulWidget {
 }
 
 class _DrummCardState extends State<DrummCard> {
-  double curve = 8;
+  double curve = CURVE;
   Drummer drummer = Drummer();
   Band band = Band();
   double bottomPadding = 80;
 
   @override
   Widget build(BuildContext context) {
+
+    int boosts = 0;
+    double curve = CURVE;
+    double borderWidth = 3.5;
+    double bottomPadding = 100;
+    double horizontalPadding = 10;
+    double maxTextSize = 20;
+    double minTextSize = 14;
+
+    DateTime currentTime = DateTime.now();
+    DateTime recent = currentTime.subtract(Duration(hours: 3));
+    Timestamp boostTime = Timestamp.now();
+    Color fadeColor =
+        COLOR_BACKGROUND; //COLOR_ARTICLE_BACKGROUND; //.withOpacity(0.8);
+
+
+    Color colorBorder =
+    (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
+        ? COLOR_BOOST
+        : Colors.grey.shade800
+        .withOpacity(0.225); //COLOR_ARTICLE_BACKGROUND;//fadeColor;
+    Color colorBorder2 =
+    (boosts > 0 && boostTime.compareTo(Timestamp.fromDate(recent)) > 0)
+        ? Colors.blueGrey
+        : Colors.grey.shade800
+        .withOpacity(0.225);
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(curve),
       child: Container(
@@ -51,15 +80,17 @@ class _DrummCardState extends State<DrummCard> {
         child: Stack(
           children: [
             Container(
-              width: widget.width ?? double.maxFinite,
-              height: 200,
+              width:  double.maxFinite,
+              height: 225,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(curve),
                   gradient: LinearGradient(colors: [
-                    Colors.blue.shade700,
-                    Colors.blue.shade400,
+                    Colors.white12,
+                    Colors.white12,
+                    // Colors.blue.shade700,
+                    // Colors.blue.shade400,
                   ])),
-              padding: EdgeInsets.all(2),
+              padding: EdgeInsets.all(2.5),
               child: GestureDetector(
                 onTap: () {
                   //Navigator.pop(context);
@@ -78,75 +109,139 @@ class _DrummCardState extends State<DrummCard> {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(curve - 2),
-                    child: Stack(
+                    child: Column(
                       children: [
-                        Container(
-                          margin: EdgeInsets.only(bottom: bottomPadding),
-                          child: CachedNetworkImage(
-                              height: double.maxFinite,
-                              width: double.maxFinite,
-                              placeholder: (context, url) => Container(
-                                    color: Colors.grey.shade900,
-                                  ),
-                              errorWidget: (context, url, error) => Container(
-                                    color: COLOR_PRIMARY_DARK,
-                                  ),
-                              imageUrl: widget.jam.imageUrl ?? "",
-                              fit: BoxFit.cover),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            alignment: Alignment.bottomCenter,
-                            height: double.infinity,
-                            margin:
-                            EdgeInsets.only(bottom: bottomPadding),
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    end: Alignment.bottomCenter,
-                                    begin: Alignment.topCenter,
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.transparent,
-                                      COLOR_ARTICLE_BACKGROUND,
-                                    ])),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            alignment: Alignment.bottomLeft,
-                            padding: EdgeInsets.all(4),
-                            height: bottomPadding,
-                            color: COLOR_ARTICLE_BACKGROUND,
-                            //RandomColorBackground.generateRandomVibrantColor().withOpacity(0.55),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Flexible(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(6.0),
-                                    child: AutoSizeText(
-                                      widget.jam.question ?? widget.jam.title ?? "",
-                                      textAlign: TextAlign.left,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxFontSize: 15,
-                                      maxLines: 3,
-                                      minFontSize: 11,
-                                      style: TextStyle(
-                                          overflow: TextOverflow.ellipsis,
-                                          fontSize: 15,
-                                          fontFamily: APP_FONT_MEDIUM,
-                                          //fontWeight: FontWeight.bold,
-                                          color: Colors.white),
-                                    ),
-                                  ),
+                        Expanded(
+                          //margin: EdgeInsets.only(bottom: bottomPadding),
+                          child: Stack(
+                            children: [
+                              CachedNetworkImage(
+                                  height: double.maxFinite,
+                                  width: double.maxFinite,
+                                  placeholder: (context, url) => Container(
+                                        color: Colors.grey.shade900,
+                                      ),
+                                  errorWidget: (context, url, error) => Container(
+                                        color: COLOR_PRIMARY_DARK,
+                                      ),
+                                  imageUrl: widget.jam.imageUrl ?? "",
+                                  fit: BoxFit.cover),
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: Container(
+                                  alignment: Alignment.topCenter,
+                                  height: double.infinity,
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                          end: Alignment.bottomCenter,
+                                          begin: Alignment.topCenter,
+                                          colors: [
+                                            Colors.transparent,
+                                            Colors.transparent,
+                                            fadeColor,
+                                          ])),
                                 ),
-                              ],
-                            ),
+                              ),
+                              Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.start,
+                                  children: [
+                                    Flexible(
+                                      child: Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal:
+                                            horizontalPadding - 2),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 6, vertical: 3),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                              curve - 4),
+                                          color: Colors.white
+                                              .withOpacity(0.1),
+                                        ),
+                                        child: AutoSizeText(
+                                          "${band.name}",
+                                          textAlign: TextAlign.left,
+                                          overflow:
+                                          TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          minFontSize: 10,
+                                          maxFontSize: 11,
+                                          style: const TextStyle(
+                                              fontSize: 11,
+                                              fontFamily:
+                                              APP_FONT_MEDIUM,
+                                              //fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                        )
+                        ),
+                        Container(
+                          alignment: Alignment.topLeft,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: horizontalPadding, vertical: 6),
+                          //height: maxHeight,
+                          child: AutoSizeText(
+                            unescape.convert(
+                                widget.jam.question ??
+                                    widget.jam.title ??
+                                    ""),
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxFontSize: maxTextSize,
+                            maxLines: 2,
+                            minFontSize: minTextSize,
+                            style: TextStyle(
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: maxTextSize,
+                                fontWeight: FontWeight.w200,
+                                fontFamily: APP_FONT_BOLD,
+                                color: Colors.white),
+                          ),
+                        ),
+                       if(true) Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(
+                                  left: horizontalPadding, bottom: 12),
+                              decoration: BoxDecoration(
+                                //borderRadius: BorderRadius.circular(12),
+                                //color: Colors.grey.shade900.withOpacity(0.35),
+                              ),
+                              child: Text(
+                                "${widget.jam.startedBy}  •  ",
+                                textAlign: TextAlign.left,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: const TextStyle(
+                                    fontSize: 10,
+                                    fontFamily: APP_FONT_MEDIUM,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(
+                                  right: horizontalPadding, bottom: 12),
+                              child: InstagramDateTimeWidget(
+                                textSize: 10,
+                                fontColor: Colors.white54,
+                                publishedAt:
+                                    widget.jam.lastActive.toString()??"",
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
