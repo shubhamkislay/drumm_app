@@ -1073,7 +1073,7 @@ class ArticleReelsState extends State<ArticleReels>
   }
 
   void _showScoreIncrement(int score) {
-    Vibrate.feedback(FeedbackType.light);
+    //Vibrate.feedback(FeedbackType.light);
     final overlay = Overlay.of(context);
     final overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
