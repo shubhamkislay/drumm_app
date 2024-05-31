@@ -55,9 +55,15 @@ class _RegisterUserState extends State<RegisterUser> {
   var professionTxt = TextEditingController();
   var nameTxt = TextEditingController();
   var usernameTxt = TextEditingController();
+  String fetchName = "";
+
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
+
+    fetchName = widget.name??"";
+
     return Container(
       child: SafeArea(
         top: false,
@@ -109,8 +115,9 @@ class _RegisterUserState extends State<RegisterUser> {
                         alignment: Alignment.center,
                         child: Image.file(
                           pickedImage!,
-                          height: 100,
+                          height: 150,
                           alignment: Alignment.center,
+                          fit: BoxFit.cover,
                         )),
                   ),
                 if (pickedImage == null&&drummer.imageUrl==null)
@@ -122,24 +129,32 @@ class _RegisterUserState extends State<RegisterUser> {
                       fontFamily: APP_FONT_MEDIUM,
                       fontWeight: FontWeight.normal),
                 ),
-                if (uploadProgress > 0 && uploadProgress < 1.0)
-                  Padding(
+                if (uploadProgress > 0 && uploadProgress < 1.0 || loading)
+                  Container(
+                    width: 150,
                     padding: const EdgeInsets.all(12.0),
+                    //margin: const EdgeInsets.symmetric(horizontal: 36),
                     child: LinearProgressIndicator(
                       value: uploadProgress,
+                      minHeight: 6,
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.white,
+                      backgroundColor: Colors.white12,
                     ),
                   ),
                 SizedBox(height: 12,),
-                if(widget.name!=null&&!widget.name!.isEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 24),
-                    child: Text("Hey ${widget.name}, please enter the following details!",style: TextStyle(
+                    child: Text("Hey ${(fetchName.isNotEmpty)?fetchName:"there"}, please enter the following details!",
+
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
                         fontSize: 16,
                         color: Colors.white,
                         fontFamily: APP_FONT_MEDIUM,
                         fontWeight: FontWeight.normal),),
                   ),
-                if(widget.name==null || widget.name!=null&&widget.name!.isEmpty)
+                if(fetchName.isEmpty)
                   Container(
                   padding: EdgeInsets.symmetric(vertical: 12),
                   margin: EdgeInsets.symmetric(horizontal: 24),
@@ -160,7 +175,13 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                     textInputAction: TextInputAction.done,
                     onChanged: (value){
-                      drummer.name = value;
+
+                      print("Typing: ${value}");
+                      setState(() {
+                        drummer.name = value;
+                      });
+
+                      print("Drummer Name: ${drummer.name}");
                     },
                   ),
                 ),
@@ -205,9 +226,9 @@ class _RegisterUserState extends State<RegisterUser> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: Colors.white
+                      color: (loading)?COLOR_ARTICLE_BACKGROUND:Colors.white
                     ),
-                    child:  Text((uploadProgress == 0 || uploadProgress == 1)? "Continue":"Uploading Profile Pic...",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontFamily: APP_FONT_MEDIUM),),
+                    child:  Text((loading)? "Uploading...":"Continue",style: TextStyle(color: (loading)?Colors.white:Colors.black,fontWeight: FontWeight.bold,fontFamily: APP_FONT_MEDIUM),),
                   ),
                   onTap: (){
                     if(uploadProgress == 0 || uploadProgress == 1) {
@@ -237,7 +258,13 @@ class _RegisterUserState extends State<RegisterUser> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     getDrummer();
+    fetchName = widget.name??"";
+    if(fetchName.isNotEmpty) {
+      drummer.name = fetchName;
+      print("Name fetched from apple sign in ${widget.name}");
+    }
 
   }
 
@@ -268,6 +295,7 @@ class _RegisterUserState extends State<RegisterUser> {
           print('Upload progress: $progress');
           setState(() {
             uploadProgress = progress;
+            loading = true;
           });
         },
         (String imageUrl) {
@@ -276,6 +304,7 @@ class _RegisterUserState extends State<RegisterUser> {
           drummer.imageUrl = imageUrl;
           setState(() {
             readToUpload = true;
+            loading = false;
           });
 
         },
@@ -335,17 +364,19 @@ class _RegisterUserState extends State<RegisterUser> {
     FirebaseAuth auth = FirebaseAuth.instance;
     String? uid = auth.currentUser?.uid;
 
-    if(drummer.name==null&&widget.name==null){
-      AnimatedSnackBar.material(
-        'Fill in your name',
-        type: AnimatedSnackBarType.error,
-      ).show(context);
-      return;
-    }
-
-
-    if(widget.name!=null) {
-      drummer.name = widget.name;
+    print("Drummer name: ${drummer.name}");
+    String checkName = drummer.name??"";
+    if(checkName.length<1){
+      if(fetchName.length<1) {
+        setState(() {
+          AnimatedSnackBar.material(
+            'Your name cannot be empty. Please Fill in your name.',
+            type: AnimatedSnackBarType.error,
+          ).show(context);
+        });
+        return;
+      }
+      drummer.name = fetchName;
     }
     drummer.email = widget.email;
     drummer.uid = uid;
@@ -370,16 +401,27 @@ class _RegisterUserState extends State<RegisterUser> {
   }
 
   void getDrummer() async{
-    Drummer fetchDrummer = await FirebaseDBOperations.getDrummer(FirebaseAuth.instance.currentUser?.uid??"");
+    try {
+      Drummer fetchDrummer = await FirebaseDBOperations.getDrummer(
+          FirebaseAuth.instance.currentUser?.uid ?? "");
 
-    setState(() {
-      drummer = fetchDrummer;
-      bioTxt.text = drummer.bio!;
-      orgTxt.text = drummer.organisation!;
-      professionTxt.text = drummer.jobTitle!;
-      nameTxt.text = drummer.name!;
-      widget.name = drummer.username!;
-      usernameTxt.text = drummer.username!;
-    });
+      setState(() {
+        drummer = fetchDrummer;
+        bioTxt.text = drummer.bio!;
+        orgTxt.text = drummer.organisation!;
+        professionTxt.text = drummer.jobTitle!;
+        nameTxt.text = drummer.name!;
+        //widget.name = drummer.name!;
+        usernameTxt.text = drummer.username!;
+      });
+    }catch(e){
+      fetchName = widget.name??"";
+      if(fetchName.isNotEmpty) {
+        drummer.name = fetchName;
+        print("Name fetched from apple sign in ${fetchName}");
+      }
+    }
+
+
   }
 }

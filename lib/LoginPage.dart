@@ -197,13 +197,13 @@ class _LoginPageState extends State<LoginPage> {
     final rawNonce = generateNonce();
     final nonce = sha256ofString(rawNonce);
 
-    var appleCredential;
+    AuthorizationCredentialAppleID appleCredential;
     // Request credential for the currently signed in Apple account.
     try {
       appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
-          //AppleIDAuthorizationScopes.fullName,
+          AppleIDAuthorizationScopes.fullName,
         ],
         nonce: nonce,
       );
@@ -222,10 +222,10 @@ class _LoginPageState extends State<LoginPage> {
       "apple.com",
     );
 
-    // appleOauthProvider.setScopes([
-    //   'email',
-    //   'name',
-    // ]);
+    appleOauthProvider.setScopes([
+      'email',
+      'name',
+    ]);
 
     // Create an `OAuthCredential` from the credential returned by Apple.
     final oauthCredential = appleOauthProvider.credential(
@@ -315,7 +315,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void checkIfUserExistsApple(UserCredential userCredential,String authProvider, dynamic appleCredential) async {
+  void checkIfUserExistsApple(UserCredential userCredential,String authProvider, AuthorizationCredentialAppleID appleCredential) async {
     SharedPreferences authPref = await SharedPreferences.getInstance();
     authPref.setString("authProvider", authProvider);
     authPref.commit();
@@ -369,12 +369,16 @@ class _LoginPageState extends State<LoginPage> {
       print("fixDisplayNameFromApple is null");
     }
 
+
+
+
     try {
       String uname = data['username'].toString();
 
       if (uname.isNotEmpty) {
         _checkOnboardingStatus(uname);
       } else {
+        print("Showing fixDisplayNameFromApple : ${fixDisplayNameFromApple}");
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -386,6 +390,8 @@ class _LoginPageState extends State<LoginPage> {
                     email: userCredential.user?.email)));
       }
     } catch (e) {
+      print("Showing latestUser?.displayName: ${latestUser?.displayName}\n"
+          "Showing fixDisplayNameFromApple : ${fixDisplayNameFromApple}");
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -393,7 +399,7 @@ class _LoginPageState extends State<LoginPage> {
                   themeManager: widget.themeManager,
                   analytics: widget.analytics,
                   observer: widget.observer,
-                  name: latestUser?.displayName,
+                  name: fixDisplayNameFromApple,
                   email: userCredential.user?.email)));
     }
   }

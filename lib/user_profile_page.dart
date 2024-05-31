@@ -26,14 +26,19 @@ import 'package:drumm_app/model/Drummer.dart';
 import 'package:drumm_app/model/article.dart';
 import 'package:drumm_app/model/article_image_card.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:mrx_charts/mrx_charts.dart';
+import 'package:multiavatar/multiavatar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'custom/TutorialBox.dart';
 import 'custom/constants/Constants.dart';
+import 'custom/helper/SvgWrapper.dart';
 import 'custom/helper/image_uploader.dart';
+import 'custom/helper/myPainter.dart';
 import 'model/QuestionCard.dart';
 import 'model/Stats.dart';
 import 'model/question.dart';
@@ -75,6 +80,9 @@ class _UserProfilePageState extends State<UserProfilePage>
   List<ChartLayer> largeChartLayer = [];
 
   List<StatsItem> stateList = [];
+
+  SvgPicture? svgRoot;
+  String svgCode = multiavatar('pic',);
 
   @override
   Widget build(BuildContext context) {
@@ -164,6 +172,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                           const SizedBox(
                             height: 150,
                           ),
+                          /// Uncomment to load avatar _avatarPreview(),
                           if (drummer?.imageUrl != null)
                             Center(
                               child: SizedBox(
@@ -636,6 +645,33 @@ class _UserProfilePageState extends State<UserProfilePage>
         fromSearch = widget.fromSearch!;
       });
     }
+
+    /// Uncomment to generate Avatar _generateSvg();
+  }
+
+  _generateSvg() async {
+    print("SVG Code is \n${svgCode}");
+    return SvgWrapper(svgCode).generateLogo().then((value) {
+      setState(() {
+        svgRoot = value;
+      });
+    });
+  }
+  Widget _avatarPreview() {
+    return Container(
+      height: 180.0,
+      width: 180.0,
+      child: svgRoot == null
+          ? SizedBox.shrink()
+      //     : CustomPaint(
+      //   painter: MyPainter(svgRoot, Size(180.0, 180.0)),
+      //   child: Container(),
+      // ),
+      : svgRoot,
+      decoration: BoxDecoration(
+        color: Colors.white,
+      ),
+    );
   }
 
   Future<bool> getDrummerQuestion(String uid) async {
@@ -690,6 +726,7 @@ class _UserProfilePageState extends State<UserProfilePage>
 
   Future<void> _refreshData() async {
     initialise();
+
   }
 
   @override
