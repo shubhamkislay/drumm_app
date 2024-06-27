@@ -1597,6 +1597,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.11.1"
+  stacked_page_view:
+    dependency: "direct main"
+    description:
+      name: stacked_page_view
+      sha256: adb069ce104b4c0296da4edce33116af8f458e5cb517f93cda0d743bbdebf965
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.2"
   stream_channel:
     dependency: transitive
     description:

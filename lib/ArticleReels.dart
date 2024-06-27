@@ -49,6 +49,7 @@ import 'package:drumm_app/view_article_jams.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:stacked_page_view/stacked_page_view.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'ArticleDrummButton.dart';
@@ -60,6 +61,7 @@ import 'SoundPlayWidget.dart';
 import 'band_details_page.dart';
 import 'custom/DrummBottomDialog.dart';
 
+import 'custom/ReelStack.dart';
 import 'custom/helper/CustomPageViewPhysics.dart';
 import 'model/ZoomPicture.dart';
 import 'model/article_band.dart';
@@ -612,461 +614,457 @@ class ArticleReelsState extends State<ArticleReels>
       bottom: false,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderCurve + 2),
-        child: Container(
-          decoration:
-              BoxDecoration(gradient: LinearGradient(colors: backgroundColor)),
-          child: Stack(
-            children: [
-              PageView.builder(
-                controller: _pageController,
-                onPageChanged: (value) {
-                  currentVisiblePageIndex = value;
-                  print("Current page index is ${currentVisiblePageIndex}");
-                  int boosts = 0;
-                  DateTime currentTime = DateTime.now();
-                  DateTime recent = currentTime.subtract(Duration(hours: 3));
-                  Timestamp boostTime = Timestamp.now();
-                  try {
-                    boostTime = widget.preloadList
-                            ?.elementAt(value)
-                            .article!
-                            .boostamp ??
-                        Timestamp.now();
-                    boosts =
-                        widget.preloadList?.elementAt(value).article?.boosts ??
-                            0;
-                  } catch (e) {}
+        child: PageView.builder(
+          controller: _pageController,
+          onPageChanged: (value) {
+            currentVisiblePageIndex = value;
+            print("Current page index is ${currentVisiblePageIndex}");
+            int boosts = 0;
+            DateTime currentTime = DateTime.now();
+            DateTime recent = currentTime.subtract(Duration(hours: 3));
+            Timestamp boostTime = Timestamp.now();
+            try {
+              boostTime = widget.preloadList
+                      ?.elementAt(value)
+                      .article!
+                      .boostamp ??
+                  Timestamp.now();
+              boosts =
+                  widget.preloadList?.elementAt(value).article?.boosts ??
+                      0;
+            } catch (e) {}
 
-                  setState(() {
-                    currentVisiblePageIndex = value;
-                    articleOnTop = widget.preloadList?.elementAt(value);
-                    isBoosted = (boosts > 0 &&
-                        boostTime.compareTo(Timestamp.fromDate(recent)) > 0);
-                  });
+            setState(() {
+              currentVisiblePageIndex = value;
+              articleOnTop = widget.preloadList?.elementAt(value);
+              isBoosted = (boosts > 0 &&
+                  boostTime.compareTo(Timestamp.fromDate(recent)) > 0);
+            });
 
-                  _timer?.cancel();
+            _timer?.cancel();
 
-                  // Start a new timer
-                  _timer = Timer(Duration(seconds: 7), () {
-                    // Execute your logic here
-                    print('Executed logic for page $value after 7 seconds');
+            // Start a new timer
+            _timer = Timer(Duration(seconds: 7), () {
+              // Execute your logic here
+              print('Executed logic for page $value after 7 seconds');
 
-                    addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_MODERATE);
-                  });
+              addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_MODERATE);
+            });
 
-                  countDownController.reset();
-                  countDownController.start();
+            countDownController.reset();
+            countDownController.start();
 
-                  setState(() {
-                    showCounter = true;
-                  });
+            setState(() {
+              showCounter = true;
+            });
 
-                  try {
-                    FirebaseDBOperations.OggOpus_Player.pause();
-                  } catch (e) {}
-                  int articleSize = widget.preloadList?.length ?? 0;
+            try {
+              FirebaseDBOperations.OggOpus_Player.pause();
+            } catch (e) {}
+            int articleSize = widget.preloadList?.length ?? 0;
 
-                  print(
-                      "Article size is $articleSize and current page is $value");
+            print(
+                "Article size is $articleSize and current page is $value");
 
-                  if (value >= articleSize - 2) {
-                    getArticlesData(false);
-                  }
-                  //Prefetch the next page image
-                  if (value != articleSize - 1) {
-                    preloadNextPageImage(value + 1);
-                  }
-                },
-                itemCount: widget.preloadList?.length,
-                scrollDirection: Axis.vertical,
-                physics: const CustomPageViewScrollPhysics(),
-                itemBuilder: (BuildContext context, int index) {
-                  if (!articleIDs.contains(widget.preloadList
-                      ?.elementAt(index)
-                      .article
-                      ?.articleId)) {
-                    articleIDs.add(widget.preloadList
+            if (value >= articleSize - 2) {
+              getArticlesData(false);
+            }
+            //Prefetch the next page image
+            if (value != articleSize - 1) {
+              preloadNextPageImage(value + 1);
+            }
+          },
+          itemCount: widget.preloadList?.length,
+          scrollDirection: Axis.vertical,
+          physics: const CustomPageViewScrollPhysics(),
+          itemBuilder: (BuildContext context, int index) {
+            if (!articleIDs.contains(widget.preloadList
+                ?.elementAt(index)
+                .article
+                ?.articleId)) {
+              articleIDs.add(widget.preloadList
+                  ?.elementAt(index)
+                  .article
+                  ?.articleId);
+              checkIfUserLiked(index);
+            }
+
+            // if (widget.preloadList?.elementAt(index).article?.imageUrl ==
+            //     null) {
+            //   fetchMissingImageUrls(
+            //       widget.preloadList!.elementAt(index).article ??
+            //           Article(),
+            //       index);
+            //   imageSet.add(widget.preloadList
+            //           ?.elementAt(index)
+            //           .article
+            //           ?.articleId ??
+            //       "");
+            //   // print("Contains article ${artcls?.elementAt(index).articleId} ${imageSet.contains(artcls?.elementAt(index).articleId)}");
+            // }
+
+            Widget articleWidget = SafeArea(
+              bottom: false,
+              child: Hero(
+                tag: widget.preloadList
                         ?.elementAt(index)
                         .article
-                        ?.articleId);
-                    checkIfUserLiked(index);
-                  }
-
-                  // if (widget.preloadList?.elementAt(index).article?.imageUrl ==
-                  //     null) {
-                  //   fetchMissingImageUrls(
-                  //       widget.preloadList!.elementAt(index).article ??
-                  //           Article(),
-                  //       index);
-                  //   imageSet.add(widget.preloadList
-                  //           ?.elementAt(index)
-                  //           .article
-                  //           ?.articleId ??
-                  //       "");
-                  //   // print("Contains article ${artcls?.elementAt(index).articleId} ${imageSet.contains(artcls?.elementAt(index).articleId)}");
-                  // }
-
-                  Widget articleWidget = SafeArea(
-                    bottom: false,
-                    child: Hero(
-                      tag: widget.preloadList
-                              ?.elementAt(index)
-                              .article
-                              ?.articleId ??
-                          "",
-                      child: CachedNetworkImage(
-                        fadeInDuration: const Duration(milliseconds: 0),
-                        fit: (isContainerVisible) ? BoxFit.cover : BoxFit.cover,
-                        alignment: Alignment.topCenter,
-                        width: double.maxFinite,
-                        height: double.maxFinite,
-                        imageUrl: widget.preloadList
-                                ?.elementAt(index)
-                                .article
-                                ?.imageUrl ??
-                            "",
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) {
-                          double opacity = downloadProgress.progress ?? 0;
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Container(
-                              color: Colors.grey.shade900.withOpacity(0.25),
-                              height: 300,
-                              padding: const EdgeInsets.all(48),
-                              child: Center(
-                                child: SizedBox(
-                                  width: 225,
-                                  height: 225,
-                                  child: (downloadProgress.progress == null)
-                                      ? CircularProgressIndicator(
-                                          value: downloadProgress.progress,
-                                          color: Colors.white.withOpacity(0.07),
-                                          strokeWidth: 2,
-                                          valueColor: AlwaysStoppedAnimation<
-                                                  Color>(
-                                              Colors.white.withOpacity(0.07)),
-                                        )
-                                      : CircularProgressIndicator(
-                                          value: downloadProgress.progress,
-                                          color: Colors
-                                              .white70, //.withOpacity(1.0-opacity),
-                                          strokeWidth: 2,
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                  Colors.white70),
-                                        ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        errorWidget: (context, url, error) {
-                          return ClipRRect(
-                            borderRadius:
-                                BorderRadius.vertical(top: Radius.circular(12)),
-                            child: Container(
-                              color: COLOR_BACKGROUND,
-                              height: 300,
-                              padding: const EdgeInsets.all(48),
-                              child: Image.asset(
-                                "images/drumm_logo.png",
-                                color: Colors.white12,
-                              ),
-                            ),
-                          );
-                        },
+                        ?.articleId ??
+                    "",
+                child: CachedNetworkImage(
+                  fadeInDuration: const Duration(milliseconds: 0),
+                  fit: (isContainerVisible) ? BoxFit.cover : BoxFit.cover,
+                  alignment: Alignment.topCenter,
+                  width: double.maxFinite,
+                  height: double.maxFinite,
+                  imageUrl: widget.preloadList
+                          ?.elementAt(index)
+                          .article
+                          ?.imageUrl ??
+                      "",
+                  progressIndicatorBuilder:
+                      (context, url, downloadProgress) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        color: Colors.grey.shade900.withOpacity(0.25),
+                        height: 300,
+                        padding: const EdgeInsets.all(48),
+                        child: Center(
+                          child: SizedBox(
+                            width: 225,
+                            height: 225,
+                            child: (downloadProgress.progress == null)
+                                ? CircularProgressIndicator(
+                                    value: downloadProgress.progress,
+                                    color: Colors.white.withOpacity(0.07),
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<
+                                            Color>(
+                                        Colors.white.withOpacity(0.07)),
+                                  )
+                                : CircularProgressIndicator(
+                                    value: downloadProgress.progress,
+                                    color: Colors
+                                        .white70, //.withOpacity(1.0-opacity),
+                                    strokeWidth: 2,
+                                    valueColor:
+                                        AlwaysStoppedAnimation<Color>(
+                                            Colors.white70),
+                                  ),
+                          ),
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  },
+                  errorWidget: (context, url, error) {
+                    return ClipRRect(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(12)),
+                      child: Container(
+                        color: COLOR_BACKGROUND,
+                        height: 300,
+                        padding: const EdgeInsets.all(48),
+                        child: Image.asset(
+                          "images/drumm_logo.png",
+                          color: Colors.white12,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            );
 
-                  return Container(
-                    height: double.maxFinite,
-                    width: double.maxFinite,
-                    color: Colors.black,
-                    child: Stack(
+            return ReelStack(
+              controller: _pageController,
+              index: index,
+              curPosition: widget.articlePosition??0,
+              child: Container(
+                height: double.maxFinite,
+                width: double.maxFinite,
+                color: Colors.black,
+                child: Stack(
+                  children: [
+                    Container(
+                      height: double.maxFinite,
+                      width: double.maxFinite,
+                      color: (isBoosted)
+                          ? Colors.indigo.withOpacity(0.65)
+                          : Colors.grey.shade900.withOpacity(0.8),
+                    ),
+                    Column(
                       children: [
                         Container(
-                          height: double.maxFinite,
-                          width: double.maxFinite,
-                          color: (isBoosted)
-                              ? Colors.indigo.withOpacity(0.65)
-                              : Colors.grey.shade900.withOpacity(0.8),
-                        ),
-                        Column(
-                          children: [
-                            Container(
-                              height: 320,
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    PageRouteBuilder(
-                                      pageBuilder: (context, animation1,
-                                              animation2) =>
-                                          ZoomPicture(
-                                              articleId: widget.preloadList
+                          height: 320,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder: (context, animation1,
+                                          animation2) =>
+                                      ZoomPicture(
+                                          articleId: widget.preloadList
+                                              ?.elementAt(index)
+                                              .article
+                                              ?.articleId,
+                                          url: widget.preloadList
                                                   ?.elementAt(index)
                                                   .article
-                                                  ?.articleId,
-                                              url: widget.preloadList
-                                                      ?.elementAt(index)
-                                                      .article
-                                                      ?.imageUrl ??
-                                                  "https://placekitten.com/200/300"),
-                                      transitionDuration:
-                                          const Duration(seconds: 0),
-                                      reverseTransitionDuration:
-                                          const Duration(seconds: 0),
-                                    ),
-                                  );
-                                },
-                                child: articleWidget,
+                                                  ?.imageUrl ??
+                                              "https://placekitten.com/200/300"),
+                                  transitionDuration:
+                                      const Duration(seconds: 0),
+                                  reverseTransitionDuration:
+                                      const Duration(seconds: 0),
+                                ),
+                              );
+                            },
+                            child: articleWidget,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: horizontalPadding),
+                          child: FadeInContainer(
+                            child: AutoSizeText(
+                              unescape.convert(widget.preloadList
+                                      ?.elementAt(index)
+                                      .article
+                                      ?.meta
+                                      ?.trim() ??
+                                  widget.preloadList
+                                      ?.elementAt(index)
+                                      .article
+                                      ?.title ??
+                                  ""),
+                              maxLines: 3,
+                              textAlign: TextAlign.start,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontFamily: APP_FONT_MEDIUM,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 21,
                               ),
                             ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: horizontalPadding),
-                              child: FadeInContainer(
-                                child: AutoSizeText(
-                                  unescape.convert(widget.preloadList
-                                          ?.elementAt(index)
-                                          .article
-                                          ?.meta
-                                          ?.trim() ??
-                                      widget.preloadList
-                                          ?.elementAt(index)
-                                          .article
-                                          ?.title ??
-                                      ""),
-                                  maxLines: 3,
-                                  textAlign: TextAlign.start,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: APP_FONT_MEDIUM,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 21,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 4,
-                            ),
-                            Expanded(
-                              flex: 8,
-                              child: GestureDetector(
-                                onTap: () {
-                                  openArticlePage(
-                                      widget.preloadList
-                                          ?.elementAt(index)
-                                          .article,
-                                      index);
-                                },
-                                child: Column(
-                                  children: [
-                                    Flexible(
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: horizontalPadding),
-                                        width: double.maxFinite,
-                                        child: RawScrollbar(
-                                          trackVisibility: true,
-                                          interactive: true,
-                                          child: SingleChildScrollView(
-                                            physics: (!_scrollParent)
-                                                ? ScrollPhysics()
-                                                : NeverScrollableScrollPhysics(),
-                                            child: ExpandableText(
-                                              widget.preloadList
-                                                      ?.elementAt(index)
-                                                      .article
-                                                      ?.summary
-                                                      ?.trim() ??
-                                                  "Read Article",
-                                              textAlign: TextAlign.left,
-                                              maxLines: 7,
-                                              style: const TextStyle(
-                                                  fontSize: 16,
-                                                  color: Colors.white54,
-                                                  fontFamily: APP_FONT_LIGHT,
-                                                  fontWeight: FontWeight.w600),
-                                              expandText: 'See more',
-                                              linkColor: Colors.white,
-                                              collapseText: 'Hide',
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 2,
-                                    ),
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: horizontalPadding),
-                                      margin: const EdgeInsets.only(top: 2),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          SingleChildScrollView(
-                                            scrollDirection: Axis.horizontal,
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                    widget.preloadList
-                                                            ?.elementAt(index)
-                                                            .article
-                                                            ?.source ??
-                                                        "",
-                                                    style: TextStyle(
-                                                      color: Colors.white30,
-                                                      fontSize: 13,
-                                                      fontFamily:
-                                                          APP_FONT_MEDIUM,
-                                                    )),
-                                                const Text(
-                                                  " • ",
-                                                  style: TextStyle(
-                                                    color: Colors.white30,
-                                                    fontSize: 13,
-                                                    fontFamily: APP_FONT_MEDIUM,
-                                                  ),
-                                                ),
-                                                InstagramDateTimeWidget(
-                                                  publishedAt: widget
-                                                          .preloadList
-                                                          ?.elementAt(index)
-                                                          .article
-                                                          ?.publishedAt
-                                                          .toString() ??
-                                                      "",
-                                                  textSize: 13,
-                                                  fontColor: Colors.white30,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 12,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                drumJoinDialog();
-                              },
-                              child: Container(
-                                width: double.maxFinite,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 6),
-                                margin: EdgeInsets.fromLTRB(
-                                    horizontalPadding - 6,
-                                    0,
-                                    horizontalPadding - 6,
-                                    12),
-                                alignment: Alignment.centerLeft,
-                                decoration: BoxDecoration(
-                                  //color: Colors.blue,//s.withOpacity(0.1),
-                                  borderRadius:
-                                      BorderRadius.circular(borderCurve),
-                                  //color: Colors.transparent,
-                                  // borderRadius: BorderRadius.only(
-                                  //   topLeft: Radius.circular(CURVE),
-                                  //   topRight: Radius.circular(CURVE),
-                                  // ),
-                                  gradient: LinearGradient(colors: JOIN_COLOR),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const SizedBox(
-                                      width: 6,
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.all(4),
-                                      child: Image.asset(
-                                          'images/audio-waves.png',
-                                          height: 24,
-                                          color: Colors.white,
-                                          fit: BoxFit.contain),
-                                    ),
-                                    const SizedBox(
-                                      width: 6,
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        // height: questionHeight,
-                                        alignment: Alignment.centerLeft,
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 4, horizontal: 4),
-                                        child: Text(
-                                          unescape.convert(
-                                              "\"${widget.preloadList?.elementAt(index).article?.question ?? widget.preloadList?.elementAt(index).article?.title ?? ""}\"" ??
-                                                  ""),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Expanded(
+                          flex: 8,
+                          child: GestureDetector(
+                            onTap: () {
+                              openArticlePage(
+                                  widget.preloadList
+                                      ?.elementAt(index)
+                                      .article,
+                                  index);
+                            },
+                            child: Column(
+                              children: [
+                                Flexible(
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: horizontalPadding),
+                                    width: double.maxFinite,
+                                    child: RawScrollbar(
+                                      trackVisibility: true,
+                                      interactive: true,
+                                      child: SingleChildScrollView(
+                                        physics: (!_scrollParent)
+                                            ? ScrollPhysics()
+                                            : NeverScrollableScrollPhysics(),
+                                        child: ExpandableText(
+                                          widget.preloadList
+                                                  ?.elementAt(index)
+                                                  .article
+                                                  ?.summary
+                                                  ?.trim() ??
+                                              "Read Article",
                                           textAlign: TextAlign.left,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 7,
                                           style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15,
+                                              fontSize: 16,
+                                              color: Colors.white54,
                                               fontFamily: APP_FONT_LIGHT,
                                               fontWeight: FontWeight.w600),
+                                          expandText: 'See more',
+                                          linkColor: Colors.white,
+                                          collapseText: 'Hide',
                                         ),
-                                        // child:  RichText(
-                                        //   text: TextSpan(
-                                        //     text: unescape.convert(
-                                        //       "\"${widget.preloadList?.elementAt(index).article?.question ?? widget.preloadList?.elementAt(index).article?.title??""}\"" ??
-                                        //           ""),
-                                        //     style: TextStyle(
-                                        //         fontFamily: APP_FONT_LIGHT,
-                                        //         color: Colors.white,
-                                        //         fontWeight: FontWeight.w600,
-                                        //         fontSize: 15),
-                                        //     children: <TextSpan>[
-                                        //       TextSpan(
-                                        //         text: '  •  Drumm AI',
-                                        //         style: TextStyle(
-                                        //             fontFamily: APP_FONT_MEDIUM,
-                                        //             color: Colors.white24,
-                                        //             fontSize: 13),
-                                        //       ),
-                                        //     ],
-                                        //   ),
-                                        // ),
                                       ),
                                     ),
-                                    //Text("  •  Drumm AI")
-                                  ],
+                                  ),
                                 ),
-                              ),
+                                SizedBox(
+                                  height: 2,
+                                ),
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: horizontalPadding),
+                                  margin: const EdgeInsets.only(top: 2),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                widget.preloadList
+                                                        ?.elementAt(index)
+                                                        .article
+                                                        ?.source ??
+                                                    "",
+                                                style: TextStyle(
+                                                  color: Colors.white30,
+                                                  fontSize: 13,
+                                                  fontFamily:
+                                                      APP_FONT_MEDIUM,
+                                                )),
+                                            const Text(
+                                              " • ",
+                                              style: TextStyle(
+                                                color: Colors.white30,
+                                                fontSize: 13,
+                                                fontFamily: APP_FONT_MEDIUM,
+                                              ),
+                                            ),
+                                            InstagramDateTimeWidget(
+                                              publishedAt: widget
+                                                      .preloadList
+                                                      ?.elementAt(index)
+                                                      .article
+                                                      ?.publishedAt
+                                                      .toString() ??
+                                                  "",
+                                              textSize: 13,
+                                              fontColor: Colors.white30,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(
-                              height: 4,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            drumJoinDialog();
+                          },
+                          child: Container(
+                            width: double.maxFinite,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 6),
+                            margin: EdgeInsets.fromLTRB(
+                                horizontalPadding - 6,
+                                0,
+                                horizontalPadding - 6,
+                                12),
+                            alignment: Alignment.centerLeft,
+                            decoration: BoxDecoration(
+                              //color: Colors.blue,//s.withOpacity(0.1),
+                              borderRadius:
+                                  BorderRadius.circular(borderCurve),
+                              //color: Colors.transparent,
+                              // borderRadius: BorderRadius.only(
+                              //   topLeft: Radius.circular(CURVE),
+                              //   topRight: Radius.circular(CURVE),
+                              // ),
+                              gradient: LinearGradient(colors: JOIN_COLOR),
                             ),
-                          ],
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const SizedBox(
+                                  width: 6,
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.all(4),
+                                  child: Image.asset(
+                                      'images/audio-waves.png',
+                                      height: 24,
+                                      color: Colors.white,
+                                      fit: BoxFit.contain),
+                                ),
+                                const SizedBox(
+                                  width: 6,
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    // height: questionHeight,
+                                    alignment: Alignment.centerLeft,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 4, horizontal: 4),
+                                    child: Text(
+                                      unescape.convert(
+                                          "\"${widget.preloadList?.elementAt(index).article?.question ?? widget.preloadList?.elementAt(index).article?.title ?? ""}\"" ??
+                                              ""),
+                                      textAlign: TextAlign.left,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontFamily: APP_FONT_LIGHT,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    // child:  RichText(
+                                    //   text: TextSpan(
+                                    //     text: unescape.convert(
+                                    //       "\"${widget.preloadList?.elementAt(index).article?.question ?? widget.preloadList?.elementAt(index).article?.title??""}\"" ??
+                                    //           ""),
+                                    //     style: TextStyle(
+                                    //         fontFamily: APP_FONT_LIGHT,
+                                    //         color: Colors.white,
+                                    //         fontWeight: FontWeight.w600,
+                                    //         fontSize: 15),
+                                    //     children: <TextSpan>[
+                                    //       TextSpan(
+                                    //         text: '  •  Drumm AI',
+                                    //         style: TextStyle(
+                                    //             fontFamily: APP_FONT_MEDIUM,
+                                    //             color: Colors.white24,
+                                    //             fontSize: 13),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
+                                  ),
+                                ),
+                                //Text("  •  Drumm AI")
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4,
                         ),
                       ],
                     ),
-                  );
-                },
+                  ],
+                ),
               ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

@@ -50,7 +50,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
   Widget build(BuildContext context) {
     int boosts = 0;
     double curve = CURVE;
-    double borderWidth = 2.5;
+    double borderWidth = 3.5;
     double bottomPadding = 100;
     double horizontalPadding = 10;
     int imageUrlLength = widget.articleBand.article?.imageUrl?.length ?? 0;

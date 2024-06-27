@@ -114,7 +114,7 @@ class ShareWidget extends StatelessWidget {
       print('GeneratedLink : ${response.result}');
 
       String articleLink =
-          "${(article?.question != null) ? "Drumm: ${unescape.convert(article?.question ?? "")}" : unescape.convert(article?.title ?? "")}\n\nTap to join the discussion on Drumm.\n${response.result}";
+          "${(article?.meta != null&&article?.question != null) ? "${unescape.convert(article?.meta ?? "")}  •  ${unescape.convert(article?.question ?? "")}" : unescape.convert(article?.title ?? "")}\n\nTap to join the discussion on Drumm.\n${response.result}";
 
       Share.share(articleLink);
 
