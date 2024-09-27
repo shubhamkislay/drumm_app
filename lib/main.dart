@@ -224,12 +224,10 @@ class _MyAppState extends State<MyApp>
   }
 
   void drumJoinDialog(Question question, Drummer drummer) {
-    print("SHOWING DRUMM JOIN DIALOG!!!!");
     String currId = FirebaseAuth.instance.currentUser!.uid;
     if (drummer.uid != currId) {
       Vibrate.feedback(FeedbackType.selection);
 
-      print("SHOWING DRUMM JOIN DIALOG!!!!");
       showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
