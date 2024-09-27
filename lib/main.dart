@@ -203,7 +203,7 @@ class _MyAppState extends State<MyApp>
 
     Map<String, dynamic> json = jsonDecode(message.data["jam"]);
     Jam jam = Jam.fromJson(json);
-    print("Handling a background message title: ${jam.title}");
+    //print("Handling a background message title: ${jam.title}");
     bool ring = jsonDecode(message.data["ring"]);
     String drummerID = message.data["drummerID"].toString();
 
