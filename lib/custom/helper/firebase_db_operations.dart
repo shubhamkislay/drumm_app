@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:algolia/algolia.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/custom/helper/access_firebase_token.dart';
 import 'package:drumm_app/model/Stats.dart';
 import 'package:drumm_app/model/profession.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -1476,234 +1477,312 @@ class FirebaseDBOperations {
 
   static Future<void> sendRingingNotification(
       String deviceToken, Jam jam) async {
-    var url = Uri.https('fcm.googleapis.com', '/fcm/send');
+    var url = Uri.https('fcm.googleapis.com', '/v1/projects/drummapp/messages:send');
     final uid = FirebaseAuth.instance.currentUser?.uid;
     print("${jam.toJson().toString()}");
     Drummer drummer = await FirebaseDBOperations.getDrummer(uid ?? "");
+
+    // Fetch the access token
+    AccessTokenFirebase accessTokenGetter = AccessTokenFirebase();
+    String authToken = await accessTokenGetter.getAccessToken();
+
+    // Set headers
     Map<String, String> header = {
       'Content-Type': 'application/json',
-      'Authorization':
-          'key=AAAA8pEyjik:APA91bFjoRwCsioHAgDsWYHhcmy63BQuxL3iUBBaYnE9s2SHMnJtl0oyD39Mdp0KphI53ldusblYoiCCvxNaKJEFVQbGVTrwMcqDu9w_Rpx_Vsjx_9TdE3xI54vqj0lNOPDqAb5GPwOp'
+      'Authorization': 'Bearer $authToken',
     };
+
+    // Build the request body
     final body = jsonEncode({
-      "to": deviceToken,
-      "notification": {
-        "body": jam.title,
-        "title": "Drumm Call",
-        "sound": "conga_drumm.caf",
-        //"subtitle": "You asked",
-        "image": "${drummer.imageUrl}"
-      },
-      "priority": "high",
-      "content_available": true,
-      "mutable_content": true,
-      "data": {"jam": jam, "ring": true, "drummerID": uid, "open": true}
+      "message": {
+        "token": deviceToken,  // Correctly use 'token' for targeting a device
+        "notification": {
+          "body": jam.title,
+          "title": "Drumm Call",
+          "image": "${drummer.imageUrl}"  // Remove 'sound' from here
+        },
+        "data": {
+          "jam": jsonEncode(jam.toJson()),  // Convert jam object to JSON string
+          "ring": true,
+          "drummerID": uid ?? "",
+          "open": true
+        },
+        "android": {
+          "priority": "high",
+          "notification": {
+            "sound": "conga_drumm.caf"  // Android custom sound
+          }
+        },
+        "apns": {
+          "payload": {
+            "aps": {
+              "sound": "conga_drumm.caf"  // iOS custom sound
+            }
+          },
+          "headers": {
+            "apns-priority": "10"
+          }
+        }
+      }
     });
 
+    // Send the notification
     var response = await http.post(url, headers: header, body: body);
     if (response.statusCode == 200) {
-      /*
-     Map<String, dynamic> json = jsonDecode(response.body);
-     List<dynamic> list = json['choices'];
-     String searchResult = list[0]["text”];
-     */
+      print("Ringing notification sent successfully");
     } else {
       throw Exception('Failed to send calling notification');
     }
   }
 
+
   static Future<void> sendNotificationToDeviceToken(Jam jam) async {
-    print("Sending notification");
-    var url = Uri.https('fcm.googleapis.com', '/fcm/send');
+    print("Sending notification to device");
+
+    var url = Uri.https('fcm.googleapis.com', '/v1/projects/drummapp/messages:send');
     final uid = FirebaseAuth.instance.currentUser?.uid;
     Drummer drummer = await FirebaseDBOperations.getDrummer(uid ?? "");
     String deviceToken = drummer.token ?? "";
     print("Device Token is: ${deviceToken}");
 
+    // Fetch the access token
+    AccessTokenFirebase accessTokenGetter = AccessTokenFirebase();
+    String authToken = await accessTokenGetter.getAccessToken();
+
+    // Set headers
     Map<String, String> header = {
       'Content-Type': 'application/json',
-      'Authorization':
-          'key=AAAA8pEyjik:APA91bFjoRwCsioHAgDsWYHhcmy63BQuxL3iUBBaYnE9s2SHMnJtl0oyD39Mdp0KphI53ldusblYoiCCvxNaKJEFVQbGVTrwMcqDu9w_Rpx_Vsjx_9TdE3xI54vqj0lNOPDqAb5GPwOp'
+      'Authorization': 'Bearer $authToken',
     };
 
     String subtitle = "Hey ${drummer.username}! Did you know?";
-    //Due to conversion error, setting the timestamo for lastActive as null
+    // Set lastActive to null as a workaround
     jam.lastActive = null;
 
+    // Build the request body
     final body = jsonEncode({
-      "to": deviceToken,
-      "notification": {
-        "body": (jam.question != null)
-            ? "${jam.title}\n\n${jam.question}"
-            : "${jam.title}",
-        "title": subtitle,
-        "sound": "conga_drumm.caf",
-        "image": "${jam.imageUrl}"
-      },
-      "priority": "high",
-      "content_available": true,
-      "mutable_content": true,
-      "data": {"jam": jam, "ring": false, "drummerID": uid, "open": true}
+      "message": {
+        "token": deviceToken,  // Correctly use 'token' to send to a specific device
+        "notification": {
+          "body": (jam.question != null)
+              ? "${jam.title}\n\n${jam.question}"
+              : "${jam.title}",
+          "title": subtitle,
+          "image": "${jam.imageUrl}"  // Removed 'sound' from here
+        },
+        "data": {
+          "jam": jsonEncode(jam.toJson()),  // Serialize the jam object
+          "ring": false.toString(),
+          "drummerID": uid ?? "",
+          "open": true.toString(),
+        },
+        "android": {
+          "priority": "high",
+          "notification": {
+            "sound": "conga_drumm.caf"  // Custom sound for Android
+          }
+        },
+        "apns": {
+          "payload": {
+            "aps": {
+              "sound": "conga_drumm.caf"  // Custom sound for iOS
+            }
+          },
+          "headers": {
+            "apns-priority": "10"
+          }
+        }
+      }
     });
 
+    // Send the notification
     var response = await http.post(url, headers: header, body: body);
 
+    // Check the response
     if (response.statusCode == 200) {
-      // If the server returns an OK response, then parse the JSON.
-      print("Sent Notification to device Token");
-      Map<String, dynamic> json = jsonDecode(response.body);
-      /*List<dynamic> list = json['choices'];
-    String searchResult = list[0]["text”];*/
+      print("Notification sent successfully to device Token");
     } else {
-      // If the server did not return an OK response,
-      // then throw an exception.
       print("Failed to send deviceToken notification ${response.statusCode}");
-      throw Exception(
-          'Failed to send deviceToken notification ${response.statusCode}');
+      throw Exception('Failed to send deviceToken notification ${response.statusCode}');
     }
   }
+
 
   static Future<void> sendNotificationToTopic(
       Jam jam, bool ring, bool open) async {
     print("Sending notification to topic");
     print("${jam.toJson().toString()}");
-    var url = Uri.https('fcm.googleapis.com', '/fcm/send');
+
+    var url = Uri.https('fcm.googleapis.com', '/v1/projects/drummapp/messages:send');
     final uid = FirebaseAuth.instance.currentUser?.uid;
     Drummer drummer = await FirebaseDBOperations.getDrummer(uid ?? "");
     bool isBroadcast = jam.broadcast ?? false;
-    var toParams = "";
-    if (isBroadcast) {
-      toParams = "/topics/" + 'creator';
-    } else {
-      toParams = "/topics/" + '${jam.bandId}';
-    }
+    var topic = isBroadcast ? "creator" : '${jam.bandId}';
 
+    // Fetch the access token
+    AccessTokenFirebase accessTokenGetter = AccessTokenFirebase();
+    String authToken = await accessTokenGetter.getAccessToken();
+
+    print("Auth Token received: $authToken");
+
+    // Set headers
     Map<String, String> header = {
       'Content-Type': 'application/json',
-      'Authorization':
-          'key=AAAA8pEyjik:APA91bFjoRwCsioHAgDsWYHhcmy63BQuxL3iUBBaYnE9s2SHMnJtl0oyD39Mdp0KphI53ldusblYoiCCvxNaKJEFVQbGVTrwMcqDu9w_Rpx_Vsjx_9TdE3xI54vqj0lNOPDqAb5GPwOp'
+      'Authorization': 'Bearer $authToken',
     };
 
-
-    String subtitle = (ring)
+    // Notification subtitle and body
+    String subtitle = ring
         ? "${drummer.username} is drumming..."
-        : (isBroadcast)
-            ? "Welcome ${drummer.username} to Drumm"
-            : "${drummer.username} is drumming...";
+        : isBroadcast
+        ? "Welcome ${drummer.username} to Drumm"
+        : "${drummer.username} is drumming...";
 
-    var notifcationBody =
-        (jam.question != null) ? "${jam.question}\n\n${jam.title}" : jam.title;
-    //Due to conversion error, setting the timestamo for lastActive as null
+    var notificationBody = jam.question != null
+        ? "${jam.question}\n\n${jam.title}"
+        : jam.title;
+
+    // Set lastActive to null as a workaround
     jam.lastActive = null;
+
+    // Build the request body
     final body = jsonEncode({
-      "to": "${toParams}",
-      //if (!ring)
-      "notification": {
-        "body": notifcationBody,
-        "title": subtitle,
-        "sound": "conga_drumm.caf",
-        "image": "${jam.imageUrl}"
-      },
-      "priority": "high",
-      "content_available": true,
-      "mutable_content": true,
-      "data": {"jam": jam, "ring": ring, "drummerID": uid, "open": true}
+      "message": {
+        "topic": topic,  // Correctly using 'topic' instead of 'token'
+        "notification": {
+          "body": notificationBody,
+          "title": subtitle,
+          "image": jam.imageUrl  // Optional image
+        },
+        "data": {
+          "jam": jsonEncode(jam.toJson()),  // Serialize the jam object
+          "ring": ring.toString(),
+          "drummerID": uid ?? "",
+          "open": open.toString(),
+        },
+        "android": {
+          "priority": "high",
+          "notification": {
+            "sound": "conga_drumm.caf"  // Custom sound for Android
+          }
+        },
+        "apns": {
+          "payload": {
+            "aps": {
+              "sound": "conga_drumm.caf"  // Custom sound for iOS
+            }
+          },
+          "headers": {
+            "apns-priority": "10"
+          }
+        }
+      }
     });
+
+    // Send the notification
     var response = await http.post(url, headers: header, body: body);
 
+    // Check the response
     if (response.statusCode == 200) {
-      // If the server returns an OK response, then parse the JSON.
-      print("Sent Notification to Topic");
-      Map<String, dynamic> json = jsonDecode(response.body);
-      /*List<dynamic> list = json['choices'];
-    String searchResult = list[0]["text”];*/
+      print("Notification sent successfully");
     } else {
-      // If the server did not return an OK response,
-      // then throw an exception.
-      print("Failed to send topic notification ${response.statusCode}");
-      throw Exception(
-          'Failed to send topic notification ${response.statusCode}');
+      print("Failed to send topic notification: ${response.statusCode}");
+      print("Error response body: ${response.body}");
+      throw Exception('Failed to send topic notification ${response.statusCode}');
     }
   }
+
+
+
 
   static Future<void> sendQuestionNotificationToTopic(Question question) async {
     print("Sending notification to topic");
-    var url = Uri.https('fcm.googleapis.com', '/fcm/send');
+
+    var url = Uri.https('fcm.googleapis.com', '/v1/projects/drummapp/messages:send');
     Drummer drummer = await FirebaseDBOperations.getDrummer(question.uid ?? "");
-    String departmentName = question.departmentName??"";
-    String designation = question.designation??"";
+    String departmentName = question.departmentName ?? "";
+    String designation = question.designation ?? "";
 
-    String topicName = "";
-    if(designation.isNotEmpty){
-      topicName = designation;
-    }else{
-      topicName = departmentName;
-    }
-    var toParams = "/topics/" + '${topicName}';
+    // Determine the topic name based on designation or departmentName
+    String topicName = designation.isNotEmpty ? designation : departmentName;
+    String topic = "/topics/$topicName";  // Correctly formatted topic name
 
+    // Fetch the access token
+    AccessTokenFirebase accessTokenGetter = AccessTokenFirebase();
+    String authToken = await accessTokenGetter.getAccessToken();
 
-
+    // Set headers
     Map<String, String> header = {
       'Content-Type': 'application/json',
-      'Authorization':
-      'key=AAAA8pEyjik:APA91bFjoRwCsioHAgDsWYHhcmy63BQuxL3iUBBaYnE9s2SHMnJtl0oyD39Mdp0KphI53ldusblYoiCCvxNaKJEFVQbGVTrwMcqDu9w_Rpx_Vsjx_9TdE3xI54vqj0lNOPDqAb5GPwOp'
+      'Authorization': 'Bearer $authToken',
     };
 
-
     String subtitle = "${drummer.username} wants to connect";
+    var notificationBody = "${question.query}";
 
-    var notificationBody ="${question.query}";
+    // Build the request body
     final body = jsonEncode({
-      "to": "${toParams}",
-      "notification": {
-        "body": notificationBody,
-        "title": subtitle,
-        "sound": "conga_drumm.caf",
-        "image": "${drummer.imageUrl}"
-      },
-      "priority": "high",
-      "content_available": true,
-      "mutable_content": true,
-      "data": {"question": question,"drummer":drummer,"open": true}
+      "message": {
+        "topic": topic,  // Correctly use 'topic' for sending to a topic
+        "notification": {
+          "body": notificationBody,
+          "title": subtitle,
+          "image": "${drummer.imageUrl}"  // Removed 'sound' from here
+        },
+        "data": {
+          "question": jsonEncode(question.toJson()),  // Serialize the question object
+          "drummer": jsonEncode(drummer.toJson()),    // Serialize the drummer object
+          "open": true.toString()
+        },
+        "android": {
+          "priority": "high",
+          "notification": {
+            "sound": "conga_drumm.caf"  // Custom sound for Android
+          }
+        },
+        "apns": {
+          "payload": {
+            "aps": {
+              "sound": "conga_drumm.caf"  // Custom sound for iOS
+            }
+          },
+          "headers": {
+            "apns-priority": "10"
+          }
+        }
+      }
     });
+
+    // Send the notification
     var response = await http.post(url, headers: header, body: body);
 
+    // Check the response
     if (response.statusCode == 200) {
-      // If the server returns an OK response, then parse the JSON.
-      print("Sent Notification to for question");
-      Map<String, dynamic> json = jsonDecode(response.body);
-      /*List<dynamic> list = json['choices'];
-    String searchResult = list[0]["text”];*/
+      print("Sent Notification for question");
     } else {
-      // If the server did not return an OK response,
-      // then throw an exception.
       print("Failed to send topic notification ${response.statusCode}");
-      throw Exception(
-          'Failed to send topic notification ${response.statusCode}');
+      throw Exception('Failed to send topic notification ${response.statusCode}');
     }
   }
 
+
   static Future<void> sendNotificationToDrummer(
-      String deviceToken,Jam jam, bool ring, bool open) async {
-    print("Sending notification to topic");
-    print("${jam.toJson().toString()}");
-    var url = Uri.https('fcm.googleapis.com', '/fcm/send');
+      String deviceToken, Jam jam, bool ring, bool open) async {
+    print("Sending notification to drummer");
+
+    var url = Uri.https('fcm.googleapis.com', '/v1/projects/drummapp/messages:send');
     final uid = FirebaseAuth.instance.currentUser?.uid;
     Drummer drummer = await FirebaseDBOperations.getDrummer(uid ?? "");
     bool isBroadcast = jam.broadcast ?? false;
-    var toParams = "";
-    if (isBroadcast) {
-      toParams = "/topics/" + 'creator';
-    } else {
-      toParams = "/topics/" + '${jam.bandId}';
-    }
 
+    AccessTokenFirebase accessTokenGetter = AccessTokenFirebase();
+    String authToken = await accessTokenGetter.getAccessToken();
+
+    // Set headers
     Map<String, String> header = {
       'Content-Type': 'application/json',
-      'Authorization':
-      'key=AAAA8pEyjik:APA91bFjoRwCsioHAgDsWYHhcmy63BQuxL3iUBBaYnE9s2SHMnJtl0oyD39Mdp0KphI53ldusblYoiCCvxNaKJEFVQbGVTrwMcqDu9w_Rpx_Vsjx_9TdE3xI54vqj0lNOPDqAb5GPwOp'
+      'Authorization': 'Bearer $authToken',
     };
-
 
     String subtitle = (ring)
         ? "${drummer.username} is drumming..."
@@ -1711,40 +1790,60 @@ class FirebaseDBOperations {
         ? "Welcome ${drummer.username} to Drumm"
         : "${drummer.username} is drumming...";
 
-    var notifcationBody =
-    (jam.question != null) ? "${jam.question}\n\n${jam.title}" : jam.title;
-    //Due to conversion error, setting the timestamo for lastActive as null
+    var notificationBody = (jam.question != null)
+        ? "${jam.question}\n\n${jam.title}"
+        : jam.title;
+
+    // Set lastActive to null as a workaround
     jam.lastActive = null;
+
+    // Build the request body
     final body = jsonEncode({
-      "to": "$deviceToken",
-      if (!ring)
-      "notification": {
-        "body": notifcationBody,
-        "title": subtitle,
-        "sound": "conga_drumm.caf",
-        "image": "${drummer.imageUrl}"
-      },
-      "priority": "high",
-      "content_available": true,
-      "mutable_content": true,
-      "data": {"jam": jam, "ring": ring, "drummerID": uid, "open": true}
+      "message": {
+        "token": deviceToken,  // Correctly use 'token' for sending to a specific device
+        if (!ring)
+          "notification": {
+            "body": notificationBody,
+            "title": subtitle,
+            "image": "${drummer.imageUrl}"  // Removed 'sound' from here
+          },
+        "data": {
+          "jam": jsonEncode(jam.toJson()),  // Serialize the jam object
+          "ring": ring.toString(),
+          "drummerID": uid ?? "",
+          "open": open.toString()
+        },
+        "android": {
+          "priority": "high",
+          "notification": {
+            "sound": "conga_drumm.caf"  // Custom sound for Android
+          }
+        },
+        "apns": {
+          "payload": {
+            "aps": {
+              "sound": "conga_drumm.caf"  // Custom sound for iOS
+            }
+          },
+          "headers": {
+            "apns-priority": "10"
+          }
+        }
+      }
     });
+
+    // Send the notification
     var response = await http.post(url, headers: header, body: body);
 
+    // Check the response
     if (response.statusCode == 200) {
-      // If the server returns an OK response, then parse the JSON.
-      print("Sent Notification to drummer");
-      Map<String, dynamic> json = jsonDecode(response.body);
-      /*List<dynamic> list = json['choices'];
-    String searchResult = list[0]["text”];*/
+      print("Notification sent to drummer");
     } else {
-      // If the server did not return an OK response,
-      // then throw an exception.
-      print("Failed to send topic notification ${response.statusCode}");
-      throw Exception(
-          'Failed to send topic notification ${response.statusCode}');
+      print("Failed to send notification ${response.statusCode}");
+      throw Exception('Failed to send notification ${response.statusCode}');
     }
   }
+
 
   // Notification functions end
 

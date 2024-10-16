@@ -115,6 +115,7 @@ dependencies:
   flutter_svg_provider: ^1.0.4
   flutter_svg: ^2.0.9
   stacked_page_view: ^1.1.2
+  googleapis_auth: ^1.4.1
 
 dev_dependencies:
   flutter_test:
