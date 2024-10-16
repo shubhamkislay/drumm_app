@@ -151,7 +151,7 @@ class FirebaseDBOperations {
     query = FirebaseFirestore.instance
         .collection('articles')
         .where('category', whereIn: bandCategoryList)
-        .where('country', isEqualTo: 'in')
+        .where('country', isEqualTo: 'us')
         .where('publishedAt', isNotEqualTo: null)
         .orderBy("publishedAt", descending: true)
         .limit(10);
@@ -203,7 +203,7 @@ class FirebaseDBOperations {
     query = FirebaseFirestore.instance
         .collection('articles')
         .where('category', whereIn: bandCategoryList)
-        .where('country', isEqualTo: 'in')
+        .where('country', isEqualTo: 'us')
         .where('boostamp', isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
         //.where('boosts', isGreaterThanOrEqualTo: 1)
         .orderBy("boostamp", descending: true)
@@ -248,7 +248,7 @@ class FirebaseDBOperations {
     query = FirebaseFirestore.instance
         .collection('articles')
         .where('category', whereIn: bandCategoryList)
-        .where('country', isEqualTo: 'in')
+        .where('country', isEqualTo: 'us')
         .where('publishedAt', isNotEqualTo: null)
         .orderBy("publishedAt", descending: true)
         .limit(10);
@@ -295,7 +295,7 @@ class FirebaseDBOperations {
     query = FirebaseFirestore.instance
         .collection('articles')
         .where('category', whereIn: bandCategoryList)
-        .where('country', isEqualTo: 'in')
+        .where('country', isEqualTo: 'us')
         .where('boostamp', isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
         //.where('boosts', isGreaterThanOrEqualTo: 1)
         .orderBy("boostamp", descending: true)
@@ -1886,7 +1886,7 @@ class FirebaseDBOperations {
         .collection('articles')
         .where('category', whereIn: bandHook)
         // .where('articleId', whereNotIn: seenPosts)
-        .where('country', isEqualTo: 'in')
+        .where('country', isEqualTo: 'us')
         .where('publishedAt', isNotEqualTo: null)
         .orderBy("publishedAt", descending: true)
         .limit(50);
