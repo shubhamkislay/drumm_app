@@ -9,7 +9,7 @@ import 'bottom_sheet.dart';
 class AISummary {
   static Future<String> getNewsSummary(String? newsArticle) async {
     const apiKey =
-        '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'; // Replace with your ChatGPT API key
+        'sk-mYrveJ_1HP6T2URP8us3tvkenWJl-tZ_F8KT8ln8yuT3BlbkFJxmTWfma_klcfZ3q_tqG8OtzZfcdZjhbEcYrU_1EoMA'; // Replace with your ChatGPT API key
     const apiUrl = 'https://api.openai.com/v1/completions';
 
     final requestBody = {
