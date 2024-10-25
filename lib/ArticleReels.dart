@@ -17,23 +17,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
-import 'package:drumm_app/InterestPage.dart';
-import 'package:drumm_app/article_jam_page.dart';
-import 'package:drumm_app/auto_join_option.dart';
-import 'package:drumm_app/create_post.dart';
-import 'package:drumm_app/custom/create_jam_bottom_sheet.dart';
-import 'package:drumm_app/custom/drumm_app_bar.dart';
-import 'package:drumm_app/custom/fade_in_text.dart';
-import 'package:drumm_app/custom/fade_in_widget.dart';
-import 'package:drumm_app/custom/helper/connect_channel.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/custom/helper/remove_duplicate.dart';
 import 'package:drumm_app/custom/instagram_date_time_widget.dart';
 import 'package:drumm_app/custom/listener/connection_listener.dart';
-import 'package:drumm_app/custom/random_custom_bk.dart';
-import 'package:drumm_app/custom/rounded_button.dart';
 import 'package:drumm_app/jam_room_page.dart';
 import 'package:drumm_app/model/Drummer.dart';
 import 'package:drumm_app/model/article.dart';
@@ -45,11 +33,8 @@ import 'package:drumm_app/open_article_page.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/theme/theme_manager.dart';
 import 'package:http/http.dart' as http;
-import 'package:drumm_app/view_article_jams.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:stacked_page_view/stacked_page_view.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'ArticleDrummButton.dart';
@@ -610,6 +595,7 @@ class ArticleReelsState extends State<ArticleReels>
   }
 
   Widget getNewsArticles() {
+    int preloadListLength = widget.preloadList?.length??0;
     return SafeArea(
       bottom: false,
       child: ClipRRect(
@@ -619,6 +605,7 @@ class ArticleReelsState extends State<ArticleReels>
           onPageChanged: (value) {
             currentVisiblePageIndex = value;
             print("Current page index is ${currentVisiblePageIndex}");
+
             int boosts = 0;
             DateTime currentTime = DateTime.now();
             DateTime recent = currentTime.subtract(Duration(hours: 3));
@@ -661,16 +648,15 @@ class ArticleReelsState extends State<ArticleReels>
             try {
               FirebaseDBOperations.OggOpus_Player.pause();
             } catch (e) {}
-            int articleSize = widget.preloadList?.length ?? 0;
 
             print(
-                "Article size is $articleSize and current page is $value");
+                "Article size is $preloadListLength and current page is $value");
 
-            if (value >= articleSize - 2) {
+            if (value > preloadListLength - 5) {
               getArticlesData(false);
             }
             //Prefetch the next page image
-            if (value != articleSize - 1) {
+            if (value != preloadListLength - 1) {
               preloadNextPageImage(value + 1);
             }
           },
@@ -688,21 +674,6 @@ class ArticleReelsState extends State<ArticleReels>
                   ?.articleId);
               checkIfUserLiked(index);
             }
-
-            // if (widget.preloadList?.elementAt(index).article?.imageUrl ==
-            //     null) {
-            //   fetchMissingImageUrls(
-            //       widget.preloadList!.elementAt(index).article ??
-            //           Article(),
-            //       index);
-            //   imageSet.add(widget.preloadList
-            //           ?.elementAt(index)
-            //           .article
-            //           ?.articleId ??
-            //       "");
-            //   // print("Contains article ${artcls?.elementAt(index).articleId} ${imageSet.contains(artcls?.elementAt(index).articleId)}");
-            // }
-
             Widget articleWidget = SafeArea(
               bottom: false,
               child: Hero(
@@ -830,7 +801,8 @@ class ArticleReelsState extends State<ArticleReels>
                         Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: horizontalPadding),
-                          child: FadeInContainer(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
                             child: AutoSizeText(
                               unescape.convert(widget.preloadList
                                       ?.elementAt(index)
@@ -984,11 +956,6 @@ class ArticleReelsState extends State<ArticleReels>
                               //color: Colors.blue,//s.withOpacity(0.1),
                               borderRadius:
                                   BorderRadius.circular(borderCurve),
-                              //color: Colors.transparent,
-                              // borderRadius: BorderRadius.only(
-                              //   topLeft: Radius.circular(CURVE),
-                              //   topRight: Radius.circular(CURVE),
-                              // ),
                               gradient: LinearGradient(colors: JOIN_COLOR),
                             ),
                             child: Row(
@@ -1123,7 +1090,7 @@ class ArticleReelsState extends State<ArticleReels>
       Query<Map<String, dynamic>> query = FirebaseFirestore.instance
           .collection('articles')
           .where('category', whereIn: bandCategoryList)
-          .where('country', isEqualTo: 'in')
+          .where('country', isEqualTo: 'us')
           .where('publishedAt', isNotEqualTo: null)
           .orderBy("publishedAt", descending: true)
           .limit(_pageSize);
@@ -1134,7 +1101,7 @@ class ArticleReelsState extends State<ArticleReels>
         query = FirebaseFirestore.instance
             .collection('articles')
             .where('category', whereIn: bandCategoryList)
-            .where('country', isEqualTo: 'in')
+            .where('country', isEqualTo: 'us')
             .where('boostamp',
                 isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
             //.where('boosts', isGreaterThanOrEqualTo: 1)

@@ -894,7 +894,7 @@ class HomeFeedPageState extends State<HomeFeedPage>
       Query<Map<String, dynamic>> query = FirebaseFirestore.instance
           .collection('articles')
           .where('category', whereIn: bandCategoryList)
-          .where('country', isEqualTo: 'in')
+          .where('country', isEqualTo: 'us')
           .where('source', isNotEqualTo: null)
           .orderBy("publishedAt", descending: true)
           .limit(_pageSize);
