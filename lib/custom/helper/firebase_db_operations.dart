@@ -20,7 +20,6 @@ import 'package:ogg_opus_player/ogg_opus_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../model/AiVoice.dart';
 import '../../model/algolia_article.dart';
@@ -33,16 +32,6 @@ typedef void JamCallback(Jam jam);
 class FirebaseDBOperations {
   static var listener;
   static late AnimationController ANIMATION_CONTROLLER;
-  static YoutubePlayerController youtubeController = YoutubePlayerController(
-    initialVideoId: YoutubePlayer.convertUrlToId(
-            "https://www.youtube.com/watch?v=d8jFqvDn3o8") ??
-        "d8jFqvDn3o8",
-    flags: const YoutubePlayerFlags(
-      autoPlay: false,
-      mute: false,
-      controlsVisibleAtStart: false,
-    ),
-  );
 
   static Algolia algolia = Algolia.init(
     applicationId: '6GGZ3SNOXT',

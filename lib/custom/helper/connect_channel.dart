@@ -42,7 +42,7 @@ class ConnectToChannel {
   static bool engineInitialized = false; //
   static bool isTokenExpiring = false;
 
-  static var insights = Insights( '6GGZ3SNOXT',  '490164dceb711d2a20364501566f7eb0');
+  static var insights = Insights(applicationID: '6GGZ3SNOXT',apiKey: '490164dceb711d2a20364501566f7eb0');
 
   static String? channelID = "";
   static late BuildContext jamRoomContext;

@@ -13,7 +13,7 @@ class ExploreNewsButton extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Vibrate.feedback(FeedbackType.selection);
-        controller?.swipeLeft();
+        //controller?.swipeLeft();
       },
       child: Container(
         decoration: BoxDecoration(

@@ -20,7 +20,6 @@ import 'package:ogg_opus_player/ogg_opus_player.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../ShareWidget.dart';
 import '../SoundPlayWidget.dart';
 import '../article_jam_page.dart';
@@ -54,12 +53,10 @@ class HomeItem extends StatefulWidget {
   Function(Article) updateList;
   Function(Article) openArticle;
   List<Color>? backgroundColor;
-  YoutubePlayerController youtubePlayerController;
 
   Future<void> Function() onRefresh;
   HomeItem(
       {Key? key,
-      required this.youtubePlayerController,
       required this.play,
       required this.index,
       required this.articleBand,
@@ -108,20 +105,6 @@ class _HomeItemState extends State<HomeItem> {
       ),
       child: Stack(
         children: [
-          HomeFeedData(
-            youtubePlayerController: widget.youtubePlayerController,
-            onRefresh: widget.onRefresh,
-            source: widget.articleBand.article?.source ?? "",
-            publishedAt:
-                widget.articleBand.article?.publishedAt.toString() ?? "",
-            openArticle: widget.openArticle,
-            article: widget.articleBand.article ?? Article(),
-            joinDrumm: widget.joinDrumm,
-            articleBand: widget.articleBand,
-            backgroundColor: widget.backgroundColor,
-            imageUrl: widget.articleBand.article?.imageUrl??"",
-            onTop: widget.onTop,
-          ),
           const BottomFade(),
         ],
       ),
@@ -142,7 +125,6 @@ class HomeFeedData extends StatefulWidget {
   Article article;
   String publishedAt;
   ArticleBand articleBand;
-  YoutubePlayerController youtubePlayerController;
   bool onTop;
   String? imageUrl;
   List<Color>? backgroundColor;
@@ -153,7 +135,6 @@ class HomeFeedData extends StatefulWidget {
       required this.publishedAt,
       required this.openArticle,
       required this.article,
-      required this.youtubePlayerController,
       required this.joinDrumm,
       required this.articleBand,
         this.imageUrl,
@@ -406,90 +387,7 @@ class _HomeFeedDataState extends State<HomeFeedData> {
                                       fit: BoxFit.cover,
                                     ),
                                   )
-                                : (widget.onTop)
-                                    ? YoutubePlayer(
-                                        controller:
-                                            widget.youtubePlayerController,
-                                        bottomActions: [
-                                          ProgressBar(
-                                            isExpanded: true,
-                                            colors: const ProgressBarColors(
-                                                playedColor: Colors.white70,
-                                                bufferedColor: Colors.white24,
-                                                handleColor: Colors.transparent,
-                                                backgroundColor:
-                                                    Colors.white12),
-                                          ),
-                                        ],
-                                        actionsPadding: const EdgeInsets.all(0),
-                                        topActions: [
-                                          Expanded(child: Container()),
-                                          VolumeButton(
-                                              youtubePlayerController: widget
-                                                  .youtubePlayerController)
-                                        ],
-                                        thumbnail: Image.network(
-                                          YoutubePlayer.getThumbnail(
-                                              videoId: convertUrlToId(
-                                                      widget.article.url ??
-                                                          "") ??
-                                                  ""),
-                                          fit: BoxFit.cover,
-                                          loadingBuilder: (_, child,
-                                                  progress) =>
-                                              progress == null
-                                                  ? child
-                                                  : Container(
-                                                      color:
-                                                          Colors.transparent),
-                                          errorBuilder: (context, _, __) =>
-                                              Image.network(
-                                            YoutubePlayer.getThumbnail(
-                                                videoId: convertUrlToId(
-                                                        widget.article.url ??
-                                                            "") ??
-                                                    ""),
-                                            fit: BoxFit.cover,
-                                            loadingBuilder: (_, child,
-                                                    progress) =>
-                                                progress == null
-                                                    ? child
-                                                    : Container(
-                                                        color: Colors.black),
-                                            errorBuilder: (context, _, __) =>
-                                                Container(),
-                                          ),
-                                        ),
-                                      )
-                                    : Image.network(
-                                        YoutubePlayer.getThumbnail(
-                                            videoId: convertUrlToId(
-                                                    widget.article.url ?? "") ??
-                                                ""),
-                                        fit: BoxFit.cover,
-                                        loadingBuilder: (_, child, progress) =>
-                                            progress == null
-                                                ? child
-                                                : Container(
-                                                    color: Colors.transparent),
-                                        errorBuilder: (context, _, __) =>
-                                            Image.network(
-                                          YoutubePlayer.getThumbnail(
-                                              videoId: convertUrlToId(
-                                                      widget.article.url ??
-                                                          "") ??
-                                                  ""),
-                                          fit: BoxFit.cover,
-                                          loadingBuilder:
-                                              (_, child, progress) =>
-                                                  progress == null
-                                                      ? child
-                                                      : Container(
-                                                          color: Colors.black),
-                                          errorBuilder: (context, _, __) =>
-                                              Container(),
-                                        ),
-                                      ),
+                                : Container(),
                           ),
                         ],
                       ),
@@ -784,11 +682,6 @@ class _HomeFeedDataState extends State<HomeFeedData> {
   void generateLink() async {
     String imageUrl = widget.article?.imageUrl ?? DEFAULT_APP_IMAGE_URL;
     String source = widget.article?.source ?? "";
-    if (source.toLowerCase() == "youtube") {
-      imageUrl = YoutubePlayer.getThumbnail(
-          videoId:
-              YoutubePlayer.convertUrlToId(widget.article.url ?? "") ?? "");
-    }
     Jam jam = Jam();
     jam.broadcast = false;
     jam.title = unescape.convert(widget.article?.title ?? "");
@@ -871,9 +764,9 @@ class _HomeFeedDataState extends State<HomeFeedData> {
 }
 
 class VolumeButton extends StatefulWidget {
-  YoutubePlayerController youtubePlayerController;
 
-  VolumeButton({Key? key, required this.youtubePlayerController})
+
+  VolumeButton({Key? key})
       : super(key: key);
 
   @override
@@ -886,17 +779,6 @@ class _VolumeButtonState extends State<VolumeButton> {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          if (!muteAudio) {
-            widget.youtubePlayerController.mute();
-            setState(() {
-              muteAudio = true;
-            });
-          } else {
-            widget.youtubePlayerController.unMute();
-            setState(() {
-              muteAudio = false;
-            });
-          }
         },
         child: Padding(
           padding: const EdgeInsets.all(12.0),

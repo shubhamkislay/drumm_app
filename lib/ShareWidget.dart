@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import 'model/article.dart';
 import 'model/home_item.dart';
@@ -57,11 +56,6 @@ class ShareWidget extends StatelessWidget {
   void generateLink() async {
     String imageUrl = article?.imageUrl ?? DEFAULT_APP_IMAGE_URL;
     String source = article?.source ?? "";
-    if (source.toLowerCase() == "youtube") {
-      imageUrl = YoutubePlayer.getThumbnail(
-          videoId:
-          YoutubePlayer.convertUrlToId(article?.url ?? "") ?? "");
-    }
     Jam jam = Jam();
     jam.broadcast = false;
     jam.title = unescape.convert(article?.title ?? "");

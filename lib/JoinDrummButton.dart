@@ -18,7 +18,7 @@ class JoinDrummButton extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         //Vibrate.feedback(FeedbackType.impact);
-        controller?.swipeRight();
+        //controller?.swipeRight();
         try{
           onTap!();
         }catch(e){

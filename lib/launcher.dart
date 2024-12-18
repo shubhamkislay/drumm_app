@@ -40,7 +40,6 @@ import 'TutorialScreen.dart';
 import 'UserProfileIcon.dart';
 import 'ask_page.dart';
 import 'band_details_page.dart';
-import 'custom/CustomSwiper.dart';
 import 'custom/bottom_sheet.dart';
 import 'custom/constants/Constants.dart';
 import 'custom/create_jam_bottom_sheet.dart';
@@ -51,7 +50,6 @@ import 'custom/rounded_button.dart';
 import 'jam_room_page.dart';
 import 'model/band.dart';
 import 'my_home_page.dart';
-import 'news_feed.dart';
 import 'theme/theme_constants.dart';
 import 'theme/theme_manager.dart';
 

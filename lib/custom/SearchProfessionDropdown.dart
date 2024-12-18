@@ -68,7 +68,7 @@ class SearchProfessionDropdown extends StatelessWidget {
           ),
           onChanged: (value) {
             //log('changing value to: ${value.}');
-            professionSelectedCallback(value);
+            professionSelectedCallback(value!);
           },
         ),
       ),
