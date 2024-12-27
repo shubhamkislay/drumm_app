@@ -75,7 +75,7 @@ PODS:
   - AWSPolly (2.38.1):
     - AWSCore (= 2.38.1)
   - BranchSDK (2.2.2)
-  - cloud_firestore (5.5.1):
+  - cloud_firestore (5.6.0):
     - Firebase/Firestore (= 11.6.0)
     - firebase_core
     - Flutter
@@ -121,7 +121,7 @@ PODS:
     - Firebase/Auth (= 11.6.0)
     - firebase_core
     - Flutter
-  - firebase_core (3.8.1):
+  - firebase_core (3.9.0):
     - Firebase/CoreOnly (= 11.6.0)
     - Flutter
   - firebase_database (11.2.0):
@@ -539,7 +539,7 @@ SPEC CHECKSUMS:
   AWSMobileClient: 7dd0eeec23af3b14a941b2801a9d2b4256beb98f
   AWSPolly: 05353b24e72973e34bf764e6a9962e890152d650
   BranchSDK: 324f47ce8568005684cf024a47980bb713f47648
-  cloud_firestore: 7454c90954e42af68a49fdd799ef0afc0e4dc3f4
+  cloud_firestore: 4e400e0609faca03c9654ce2e850f52b49388f82
   CryptoSwift: 967f37cea5a3294d9cce358f78861652155be483
   facebook_app_events: d791f99d78f74cde976edd378678566cb7bb4ab0
   FBAEMKit: 58cb5f302cdd715a56d4c1d0dfdd2e423ac1421a
@@ -549,7 +549,7 @@ SPEC CHECKSUMS:
   Firebase: 374a441a91ead896215703a674d58cdb3e9d772b
   firebase_analytics: c2b131770f77b2f6b55f618342c898e9fb1a7c28
   firebase_auth: 1623c3c0b4d587c35f795181b83aacff03099b84
-  firebase_core: 1d34bc236bb7b99e016778db05f49db0b7999851
+  firebase_core: bd721e8b848ede3048ad7be3cd735be948b64485
   firebase_database: 1d30326b5dca112bd9efcb2c1b6fd3f839187eb0
   firebase_messaging: 423f0b488a40be4e897213224f228929197e0d9f
   firebase_storage: 4395729ceeff297f86fa779d00bf09fa2befea8b

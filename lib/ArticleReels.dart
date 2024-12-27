@@ -238,6 +238,8 @@ class ArticleReelsState extends State<ArticleReels>
                                 play: false,
                                 onPressed: () {
                                   addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_MODERATE);
+                                  FirebaseDBOperations.updateLike(
+                                      articleOnTop?.article?.articleId);
                                 },
                               ),
                               Container(
@@ -378,6 +380,8 @@ class ArticleReelsState extends State<ArticleReels>
                                 userBoosted: isBoosted,
                                 boostedCallback: (boost) {
                                   addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_INTENSE);
+                                  FirebaseDBOperations.updateBoosts(
+                                      articleOnTop?.article?.articleId);
                                   setState(() {
                                     if (boost) {
                                       int currentBoosts =
@@ -412,6 +416,8 @@ class ArticleReelsState extends State<ArticleReels>
                                     iconHeight: 18,
                                     onPressed: () {
                                       addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_INTENSE);
+                                      FirebaseDBOperations.updateLike(
+                                          articleOnTop?.article?.articleId);
                                     },
                                   ),
                                 ),
@@ -538,6 +544,8 @@ class ArticleReelsState extends State<ArticleReels>
                                 setState(() {
                                   showCounter = false;
                                 });
+                                FirebaseDBOperations.updateLike(
+                                    articleOnTop?.article?.articleId);
                               },
                               onChange: (String timeStamp) {
                                 debugPrint('Countdown Changed $timeStamp');
@@ -636,6 +644,8 @@ class ArticleReelsState extends State<ArticleReels>
               print('Executed logic for page $value after 7 seconds');
 
               addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_MODERATE);
+              FirebaseDBOperations.updateLike(
+                  articleOnTop?.article?.articleId);
             });
 
             countDownController.reset();
@@ -1440,6 +1450,8 @@ class ArticleReelsState extends State<ArticleReels>
         // Execute your logic here
 
         addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_MODERATE);
+        FirebaseDBOperations.updateLike(
+            articleOnTop?.article?.articleId);
       });
     }
   }
@@ -1641,6 +1653,8 @@ class ArticleReelsState extends State<ArticleReels>
           articleBand: articleOnTop,
           startDrumming: () {
             addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_INTENSE);
+            FirebaseDBOperations.updateJoined(
+                articleOnTop?.article?.articleId);
             ArticleBand? articleBand = ArticleBand();
             articleBand = articleOnTop;
             Vibrate.feedback(FeedbackType.success);
@@ -1666,5 +1680,8 @@ class ArticleReelsState extends State<ArticleReels>
     }
     FirebaseDBOperations.incrementCategoryPoints(
         articleBand.article?.category ?? "general", points);
+
+    FirebaseDBOperations.updateLike(
+        articleBand.article?.articleId);
   }
 }

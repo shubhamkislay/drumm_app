@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 const TUTORIAL_MESSAGE_JOIN_TITLE = "You're about to start your first drumm!";
 const TUTORIAL_MESSAGE_JOIN = "A notification will be sent to all the band members to join the drumm and discuss the article. You can start or join a drumm either by swiping right on the article or pressing the blue button. Happy drumming!";
@@ -63,7 +65,30 @@ List<Color> EXPLORE_COLOR =  [
 Colors.red,
 Colors.pinkAccent,
 ];
+/// Cosine similarity calculation
+double cosineSimilarity(VectorValue vector1, VectorValue vector2) {
+  List<double> a = vector1.toArray();
+  List<double> b = vector2.toArray();
 
+  double dotProduct = 0.0;
+  double magnitudeA = 0.0;
+  double magnitudeB = 0.0;
+
+  for (int i = 0; i < a.length; i++) {
+    dotProduct += a[i] * b[i];
+    magnitudeA += a[i] * a[i];
+    magnitudeB += b[i] * b[i];
+  }
+
+  magnitudeA = sqrt(magnitudeA);
+  magnitudeB = sqrt(magnitudeB);
+
+  if (magnitudeA == 0 || magnitudeB == 0) {
+    return 0.0; // Avoid division by zero
+  }
+
+  return dotProduct / (magnitudeA * magnitudeB);
+}
 Color getCategoryColor(String category) {
   switch (category.toLowerCase()) {
     case 'business':
