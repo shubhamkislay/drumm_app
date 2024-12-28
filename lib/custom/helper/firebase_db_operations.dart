@@ -50,7 +50,7 @@ class FirebaseDBOperations {
 
   static Future<List<Article>> searchArticles(String query, int page) async {
     AlgoliaQuerySnapshot getArticles = await algolia.instance
-        .index('articles')
+        .index("stories")
         .setPage(page)
         .setUserToken(FirebaseAuth.instance.currentUser?.uid ?? "")
         .query(query)
@@ -87,7 +87,7 @@ class FirebaseDBOperations {
 
     //while(arLen<1 && page<=2) {
     AlgoliaQuery algoliaQuery = algolia.instance
-        .index('articles')
+        .index("stories")
         .setFacets(['meta'])
         .setHitsPerPage(7)
         //.query("Youtube")
@@ -139,7 +139,7 @@ class FirebaseDBOperations {
     }
     if (fetchedBands.isEmpty) bandCategoryList.add("general");
     query = FirebaseFirestore.instance
-        .collection('articles')
+        .collection("stories")
         .where('category', whereIn: bandCategoryList)
         .where('country', isEqualTo: 'us')
         .where('publishedAt', isNotEqualTo: null)
@@ -191,7 +191,7 @@ class FirebaseDBOperations {
 
     if (fetchedBands.isEmpty) bandCategoryList.add("general");
     query = FirebaseFirestore.instance
-        .collection('articles')
+        .collection("stories")
         .where('category', whereIn: bandCategoryList)
         .where('country', isEqualTo: 'us')
         .where('boostamp', isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
@@ -236,7 +236,7 @@ class FirebaseDBOperations {
     bandCategoryList.addAll(selectedBand.hooks ?? []);
 
     query = FirebaseFirestore.instance
-        .collection('articles')
+        .collection("stories")
         .where('category', whereIn: bandCategoryList)
         .where('country', isEqualTo: 'us')
         .where('publishedAt', isNotEqualTo: null)
@@ -283,7 +283,7 @@ class FirebaseDBOperations {
     DateTime oneDayAgo = currentTime.subtract(Duration(hours: 3));
 
     query = FirebaseFirestore.instance
-        .collection('articles')
+        .collection("stories")
         .where('category', whereIn: bandCategoryList)
         .where('country', isEqualTo: 'us')
         .where('boostamp', isGreaterThanOrEqualTo: Timestamp.fromDate(oneDayAgo))
@@ -319,7 +319,7 @@ class FirebaseDBOperations {
       String similarQuery) async {
     AlgoliaArticles algoliaArticles = AlgoliaArticles();
 
-    AlgoliaQuery algoliaQuery = algolia.instance.index('articles');
+    AlgoliaQuery algoliaQuery = algolia.instance.index("stories");
 
     algoliaQuery.similarQuery(similarQuery);
 
@@ -354,7 +354,7 @@ class FirebaseDBOperations {
     AlgoliaArticles algoliaArticles = AlgoliaArticles();
 
     AlgoliaQuery algoliaQuery = algolia.instance
-        .index('articles')
+        .index("stories")
         .setFacets(['meta'])
         .setHitsPerPage(1)
         .setUserToken(userToken)
@@ -379,7 +379,7 @@ class FirebaseDBOperations {
     List hooks = selectedBand.hooks ?? [];
 
     AlgoliaQuery algoliaQuery = algolia.instance
-        .index('articles')
+        .index("stories")
         .setFacets(['meta'])
         .setHitsPerPage(7)
         //.query("Youtube")
@@ -420,7 +420,7 @@ class FirebaseDBOperations {
   static void updateArticle(
       String articleID, Article updatedArticle, UpdateCallback callback) {
     FirebaseFirestore.instance
-        .collection("articles")
+        .collection("stories")
         .doc(articleID)
         .set(
           updatedArticle.toJson(),
@@ -436,7 +436,7 @@ class FirebaseDBOperations {
   static Future<bool> updateLike(String? articleID) async {
     final String currentUserID = getCurrentUserID();
     final DocumentReference articleRef =
-        FirebaseFirestore.instance.collection("articles").doc(articleID);
+        FirebaseFirestore.instance.collection("stories").doc(articleID);
     final DocumentReference userLikeRef = FirebaseFirestore.instance
         .collection("userActivity")
         .doc(currentUserID)
@@ -528,7 +528,7 @@ class FirebaseDBOperations {
   static Future<bool> updateBoosts(String? articleID) async {
     final String currentUserID = getCurrentUserID();
     final DocumentReference articleRef =
-    FirebaseFirestore.instance.collection("articles").doc(articleID);
+    FirebaseFirestore.instance.collection("stories").doc(articleID);
     final DocumentReference userLikeRef = FirebaseFirestore.instance
         .collection("userActivity")
         .doc(currentUserID)
@@ -567,7 +567,7 @@ class FirebaseDBOperations {
 
   static void updateSummary(String? articleID, String? summary) async {
     FirebaseFirestore.instance
-        .collection("articles")
+        .collection("stories")
         .doc(articleID)
         .update({'summary': summary ?? ""});
   }
@@ -575,7 +575,7 @@ class FirebaseDBOperations {
   static void updateReads(String? articleID) async {
     //final DocumentReference articleRef =
     FirebaseFirestore.instance
-        .collection("articles")
+        .collection("stories")
         .doc(articleID)
         .update({'reads': FieldValue.increment(1)});
   }
@@ -583,7 +583,7 @@ class FirebaseDBOperations {
   static Future<bool> removeLike(String? articleID) async {
     final String currentUserID = getCurrentUserID();
     final DocumentReference articleRef =
-        FirebaseFirestore.instance.collection("articles").doc(articleID);
+        FirebaseFirestore.instance.collection("stories").doc(articleID);
     final DocumentReference userLikeRef = FirebaseFirestore.instance
         .collection("userActivity")
         .doc(currentUserID)
@@ -610,7 +610,7 @@ class FirebaseDBOperations {
   static Future<bool> removeBoost(String? articleID) async {
     final String currentUserID = getCurrentUserID();
     final DocumentReference articleRef =
-    FirebaseFirestore.instance.collection("articles").doc(articleID);
+    FirebaseFirestore.instance.collection("stories").doc(articleID);
     final DocumentReference userLikeRef = FirebaseFirestore.instance
         .collection("userActivity")
         .doc(currentUserID)
@@ -682,7 +682,7 @@ class FirebaseDBOperations {
   static Future<bool> updateSeen(String? articleID) async {
     final String currentUserID = getCurrentUserID();
     // final DocumentReference articleRef =
-    // FirebaseFirestore.instance.collection("articles").doc(articleID);
+    // FirebaseFirestore.instance.collection("stories").doc(articleID);
     final DocumentReference userLikeRef = FirebaseFirestore.instance
         .collection("userActivity")
         .doc(currentUserID)
@@ -706,7 +706,7 @@ class FirebaseDBOperations {
   static Future<bool> updateJoined(String? articleID) async {
     final String currentUserID = getCurrentUserID();
     // final DocumentReference articleRef =
-    // FirebaseFirestore.instance.collection("articles").doc(articleID);
+    // FirebaseFirestore.instance.collection("stories").doc(articleID);
     final DocumentReference userLikeRef = FirebaseFirestore.instance
         .collection("userActivity")
         .doc(currentUserID)
@@ -1460,7 +1460,7 @@ class FirebaseDBOperations {
     Article article = Article();
     print("getArticle triggered");
     var data = await FirebaseFirestore.instance
-        .collection('articles')
+        .collection("stories")
         .doc(articleId)
         .get();
     article = Article.fromJson(data);
@@ -1920,7 +1920,7 @@ class FirebaseDBOperations {
     if (query.length >= 3) {
       final uid = FirebaseAuth.instance.currentUser?.uid;
       var data = await FirebaseFirestore.instance
-          .collection('articles')
+          .collection("stories")
           .where('title', isGreaterThanOrEqualTo: query)
           .where('title', isLessThan: query + '\uf8ff')
           // .doc(uid)
@@ -1938,7 +1938,7 @@ class FirebaseDBOperations {
     print("getArticles triggered");
     // final uid = FirebaseAuth.instance.currentUser?.uid;
     var data = await FirebaseFirestore.instance
-        .collection('articles')
+        .collection("stories")
         .where('uid', isEqualTo: uid)
         // .doc(uid)
         // .collection('questions')
@@ -2037,7 +2037,7 @@ class FirebaseDBOperations {
     List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
 
     Query<Map<String, dynamic>> query = FirebaseFirestore.instance
-        .collection('articles')
+        .collection("stories")
         .where('category', whereIn: bandHook)
         // .where('articleId', whereNotIn: seenPosts)
         .where('country', isEqualTo: 'us')
@@ -2070,7 +2070,7 @@ class FirebaseDBOperations {
     ///Uncomment the below code if you want to replay the articles after you have seen everything
     // if(filterArticle.length<1&&checkedEverything){
     //   Query<Map<String, dynamic>> query = FirebaseFirestore.instance
-    //       .collection('articles')
+    //       .collection("stories")
     //       .where('category', isEqualTo: bandID)
     //   // .where('country', isEqualTo: 'in')
     //       .where('source', isNotEqualTo: null)

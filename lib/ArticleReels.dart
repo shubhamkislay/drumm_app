@@ -542,8 +542,6 @@ class ArticleReelsState extends State<ArticleReels>
                                 setState(() {
                                   showCounter = false;
                                 });
-                                FirebaseDBOperations.updateRead(
-                                    articleOnTop?.article?.articleId);
                               },
                               onChange: (String timeStamp) {
                                 //debugPrint('Countdown Changed $timeStamp');
@@ -1096,7 +1094,7 @@ class ArticleReelsState extends State<ArticleReels>
       print("Fetched categories: ${bandCategoryList.toString()}");
 
       Query<Map<String, dynamic>> query = FirebaseFirestore.instance
-          .collection('articles')
+          .collection("stories")
           .where('category', whereIn: bandCategoryList)
           .where('country', isEqualTo: 'us')
           .where('publishedAt', isNotEqualTo: null)
@@ -1107,7 +1105,7 @@ class ArticleReelsState extends State<ArticleReels>
         DateTime currentTime = DateTime.now();
         DateTime oneDayAgo = currentTime.subtract(Duration(hours: 3));
         query = FirebaseFirestore.instance
-            .collection('articles')
+            .collection("stories")
             .where('category', whereIn: bandCategoryList)
             .where('country', isEqualTo: 'us')
             .where('boostamp',
@@ -1309,7 +1307,7 @@ class ArticleReelsState extends State<ArticleReels>
   updateFirestoreArticle(Article article) {
     Map<String, dynamic> imageMap() => {'imageUrl': article.imageUrl};
     FirebaseFirestore.instance
-        .collection("articles")
+        .collection("stories")
         .doc(article.articleId)
         .set(imageMap(), SetOptions(merge: true));
   }
@@ -1448,6 +1446,7 @@ class ArticleReelsState extends State<ArticleReels>
         // Execute your logic here
 
         addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_MODERATE);
+        print("After 7 minutes one");
         FirebaseDBOperations.updateRead(
             articleOnTop?.article?.articleId);
       });
