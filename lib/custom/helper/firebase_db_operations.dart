@@ -473,7 +473,7 @@ class FirebaseDBOperations {
     try {
       final WriteBatch batch = FirebaseFirestore.instance.batch();
       DateTime currentTime = DateTime.now();
-      batch.set(userLikeRef, {'listened': true, 'timestamp':Timestamp.fromDate(currentTime)});
+      batch.set(userLikeRef, {'timestamp':Timestamp.fromDate(currentTime), 'articleId':articleID});
 
       await batch.commit();
       return true;
@@ -494,7 +494,7 @@ class FirebaseDBOperations {
     try {
       final WriteBatch batch = FirebaseFirestore.instance.batch();
       DateTime currentTime = DateTime.now();
-      batch.set(userLikeRef, {'shared': true, 'timestamp':Timestamp.fromDate(currentTime)});
+      batch.set(userLikeRef, {'timestamp':Timestamp.fromDate(currentTime), 'articleId':articleID});
 
       await batch.commit();
       return true;
@@ -515,7 +515,7 @@ class FirebaseDBOperations {
     try {
       final WriteBatch batch = FirebaseFirestore.instance.batch();
       DateTime currentTime = DateTime.now();
-      batch.set(userLikeRef, {'read': true, 'timestamp':Timestamp.fromDate(currentTime)});
+      batch.set(userLikeRef, {'timestamp':Timestamp.fromDate(currentTime), 'articleId':articleID});
 
       await batch.commit();
       return true;
@@ -539,12 +539,11 @@ class FirebaseDBOperations {
       final WriteBatch batch = FirebaseFirestore.instance.batch();
 
       batch.update(articleRef, {
-        'likes': FieldValue.increment(1),
         'boosts': FieldValue.increment(1),
         'boostamp': Timestamp.now()
       });
       DateTime currentTime = DateTime.now();
-      batch.set(userLikeRef, {'boosted': true, 'timestamp':Timestamp.fromDate(currentTime)});
+      batch.set(userLikeRef, {'boosted': true, 'timestamp':Timestamp.fromDate(currentTime), 'articleId':articleID});
 
       await batch.commit();
       return true;
