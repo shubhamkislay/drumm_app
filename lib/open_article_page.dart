@@ -96,7 +96,7 @@ class _OpenArticlePageState extends State<OpenArticlePage> with RouteAware {
                       onPressed: () {
                         setState(() {
                           if (widget.article.liked ?? false) {
-                            FirebaseDBOperations.removeLike(
+                            FirebaseDBOperations.removeBoost(
                                 widget.article.articleId);
                             setState(() {
                               widget.article.liked = false;
@@ -106,7 +106,7 @@ class _OpenArticlePageState extends State<OpenArticlePage> with RouteAware {
                               //_articlesController.add(articles);
                             });
                           } else {
-                            FirebaseDBOperations.updateLike(
+                            FirebaseDBOperations.updateBoosts(
                                 widget.article.articleId);
                             setState(() {
                               widget.article.liked = true;

@@ -462,6 +462,69 @@ class FirebaseDBOperations {
     }
   }
 
+  static Future<bool> updateListened(String? articleID) async {
+    final String currentUserID = getCurrentUserID();
+    final DocumentReference userLikeRef = FirebaseFirestore.instance
+        .collection("userActivity")
+        .doc(currentUserID)
+        .collection("listened")
+        .doc(articleID);
+
+    try {
+      final WriteBatch batch = FirebaseFirestore.instance.batch();
+      DateTime currentTime = DateTime.now();
+      batch.set(userLikeRef, {'listened': true, 'timestamp':Timestamp.fromDate(currentTime)});
+
+      await batch.commit();
+      return true;
+    } catch (error) {
+      print("Error updating listened status: $error");
+      return false;
+    }
+  }
+
+  static Future<bool> updateShared(String? articleID) async {
+    final String currentUserID = getCurrentUserID();
+    final DocumentReference userLikeRef = FirebaseFirestore.instance
+        .collection("userActivity")
+        .doc(currentUserID)
+        .collection("shared")
+        .doc(articleID);
+
+    try {
+      final WriteBatch batch = FirebaseFirestore.instance.batch();
+      DateTime currentTime = DateTime.now();
+      batch.set(userLikeRef, {'shared': true, 'timestamp':Timestamp.fromDate(currentTime)});
+
+      await batch.commit();
+      return true;
+    } catch (error) {
+      print("Error updating shared status: $error");
+      return false;
+    }
+  }
+
+  static Future<bool> updateRead(String? articleID) async {
+    final String currentUserID = getCurrentUserID();
+    final DocumentReference userLikeRef = FirebaseFirestore.instance
+        .collection("userActivity")
+        .doc(currentUserID)
+        .collection("read")
+        .doc(articleID);
+
+    try {
+      final WriteBatch batch = FirebaseFirestore.instance.batch();
+      DateTime currentTime = DateTime.now();
+      batch.set(userLikeRef, {'read': true, 'timestamp':Timestamp.fromDate(currentTime)});
+
+      await batch.commit();
+      return true;
+    } catch (error) {
+      print("Error updating read status: $error");
+      return false;
+    }
+  }
+
   static Future<bool> updateBoosts(String? articleID) async {
     final String currentUserID = getCurrentUserID();
     final DocumentReference articleRef =
@@ -570,6 +633,7 @@ class FirebaseDBOperations {
       batch.delete(userLikeRef);
 
       await batch.commit();
+      print("Removed Boost");
       return true;
     } catch (error) {
       print("Error removing like status: $error");
