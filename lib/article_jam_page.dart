@@ -231,6 +231,7 @@ class ArticleJamPageState extends State<ArticleJamPage> {
                         onPressed: () {
                           Jam jam = Jam();
                           jam.broadcast = false;
+                          jam.embedding = widget.article?.embedding;
                           jam.title = widget.article?.title;
                           jam.bandId = widget.article?.category;
                           jam.jamId = widget.article?.jamId;

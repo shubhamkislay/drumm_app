@@ -559,7 +559,7 @@ class _JamRoomPageState extends State<JamRoomPage> {
 
     if (widget.jam.articleId != null) {
       getArticle(widget.jam.articleId);
-      FirebaseDBOperations.updateJoined(widget.jam.articleId);
+      FirebaseDBOperations.updateJoined(widget.jam.articleId,widget.jam.embedding);
     } else {
       print("Article ID is null ${widget.jam.articleId}");
     }

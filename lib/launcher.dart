@@ -109,7 +109,7 @@ class _LauncherPageState extends State<LauncherPage>
   Widget build(BuildContext context) {
     tabController = TabController(
         length: 3, vsync: this, animationDuration: const Duration(milliseconds: 0));
-    FirebaseDBOperations.searchArticles("",0);
+    //FirebaseDBOperations.searchArticles("",0);
     return Scaffold(
       backgroundColor: COLOR_BACKGROUND,
       body: Stack(

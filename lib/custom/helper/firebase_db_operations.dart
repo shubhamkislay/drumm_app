@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:algolia/algolia.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/custom/helper/access_firebase_token.dart';
 import 'package:drumm_app/model/Stats.dart';
 import 'package:drumm_app/model/profession.dart';
@@ -462,18 +463,24 @@ class FirebaseDBOperations {
     }
   }
 
-  static Future<bool> updateListened(String? articleID) async {
+  static Future<bool> updateListened(String? articleID, VectorValue? embedding) async {
     final String currentUserID = getCurrentUserID();
+    final String newInteractionId = FirebaseFirestore.instance
+        .collection("userActivity")
+        .doc(currentUserID)
+        .collection("interactions")
+        .doc()
+        .id;
     final DocumentReference userLikeRef = FirebaseFirestore.instance
         .collection("userActivity")
         .doc(currentUserID)
-        .collection("listened")
-        .doc(articleID);
+        .collection("interactions")
+        .doc(newInteractionId);
 
     try {
       final WriteBatch batch = FirebaseFirestore.instance.batch();
       DateTime currentTime = DateTime.now();
-      batch.set(userLikeRef, {'timestamp':Timestamp.fromDate(currentTime), 'articleId':articleID});
+      batch.set(userLikeRef, {'timestamp':Timestamp.fromDate(currentTime), 'articleId':articleID,'type':'listened','userId':currentUserID,'interactionId':newInteractionId,'weight':WEIGHT_LISTENED,'embedding':embedding});
 
       await batch.commit();
       return true;
@@ -483,18 +490,24 @@ class FirebaseDBOperations {
     }
   }
 
-  static Future<bool> updateShared(String? articleID) async {
+  static Future<bool> updateShared(String? articleID, VectorValue? embedding) async {
     final String currentUserID = getCurrentUserID();
+    final String newInteractionId = FirebaseFirestore.instance
+        .collection("userActivity")
+        .doc(currentUserID)
+        .collection("interactions")
+        .doc()
+        .id;
     final DocumentReference userLikeRef = FirebaseFirestore.instance
         .collection("userActivity")
         .doc(currentUserID)
-        .collection("shared")
-        .doc(articleID);
+        .collection("interactions")
+        .doc(newInteractionId);
 
     try {
       final WriteBatch batch = FirebaseFirestore.instance.batch();
       DateTime currentTime = DateTime.now();
-      batch.set(userLikeRef, {'timestamp':Timestamp.fromDate(currentTime), 'articleId':articleID});
+      batch.set(userLikeRef, {'timestamp':Timestamp.fromDate(currentTime), 'articleId':articleID,'type':'shared','userId':currentUserID,'interactionId':newInteractionId,'weight':WEIGHT_SHARED,'embedding':embedding});
 
       await batch.commit();
       return true;
@@ -504,18 +517,29 @@ class FirebaseDBOperations {
     }
   }
 
-  static Future<bool> updateRead(String? articleID) async {
+  static Future<bool> updateRead(String? articleID, VectorValue? embedding) async {
     final String currentUserID = getCurrentUserID();
+    final String newInteractionId = FirebaseFirestore.instance
+        .collection("userActivity")
+        .doc(currentUserID)
+        .collection("interactions")
+        .doc()
+        .id;
     final DocumentReference userLikeRef = FirebaseFirestore.instance
         .collection("userActivity")
         .doc(currentUserID)
-        .collection("read")
-        .doc(articleID);
+        .collection("interactions")
+        .doc(newInteractionId);
 
     try {
       final WriteBatch batch = FirebaseFirestore.instance.batch();
       DateTime currentTime = DateTime.now();
-      batch.set(userLikeRef, {'timestamp':Timestamp.fromDate(currentTime), 'articleId':articleID});
+      batch.set(userLikeRef, {'timestamp':Timestamp.fromDate(currentTime),
+        'articleId':articleID,
+        'type':'read',
+        'userId':currentUserID,
+        'embedding':embedding,
+        'interactionId':newInteractionId,'weight':WEIGHT_READ});
 
       await batch.commit();
       return true;
@@ -525,15 +549,24 @@ class FirebaseDBOperations {
     }
   }
 
-  static Future<bool> updateBoosts(String? articleID) async {
+  static Future<bool> updateBoosts(String? articleID, VectorValue? embedding) async {
     final String currentUserID = getCurrentUserID();
     final DocumentReference articleRef =
     FirebaseFirestore.instance.collection("stories").doc(articleID);
+
+    final String newInteractionId = FirebaseFirestore.instance
+        .collection("userActivity")
+        .doc(currentUserID)
+        .collection("interactions")
+        .doc()
+        .id;
+
     final DocumentReference userLikeRef = FirebaseFirestore.instance
         .collection("userActivity")
         .doc(currentUserID)
-        .collection("boosts")
-        .doc(articleID);
+        .collection("interactions")
+        .doc(newInteractionId);
+
 
     try {
       final WriteBatch batch = FirebaseFirestore.instance.batch();
@@ -543,7 +576,7 @@ class FirebaseDBOperations {
         'boostamp': Timestamp.now()
       });
       DateTime currentTime = DateTime.now();
-      batch.set(userLikeRef, {'boosted': true, 'timestamp':Timestamp.fromDate(currentTime), 'articleId':articleID});
+      batch.set(userLikeRef, { 'timestamp':Timestamp.fromDate(currentTime), 'articleId':articleID,'type':'boosted','userId':currentUserID, 'interactionId':newInteractionId,'weight':WEIGHT_BOOSTED,'embedding':embedding});
 
       await batch.commit();
       return true;
@@ -611,11 +644,13 @@ class FirebaseDBOperations {
     final String currentUserID = getCurrentUserID();
     final DocumentReference articleRef =
     FirebaseFirestore.instance.collection("stories").doc(articleID);
-    final DocumentReference userLikeRef = FirebaseFirestore.instance
+
+    final QuerySnapshot<Map<String, dynamic>> data = await FirebaseFirestore.instance
         .collection("userActivity")
-        .doc(currentUserID)
-        .collection("boosts")
-        .doc(articleID);
+        .doc(getCurrentUserID())
+        .collection("interactions")
+        .where('type', isEqualTo: 'boosted')
+        .where('articleId', isEqualTo: articleID).get();
 
     try {
       final WriteBatch batch = FirebaseFirestore.instance.batch();
@@ -629,7 +664,16 @@ class FirebaseDBOperations {
         'boosts': FieldValue.increment(-1),
         'boostamp':Timestamp.fromDate(oneDayAgo),
       });
-      batch.delete(userLikeRef);
+
+      for (var doc in data.docs) {
+        var docRef = FirebaseFirestore.instance
+            .collection("userActivity")
+            .doc(getCurrentUserID())
+            .collection("interactions")
+            .doc(doc.id);
+
+        batch.delete(docRef);
+      }
 
       await batch.commit();
       print("Removed Boost");
@@ -665,14 +709,16 @@ class FirebaseDBOperations {
 
   static Future<bool> hasBoosted(String? articleID) async {
     try {
-      final DocumentSnapshot doc = await FirebaseFirestore.instance
+      final QuerySnapshot<Map<String, dynamic>> data = await FirebaseFirestore.instance
           .collection("userActivity")
           .doc(getCurrentUserID())
-          .collection("boosts")
-          .doc(articleID)
+          .collection("interactions")
+          .where('type', isEqualTo: 'boosted')
+          .where('articleId', isEqualTo: articleID)
           .get();
+      return data.docs.isNotEmpty;
 
-      return doc.exists;
+      //return doc.exists;
     } catch (error) {
       print("Error checking like status: $error");
       return false;
@@ -703,22 +749,28 @@ class FirebaseDBOperations {
     }
   }
 
-  static Future<bool> updateJoined(String? articleID) async {
+  static Future<bool> updateJoined(String? articleID, VectorValue? embedding) async {
     final String currentUserID = getCurrentUserID();
     // final DocumentReference articleRef =
     // FirebaseFirestore.instance.collection("stories").doc(articleID);
+    final String newInteractionId = FirebaseFirestore.instance
+        .collection("userActivity")
+        .doc(currentUserID)
+        .collection("interactions")
+        .doc()
+        .id;
     final DocumentReference userLikeRef = FirebaseFirestore.instance
         .collection("userActivity")
         .doc(currentUserID)
-        .collection("joined")
-        .doc(articleID);
+        .collection("interactions")
+        .doc(newInteractionId);
 
     try {
       final WriteBatch batch = FirebaseFirestore.instance.batch();
 
       // batch.update(articleRef, {'likes': FieldValue.increment(1)});
       DateTime currentTime = DateTime.now();
-      batch.set(userLikeRef, {'joined': true, 'timestamp':Timestamp.fromDate(currentTime)});
+      batch.set(userLikeRef, {'joined': true, 'timestamp':Timestamp.fromDate(currentTime),'type':'joined','userId':currentUserID,'articleId':articleID,'interactionId':newInteractionId, 'weight':WEIGHT_JOINED,'embedding':embedding});
 
       await batch.commit();
       return true;
@@ -1665,85 +1717,92 @@ class FirebaseDBOperations {
 
   static Future<void> sendNotificationToTopic(
       Jam jam, bool ring, bool open) async {
-    print("Sending notification to topic");
-    print("${jam.toJson().toString()}");
 
-    var url = Uri.https('fcm.googleapis.com', '/v1/projects/drummapp/messages:send');
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    Drummer drummer = await FirebaseDBOperations.getDrummer(uid ?? "");
-    bool isBroadcast = jam.broadcast ?? false;
-    var topic = isBroadcast ? "creator" : '${jam.bandId}';
+    try {
+      print("Sending notification to topic");
+      print("${jam.toJson().toString()}");
 
-    // Fetch the access token
-    AccessTokenFirebase accessTokenGetter = AccessTokenFirebase();
-    String authToken = await accessTokenGetter.getAccessToken();
+      var url = Uri.https(
+          'fcm.googleapis.com', '/v1/projects/drummapp/messages:send');
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      Drummer drummer = await FirebaseDBOperations.getDrummer(uid ?? "");
+      bool isBroadcast = jam.broadcast ?? false;
+      var topic = isBroadcast ? "creator" : '${jam.bandId}';
 
-    print("Auth Token received: $authToken");
+      // Fetch the access token
+      AccessTokenFirebase accessTokenGetter = AccessTokenFirebase();
+      String authToken = await accessTokenGetter.getAccessToken();
 
-    // Set headers
-    Map<String, String> header = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $authToken',
-    };
+      print("Auth Token received: $authToken");
 
-    // Notification subtitle and body
-    String subtitle = ring
-        ? "${drummer.username} is drumming..."
-        : isBroadcast
-        ? "Welcome ${drummer.username} to Drumm"
-        : "${drummer.username} is drumming...";
+      // Set headers
+      Map<String, String> header = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $authToken',
+      };
 
-    var notificationBody = jam.question != null
-        ? "${jam.question}\n\n${jam.title}"
-        : jam.title;
+      // Notification subtitle and body
+      String subtitle = ring
+          ? "${drummer.username} is drumming..."
+          : isBroadcast
+          ? "Welcome ${drummer.username} to Drumm"
+          : "${drummer.username} is drumming...";
 
-    // Set lastActive to null as a workaround
-    jam.lastActive = null;
+      var notificationBody = jam.question != null
+          ? "${jam.question}\n\n${jam.title}"
+          : jam.title;
 
-    // Build the request body
-    final body = jsonEncode({
-      "message": {
-        "topic": topic,  // Correctly using 'topic' instead of 'token'
-        "notification": {
-          "body": notificationBody,
-          "title": subtitle,
-          "image": jam.imageUrl  // Optional image
-        },
-        "data": {
-          "jam": jsonEncode(jam.toJson()),  // Serialize the jam object
-          "ring": ring.toString(),
-          "drummerID": uid ?? "",
-          "open": open.toString(),
-        },
-        "android": {
-          "priority": "high",
+      // Set lastActive to null as a workaround
+      jam.lastActive = null;
+
+      // Build the request body
+      final body = jsonEncode({
+        "message": {
+          "topic": topic, // Correctly using 'topic' instead of 'token'
           "notification": {
-            "sound": "conga_drumm.caf"  // Custom sound for Android
-          }
-        },
-        "apns": {
-          "payload": {
-            "aps": {
-              "sound": "conga_drumm.caf"  // Custom sound for iOS
+            "body": notificationBody,
+            "title": subtitle,
+            "image": jam.imageUrl // Optional image
+          },
+          "data": {
+            "jam": jsonEncode(jam.toJson()), // Serialize the jam object
+            "ring": ring.toString(),
+            "drummerID": uid ?? "",
+            "open": open.toString(),
+          },
+          "android": {
+            "priority": "high",
+            "notification": {
+              "sound": "conga_drumm.caf" // Custom sound for Android
             }
           },
-          "headers": {
-            "apns-priority": "10"
+          "apns": {
+            "payload": {
+              "aps": {
+                "sound": "conga_drumm.caf" // Custom sound for iOS
+              }
+            },
+            "headers": {
+              "apns-priority": "10"
+            }
           }
         }
+      });
+
+      // Send the notification
+      var response = await http.post(url, headers: header, body: body);
+
+      // Check the response
+      if (response.statusCode == 200) {
+        print("Notification sent successfully");
+      } else {
+        print("Failed to send topic notification: ${response.statusCode}");
+        print("Error response body: ${response.body}");
+        throw Exception(
+            'Failed to send topic notification ${response.statusCode}');
       }
-    });
-
-    // Send the notification
-    var response = await http.post(url, headers: header, body: body);
-
-    // Check the response
-    if (response.statusCode == 200) {
-      print("Notification sent successfully");
-    } else {
-      print("Failed to send topic notification: ${response.statusCode}");
-      print("Error response body: ${response.body}");
-      throw Exception('Failed to send topic notification ${response.statusCode}');
+    }catch(e){
+      print("Error sending notification: $e");
     }
   }
 

@@ -23,6 +23,7 @@ class Article {
   int? boosts = 0;
   String? uid;
   String? aiVoiceUrl;
+  VectorValue? embedding;
 
 
 
@@ -47,33 +48,42 @@ class Article {
         this.jamId,
         this.reads,
         this.uid,
+        this.embedding,
         this.aiVoiceUrl,
       this.content});
 
-  Article.fromJson(snapshot) {
-    reads = snapshot.data()['reads'];
-    meta = snapshot.data()['meta'];
-    liked = snapshot.data()['liked'];
-    likes = snapshot.data()['likes'];
-    boostamp = snapshot.data()['boostamp'];
-    boosts = snapshot.data()['boosts'];
-    summary = snapshot.data()['summary'];
-    source = snapshot.data()['source'];
-    dump = snapshot.data()['dump'];
-    category = snapshot.data()['category'];
-    articleId = snapshot.data()['articleId'];
-    question = snapshot.data()['question'];
-    country = snapshot.data()['country'];
-    title = snapshot.data()['title'];
-    jamId = snapshot.data()['jamId'];
-    description = snapshot.data()['description'];
-    url = snapshot.data()['url'];
-    imageUrl = snapshot.data()['imageUrl'];
-    publishedAt = snapshot.data()['publishedAt'];
-    content = snapshot.data()['content'];
-    uid = snapshot.data()['uid'];
-    aiVoiceUrl = snapshot.data()['aiVoiceUrl'];
+  Article.fromJson(DocumentSnapshot<Map<String, dynamic>> snapshot) {
+    final data = snapshot.data();
+
+    if (data != null) {
+      reads = data['reads'];
+      meta = data['meta'];
+      liked = data['liked'];
+      likes = data['likes'];
+      boostamp = data['boostamp'];
+      boosts = data['boosts'];
+      summary = data['summary'];
+      source = data['source'];
+      dump = data['dump'];
+      category = data['category'];
+      articleId = data['articleId'];
+      question = data['question'];
+      country = data['country'];
+      title = data['title'];
+      jamId = data['jamId'];
+      description = data['description'];
+      url = data['url'];
+      imageUrl = data['imageUrl'];
+      publishedAt = data['publishedAt'];
+      content = data['content'];
+      uid = data['uid'];
+      embedding = data['embedding'] is VectorValue
+          ? data['embedding'] as VectorValue // Use the existing VectorValue
+          : null; // Correctly parse the VectorValue
+      aiVoiceUrl = data['aiVoiceUrl'];
+    }
   }
+
 
   Article.fromSnapshot(snapshot) {
     reads = snapshot['reads'];
@@ -90,6 +100,7 @@ class Article {
     country = snapshot['country'];
     title = snapshot['title'];
     description = snapshot['description'];
+    embedding = snapshot['embedding'];
     url = snapshot['url'];
     imageUrl = snapshot['imageUrl'];
     publishedAt = Timestamp.fromMillisecondsSinceEpoch(snapshot['publishedAt']);
@@ -119,6 +130,7 @@ class Article {
       boosts: this.boosts,
       articleId: this.articleId,
       jamId: this.jamId,
+      embedding: this.embedding,
       content: this.content,
       aiVoiceUrl: this.aiVoiceUrl,
       liked: this.liked,

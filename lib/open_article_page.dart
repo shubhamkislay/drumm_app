@@ -107,7 +107,7 @@ class _OpenArticlePageState extends State<OpenArticlePage> with RouteAware {
                             });
                           } else {
                             FirebaseDBOperations.updateBoosts(
-                                widget.article.articleId);
+                                widget.article.articleId,widget.article.embedding);
                             setState(() {
                               widget.article.liked = true;
                               int currentLikes = widget.article.likes ?? 0;

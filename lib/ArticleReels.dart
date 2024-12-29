@@ -239,7 +239,7 @@ class ArticleReelsState extends State<ArticleReels>
                                 onPressed: () {
                                   addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_MODERATE);
                                   FirebaseDBOperations.updateListened(
-                                      articleOnTop?.article?.articleId);
+                                      articleOnTop?.article?.articleId,articleOnTop?.article?.embedding);
                                 },
                               ),
                               Container(
@@ -415,7 +415,7 @@ class ArticleReelsState extends State<ArticleReels>
                                     onPressed: () {
                                       addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_INTENSE);
                                       FirebaseDBOperations.updateShared(
-                                          articleOnTop?.article?.articleId);
+                                          articleOnTop?.article?.articleId, articleOnTop?.article?.embedding);
                                     },
                                   ),
                                 ),
@@ -641,7 +641,7 @@ class ArticleReelsState extends State<ArticleReels>
 
               addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_MODERATE);
               FirebaseDBOperations.updateRead(
-                  articleOnTop?.article?.articleId);
+                  articleOnTop?.article?.articleId,articleOnTop?.article?.embedding);
             });
 
             countDownController.reset();
@@ -1448,7 +1448,7 @@ class ArticleReelsState extends State<ArticleReels>
         addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_MODERATE);
         print("After 7 minutes one");
         FirebaseDBOperations.updateRead(
-            articleOnTop?.article?.articleId);
+            articleOnTop?.article?.articleId,articleOnTop?.article?.embedding);
       });
     }
   }
@@ -1582,6 +1582,7 @@ class ArticleReelsState extends State<ArticleReels>
     Jam jam = Jam();
     jam.broadcast = false;
     jam.title = aBand.article?.title;
+    jam.embedding = aBand.article?.embedding;
     jam.bandId = aBand.band?.bandId;
     jam.jamId = aBand.article?.jamId;
     jam.articleId = aBand.article?.articleId;
@@ -1651,7 +1652,7 @@ class ArticleReelsState extends State<ArticleReels>
           startDrumming: () {
             addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_INTENSE);
             FirebaseDBOperations.updateJoined(
-                articleOnTop?.article?.articleId);
+                articleOnTop?.article?.articleId,articleOnTop?.article?.embedding);
             ArticleBand? articleBand = ArticleBand();
             articleBand = articleOnTop;
             Vibrate.feedback(FeedbackType.success);

@@ -8,11 +8,12 @@ class Jam {
   String? bandId;
   int? count;
   String? title;
-  bool? broadcast=false;
+  bool? broadcast = false;
   String? creationTime;
   String? imageUrl;
   String? question;
   Timestamp? lastActive;
+  VectorValue? embedding;
   List<dynamic>? membersID;
 
   Jam();
@@ -28,39 +29,46 @@ class Jam {
     'question': question,
     'membersID': membersID,
     'broadcast': broadcast,
-    'imageUrl':imageUrl,
-    'lastActive':lastActive,
+    'imageUrl': imageUrl,
+    'embedding': embedding?.toArray(),
+    'lastActive': lastActive,
   };
 
   Jam.fromJson(Map<String, dynamic> json)
-      : startedBy = json['startedBy'].toString(),
+      : startedBy = json['startedBy']?.toString(),
         bandId = json['bandId'],
         broadcast = json['broadcast'],
         count = json['count'],
         question = json['question'],
-        creationTime = json['creationTime'].toString(),
+        embedding = json['embedding'] is List<dynamic>
+            ? VectorValue(List<double>.from(json['embedding'] as List<dynamic>))
+            : null,
+        creationTime = json['creationTime']?.toString(),
         jamId = json['jamId'],
         articleId = json['articleId'],
         title = json['title'],
         imageUrl = json['imageUrl'],
         lastActive = json['lastActive'],
-        membersID = List<dynamic>.from(json['membersID']);
+        membersID = json['membersID'] != null ? List<dynamic>.from(json['membersID']) : null;
 
   Jam.fromJsonObject(Map<Object?, Object?> json)
-      : startedBy = json['startedBy'].toString(),
-        bandId = json['bandId'].toString(),
-        broadcast = bool.fromEnvironment(json['broadcast'].toString().toLowerCase(), defaultValue: false),
-        count = int.parse(json['count'].toString()),
-        question = json['question'].toString(),
-        creationTime = json['creationTime'].toString(),
-        jamId = json['jamId'].toString(),
-        articleId = json['articleId'].toString(),
-        title = json['title'].toString(),
-        imageUrl = json['imageUrl'].toString(),
+      : startedBy = json['startedBy']?.toString(),
+        bandId = json['bandId']?.toString(),
+        broadcast = json['broadcast']?.toString()?.toLowerCase() == 'true',
+        count = int.tryParse(json['count']?.toString() ?? '0'),
+        question = json['question']?.toString(),
+        creationTime = json['creationTime']?.toString(),
+        embedding = json['embedding'] is List<dynamic>
+            ? VectorValue(List<double>.from(json['embedding'] as List<dynamic>))
+            : null, // Parse List<double> back into VectorValue
+        jamId = json['jamId']?.toString(),
+        articleId = json['articleId']?.toString(),
+        title = json['title']?.toString(),
+        imageUrl = json['imageUrl']?.toString(),
         lastActive = Timestamp.now();
 
   factory Jam.fromRealtimeSnapshot(DataSnapshot snapshot) {
-    Jam jam = Jam.fromDataSnapshot(snapshot.value);
+    Jam jam = Jam.fromDataSnapshot(snapshot.value as Map<dynamic, dynamic>);
     return jam;
   }
 
@@ -69,12 +77,15 @@ class Jam {
         bandId = snapshot.data()['bandId'],
         count = snapshot.data()['count'],
         question = snapshot.data()['question'],
-        creationTime = snapshot.data()['creationTime'].toString(),
+        creationTime = snapshot.data()['creationTime']?.toString(),
         title = snapshot.data()['title'],
         broadcast = snapshot.data()['broadcast'],
         membersID = snapshot.data()['membersID'],
         articleId = snapshot.data()['articleId'],
         imageUrl = snapshot.data()['imageUrl'],
+        embedding = snapshot.data()?['embedding'] is List<dynamic>
+            ? VectorValue(List<double>.from(snapshot.data()?['embedding'] as List<dynamic>))
+            : null, // Parse List<double> back into VectorValue
         lastActive = snapshot.data()['lastActive'],
         jamId = snapshot.data()['jamId'];
 
@@ -83,10 +94,13 @@ class Jam {
         bandId = snapshot['bandId'],
         count = snapshot['count'],
         question = snapshot['question'],
-        creationTime = snapshot['creationTime'].toString(),
+        creationTime = snapshot['creationTime']?.toString(),
         title = snapshot['title'],
         broadcast = snapshot['broadcast'],
         membersID = snapshot['membersID'],
+        embedding = snapshot['embedding'] is List<dynamic>
+            ? VectorValue(List<double>.from(snapshot['embedding'] as List<dynamic>))
+            : null, // Parse List<double> back into VectorValue
         imageUrl = snapshot['imageUrl'],
         lastActive = snapshot['lastActive'],
         jamId = snapshot['jamId'];
@@ -96,10 +110,13 @@ class Jam {
         bandId = snapshot.get('bandId'),
         count = snapshot.get('count'),
         question = snapshot.get('question'),
-        creationTime = snapshot.get('creationTime').toString(),
+        creationTime = snapshot.get('creationTime')?.toString(),
         title = snapshot.get('title'),
         broadcast = snapshot.get('broadcast'),
         membersID = snapshot.get('membersID'),
+        embedding = snapshot.get('embedding') is List<dynamic>
+            ? VectorValue(List<double>.from(snapshot.get('embedding') as List<dynamic>))
+            : null, // Parse List<double> back into VectorValue
         imageUrl = snapshot.get('imageUrl'),
         lastActive = snapshot.get('lastActive'),
         jamId = snapshot.get('jamId');

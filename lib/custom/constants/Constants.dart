@@ -43,6 +43,13 @@ const int STATE_TYPE_MILD_SCORE = 1;
 const int STATE_TYPE_MODERATE_SCORE = 7;
 const int STATE_TYPE_INTENSE_SCORE = 15;
 
+const double WEIGHT_BOOSTED = 1.0;
+const double WEIGHT_JOINED = 0.9;
+const double WEIGHT_SHARED = 0.8;
+const double WEIGHT_LISTENED = 0.7;
+const double WEIGHT_READ = 0.6;
+
+
 
 const double CURVE=12;
 const COLOR_BACKGROUND = COLOR_PRIMARY_DARK;

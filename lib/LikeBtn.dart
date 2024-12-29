@@ -85,7 +85,7 @@ class _LikeBtnState extends State<LikeBtn> {
             widget.article.articleId);
       } else {
         FirebaseDBOperations.updateBoosts(
-            widget.article.articleId);
+            widget.article.articleId,widget.article.embedding);
       }
       setState(() {
         if (widget.userBoosted??false) {
