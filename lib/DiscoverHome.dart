@@ -1039,13 +1039,14 @@ class DiscoverHomeState extends State<DiscoverHome>
     //     _startDocument = null;
     //     fetchedAllBoosted = true;
     //   }
-    algoliaArticles = await FirebaseDBOperations.getArticlesData(
-        _startDocument, _lastDocument, reverse);
+    List<Article> recommendedArticles = await FirebaseDBOperations.performVectorSearch();
+    // algoliaArticles = await FirebaseDBOperations.getArticlesData(
+    //     _startDocument, _lastDocument, reverse);
     setState(() {
-      latestArticle = algoliaArticles?.articles?.elementAt(0);
+      latestArticle = recommendedArticles.elementAt(0);//algoliaArticles?.articles?.elementAt(0);
     });
 
-    articleFetched.addAll(algoliaArticles?.articles ?? []);
+    articleFetched.addAll(recommendedArticles);//algoliaArticles?.articles ?? []);
     // for (Article article in algoliaArticles?.articles ?? []) {
     //   int boosts = article.boosts ?? 0;
     //   if (boosts == 0) articleFetched.add(article);
@@ -1086,7 +1087,7 @@ class DiscoverHomeState extends State<DiscoverHome>
           topIndex = 0;
           initialisedYoutubePlayer = false;
           loadAnimation = false;
-          queryID = algoliaArticles?.queryID;
+          //queryID = algoliaArticles?.queryID;
           loadingAnimation = LOADING_ASSET;
           articles = articles + articleFetched;
           articleBands = articleBands + fetchedArticleBand;

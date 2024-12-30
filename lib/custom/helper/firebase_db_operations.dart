@@ -19,6 +19,7 @@ import 'package:drumm_app/model/question.dart';
 import 'package:flutter/animation.dart';
 import 'package:ogg_opus_player/ogg_opus_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -171,6 +172,37 @@ class FirebaseDBOperations {
     return algoliaArticles;
   }
 
+  static Future<List<Article>> performVectorSearch() async {
+    try {
+      // Create a callable reference to the vectorSearch Cloud Function
+
+      final HttpsCallable callable =
+      FirebaseFunctions.instance.httpsCallable('vectorSearch');
+
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+
+      print('The user Id is : $userId');
+
+      // Call the Cloud Function with userId and limit
+      final result = await callable.call({
+        'userId': userId??"",
+        'limit': 50,
+      });
+
+      print('Raw response from Cloud Function: ${result.data['articles'][0]}');
+
+
+      // Parse the response
+      final List<Article> articles = (result.data['articles'] as List<dynamic>)
+          .map((articleData) => Article.fromCloudFunction(articleData))
+          .toList();
+
+      return articles;
+    } catch (error) {
+      print('Error performing vector search: $error');
+      return [];
+    }
+  }
   static Future<AlgoliaArticles> getBoostedArticlesData(
       DocumentSnapshot<Map<String, dynamic>>? _startDocument,
       DocumentSnapshot<Map<String, dynamic>>? _lastDocument,
