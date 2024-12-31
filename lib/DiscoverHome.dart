@@ -1039,14 +1039,17 @@ class DiscoverHomeState extends State<DiscoverHome>
     //     _startDocument = null;
     //     fetchedAllBoosted = true;
     //   }
-    List<Article> recommendedArticles = await FirebaseDBOperations.performVectorSearch();
-    // algoliaArticles = await FirebaseDBOperations.getArticlesData(
-    //     _startDocument, _lastDocument, reverse);
+    /**
+     *For Vector search use FirebaseDBOperations.performVectorSearch();
+    **/
+    //List<Article> recommendedArticles = await FirebaseDBOperations.performVectorSearch();
+     algoliaArticles = await FirebaseDBOperations.getUserRecommendedArticles(
+         _startDocument, _lastDocument, reverse);
     setState(() {
-      latestArticle = recommendedArticles.elementAt(0);//algoliaArticles?.articles?.elementAt(0);
+      latestArticle = algoliaArticles?.articles?.elementAt(0);//recommendedArticles.elementAt(0);
     });
 
-    articleFetched.addAll(recommendedArticles);//algoliaArticles?.articles ?? []);
+    articleFetched.addAll(algoliaArticles?.articles ?? []);//recommendedArticles
     // for (Article article in algoliaArticles?.articles ?? []) {
     //   int boosts = article.boosts ?? 0;
     //   if (boosts == 0) articleFetched.add(article);

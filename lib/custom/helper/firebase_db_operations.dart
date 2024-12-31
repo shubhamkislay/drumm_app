@@ -172,6 +172,55 @@ class FirebaseDBOperations {
     return algoliaArticles;
   }
 
+  static Future<AlgoliaArticles> getUserRecommendedArticles(
+      DocumentSnapshot<Map<String, dynamic>>? _startDocument,
+      DocumentSnapshot<Map<String, dynamic>>? _lastDocument,
+      bool reverse) async {
+    DocumentSnapshot<Map<String, dynamic>>? fetchedStartDocument = null;
+    DocumentSnapshot<Map<String, dynamic>>? fetchedLastDocument = null;
+
+    //if (fetchedBands.isEmpty)
+    fetchedBands = await FirebaseDBOperations.getBandByUser();
+    List bandCategoryList = [];
+
+    for (Band band in fetchedBands) {
+      bandCategoryList.addAll(band.hooks ?? []);
+    }
+    if (fetchedBands.isEmpty) bandCategoryList.add("general");
+    query = FirebaseFirestore.instance
+        .collection("recommendations")
+        .doc(getCurrentUserID())
+        .collection("articles")
+        .where('category', whereIn: bandCategoryList)
+        //.where('country', isEqualTo: 'us')
+        .where('publishedAt', isNotEqualTo: null)
+        .orderBy("vector_distance", descending: false)
+        .limit(10);
+
+    if (_lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
+    }
+
+    final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+    List<Article> newArticles = [];
+    if (snapshot.docs.isNotEmpty) {
+      newArticles = snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+      fetchedLastDocument =
+          snapshot.docs.last; // Save the last document for the next page
+      fetchedStartDocument = snapshot.docs.first;
+    } else {
+      print('Nothing found');
+    }
+
+    AlgoliaArticles algoliaArticles = AlgoliaArticles(
+        articles: newArticles, queryID: fetchedLastDocument.toString());
+
+    algoliaArticles.setLastDocument(fetchedLastDocument);
+    algoliaArticles.setStartDocument(fetchedStartDocument);
+
+    return algoliaArticles;
+  }
+
   static Future<List<Article>> performVectorSearch() async {
     try {
       // Create a callable reference to the vectorSearch Cloud Function
@@ -189,7 +238,7 @@ class FirebaseDBOperations {
         'limit': 50,
       });
 
-      print('Raw response from Cloud Function: ${result.data['articles'][0]}');
+      //print('Raw response from Cloud Function: ${result.data['articles'][0]}');
 
 
       // Parse the response
