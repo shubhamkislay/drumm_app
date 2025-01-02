@@ -192,9 +192,7 @@ class FirebaseDBOperations {
         .doc(getCurrentUserID())
         .collection("articles")
         .where('category', whereIn: bandCategoryList)
-        //.where('country', isEqualTo: 'us')
-        .where('publishedAt', isNotEqualTo: null)
-        .orderBy("vector_distance", descending: false)
+        .orderBy("recommendedTimestamp", descending: true)
         .limit(10);
 
     if (_lastDocument != null) {
