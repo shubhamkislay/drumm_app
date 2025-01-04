@@ -117,6 +117,7 @@ dependencies:
   url_launcher: ^6.3.1
   url_launcher_ios: ^6.3.2
   cloud_functions: ^5.2.0
+  flutter_tts: ^4.2.1
 
 dev_dependencies:
   flutter_test:

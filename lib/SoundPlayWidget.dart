@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:http/http.dart' as http;
 import 'package:ogg_opus_player/ogg_opus_player.dart';
 import 'package:path_provider/path_provider.dart';
@@ -55,6 +56,8 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
           convertTextToSpeech(
               getSpeechText(widget.article) ?? "",
               widget.article.articleId ?? "");
+
+
           //widget.playPause(widget.play);
         } else {
           setState(() {
@@ -125,6 +128,7 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
   }
 
   Future<void> convertTextToSpeech(String text, String id) async {
+    print("Converting text to speech");
     try {
       //audioPlayer.stop();
       FirebaseDBOperations.OggOpus_Player.pause();
@@ -189,7 +193,34 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
       //}
     } else {
       // Handle API error
+      print("Error generating audio ${response.statusCode} ${response.body}");
+      createTTS(text);
     }
+  }
+
+  Future<void> createTTS(String text)async {
+    FlutterTts flutterTts = FlutterTts();
+
+    await flutterTts.setSharedInstance(true);
+
+    await flutterTts.setIosAudioCategory(IosTextToSpeechAudioCategory.ambient,
+        [
+          IosTextToSpeechAudioCategoryOptions.allowBluetooth,
+          IosTextToSpeechAudioCategoryOptions.allowBluetoothA2DP,
+          IosTextToSpeechAudioCategoryOptions.mixWithOthers
+        ],
+        IosTextToSpeechAudioMode.voicePrompt
+    );
+
+    await flutterTts.isLanguageAvailable("en-US");
+
+    //await flutterTts.awaitSpeakCompletion(true);
+
+    //await flutterTts.awaitSynthCompletion(true);
+
+    await flutterTts.speak(text);
+
+
   }
 
   @override
