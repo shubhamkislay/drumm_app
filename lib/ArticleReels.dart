@@ -989,7 +989,7 @@ class ArticleReelsState extends State<ArticleReels>
                                         vertical: 4, horizontal: 4),
                                     child: Text(
                                       unescape.convert(
-                                          "\"${widget.preloadList?.elementAt(index).article?.question ?? widget.preloadList?.elementAt(index).article?.title ?? ""}\"" ??
+                                          "\"${widget.preloadList?.elementAt(index).article?.question?.trim() ?? widget.preloadList?.elementAt(index).article?.title?.trim() ?? ""}\"" ??
                                               ""),
                                       textAlign: TextAlign.left,
                                       maxLines: 2,

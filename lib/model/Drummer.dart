@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Drummer {
   String? token;
   String? uid;
@@ -7,6 +9,8 @@ class Drummer {
   String? bio;
   String? occupation;
   int? badges = 0;
+  VectorValue? preference;
+  Timestamp? lastRecommendationTimestamp;
   String? imageUrl;
   String? jobTitle;
   String? organisation;
@@ -31,6 +35,8 @@ class Drummer {
         'speaking': speaking,
         'muted': muted,
         'imageUrl': imageUrl,
+        'lastRecommendationTimestamp': lastRecommendationTimestamp,
+        'preference': preference?.toArray(),
         'jobTitle': jobTitle,
         'organisation': organisation,
         'followerCount': followerCount,
@@ -49,29 +55,13 @@ class Drummer {
         username = snapshot.data()['username'],
         occupation = snapshot.data()['occupation'],
         bio = snapshot.data()['bio'],
+        preference = snapshot.data()['preference'],
+        lastRecommendationTimestamp = snapshot.data()['lastRecommendationTimestamp'],
         imageUrl = snapshot.data()['imageUrl'],
         organisation = snapshot.data()['organisation'],
         followerCount = snapshot.data()['followerCount'],
         followingCount = snapshot.data()['followingCount'],
         jobTitle = snapshot.data()['jobTitle'];
-
-  Drummer.fromAlgoliaSnapshot(snapshot)
-      : token = snapshot['token'],
-        uid = snapshot['uid'],
-        name = snapshot['name'],
-        email = snapshot['email'],
-        rid = snapshot['rid'],
-        username = snapshot['username'],
-        occupation = snapshot['occupation'],
-        speaking = snapshot['speaking'],
-        muted = snapshot['muted'],
-        //badges = int.parse(snapshot['badges']),
-        bio = snapshot['bio'],
-        jobTitle = snapshot['jobTitle'],
-        organisation = snapshot['organisation'],
-        followerCount = snapshot['followerCount'],
-        followingCount = snapshot['followingCount'],
-        imageUrl = snapshot['imageUrl'];
 
   Drummer.fromJson(Map<String, dynamic> json)
       : token = json['token'],
@@ -84,6 +74,10 @@ class Drummer {
         speaking = json['speaking'],
         muted = json['muted'],
         imageUrl = json['imageUrl'],
+        lastRecommendationTimestamp = json['lastRecommendationTimestamp'],
+        preference = json['preference'] is List<dynamic>
+            ? VectorValue(List<double>.from(json['preference'] as List<dynamic>))
+            : null,
         bio = json['bio'],
         jobTitle = json['jobTitle'],
         organisation = json['organisation'],

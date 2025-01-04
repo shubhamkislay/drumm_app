@@ -116,7 +116,7 @@ class FirebaseDBOperations {
     arLen = algoliaArticles.articles?.length ?? 0;
 
     // if (arLen < 1) {
-    //   print("You have seen all articles");
+    //   //print("You have seen all articles");
     //   page = page+1;
     // }
     //}
@@ -160,7 +160,7 @@ class FirebaseDBOperations {
           snapshot.docs.last; // Save the last document for the next page
       fetchedStartDocument = snapshot.docs.first;
     } else {
-      print('Nothing found');
+      //print('Nothing found');
     }
 
     AlgoliaArticles algoliaArticles = AlgoliaArticles(
@@ -172,13 +172,61 @@ class FirebaseDBOperations {
     return algoliaArticles;
   }
 
+  static bool isTimestampWithinThreeHours(Timestamp? firebaseTimestamp) {
+    // Handle null timestamp by initializing it to an older date
+    firebaseTimestamp ??= Timestamp.fromMillisecondsSinceEpoch(0);
+
+    // Get the current timestamp
+    Timestamp currentTimestamp = Timestamp.now();
+
+    // Calculate the difference in milliseconds
+    int differenceMilliseconds = currentTimestamp.millisecondsSinceEpoch -
+        firebaseTimestamp.millisecondsSinceEpoch;
+
+    // Check if the difference is within 3 hours (10,800,000 milliseconds)
+    return differenceMilliseconds < 10800000;
+  }
+
+
+
   static Future<AlgoliaArticles> getUserRecommendedArticles(
       DocumentSnapshot<Map<String, dynamic>>? _startDocument,
       DocumentSnapshot<Map<String, dynamic>>? _lastDocument,
       bool reverse) async {
     DocumentSnapshot<Map<String, dynamic>>? fetchedStartDocument = null;
     DocumentSnapshot<Map<String, dynamic>>? fetchedLastDocument = null;
+    Drummer drummer = Drummer();
+    // if(CURRENT_DRUMMER.uid!=null)
+    //   drummer = CURRENT_DRUMMER;
+    // else
+      drummer = await getDrummer(getCurrentUserID());
+    if(drummer.preference!=null){
+      //print("preference is not null");
+      if (!isTimestampWithinThreeHours(drummer.lastRecommendationTimestamp ?? Timestamp.fromMillisecondsSinceEpoch(0))) {
 
+        //print("User recommendations are outdated, so calling the vector search.");
+        // Your code here
+        generateRecommendation();
+        List<Article> vectorSearchArticles = await performVectorSearch(drummer.preference);
+
+        AlgoliaArticles algoliaArticles = AlgoliaArticles(
+            articles: vectorSearchArticles, queryID: fetchedLastDocument.toString());
+
+        algoliaArticles.setLastDocument(fetchedLastDocument);
+        algoliaArticles.setStartDocument(fetchedStartDocument);
+
+        //print("returned vector search result");
+
+        return algoliaArticles;
+      }else{
+        //print("User recommendations are fresh, so taking directly from the recommendations collections.");
+      }
+    }else{
+      //print("preference is null");
+      if (_lastDocument == null)
+        generateRecommendation();
+      return await getArticlesData(_startDocument,_lastDocument,reverse);
+    }
     //if (fetchedBands.isEmpty)
     fetchedBands = await FirebaseDBOperations.getBandByUser();
     List bandCategoryList = [];
@@ -196,7 +244,12 @@ class FirebaseDBOperations {
         .limit(10);
 
     if (_lastDocument != null) {
-      query = query.startAfterDocument(_lastDocument!);
+      try {
+        query = query.startAfterDocument(_lastDocument!);
+      }catch(e){
+        _lastDocument = null;
+        //query = query.startAfterDocument(_lastDocument!);
+      }
     }
 
     final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
@@ -207,7 +260,7 @@ class FirebaseDBOperations {
           snapshot.docs.last; // Save the last document for the next page
       fetchedStartDocument = snapshot.docs.first;
     } else {
-      print('Nothing found');
+      //print('Nothing found');
     }
 
     AlgoliaArticles algoliaArticles = AlgoliaArticles(
@@ -218,8 +271,31 @@ class FirebaseDBOperations {
 
     return algoliaArticles;
   }
+  static void generateRecommendation() async {
+    try {
+      // Create a callable reference to the vectorSearch Cloud Function
 
-  static Future<List<Article>> performVectorSearch() async {
+      //print("Calling generateRecommendation function");
+
+      final HttpsCallable callable =
+      FirebaseFunctions.instance.httpsCallable('generateRecommendations');
+
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+
+
+
+      // Call the Cloud Function with userId and limit
+      final result = await callable.call({
+        'userId': userId??""
+      });
+
+      //print("Finished generating recommendation with the result${result.data['message']}");
+    } catch (error) {
+      //print('Error performing vector search: $error');
+      //return [];
+    }
+  }
+  static Future<List<Article>> performVectorSearch(VectorValue? preference) async {
     try {
       // Create a callable reference to the vectorSearch Cloud Function
 
@@ -228,15 +304,16 @@ class FirebaseDBOperations {
 
       String? userId = FirebaseAuth.instance.currentUser?.uid;
 
-      print('The user Id is : $userId');
+      //print('The user Id is : $userId');
 
       // Call the Cloud Function with userId and limit
       final result = await callable.call({
         'userId': userId??"",
-        'limit': 50,
+        'limit': 25,
+        'preference' :preference?.toArray()
       });
 
-      //print('Raw response from Cloud Function: ${result.data['articles'][0]}');
+      ////print('Raw response from Cloud Function: ${result.data['articles'][0]}');
 
 
       // Parse the response
@@ -246,7 +323,7 @@ class FirebaseDBOperations {
 
       return articles;
     } catch (error) {
-      print('Error performing vector search: $error');
+      //print('Error performing vector search: $error');
       return [];
     }
   }
@@ -291,7 +368,7 @@ class FirebaseDBOperations {
           snapshot.docs.last; // Save the last document for the next page
       fetchedStartDocument = snapshot.docs.first;
     } else {
-      print('Nothing found');
+      //print('Nothing found');
     }
 
     AlgoliaArticles algoliaArticles = AlgoliaArticles(
@@ -335,7 +412,7 @@ class FirebaseDBOperations {
           snapshot.docs.last; // Save the last document for the next page
       fetchedStartDocument = snapshot.docs.first;
     } else {
-      print('Nothing found');
+      //print('Nothing found');
     }
 
     AlgoliaArticles algoliaArticles = AlgoliaArticles(
@@ -383,7 +460,7 @@ class FirebaseDBOperations {
           snapshot.docs.last; // Save the last document for the next page
       fetchedStartDocument = snapshot.docs.first;
     } else {
-      print('Nothing found');
+      //print('Nothing found');
     }
 
     AlgoliaArticles algoliaArticles = AlgoliaArticles(
@@ -391,25 +468,6 @@ class FirebaseDBOperations {
 
     algoliaArticles.setLastDocument(fetchedLastDocument);
     algoliaArticles.setStartDocument(fetchedStartDocument);
-
-    return algoliaArticles;
-  }
-
-  static Future<AlgoliaArticles> getRelatedArticlesFromAlgolia(
-      String similarQuery) async {
-    AlgoliaArticles algoliaArticles = AlgoliaArticles();
-
-    AlgoliaQuery algoliaQuery = algolia.instance.index("stories");
-
-    algoliaQuery.similarQuery(similarQuery);
-
-    AlgoliaQuerySnapshot getArticles = await algoliaQuery.getObjects();
-
-    List<Article> result =
-        List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
-
-    algoliaArticles =
-        AlgoliaArticles(articles: result, queryID: getArticles.queryID);
 
     return algoliaArticles;
   }
@@ -506,10 +564,10 @@ class FirebaseDBOperations {
           updatedArticle.toJson(),
         )
         .then((_) {
-      print('Article updated successfully!');
+      //print('Article updated successfully!');
       callback(); // Invoke the callback when the update completes
     }).catchError((error) {
-      print('Failed to update article: $error');
+      //print('Failed to update article: $error');
     });
   }
 
@@ -537,7 +595,7 @@ class FirebaseDBOperations {
       await batch.commit();
       return true;
     } catch (error) {
-      print("Error updating like status: $error");
+      //print("Error updating like status: $error");
       return false;
     }
   }
@@ -564,7 +622,7 @@ class FirebaseDBOperations {
       await batch.commit();
       return true;
     } catch (error) {
-      print("Error updating listened status: $error");
+      //print("Error updating listened status: $error");
       return false;
     }
   }
@@ -591,7 +649,7 @@ class FirebaseDBOperations {
       await batch.commit();
       return true;
     } catch (error) {
-      print("Error updating shared status: $error");
+      //print("Error updating shared status: $error");
       return false;
     }
   }
@@ -623,7 +681,7 @@ class FirebaseDBOperations {
       await batch.commit();
       return true;
     } catch (error) {
-      print("Error updating read status: $error");
+      //print("Error updating read status: $error");
       return false;
     }
   }
@@ -660,7 +718,7 @@ class FirebaseDBOperations {
       await batch.commit();
       return true;
     } catch (error) {
-      print("Error updating like status: $error");
+      //print("Error updating like status: $error");
       return false;
     }
   }
@@ -714,7 +772,7 @@ class FirebaseDBOperations {
       await batch.commit();
       return true;
     } catch (error) {
-      print("Error removing like status: $error");
+      //print("Error removing like status: $error");
       return false;
     }
   }
@@ -755,10 +813,10 @@ class FirebaseDBOperations {
       }
 
       await batch.commit();
-      print("Removed Boost");
+      //print("Removed Boost");
       return true;
     } catch (error) {
-      print("Error removing like status: $error");
+      //print("Error removing like status: $error");
       return false;
     }
   }
@@ -766,7 +824,7 @@ class FirebaseDBOperations {
   static String getCurrentUserID() {
     final User? user = FirebaseAuth.instance.currentUser;
     final String userID = user?.uid ?? '';
-    //  print("CurrentUserID is $userID");
+    //  //print("CurrentUserID is $userID");
     return userID;
   }
 
@@ -781,7 +839,7 @@ class FirebaseDBOperations {
 
       return doc.exists;
     } catch (error) {
-      print("Error checking like status: $error");
+      //print("Error checking like status: $error");
       return false;
     }
   }
@@ -799,7 +857,7 @@ class FirebaseDBOperations {
 
       //return doc.exists;
     } catch (error) {
-      print("Error checking like status: $error");
+      //print("Error checking like status: $error");
       return false;
     }
   }
@@ -823,7 +881,7 @@ class FirebaseDBOperations {
       await batch.commit();
       return true;
     } catch (error) {
-      print("Error updating like status: $error");
+      //print("Error updating like status: $error");
       return false;
     }
   }
@@ -854,7 +912,7 @@ class FirebaseDBOperations {
       await batch.commit();
       return true;
     } catch (error) {
-      print("Error updating joined status: $error");
+      //print("Error updating joined status: $error");
       return false;
     }
   }
@@ -877,13 +935,13 @@ class FirebaseDBOperations {
 
       return seenArticles;
     } catch (error) {
-      print("Error fetching seen list: $error");
+      //print("Error fetching seen list: $error");
       return [];
     }
   }
 
   static Future<List<Question>> getMyQuestions() async {
-    print("getQuestionsAsked triggered");
+    //print("getQuestionsAsked triggered");
     final uid = FirebaseAuth.instance.currentUser?.uid;
     DateTime currentTime = DateTime.now();
 
@@ -919,13 +977,13 @@ class FirebaseDBOperations {
           .doc(question.qid)
           .set(question.toFirestoreJson())
           .onError(
-              (error, stackTrace) => print('Error posting question: $error'));
+              (error, stackTrace) => //print('Error posting question: $error'));
 
-      print(
+      //print(
           'Question posted successfully Users/$uid/questions/${question.qid} \n ${question.toJson()}');
       sendQuestionNotificationToTopic(notifQuestion);
     } catch (error) {
-      print('Error posting question: $error');
+      //print('Error posting question: $error');
       // Handle error as needed
     }
   }
@@ -934,7 +992,7 @@ class FirebaseDBOperations {
 
   static Future<List<Question>> getQuestionsAsked() async {
     try {
-      print("getQuestionsAsked triggered");
+      //print("getQuestionsAsked triggered");
       //SharedPreferences prefs = await SharedPreferences.getInstance();
       //List<String> userInterests = prefs.getStringList('interestList')!;
 
@@ -991,13 +1049,13 @@ class FirebaseDBOperations {
         return []; // Return an empty list if the document doesn't exist or doesn't contain the 'questions' field
       }
     } catch (error) {
-      print('Error retrieving questions: $error');
+      //print('Error retrieving questions: $error');
       return []; // Return an empty list if an error occurs
     }
   }
 
   static Future<List<Question>> getQuestionsAskedByUserId(String uid) async {
-    print("getQuestionsAsked triggered");
+    //print("getQuestionsAsked triggered");
     //SharedPreferences prefs = await SharedPreferences.getInstance();
     //List<String> userInterests = prefs.getStringList('interestList')!;
 
@@ -1019,7 +1077,7 @@ class FirebaseDBOperations {
   }
 
   static void deletedQuestionsAskedByQuestionId(String uid, String qid) async {
-    print("deletedQuestionsAskedByQuestionId triggered");
+    //print("deletedQuestionsAskedByQuestionId triggered");
     FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
@@ -1056,13 +1114,13 @@ class FirebaseDBOperations {
         }
       });
     } catch (e) {
-      print('Error updating points: $e');
+      //print('Error updating points: $e');
       throw Exception('Failed to update points for category $category');
     }
   }
 
   static Future<List<Drummer>> getBandMembers() async {
-    print("getQuestionsAsked triggered");
+    //print("getQuestionsAsked triggered");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> userInterests = prefs.getStringList('interestList')!;
 
@@ -1075,7 +1133,7 @@ class FirebaseDBOperations {
   }
 
   static Future<List<Jam>> getJamsFromBand(String bandId) async {
-    print("getJamsFromBand triggered");
+    //print("getJamsFromBand triggered");
     final uid = FirebaseAuth.instance.currentUser?.uid;
     var data = await FirebaseFirestore.instance
         .collection('openDrumm')
@@ -1111,7 +1169,7 @@ class FirebaseDBOperations {
   }
 
   static Future<List<Jam>> getDrummsFromBands() async {
-    print("getDrummsFromBands triggered");
+    //print("getDrummsFromBands triggered");
 
     //if (fetchedBands.isEmpty)
     fetchedBands = await FirebaseDBOperations.getBandByUser();
@@ -1123,7 +1181,7 @@ class FirebaseDBOperations {
 
     List bandCategoryList = [];
     for (Band band in fetchedBands) {
-      //print("${band.name}");
+      ////print("${band.name}");
       bandCategoryList.add(band.bandId);
     }
     if (bandCategoryList.isEmpty) return [];
@@ -1141,14 +1199,14 @@ class FirebaseDBOperations {
     List<Jam> fetchedList =
         List.from(data.docs.map((e) => Jam.fromSnapshot(e)));
 
-    print("Jams list size ${fetchedList.length} ///////////////////////// ");
+    ////print("Jams list size ${fetchedList.length} ///////////////////////// ");
     List<Jam> filterList = [];
     for (Jam jam in fetchedList) {
       //if (isTimestampWithin1Minute(jam.lastActive ?? Timestamp.now())) {
       filterList.add(jam);
       //}
     }
-    print("Filtered list size ${filterList.length} ///////////////////////// ");
+    ////print("Filtered list size ${filterList.length} ///////////////////////// ");
 
     return filterList;
   }
@@ -1165,7 +1223,7 @@ class FirebaseDBOperations {
   }
 
   static Future<List<Jam>> getOpenDrummsFromBands() async {
-    print("getJamsFromBand triggered");
+    ////print("getJamsFromBand triggered");
 
     //if (fetchedBands.isEmpty)
     fetchedBands = await FirebaseDBOperations.getBandByUser();
@@ -1175,7 +1233,7 @@ class FirebaseDBOperations {
       bandCategoryList.addAll(band.hooks as Iterable);
     }
     if (bandCategoryList.isEmpty) {
-      print("BandIDList is empty");
+      ////print("BandIDList is empty");
       return [];
     }
 
@@ -1221,14 +1279,14 @@ class FirebaseDBOperations {
         'lastActive': currentTime,
       });
 
-      print('Document updated successfully');
+      //print('Document updated successfully');
     } catch (error) {
-      print('Error updating document: $error');
+      //print('Error updating document: $error');
     }
   }
 
   static Future<List<Jam>> getJamsFromArticle(String articleId) async {
-    print("getJamsFromArticle triggered");
+    //print("getJamsFromArticle triggered");
     final uid = FirebaseAuth.instance.currentUser?.uid;
     var data = await FirebaseFirestore.instance
         .collection('openDrumm')
@@ -1252,13 +1310,13 @@ class FirebaseDBOperations {
         filterList.add(jam);
       }
     }
-    print("fetchedList size: ${fetchedList.length}");
+    //print("fetchedList size: ${fetchedList.length}");
 
     return filterList;
   }
 
   static Future<List<Jam>> getBroadcastJams() async {
-    print("getBroadcastJams triggered");
+    //print("getBroadcastJams triggered");
     var data = await FirebaseFirestore.instance
         .collection('openDrumm')
         .where('broadcast', isEqualTo: true)
@@ -1270,7 +1328,7 @@ class FirebaseDBOperations {
   }
 
   static Future<List<Profession>> getProfessions() async {
-    print("getProfessions triggered");
+    //print("getProfessions triggered");
     var data = await FirebaseFirestore.instance
         .collection('profession')
         .get();
@@ -1307,7 +1365,7 @@ class FirebaseDBOperations {
       await batch.commit();
       return true;
     } catch (error) {
-      print("Error creating band: $error");
+      //print("Error creating band: $error");
       return false;
     }
   }
@@ -1360,7 +1418,7 @@ class FirebaseDBOperations {
       FirebaseDBOperations.subscribeToTopic(band?.bandId ?? "");
       return true;
     } catch (error) {
-      print("Error joining band: $error");
+      //print("Error joining band: $error");
       return false;
     }
   }
@@ -1394,13 +1452,13 @@ class FirebaseDBOperations {
       FirebaseDBOperations.unsubscribeFromTopic(band?.bandId ?? "");
       return true;
     } catch (error) {
-      print("Error leaving band: $error");
+      //print("Error leaving band: $error");
       return false;
     }
   }
 
   static Future<List<Band>> getUserBands(String query) async {
-    print("getBands triggered");
+    //print("getBands triggered");
     // final uid = FirebaseAuth.instance.currentUser?.uid;
     // List<Band> emptyList = [];
     // if (query.length >= 3) {
@@ -1419,7 +1477,7 @@ class FirebaseDBOperations {
     AlgoliaQuerySnapshot getArticles =
         await algolia.instance.index('bands').query(query).getObjects();
 
-    //print("Getting Articles from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
+    ////print("Getting Articles from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
     List<Band> result = List.from(
         getArticles.hits.map((e) => Band.fromAlgoliaSnapshot(e.data)));
 
@@ -1480,7 +1538,7 @@ class FirebaseDBOperations {
       FirebaseDBOperations.subscribeToTopic(userID ?? "");
       return true;
     } catch (error) {
-      print("Error joining band: $error");
+      //print("Error joining band: $error");
       return false;
     }
   }
@@ -1520,13 +1578,13 @@ class FirebaseDBOperations {
       FirebaseDBOperations.unsubscribeFromTopic(userID ?? "");
       return true;
     } catch (error) {
-      print("Error leaving band: $error");
+      //print("Error leaving band: $error");
       return false;
     }
   }
 
   static Future<List<Drummer>> getPeople(String query) async {
-    print("getPeople triggered");
+    //print("getPeople triggered");
     // List<Drummer> emptyList = [];
     // if (query.length >= 3) {
     //   final uid = FirebaseAuth.instance.currentUser?.uid;
@@ -1542,19 +1600,19 @@ class FirebaseDBOperations {
     // } else
     //   return emptyList;
 
-    AlgoliaQuerySnapshot getArticles =
-        await algolia.instance.index('users').query(query).getObjects();
+    // AlgoliaQuerySnapshot getArticles =
+    //     await algolia.instance.index('users').query(query).getObjects();
+    //
+    // ////print("Getting Articles from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
+    // List<Drummer> result = List.from(
+    //     getArticles.hits.map((e) => Drummer.fromAlgoliaSnapshot(e.data)));
 
-    //print("Getting Articles from Algolia ${getArticles.hits.elementAt(0).data["title"]}");
-    List<Drummer> result = List.from(
-        getArticles.hits.map((e) => Drummer.fromAlgoliaSnapshot(e.data)));
-
-    return result;
+    return [];
   }
 
   static Future<Drummer> getDrummer(String uid) async {
     Drummer drummer = Drummer();
-    // print("getQuestionsAsked triggered");
+    // //print("getQuestionsAsked triggered");
     var data = await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
@@ -1571,7 +1629,7 @@ class FirebaseDBOperations {
 
   static Future<Stats> getDrummerStats(String uid) async {
     Stats stats = Stats();
-     print("getDrummerStats triggered");
+     //print("getDrummerStats triggered");
     var data = await FirebaseFirestore.instance
         .collection('stats')
         .doc(uid)
@@ -1579,7 +1637,7 @@ class FirebaseDBOperations {
         .onError((error, stackTrace) {
       var data;
       DocumentSnapshot<Map<String, dynamic>> snapshot = data;
-      print("Stats does not exists");
+      //print("Stats does not exists");
       return snapshot;
     });
     if (data.exists) stats = Stats.fromSnapshot(data);
@@ -1589,13 +1647,13 @@ class FirebaseDBOperations {
 
   static Future<Article> getArticle(String articleId) async {
     Article article = Article();
-    print("getArticle triggered");
+    //print("getArticle triggered");
     var data = await FirebaseFirestore.instance
         .collection("stories")
         .doc(articleId)
         .get();
     article = Article.fromJson(data);
-    print("${data.data()}");
+    //print("${data.data()}");
 
     return article;
   }
@@ -1605,7 +1663,7 @@ class FirebaseDBOperations {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     await messaging.unsubscribeFromTopic(topic);
     await messaging.subscribeToTopic(topic);
-    print('Subscribed to topic: $topic');
+    //print('Subscribed to topic: $topic');
   }
 
   static void subscribeToUserBands() async {
@@ -1656,16 +1714,16 @@ class FirebaseDBOperations {
   static void unsubscribeFromTopic(String topic) async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     await messaging.unsubscribeFromTopic(topic).catchError((err){
-      print("Error while unsubscribing: $err ");
+      //print("Error while unsubscribing: $err ");
     });
-    print('Unsubscribed from topic: $topic');
+    //print('Unsubscribed from topic: $topic');
   }
 
   static Future<void> sendRingingNotification(
       String deviceToken, Jam jam) async {
     var url = Uri.https('fcm.googleapis.com', '/v1/projects/drummapp/messages:send');
     final uid = FirebaseAuth.instance.currentUser?.uid;
-    print("${jam.toJson().toString()}");
+    //print("${jam.toJson().toString()}");
     Drummer drummer = await FirebaseDBOperations.getDrummer(uid ?? "");
 
     // Fetch the access token
@@ -1715,7 +1773,7 @@ class FirebaseDBOperations {
     // Send the notification
     var response = await http.post(url, headers: header, body: body);
     if (response.statusCode == 200) {
-      print("Ringing notification sent successfully");
+      //print("Ringing notification sent successfully");
     } else {
       throw Exception('Failed to send calling notification');
     }
@@ -1723,13 +1781,13 @@ class FirebaseDBOperations {
 
 
   static Future<void> sendNotificationToDeviceToken(Jam jam) async {
-    print("Sending notification to device");
+    //print("Sending notification to device");
 
     var url = Uri.https('fcm.googleapis.com', '/v1/projects/drummapp/messages:send');
     final uid = FirebaseAuth.instance.currentUser?.uid;
     Drummer drummer = await FirebaseDBOperations.getDrummer(uid ?? "");
     String deviceToken = drummer.token ?? "";
-    print("Device Token is: ${deviceToken}");
+    //print("Device Token is: ${deviceToken}");
 
     // Fetch the access token
     AccessTokenFirebase accessTokenGetter = AccessTokenFirebase();
@@ -1786,9 +1844,9 @@ class FirebaseDBOperations {
 
     // Check the response
     if (response.statusCode == 200) {
-      print("Notification sent successfully to device Token");
+      //print("Notification sent successfully to device Token");
     } else {
-      print("Failed to send deviceToken notification ${response.statusCode}");
+      //print("Failed to send deviceToken notification ${response.statusCode}");
       throw Exception('Failed to send deviceToken notification ${response.statusCode}');
     }
   }
@@ -1798,8 +1856,8 @@ class FirebaseDBOperations {
       Jam jam, bool ring, bool open) async {
 
     try {
-      print("Sending notification to topic");
-      print("${jam.toJson().toString()}");
+      //print("Sending notification to topic");
+      //print("${jam.toJson().toString()}");
 
       var url = Uri.https(
           'fcm.googleapis.com', '/v1/projects/drummapp/messages:send');
@@ -1812,7 +1870,7 @@ class FirebaseDBOperations {
       AccessTokenFirebase accessTokenGetter = AccessTokenFirebase();
       String authToken = await accessTokenGetter.getAccessToken();
 
-      print("Auth Token received: $authToken");
+      //print("Auth Token received: $authToken");
 
       // Set headers
       Map<String, String> header = {
@@ -1873,15 +1931,15 @@ class FirebaseDBOperations {
 
       // Check the response
       if (response.statusCode == 200) {
-        print("Notification sent successfully");
+        //print("Notification sent successfully");
       } else {
-        print("Failed to send topic notification: ${response.statusCode}");
-        print("Error response body: ${response.body}");
+        //print("Failed to send topic notification: ${response.statusCode}");
+        //print("Error response body: ${response.body}");
         throw Exception(
             'Failed to send topic notification ${response.statusCode}');
       }
     }catch(e){
-      print("Error sending notification: $e");
+      //print("Error sending notification: $e");
     }
   }
 
@@ -1889,7 +1947,7 @@ class FirebaseDBOperations {
 
 
   static Future<void> sendQuestionNotificationToTopic(Question question) async {
-    print("Sending notification to topic");
+    //print("Sending notification to topic");
 
     var url = Uri.https('fcm.googleapis.com', '/v1/projects/drummapp/messages:send');
     Drummer drummer = await FirebaseDBOperations.getDrummer(question.uid ?? "");
@@ -1951,9 +2009,9 @@ class FirebaseDBOperations {
 
     // Check the response
     if (response.statusCode == 200) {
-      print("Sent Notification for question");
+      //print("Sent Notification for question");
     } else {
-      print("Failed to send topic notification ${response.statusCode}");
+      //print("Failed to send topic notification ${response.statusCode}");
       throw Exception('Failed to send topic notification ${response.statusCode}');
     }
   }
@@ -1961,7 +2019,7 @@ class FirebaseDBOperations {
 
   static Future<void> sendNotificationToDrummer(
       String deviceToken, Jam jam, bool ring, bool open) async {
-    print("Sending notification to drummer");
+    //print("Sending notification to drummer");
 
     var url = Uri.https('fcm.googleapis.com', '/v1/projects/drummapp/messages:send');
     final uid = FirebaseAuth.instance.currentUser?.uid;
@@ -2030,9 +2088,9 @@ class FirebaseDBOperations {
 
     // Check the response
     if (response.statusCode == 200) {
-      print("Notification sent to drummer");
+      //print("Notification sent to drummer");
     } else {
-      print("Failed to send notification ${response.statusCode}");
+      //print("Failed to send notification ${response.statusCode}");
       throw Exception('Failed to send notification ${response.statusCode}');
     }
   }
@@ -2042,17 +2100,17 @@ class FirebaseDBOperations {
 
   static Future<Band> getBand(String bandId) async {
     Band band = Band();
-    print("getBand triggered");
+    //print("getBand triggered");
     var data =
         await FirebaseFirestore.instance.collection('bands').doc(bandId).get();
     band = Band.fromSnapshot(data);
-    print("${data.data()}");
+    //print("${data.data()}");
 
     return band;
   }
 
   static Future<List<Article>> getArticles(String query) async {
-    print("getArticles triggered");
+    //print("getArticles triggered");
     List<Article> emptyList = [];
     //searchArticles(query);
     if (query.length >= 3) {
@@ -2065,7 +2123,7 @@ class FirebaseDBOperations {
           // .collection('questions')
           //.orderBy('createdTime',descending: true)
           .get();
-      print(data.docs.length);
+      //print(data.docs.length);
       return List.from(data.docs.map((e) => Article.fromJson(e)));
     } else {
       return emptyList;
@@ -2073,7 +2131,7 @@ class FirebaseDBOperations {
   }
 
   static Future<List<Article>> getArticlesByUser(String uid) async {
-    print("getArticles triggered");
+    //print("getArticles triggered");
     // final uid = FirebaseAuth.instance.currentUser?.uid;
     var data = await FirebaseFirestore.instance
         .collection("stories")
@@ -2082,14 +2140,14 @@ class FirebaseDBOperations {
         // .collection('questions')
         //.orderBy('createdTime',descending: true)
         .get();
-    print(data.docs.length);
+    //print(data.docs.length);
     return List.from(data.docs.map((e) => Article.fromJson(e)));
   }
 
   static Future<List<Drummer>> getUsersByBand(Band band) async {
     // Assuming you have already initialized the Firestore instance and have a reference to the "bands" collection
     String userID = FirebaseAuth.instance.currentUser!.uid;
-    print(userID);
+    //print(userID);
     CollectionReference userbandsCollectionRef = FirebaseFirestore.instance
         .collection("bands")
         .doc(band.bandId)
@@ -2098,7 +2156,7 @@ class FirebaseDBOperations {
     List<String> list = List.from(bandsData.docs.map((e) {
       return (e.data() as Map)!["userId"].toString();
     }));
-    print(list.toString());
+    //print(list.toString());
 
     CollectionReference bandsCollectionRef =
         FirebaseFirestore.instance.collection("users");
@@ -2106,9 +2164,9 @@ class FirebaseDBOperations {
     // Define the userID you want to search for
 
     // Construct the query
-    print("getUsersByBand triggered");
+    //print("getUsersByBand triggered");
     var data = await bandsCollectionRef.where("uid", whereIn: list).get();
-    print(data.docs.toString());
+    //print(data.docs.toString());
 
     // Execute the query
     return List.from(data.docs.map((e) => Drummer.fromSnapshot(e)));
@@ -2135,7 +2193,7 @@ class FirebaseDBOperations {
   static Future<List<Band>> getBandByUser() async {
     // Assuming you have already initialized the Firestore instance and have a reference to the "bands" collection
     String userID = FirebaseAuth.instance.currentUser!.uid;
-    print(userID);
+    //print(userID);
     CollectionReference userbandsCollectionRef = FirebaseFirestore.instance
         .collection("users")
         .doc(userID)
@@ -2144,7 +2202,7 @@ class FirebaseDBOperations {
     List<String> list = List.from(bandsData.docs.map((e) {
       return (e.data() as Map)!["bandId"].toString();
     }));
-    print("The user bands are ${list.toString()}");
+    //print("The user bands are ${list.toString()}");
 
     CollectionReference bandsCollectionRef =
         FirebaseFirestore.instance.collection("bands");
@@ -2152,20 +2210,20 @@ class FirebaseDBOperations {
     // Define the userID you want to search for
 
     // Construct the query
-    print("getBandByUser triggered");
+    //print("getBandByUser triggered");
     if (list.isEmpty) {
-      print("bandsData list is null");
+      //print("bandsData list is null");
       return [];
     }
     try {
       var data = await bandsCollectionRef.where("bandId", whereIn: list).get();
-      print("Band fetched result ${data}");
-      print(data.docs.toString());
+      //print("Band fetched result ${data}");
+      //print(data.docs.toString());
 
       // Execute the query
       return List.from(data.docs.map((e) => Band.fromSnapshot(e)));
     } catch (e) {
-      print("Unable to fetch bands because ${e.toString()}");
+      //print("Unable to fetch bands because ${e.toString()}");
       return [];
     }
   }
@@ -2228,7 +2286,7 @@ class FirebaseDBOperations {
     // Define the userID you want to search for
 
     // Construct the query
-    print("getOnboardingBands triggered");
+    //print("getOnboardingBands triggered");
     List<String> bandIDs = [
       "sports",
       "entertainment",
@@ -2240,7 +2298,7 @@ class FirebaseDBOperations {
     ];
 
     var data = await bandsCollectionRef.where("bandId", whereIn: bandIDs).get();
-    print(data.docs.toString());
+    //print(data.docs.toString());
 
     // Execute the query
     return List.from(data.docs.map((e) => Band.fromSnapshot(e)));
@@ -2278,7 +2336,7 @@ class FirebaseDBOperations {
       return Jam();
     }
     // listener = jamCollection.doc("$jamId").snapshots().listen((event) {
-    //   print("Event!!!!!!!!! $event");
+    //   //print("Event!!!!!!!!! $event");
     //   jamCallback(Jam.fromDocListenSnapshot(event));
     // });
   }
@@ -2291,9 +2349,9 @@ class FirebaseDBOperations {
     CollectionReference jamCollection =
         FirebaseFirestore.instance.collection('openDrumm');
     jamCollection.doc(jam.jamId ?? "").set(jam.toJson()).then((_) {
-      print('Jam data stored successfully in Realtime Database and Firestore.');
+      //print('Jam data stored successfully in Realtime Database and Firestore.');
     }).catchError((error) {
-      print('Error storing Jam data in Firestore: $error');
+      //print('Error storing Jam data in Firestore: $error');
     });
   }
 
@@ -2304,9 +2362,9 @@ class FirebaseDBOperations {
         .doc(jam.jamId ?? "")
         .set(jam.toJson(), SetOptions(merge: true))
         .then((_) {
-      print('Jam data stored successfully in Realtime Database and Firestore.');
+      //print('Jam data stored successfully in Realtime Database and Firestore.');
     }).catchError((error) {
-      print('Error storing open data in Firestore: $error');
+      //print('Error storing open data in Firestore: $error');
     });
   }
 
@@ -2325,7 +2383,7 @@ class FirebaseDBOperations {
 
       drummerSpeaking.update({"token": token});
     } catch (e) {
-      print("Unable to update device token${e}");
+      //print("Unable to update device token${e}");
     }
   }
 
@@ -2347,15 +2405,12 @@ class FirebaseDBOperations {
       }
       transaction.update(sfDocRef,
           {"count": count, "membersID": memList}); //,"membersID":memList
-    }).then(
-      (value) => print("DocumentSnapshot successfully updated!"),
-      onError: (e) => print("Error updating document $e"),
-    );
+    });
   }
 
   static Future<bool> addMemberToJam(
       String jamId, String memberId, bool open) async {
-    print("adding Member from Jam $jamId");
+    //print("adding Member from Jam $jamId");
     bool result = false;
     try {
       String path = "";
@@ -2372,7 +2427,7 @@ class FirebaseDBOperations {
       }).then((value) {
         return true;
       }).catchError((onError) {
-        print('Error while adding member: $onError');
+        //print('Error while adding member: $onError');
         return false;
       });
     } catch (e) {
@@ -2394,15 +2449,15 @@ class FirebaseDBOperations {
     //   transaction.update(sfDocRef,
     //       {"count": count, "membersID": memList}); //,"membersID":memList
     // }).then(
-    //       (value) => print("DocumentSnapshot successfully updated!"),
-    //   onError: (e) => print("Error updating document $e"),
+    //       (value) => //print("DocumentSnapshot successfully updated!"),
+    //   onError: (e) => //print("Error updating document $e"),
     // );
   }
 
   static void removeMemberFromJam(
       String jamId, String memberId, bool open) async {
     try {
-      print("removing Member from Jam $jamId");
+      //print("removing Member from Jam $jamId");
       String path = "";
 
       if (open) {
@@ -2418,11 +2473,11 @@ class FirebaseDBOperations {
             .update({
               "membersID": FieldValue.arrayRemove([memberId])
             })
-            .onError((error, stackTrace) => null)
-            .then((value) => print("Member removed successfully"));
+            .onError((error, stackTrace) => null);
+
       } catch (err) {
-        print("jamId ${jamId}");
-        print("Error while removing member ${err}");
+        //print("jamId ${jamId}");
+        //print("Error while removing member ${err}");
       }
     } catch (e) {}
   }
@@ -2445,9 +2500,6 @@ class FirebaseDBOperations {
       }
       transaction.update(sfDocRef,
           {"count": count, "membersID": memList}); //,"membersID":memList
-    }).then(
-      (value) => print("DocumentSnapshot successfully updated!"),
-      onError: (e) => print("Error updating document $e"),
-    );
+    });
   }
 }

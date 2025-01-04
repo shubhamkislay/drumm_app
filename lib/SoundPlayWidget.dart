@@ -29,6 +29,7 @@ class SoundPlayWidget extends StatefulWidget {
 
 class _SoundPlayWidgetState extends State<SoundPlayWidget> {
   String status = "idle";
+  FlutterTts flutterTts = FlutterTts();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -57,6 +58,8 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
               getSpeechText(widget.article) ?? "",
               widget.article.articleId ?? "");
 
+          //createTTS(getSpeechText(widget.article) ?? "");
+
 
           //widget.playPause(widget.play);
         } else {
@@ -70,6 +73,10 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
           }catch(err){
 
           }
+
+          try{
+            flutterTts.stop();
+          }catch(e){}
           //widget.playPause(widget.play);
         }
       },
@@ -134,7 +141,7 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
       FirebaseDBOperations.OggOpus_Player.pause();
       FirebaseDBOperations.OggOpus_Player.dispose();
     } catch (e) {}
-    final apiKey = 'sk-mYrveJ_1HP6T2URP8us3tvkenWJl-tZ_F8KT8ln8yuT3BlbkFJxmTWfma_klcfZ3q_tqG8OtzZfcdZjhbEcYrU_1EoMA';//'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';
+    final apiKey = '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';//'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';
     final endpoint = 'https://api.openai.com/v1/audio/speech';
 
     final headers = {
@@ -199,7 +206,7 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
   }
 
   Future<void> createTTS(String text)async {
-    FlutterTts flutterTts = FlutterTts();
+
 
     await flutterTts.setSharedInstance(true);
 
@@ -218,7 +225,12 @@ class _SoundPlayWidgetState extends State<SoundPlayWidget> {
 
     //await flutterTts.awaitSynthCompletion(true);
 
-    await flutterTts.speak(text);
+    await flutterTts.speak(text).whenComplete( () {
+      setState(() {
+        status = "playing";
+        widget.play = true;
+      });
+    });
 
 
   }

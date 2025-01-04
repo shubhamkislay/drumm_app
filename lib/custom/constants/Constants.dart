@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/model/Drummer.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
@@ -66,6 +67,8 @@ List<Color> JOIN_COLOR = [
 // Colors.blue.shade700,
 // Colors.lightBlue,
 // ];
+
+Drummer CURRENT_DRUMMER = Drummer();
 
 List<Color> EXPLORE_COLOR =  [
 
