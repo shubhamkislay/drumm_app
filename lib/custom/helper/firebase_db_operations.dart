@@ -271,6 +271,61 @@ class FirebaseDBOperations {
 
     return algoliaArticles;
   }
+  static Future<AlgoliaArticles> checkForFreshRecommendedArticles(
+      DocumentSnapshot<Map<String, dynamic>>? _startDocument,
+      DocumentSnapshot<Map<String, dynamic>>? _lastDocument,
+      bool reverse) async {
+    DocumentSnapshot<Map<String, dynamic>>? fetchedStartDocument = null;
+    DocumentSnapshot<Map<String, dynamic>>? fetchedLastDocument = null;
+    fetchedBands = await FirebaseDBOperations.getBandByUser();
+    List bandCategoryList = [];
+
+    for (Band band in fetchedBands) {
+      bandCategoryList.addAll(band.hooks ?? []);
+    }
+    if (fetchedBands.isEmpty) bandCategoryList.add("general");
+    query = FirebaseFirestore.instance
+        .collection("recommendations")
+        .doc(getCurrentUserID())
+        .collection("articles")
+        .where('category', whereIn: bandCategoryList)
+        .orderBy("recommendedTimestamp", descending: true)
+        .limit(10);
+
+    if (_lastDocument != null) {
+      try {
+        query = query.startAfterDocument(_lastDocument!);
+      }catch(e){
+        _lastDocument = null;
+        //query = query.startAfterDocument(_lastDocument!);
+      }
+    }
+
+    final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+    List<Article> newArticles = [];
+    if (snapshot.docs.isNotEmpty) {
+      newArticles = snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+      fetchedLastDocument =
+          snapshot.docs.last; // Save the last document for the next page
+      fetchedStartDocument = snapshot.docs.first;
+    } else {
+      //print('Nothing found');
+      AlgoliaArticles algoliaArticles = await  getArticlesData(_startDocument, _lastDocument, reverse);
+
+      algoliaArticles.setLastDocument(fetchedLastDocument);
+      algoliaArticles.setStartDocument(fetchedStartDocument);
+
+      return algoliaArticles;
+    }
+
+    AlgoliaArticles algoliaArticles = AlgoliaArticles(
+        articles: newArticles, queryID: fetchedLastDocument.toString());
+
+    algoliaArticles.setLastDocument(fetchedLastDocument);
+    algoliaArticles.setStartDocument(fetchedStartDocument);
+
+    return algoliaArticles;
+  }
   static void generateRecommendation() async {
     try {
       // Create a callable reference to the vectorSearch Cloud Function

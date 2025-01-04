@@ -1325,7 +1325,7 @@ class DiscoverHomeState extends State<DiscoverHome>
 
     if (selectedBandID == "For You") {
       freshArticle =
-          await FirebaseDBOperations.getArticlesData(null, null, false);
+          await FirebaseDBOperations.getUserRecommendedArticles(null, null, false);
     } else {
       freshArticle = await FirebaseDBOperations.getArticlesDataForBand(
           null, null, false, selectedBand);
@@ -1362,10 +1362,10 @@ class DiscoverHomeState extends State<DiscoverHome>
       initialisedYoutubePlayer = false;
     });
 
-    bool loadedBand = await getBandsCards();
-    bool loaded = await getArticles(false);
-    bool loadedDrumms = await getBandDrumms();
-    bool loadedQuestion = await getCommunityQuestion();
+    await getBandsCards();
+    await getArticles(false);
+    await getBandDrumms();
+    await getCommunityQuestion();
 
     setState(() {
       showNewArticleWidget = false;
