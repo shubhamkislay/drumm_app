@@ -375,7 +375,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                 Container(
                                   padding: const EdgeInsets.all(4),
                                   margin: const EdgeInsets.only(bottom: 4),
-                                  height: 36,
+                                  height: 30,
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
@@ -562,10 +562,10 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
           return Container(
             padding: EdgeInsets.all(2),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(4),
               child: CachedNetworkImage(
-                  width: 20,
-                  height: 20,
+                  width: 16,
+                  height: 16,
                   imageUrl: e,
                   fit: BoxFit.cover),
             ),
