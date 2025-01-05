@@ -24,6 +24,7 @@ class Article {
   String? uid;
   String? aiVoiceUrl;
   VectorValue? embedding;
+  List<dynamic>? relatedImageUrls;
 
 
 
@@ -47,6 +48,7 @@ class Article {
       this.articleId,
         this.jamId,
         this.reads,
+        this.relatedImageUrls,
         this.uid,
         this.embedding,
         this.aiVoiceUrl,
@@ -65,6 +67,7 @@ class Article {
       summary = data['summary'];
       source = data['source'];
       dump = data['dump'];
+      relatedImageUrls = data['relatedImageUrls'];
       category = data['category'];
       articleId = data['articleId'];
       question = data['question'];
@@ -100,6 +103,7 @@ class Article {
     country = snapshot['country'];
     title = snapshot['title'];
     description = snapshot['description'];
+    relatedImageUrls = snapshot['relatedImageUrls'];
     embedding = snapshot['embedding'];
     url = snapshot['url'];
     imageUrl = snapshot['imageUrl'];
@@ -123,6 +127,7 @@ class Article {
     question = snapshot['question'];
     articleId = snapshot['articleId'];
     jamId = snapshot['jamId'];
+    relatedImageUrls = snapshot['relatedImageUrls'];
     country = snapshot['country'];
     title = snapshot['title'];
     description = snapshot['description'];
@@ -155,6 +160,7 @@ class Article {
       boostamp: this.boostamp,
       boosts: this.boosts,
       articleId: this.articleId,
+      relatedImageUrls: this.relatedImageUrls,
       jamId: this.jamId,
       embedding: this.embedding,
       content: this.content,
@@ -174,6 +180,7 @@ class Article {
     data['country'] = this.country;
     data['title'] = this.title;
     data['meta'] = this.meta;
+    data['relatedImageUrls'] = this.relatedImageUrls;
     data['description'] = this.description;
     data['url'] = this.url;
     data['imageUrl'] = this.imageUrl;

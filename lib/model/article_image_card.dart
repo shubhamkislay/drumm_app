@@ -46,6 +46,7 @@ class ArticleImageCard extends StatefulWidget {
 }
 
 class _ArticleImageCardState extends State<ArticleImageCard> {
+
   @override
   Widget build(BuildContext context) {
     int boosts = 0;
@@ -54,6 +55,10 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
     double bottomPadding = 100;
     double horizontalPadding = 10;
     int imageUrlLength = widget.articleBand.article?.imageUrl?.length ?? 0;
+    int totalImages = 0;
+    if(widget.articleBand.article?.relatedImageUrls!=null)
+      totalImages =  widget.articleBand.article?.relatedImageUrls!.length??0;
+    //print("Title: ${widget.articleBand.article?.meta}");
     DateTime currentTime = DateTime.now();
     DateTime recent = currentTime.subtract(Duration(hours: 3));
     Timestamp boostTime = Timestamp.now();
@@ -326,6 +331,7 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                       color: Colors.white),
                                 ),
                               ),
+
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -365,6 +371,25 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
                                   ),
                                 ],
                               ),
+                              if(widget.articleBand.article?.relatedImageUrls!=null&&totalImages>0)
+                                Container(
+                                  padding: const EdgeInsets.all(4),
+                                  margin: const EdgeInsets.only(bottom: 4),
+                                  height: 36,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(" +${totalImages} "),
+                                      Expanded(
+                                        child: ListView(
+                                          scrollDirection: Axis.horizontal,
+                                          children: getImagesFromUrls(widget.articleBand.article??Article()),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              
                             ],
                           ),
                         ),
@@ -518,5 +543,40 @@ class _ArticleImageCardState extends State<ArticleImageCard> {
             ),
       ],
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  List<Container> getImagesFromUrls(Article article) {
+
+    List<Container> imageUrlCards = [];
+
+
+    if(article.relatedImageUrls!=null) {
+
+        imageUrlCards = article.relatedImageUrls!.map((e) {
+          return Container(
+            padding: EdgeInsets.all(2),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: CachedNetworkImage(
+                  width: 20,
+                  height: 20,
+                  imageUrl: e,
+                  fit: BoxFit.cover),
+            ),
+          );
+        }).toList();
+
+    }
+    else{
+    }
+
+    return imageUrlCards;
+
   }
 }
