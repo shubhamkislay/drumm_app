@@ -172,6 +172,60 @@ class FirebaseDBOperations {
     return algoliaArticles;
   }
 
+  static Future<List<Article>> getClusteredArticles(String clusterId, Article article) async{
+
+    List<Article> clusteredArticles = [];
+    print('The cluster Id is: ${clusterId}');
+
+    DocumentSnapshot<Map<String, dynamic>> articleSnapshot = await FirebaseFirestore.instance
+        .collection('stories')
+        .doc(article.articleId)
+        .get();
+
+    Article updatedArticle =  Article.fromJson(articleSnapshot);
+
+
+    query = FirebaseFirestore.instance
+        .collection("stories")
+        .where('clusterId', isEqualTo: updatedArticle.clusterId)
+        .where('isRepresentative',isEqualTo: false)
+        .orderBy("publishedAt", descending: true);
+
+
+    final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+    if (snapshot.docs.isNotEmpty) {
+      clusteredArticles = snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+    } else {
+      print('Nothing found');
+    }
+
+    return clusteredArticles;
+  }
+
+  static Future<List<Article>> getSimilarArticlesBySimilarId(String similarId, Article article) async{
+
+    List<Article> similarArticles = [];
+
+    query = FirebaseFirestore.instance
+        .collection("stories")
+        .where('similarId', isEqualTo: similarId)
+        .orderBy("publishedAt", descending: true);
+
+
+    final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+    if (snapshot.docs.isNotEmpty) {
+      similarArticles = snapshot.docs.map((doc) => Article.fromJson(doc)).toList();
+    } else {
+      //print('Nothing found');
+    }
+
+    // Remove the passed article from the list
+    similarArticles.removeWhere((similarArticle) => similarArticle.articleId == article.articleId);
+
+
+    return similarArticles;
+  }
+
   static bool isTimestampWithinThreeHours(Timestamp? firebaseTimestamp) {
     // Handle null timestamp by initializing it to an older date
     firebaseTimestamp ??= Timestamp.fromMillisecondsSinceEpoch(0);

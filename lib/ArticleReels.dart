@@ -237,9 +237,11 @@ class ArticleReelsState extends State<ArticleReels>
                                 paddingSize: 46,
                                 play: false,
                                 onPressed: () {
-                                  addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_MODERATE);
+                                  addStatsToUser(articleOnTop ?? ArticleBand(),
+                                      STATE_TYPE_MODERATE);
                                   FirebaseDBOperations.updateListened(
-                                      articleOnTop?.article?.articleId,articleOnTop?.article?.embedding);
+                                      articleOnTop?.article?.articleId,
+                                      articleOnTop?.article?.embedding);
                                 },
                               ),
                               Container(
@@ -379,7 +381,8 @@ class ArticleReelsState extends State<ArticleReels>
                                 article: articleOnTop?.article ?? Article(),
                                 userBoosted: isBoosted,
                                 boostedCallback: (boost) {
-                                  addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_INTENSE);
+                                  addStatsToUser(articleOnTop ?? ArticleBand(),
+                                      STATE_TYPE_INTENSE);
                                   setState(() {
                                     if (boost) {
                                       int currentBoosts =
@@ -413,9 +416,12 @@ class ArticleReelsState extends State<ArticleReels>
                                     backgroundColor: COLOR_BACKGROUND,
                                     iconHeight: 18,
                                     onPressed: () {
-                                      addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_INTENSE);
+                                      addStatsToUser(
+                                          articleOnTop ?? ArticleBand(),
+                                          STATE_TYPE_INTENSE);
                                       FirebaseDBOperations.updateShared(
-                                          articleOnTop?.article?.articleId, articleOnTop?.article?.embedding);
+                                          articleOnTop?.article?.articleId,
+                                          articleOnTop?.article?.embedding);
                                     },
                                   ),
                                 ),
@@ -517,17 +523,25 @@ class ArticleReelsState extends State<ArticleReels>
                               controller: countDownController,
                               width: 24,
                               height: 24,
-                              ringColor: (showCounter)? Colors.grey.shade700.withOpacity(0.5):Colors.transparent,
+                              ringColor: (showCounter)
+                                  ? Colors.grey.shade700.withOpacity(0.5)
+                                  : Colors.transparent,
                               ringGradient: null,
-                              fillColor: (showCounter)?Colors.white:Colors.transparent,
+                              fillColor: (showCounter)
+                                  ? Colors.white
+                                  : Colors.transparent,
                               fillGradient: null,
-                              backgroundColor:(showCounter)? Colors.black12:Colors.transparent,
+                              backgroundColor: (showCounter)
+                                  ? Colors.black12
+                                  : Colors.transparent,
                               backgroundGradient: null,
-                              strokeWidth:2.0,
+                              strokeWidth: 2.0,
                               strokeCap: StrokeCap.round,
                               textStyle: TextStyle(
                                   fontSize: 12.0,
-                                  color: (showCounter)? Colors.white:Colors.transparent,
+                                  color: (showCounter)
+                                      ? Colors.white
+                                      : Colors.transparent,
                                   fontWeight: FontWeight.bold),
                               textFormat: CountdownTextFormat.S,
                               isReverse: false,
@@ -599,7 +613,7 @@ class ArticleReelsState extends State<ArticleReels>
   }
 
   Widget getNewsArticles() {
-    int preloadListLength = widget.preloadList?.length??0;
+    int preloadListLength = widget.preloadList?.length ?? 0;
     return SafeArea(
       bottom: false,
       child: ClipRRect(
@@ -608,6 +622,13 @@ class ArticleReelsState extends State<ArticleReels>
           controller: _pageController,
           onPageChanged: (value) {
             currentVisiblePageIndex = value;
+            if (widget.preloadList?.elementAt(value).article?.clusterId !=
+                null) {
+              getClusteredNews(
+                  widget.preloadList?.elementAt(value).article ?? Article(),
+                  value);
+            }
+
             print("Current page index is ${currentVisiblePageIndex}");
 
             int boosts = 0;
@@ -615,14 +636,11 @@ class ArticleReelsState extends State<ArticleReels>
             DateTime recent = currentTime.subtract(Duration(hours: 3));
             Timestamp boostTime = Timestamp.now();
             try {
-              boostTime = widget.preloadList
-                      ?.elementAt(value)
-                      .article!
-                      .boostamp ??
-                  Timestamp.now();
+              boostTime =
+                  widget.preloadList?.elementAt(value).article!.boostamp ??
+                      Timestamp.now();
               boosts =
-                  widget.preloadList?.elementAt(value).article?.boosts ??
-                      0;
+                  widget.preloadList?.elementAt(value).article?.boosts ?? 0;
             } catch (e) {}
 
             setState(() {
@@ -639,9 +657,10 @@ class ArticleReelsState extends State<ArticleReels>
               // Execute your logic here
               print('Executed logic for page $value after 7 seconds');
 
-              addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_MODERATE);
-              FirebaseDBOperations.updateRead(
-                  articleOnTop?.article?.articleId,articleOnTop?.article?.embedding);
+              addStatsToUser(
+                  articleOnTop ?? ArticleBand(), STATE_TYPE_MODERATE);
+              FirebaseDBOperations.updateRead(articleOnTop?.article?.articleId,
+                  articleOnTop?.article?.embedding);
             });
 
             countDownController.reset();
@@ -670,23 +689,16 @@ class ArticleReelsState extends State<ArticleReels>
           scrollDirection: Axis.vertical,
           physics: const CustomPageViewScrollPhysics(),
           itemBuilder: (BuildContext context, int index) {
-            if (!articleIDs.contains(widget.preloadList
-                ?.elementAt(index)
-                .article
-                ?.articleId)) {
-              articleIDs.add(widget.preloadList
-                  ?.elementAt(index)
-                  .article
-                  ?.articleId);
+            if (!articleIDs.contains(
+                widget.preloadList?.elementAt(index).article?.articleId)) {
+              articleIDs
+                  .add(widget.preloadList?.elementAt(index).article?.articleId);
               checkIfUserLiked(index);
             }
             Widget articleWidget = SafeArea(
               bottom: false,
               child: Hero(
-                tag: widget.preloadList
-                        ?.elementAt(index)
-                        .article
-                        ?.articleId ??
+                tag: widget.preloadList?.elementAt(index).article?.articleId ??
                     "",
                 child: CachedNetworkImage(
                   fadeInDuration: const Duration(milliseconds: 0),
@@ -694,13 +706,10 @@ class ArticleReelsState extends State<ArticleReels>
                   alignment: Alignment.topCenter,
                   width: double.maxFinite,
                   height: double.maxFinite,
-                  imageUrl: widget.preloadList
-                          ?.elementAt(index)
-                          .article
-                          ?.imageUrl ??
-                      "",
-                  progressIndicatorBuilder:
-                      (context, url, downloadProgress) {
+                  imageUrl:
+                      widget.preloadList?.elementAt(index).article?.imageUrl ??
+                          "",
+                  progressIndicatorBuilder: (context, url, downloadProgress) {
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Container(
@@ -716,8 +725,7 @@ class ArticleReelsState extends State<ArticleReels>
                                     value: downloadProgress.progress,
                                     color: Colors.white.withOpacity(0.07),
                                     strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<
-                                            Color>(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
                                         Colors.white.withOpacity(0.07)),
                                   )
                                 : CircularProgressIndicator(
@@ -725,9 +733,8 @@ class ArticleReelsState extends State<ArticleReels>
                                     color: Colors
                                         .white70, //.withOpacity(1.0-opacity),
                                     strokeWidth: 2,
-                                    valueColor:
-                                        AlwaysStoppedAnimation<Color>(
-                                            Colors.white70),
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white70),
                                   ),
                           ),
                         ),
@@ -756,7 +763,7 @@ class ArticleReelsState extends State<ArticleReels>
             return ReelStack(
               controller: _pageController,
               index: index,
-              curPosition: widget.articlePosition??0,
+              curPosition: widget.articlePosition ?? 0,
               child: Container(
                 height: double.maxFinite,
                 width: double.maxFinite,
@@ -769,7 +776,7 @@ class ArticleReelsState extends State<ArticleReels>
                       color: (isBoosted)
                           ? Colors.indigo.withOpacity(0.65)
                           : Colors.grey.shade900.withOpacity(0.8),
-                    ),
+                    ), //background style
                     Column(
                       children: [
                         Container(
@@ -800,10 +807,10 @@ class ArticleReelsState extends State<ArticleReels>
                             },
                             child: articleWidget,
                           ),
-                        ),
+                        ), //news image
                         const SizedBox(
                           height: 8,
-                        ),
+                        ), //space
                         Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: horizontalPadding),
@@ -830,18 +837,16 @@ class ArticleReelsState extends State<ArticleReels>
                               ),
                             ),
                           ),
-                        ),
+                        ), //title (meta)
                         SizedBox(
                           height: 4,
-                        ),
+                        ), //space
                         Expanded(
                           flex: 8,
                           child: GestureDetector(
                             onTap: () {
                               openArticlePage(
-                                  widget.preloadList
-                                      ?.elementAt(index)
-                                      .article,
+                                  widget.preloadList?.elementAt(index).article,
                                   index);
                             },
                             child: Column(
@@ -858,92 +863,176 @@ class ArticleReelsState extends State<ArticleReels>
                                         physics: (!_scrollParent)
                                             ? ScrollPhysics()
                                             : NeverScrollableScrollPhysics(),
-                                        child: ExpandableText(
-                                          widget.preloadList
-                                                  ?.elementAt(index)
-                                                  .article
-                                                  ?.summary
-                                                  ?.trim() ??
-                                              "Read Article",
-                                          textAlign: TextAlign.left,
-                                          maxLines: 7,
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white54,
-                                              fontFamily: APP_FONT_LIGHT,
-                                              fontWeight: FontWeight.w600),
-                                          expandText: 'See more',
-                                          linkColor: Colors.white,
-                                          collapseText: 'Hide',
+                                        child: Column(
+                                          children: [
+                                            ExpandableText(
+                                              widget.preloadList
+                                                      ?.elementAt(index)
+                                                      .article
+                                                      ?.summary
+                                                      ?.trim() ??
+                                                  "Read Article",
+                                              textAlign: TextAlign.left,
+                                              maxLines: 7,
+                                              style: const TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.white54,
+                                                  fontFamily: APP_FONT_LIGHT,
+                                                  fontWeight: FontWeight.w600),
+                                              expandText: 'See more',
+                                              linkColor: Colors.white,
+                                              collapseText: 'Hide',
+                                            ),
+                                            SizedBox(
+                                              height: 2,
+                                            ), //space
+                                            Container(
+                                              alignment: Alignment.centerLeft,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 0),
+                                              margin: const EdgeInsets.only(top: 2),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  SingleChildScrollView(
+                                                    scrollDirection: Axis.horizontal,
+                                                    child: Row(
+                                                      crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                            widget.preloadList
+                                                                ?.elementAt(index)
+                                                                .article
+                                                                ?.source ??
+                                                                "",
+                                                            style: TextStyle(
+                                                              color: Colors.white30,
+                                                              fontSize: 13,
+                                                              fontFamily: APP_FONT_MEDIUM,
+                                                            )),
+                                                        const Text(
+                                                          " • ",
+                                                          style: TextStyle(
+                                                            color: Colors.white30,
+                                                            fontSize: 13,
+                                                            fontFamily: APP_FONT_MEDIUM,
+                                                          ),
+                                                        ),
+                                                        InstagramDateTimeWidget(
+                                                          publishedAt: widget.preloadList
+                                                              ?.elementAt(index)
+                                                              .article
+                                                              ?.publishedAt
+                                                              .toString() ??
+                                                              "",
+                                                          textSize: 13,
+                                                          fontColor: Colors.white30,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            if (clusterArticles.containsKey(widget
+                                                .preloadList
+                                                ?.elementAt(index)
+                                                .article
+                                                ?.articleId)) //source and time
+                                              Container(
+                                                alignment: Alignment.centerLeft,
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 0, vertical: 12),
+                                                child: Wrap(
+                                                  runSpacing: 8.0,
+                                                  crossAxisAlignment:
+                                                  WrapCrossAlignment.center,
+                                                  runAlignment: WrapAlignment.start,
+                                                  spacing: 4,
+                                                  alignment: WrapAlignment.start,
+                                                  children: clusterArticles[widget
+                                                      .preloadList
+                                                      ?.elementAt(index)
+                                                      .article
+                                                      ?.articleId]!
+                                                      .map(
+                                                        (article) => GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  OpenArticlePage(
+                                                                    article: article,
+                                                                  ),
+                                                            ));
+                                                      },
+                                                      child: Container(
+                                                        padding: const EdgeInsets.only(
+                                                            left: 4,
+                                                            top: 4,
+                                                            bottom: 4,
+                                                            right: 8),
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.grey.shade900,
+                                                          borderRadius:
+                                                          BorderRadius.circular(32),
+                                                        ),
+                                                        child: Row(
+                                                          mainAxisSize:
+                                                          MainAxisSize.min,
+                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                          children: [
+                                                            ClipRRect(
+                                                                borderRadius:
+                                                                BorderRadius
+                                                                    .circular(24),
+                                                                child:
+                                                                CachedNetworkImage(
+                                                                  imageUrl: article
+                                                                      .imageUrl ??
+                                                                      "",
+                                                                  height: 20,
+                                                                  width: 20,
+                                                                  fit: BoxFit.cover,
+                                                                )),
+                                                            SizedBox(
+                                                              width: 4,
+                                                            ),
+                                                            Text(
+                                                              article.source ?? "",
+                                                              textAlign: TextAlign.center,
+                                                              style: const TextStyle(
+                                                                  color: Colors.white,
+                                                                  fontFamily:
+                                                                  APP_FONT_MEDIUM),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                      .toList(),
+                                                ),
+                                              ),
+                                          ],
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 2,
-                                ),
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: horizontalPadding),
-                                  margin: const EdgeInsets.only(top: 2),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                                widget.preloadList
-                                                        ?.elementAt(index)
-                                                        .article
-                                                        ?.source ??
-                                                    "",
-                                                style: TextStyle(
-                                                  color: Colors.white30,
-                                                  fontSize: 13,
-                                                  fontFamily:
-                                                      APP_FONT_MEDIUM,
-                                                )),
-                                            const Text(
-                                              " • ",
-                                              style: TextStyle(
-                                                color: Colors.white30,
-                                                fontSize: 13,
-                                                fontFamily: APP_FONT_MEDIUM,
-                                              ),
-                                            ),
-                                            InstagramDateTimeWidget(
-                                              publishedAt: widget
-                                                      .preloadList
-                                                      ?.elementAt(index)
-                                                      .article
-                                                      ?.publishedAt
-                                                      .toString() ??
-                                                  "",
-                                              textSize: 13,
-                                              fontColor: Colors.white30,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                ), //news summary
+
                               ],
                             ),
                           ),
-                        ),
+                        ), //Content
                         SizedBox(
                           height: 12,
-                        ),
+                        ), //space
                         GestureDetector(
                           onTap: () {
                             drumJoinDialog();
@@ -952,16 +1041,12 @@ class ArticleReelsState extends State<ArticleReels>
                             width: double.maxFinite,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 6, vertical: 6),
-                            margin: EdgeInsets.fromLTRB(
-                                horizontalPadding - 6,
-                                0,
-                                horizontalPadding - 6,
-                                12),
+                            margin: EdgeInsets.fromLTRB(horizontalPadding - 6,
+                                0, horizontalPadding - 6, 12),
                             alignment: Alignment.centerLeft,
                             decoration: BoxDecoration(
                               //color: Colors.blue,//s.withOpacity(0.1),
-                              borderRadius:
-                                  BorderRadius.circular(borderCurve),
+                              borderRadius: BorderRadius.circular(borderCurve),
                               gradient: LinearGradient(colors: JOIN_COLOR),
                             ),
                             child: Row(
@@ -972,8 +1057,7 @@ class ArticleReelsState extends State<ArticleReels>
                                 ),
                                 Container(
                                   padding: const EdgeInsets.all(4),
-                                  child: Image.asset(
-                                      'images/audio-waves.png',
+                                  child: Image.asset('images/audio-waves.png',
                                       height: 24,
                                       color: Colors.white,
                                       fit: BoxFit.contain),
@@ -1027,10 +1111,10 @@ class ArticleReelsState extends State<ArticleReels>
                               ],
                             ),
                           ),
-                        ),
+                        ), // Join Drumm question button
                         SizedBox(
                           height: 4,
-                        ),
+                        ), // space
                       ],
                     ),
                   ],
@@ -1049,7 +1133,7 @@ class ArticleReelsState extends State<ArticleReels>
     final overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         top: 60.0,
-         right: 20.0,
+        right: 20.0,
         left: MediaQuery.of(context).size.width / 2 - 50,
         child: ScorePopup(
           score: score,
@@ -1329,6 +1413,8 @@ class ArticleReelsState extends State<ArticleReels>
 
   bool _isDebouncing = false;
 
+  Map<String, List<Article>> clusterArticles = HashMap();
+
   void _handleScroll() {
     if (widget.scrollController.position.pixels >=
         widget.scrollController.position.maxScrollExtent) {
@@ -1377,7 +1463,6 @@ class ArticleReelsState extends State<ArticleReels>
     _lastDocument = widget.lastDocument;
     refreshFeed();
 
-
     _pageController = PageController(
       initialPage: widget.articlePosition ?? 0,
     );
@@ -1395,7 +1480,6 @@ class ArticleReelsState extends State<ArticleReels>
   void getBandsList() async {
     bandList = await FirebaseDBOperations.getBandByUser();
   }
-
 
   void refreshFeed() async {
     if (widget.preloadList == null) {
@@ -1421,6 +1505,19 @@ class ArticleReelsState extends State<ArticleReels>
                 ?.boosts ??
             0;
       } catch (e) {}
+
+      if (widget.preloadList
+              ?.elementAt(widget.articlePosition ?? 0)
+              .article
+              ?.clusterId !=
+          null) {
+        getClusteredNews(
+            widget.preloadList
+                    ?.elementAt(widget.articlePosition ?? 0)
+                    .article ??
+                Article(),
+            widget.articlePosition ?? 0);
+      }
 
       setState(() {
         articleOnTop =
@@ -1448,11 +1545,10 @@ class ArticleReelsState extends State<ArticleReels>
         addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_MODERATE);
         print("After 7 minutes one");
         FirebaseDBOperations.updateRead(
-            articleOnTop?.article?.articleId,articleOnTop?.article?.embedding);
+            articleOnTop?.article?.articleId, articleOnTop?.article?.embedding);
       });
     }
   }
-
 
   void initToken() {
     requestPermissions();
@@ -1651,8 +1747,8 @@ class ArticleReelsState extends State<ArticleReels>
           articleBand: articleOnTop,
           startDrumming: () {
             addStatsToUser(articleOnTop ?? ArticleBand(), STATE_TYPE_INTENSE);
-            FirebaseDBOperations.updateJoined(
-                articleOnTop?.article?.articleId,articleOnTop?.article?.embedding);
+            FirebaseDBOperations.updateJoined(articleOnTop?.article?.articleId,
+                articleOnTop?.article?.embedding);
             ArticleBand? articleBand = ArticleBand();
             articleBand = articleOnTop;
             Vibrate.feedback(FeedbackType.success);
@@ -1673,10 +1769,26 @@ class ArticleReelsState extends State<ArticleReels>
       points = STATE_TYPE_INTENSE_SCORE;
     }
 
-    if(type!=STATE_TYPE_MILD) {
+    if (type != STATE_TYPE_MILD) {
       _showScoreIncrement(points);
     }
     FirebaseDBOperations.incrementCategoryPoints(
         articleBand.article?.category ?? "general", points);
+  }
+
+  void getClusteredNews(Article article, int index) async {
+    print("Fetching clustered Articles");
+    List<Article> fetchedArticles =
+        await FirebaseDBOperations.getClusteredArticles(
+            article.clusterId ?? "", article);
+
+    Map<String, List<Article>> newCluster = clusterArticles;
+    newCluster["${article.articleId}"] = fetchedArticles;
+
+    print("Fetched article Size: ${fetchedArticles.length}");
+
+    setState(() {
+      clusterArticles = newCluster;
+    });
   }
 }

@@ -14,6 +14,8 @@ class Article {
   String? summary;
   String? content;
   String? articleId;
+  String? clusterId;
+  String? similarId;
   String? jamId;
   String? source;
   String? dump;
@@ -34,6 +36,8 @@ class Article {
         this.likes,
         this.boostamp,
         this.boosts,
+        this.clusterId,
+        this.similarId,
         this.meta,
       this.category,
         this.source,
@@ -66,6 +70,8 @@ class Article {
       boosts = data['boosts'];
       summary = data['summary'];
       source = data['source'];
+      similarId = data['similarId'];
+      clusterId = data['clusterId'];
       dump = data['dump'];
       relatedImageUrls = data['relatedImageUrls'];
       category = data['category'];
@@ -99,6 +105,8 @@ class Article {
     category = snapshot['category'];
     question = snapshot['question'];
     articleId = snapshot['articleId'];
+    similarId = snapshot['similarId'];
+    clusterId = snapshot['clusterId'];
     jamId = snapshot['jamId'];
     country = snapshot['country'];
     title = snapshot['title'];
@@ -126,6 +134,8 @@ class Article {
     category = snapshot['category'];
     question = snapshot['question'];
     articleId = snapshot['articleId'];
+    similarId = snapshot['similarId'];
+    clusterId = snapshot['clusterId'];
     jamId = snapshot['jamId'];
     relatedImageUrls = snapshot['relatedImageUrls'];
     country = snapshot['country'];
@@ -157,6 +167,8 @@ class Article {
       description: this.description,
       imageUrl: this.imageUrl,
       publishedAt: this.publishedAt,
+      similarId: this.similarId,
+      clusterId: this.clusterId,
       boostamp: this.boostamp,
       boosts: this.boosts,
       articleId: this.articleId,
@@ -179,6 +191,8 @@ class Article {
     data['dump'] = this.dump;
     data['country'] = this.country;
     data['title'] = this.title;
+    data['similarId'] = this.similarId;
+    data['clusterId'] = this.clusterId;
     data['meta'] = this.meta;
     data['relatedImageUrls'] = this.relatedImageUrls;
     data['description'] = this.description;
