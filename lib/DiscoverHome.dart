@@ -1308,6 +1308,7 @@ class DiscoverHomeState extends State<DiscoverHome>
       checkFreshArticles();
       getBandDrumms();
       getCommunityQuestion();
+      FirebaseDBOperations.updateLastOpened();
       // checkForNewArticles();
     }
   }
@@ -1317,6 +1318,7 @@ class DiscoverHomeState extends State<DiscoverHome>
     super.didChangeDependencies();
     // Call checkForNewArticles whenever dependencies change
     print("On Resume Discover Home didChangeDependencies");
+    FirebaseDBOperations.updateLastOpened();
     // Delay the call to checkForNewArticles to ensure the widget is fully attached
   }
 

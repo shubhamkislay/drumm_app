@@ -90,7 +90,7 @@ class _OpenArticlePageState extends State<OpenArticlePage> with RouteAware {
                       padding: 12,
                       height: 52,
                       color: widget.article.liked ?? false
-                          ? Colors.red
+                          ? Colors.indigo.withOpacity(0.65)
                           : Colors.white,
                       bgColor: Colors.grey.withOpacity(0.1),
                       onPressed: () {
@@ -121,8 +121,8 @@ class _OpenArticlePageState extends State<OpenArticlePage> with RouteAware {
                         });
                       },
                       assetPath: widget.article.liked ?? false
-                          ? 'images/liked.png'
-                          : 'images/heart.png',
+                          ? 'images/boost_enabled.png'//'images/heart_like.png'
+                          : 'images/boost_disabled.png',//'images/like_btn.png',
                     ),
                     RoundedButton(
                       padding: 12,

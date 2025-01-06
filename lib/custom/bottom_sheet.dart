@@ -55,6 +55,7 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (!available)
               RoundedButton(
@@ -80,6 +81,15 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
                   ),
                 ),
               ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 12),
+              child: Text(
+                "AI Summary",
+                style: TextStyle(
+                    fontSize: 18, color: Colors.white.withOpacity(textOpacity),
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 24),
               child: Text(

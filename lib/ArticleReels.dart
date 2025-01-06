@@ -629,6 +629,13 @@ class ArticleReelsState extends State<ArticleReels>
                   value);
             }
 
+            if (widget.preloadList?.elementAt(value).article?.similarId !=
+                null) {
+              getSimilarNews(
+                  widget.preloadList?.elementAt(value).article ?? Article(),
+                  value);
+            }
+
             print("Current page index is ${currentVisiblePageIndex}");
 
             int boosts = 0;
@@ -1019,6 +1026,126 @@ class ArticleReelsState extends State<ArticleReels>
                                                       .toList(),
                                                 ),
                                               ),
+                                            SizedBox(height: 24,),
+                                            if (similarArticles.containsKey(widget
+                                                .preloadList
+                                                ?.elementAt(index)
+                                                .article
+                                                ?.articleId)) //source and time
+                                              Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text("More like this"),
+                                                  SizedBox(height: 4,),
+                                                  Container(
+                                                    alignment: Alignment.centerLeft,
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 0, vertical: 12),
+                                                    child: Wrap(
+                                                      runSpacing: 8.0,
+                                                      crossAxisAlignment:
+                                                      WrapCrossAlignment.center,
+                                                      runAlignment: WrapAlignment.start,
+                                                      spacing: 4,
+                                                      alignment: WrapAlignment.start,
+                                                      children: similarArticles[widget
+                                                          .preloadList
+                                                          ?.elementAt(index)
+                                                          .article
+                                                          ?.articleId]!
+                                                          .map(
+                                                            (article) => GestureDetector(
+                                                          onTap: () {
+                                                            Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                  builder: (context) =>
+                                                                      OpenArticlePage(
+                                                                        article: article,
+                                                                      ),
+                                                                ));
+                                                          },
+                                                          child: Container(
+                                                            padding: const EdgeInsets.only(
+                                                                left: 4,
+                                                                top: 4,
+                                                                bottom: 4,
+                                                                right: 8),
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.grey.shade900,
+                                                              borderRadius:
+                                                              BorderRadius.circular(12),
+                                                            ),
+                                                            child: Row(
+                                                              mainAxisSize:
+                                                              MainAxisSize.min,
+                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                              children: [
+
+                                                                ClipRRect(
+                                                                    borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(12),
+                                                                    child:
+                                                                    CachedNetworkImage(
+                                                                      imageUrl: article
+                                                                          .imageUrl ??
+                                                                          DEFAULT_IMAGE_URL,
+                                                                      height: 24,
+                                                                      width: 24,
+                                                                      fit: BoxFit.cover,
+                                                                      errorWidget: (context, url, error) {
+                                                                        return Image.asset(
+                                                                          "images/drumm_logo.png",
+                                                                          color: Colors.white12,
+                                                                        );
+                                                                      },
+                                                                    )),
+                                                                SizedBox(
+                                                                  width: 4,
+                                                                ),
+                                                                Flexible(
+                                                                  child: SizedBox(
+                                                                    child: Text(
+                                                                      article.meta?.trim() ?? "",
+                                                                      textAlign: TextAlign.center,
+                                                                      maxLines: 1,
+                                                                      style: const TextStyle(
+                                                                          color: Colors.white,
+                                                                          fontFamily:
+                                                                          APP_FONT_MEDIUM,
+
+                                                                        overflow: TextOverflow.ellipsis
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                const Text(
+                                                                  " • ",
+                                                                  style: TextStyle(
+                                                                    color: Colors.white30,
+                                                                    fontSize: 13,
+                                                                    fontFamily: APP_FONT_MEDIUM,
+                                                                  ),
+                                                                ),
+                                                                InstagramDateTimeWidget(
+                                                                  publishedAt: article.publishedAt
+                                                                      .toString() ??
+                                                                      "",
+                                                                  textSize: 13,
+                                                                  fontColor: Colors.white30,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                          .toList(),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                           ],
                                         ),
                                       ),
@@ -1178,11 +1305,11 @@ class ArticleReelsState extends State<ArticleReels>
       print("Fetched categories: ${bandCategoryList.toString()}");
 
       Query<Map<String, dynamic>> query = FirebaseFirestore.instance
-          .collection("stories")
+          .collection("recommendations")
+          .doc(getCurrentUserID())
+          .collection("articles")
           .where('category', whereIn: bandCategoryList)
-          .where('country', isEqualTo: 'us')
-          .where('publishedAt', isNotEqualTo: null)
-          .orderBy("publishedAt", descending: true)
+          .orderBy("recommendedTimestamp", descending: true)
           .limit(_pageSize);
 
       if (widget.selectedBandId == "Boosted") {
@@ -1414,6 +1541,7 @@ class ArticleReelsState extends State<ArticleReels>
   bool _isDebouncing = false;
 
   Map<String, List<Article>> clusterArticles = HashMap();
+  Map<String, List<Article>> similarArticles = HashMap();
 
   void _handleScroll() {
     if (widget.scrollController.position.pixels >=
@@ -1517,7 +1645,23 @@ class ArticleReelsState extends State<ArticleReels>
                     .article ??
                 Article(),
             widget.articlePosition ?? 0);
+
       }
+
+      if (widget.preloadList
+          ?.elementAt(widget.articlePosition ?? 0)
+          .article
+          ?.similarId !=
+          null) {
+        getSimilarNews(
+            widget.preloadList
+                ?.elementAt(widget.articlePosition ?? 0)
+                .article ??
+                Article(),
+            widget.articlePosition ?? 0);
+
+      }
+
 
       setState(() {
         articleOnTop =
@@ -1789,6 +1933,22 @@ class ArticleReelsState extends State<ArticleReels>
 
     setState(() {
       clusterArticles = newCluster;
+    });
+  }
+
+  void getSimilarNews(Article article, int index) async {
+    print("Fetching similar Articles");
+    List<Article> fetchedArticles = await FirebaseDBOperations.performSemanticSearch(article.embedding,article);
+    // await FirebaseDBOperations.getSimilarArticlesBySimilarId(
+    //     article.similarId ?? "", article);
+
+    Map<String, List<Article>> newSimilars = similarArticles;
+    newSimilars["${article.articleId}"] = fetchedArticles;
+
+    print("Fetched article Size: ${fetchedArticles.length}");
+
+    setState(() {
+      similarArticles = newSimilars;
     });
   }
 }

@@ -50,6 +50,7 @@ const double WEIGHT_SHARED = 0.8;
 const double WEIGHT_LISTENED = 0.7;
 const double WEIGHT_READ = 0.6;
 
+const String DEFAULT_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/drummapp.appspot.com/o/asset_image%2Flogo_dark_300x300.png?alt=media&token=a2e1bc5c-a34c-4def-b86b-5a806443c921";
 
 
 const double CURVE=12;

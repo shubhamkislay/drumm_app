@@ -374,6 +374,7 @@ class _LauncherPageState extends State<LauncherPage>
     // TODO: implement initState
     listenDynamicLinks();
     super.initState();
+    FirebaseDBOperations.updateLastOpened();
   }
   @override
   void dispose() {

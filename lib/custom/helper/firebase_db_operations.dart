@@ -206,10 +206,18 @@ class FirebaseDBOperations {
 
     List<Article> similarArticles = [];
 
+    DocumentSnapshot<Map<String, dynamic>> articleSnapshot = await FirebaseFirestore.instance
+        .collection('stories')
+        .doc(article.articleId)
+        .get();
+
+    Article updatedArticle =  Article.fromJson(articleSnapshot);
+
     query = FirebaseFirestore.instance
         .collection("stories")
-        .where('similarId', isEqualTo: similarId)
-        .orderBy("publishedAt", descending: true);
+        .where('similarId', isEqualTo: updatedArticle.similarId)
+        .orderBy("publishedAt", descending: true)
+        .limit(5);
 
 
     final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
@@ -436,6 +444,39 @@ class FirebaseDBOperations {
       return [];
     }
   }
+
+  static Future<List<Article>> performSemanticSearch(VectorValue? embedding, Article article) async {
+    try {
+      // Create a callable reference to the vectorSearch Cloud Function
+
+      final HttpsCallable callable =
+      FirebaseFunctions.instance.httpsCallable('semanticSearch');
+
+      //print('The user Id is : $userId');
+
+      // Call the Cloud Function with userId and limit
+      final result = await callable.call({
+        'limit': 5,
+        'embedding' :embedding?.toArray()
+      });
+
+      ////print('Raw response from Cloud Function: ${result.data['articles'][0]}');
+
+
+      // Parse the response
+      final List<Article> articles = (result.data['articles'] as List<dynamic>)
+          .map((articleData) => Article.fromCloudFunction(articleData))
+          .toList();
+
+      articles.removeWhere((similarArticle) => similarArticle.articleId == article.articleId);
+
+      return articles;
+    } catch (error) {
+      //print('Error performing vector search: $error');
+      return [];
+    }
+  }
+
   static Future<AlgoliaArticles> getBoostedArticlesData(
       DocumentSnapshot<Map<String, dynamic>>? _startDocument,
       DocumentSnapshot<Map<String, dynamic>>? _lastDocument,
@@ -2610,5 +2651,17 @@ class FirebaseDBOperations {
       transaction.update(sfDocRef,
           {"count": count, "membersID": memList}); //,"membersID":memList
     });
+  }
+
+
+  static void updateLastOpened() async{
+    DocumentReference drummerLastOpened =
+    FirebaseFirestore.instance.collection('users').doc(getCurrentUserID());
+
+    try {
+      await drummerLastOpened.update({"lastOpened": Timestamp.now()});
+    }catch(e){
+
+    }
   }
 }
