@@ -235,19 +235,22 @@ class FirebaseDBOperations {
   }
 
   static bool isTimestampWithinThreeHours(Timestamp? firebaseTimestamp) {
-    // Handle null timestamp by initializing it to an older date
-    firebaseTimestamp ??= Timestamp.fromMillisecondsSinceEpoch(0);
+    // Use a default older date if firebaseTimestamp is null
+    firebaseTimestamp ??= Timestamp.fromDate(DateTime(2000));
 
     // Get the current timestamp
-    Timestamp currentTimestamp = Timestamp.now();
+    final currentTimestamp = Timestamp.now();
 
-    // Calculate the difference in milliseconds
-    int differenceMilliseconds = currentTimestamp.millisecondsSinceEpoch -
+    // Compute the difference in milliseconds
+    final differenceMilliseconds = currentTimestamp.millisecondsSinceEpoch -
         firebaseTimestamp.millisecondsSinceEpoch;
 
-    // Check if the difference is within 3 hours (10,800,000 milliseconds)
-    return differenceMilliseconds < 10800000;
+    // Compare against a 3-hour Duration
+    final threeHoursInMs = const Duration(hours: 1).inMilliseconds;
+
+    return differenceMilliseconds < threeHoursInMs;
   }
+
 
 
 
@@ -264,12 +267,13 @@ class FirebaseDBOperations {
       drummer = await getDrummer(getCurrentUserID());
     if(drummer.preference!=null){
       //print("preference is not null");
-      if (!isTimestampWithinThreeHours(drummer.lastRecommendationTimestamp ?? Timestamp.fromMillisecondsSinceEpoch(0))) {
+      if (!isTimestampWithinThreeHours(drummer.lastRecommendationTimestamp ?? Timestamp.fromDate(DateTime(2000)))) {
 
         //print("User recommendations are outdated, so calling the vector search.");
         // Your code here
-        generateRecommendation();
-        List<Article> vectorSearchArticles = await performVectorSearch(drummer.preference);
+        Timestamp recommendTimestamp = drummer.lastRecommendationTimestamp ?? Timestamp.fromDate(DateTime(2000));
+        generateRecommendation(recommendTimestamp);
+        List<Article> vectorSearchArticles = await performVectorSearch(drummer.preference,recommendTimestamp);
 
         AlgoliaArticles algoliaArticles = AlgoliaArticles(
             articles: vectorSearchArticles, queryID: fetchedLastDocument.toString());
@@ -286,7 +290,7 @@ class FirebaseDBOperations {
     }else{
       //print("preference is null");
       if (_lastDocument == null)
-        generateRecommendation();
+        generateRecommendation(Timestamp.fromDate(DateTime(2000)));
       return await getArticlesData(_startDocument,_lastDocument,reverse);
     }
     //if (fetchedBands.isEmpty)
@@ -388,11 +392,11 @@ class FirebaseDBOperations {
 
     return algoliaArticles;
   }
-  static void generateRecommendation() async {
+  static void generateRecommendation(Timestamp recommendTimestamp) async {
     try {
       // Create a callable reference to the vectorSearch Cloud Function
 
-      //print("Calling generateRecommendation function");
+    print("Calling generateRecommendation function");
 
       final HttpsCallable callable =
       FirebaseFunctions.instance.httpsCallable('generateRecommendations');
@@ -403,7 +407,8 @@ class FirebaseDBOperations {
 
       // Call the Cloud Function with userId and limit
       final result = await callable.call({
-        'userId': userId??""
+        'userId': userId??"",
+        'recommendTimestamp':recommendTimestamp.millisecondsSinceEpoch.toString()??"",
       });
 
       //print("Finished generating recommendation with the result${result.data['message']}");
@@ -412,9 +417,11 @@ class FirebaseDBOperations {
       //return [];
     }
   }
-  static Future<List<Article>> performVectorSearch(VectorValue? preference) async {
+  static Future<List<Article>> performVectorSearch(VectorValue? preference, Timestamp recommendTimestamp) async {
     try {
       // Create a callable reference to the vectorSearch Cloud Function
+
+      print("Perform vector search");
 
       final HttpsCallable callable =
       FirebaseFunctions.instance.httpsCallable('vectorSearch');
@@ -427,7 +434,8 @@ class FirebaseDBOperations {
       final result = await callable.call({
         'userId': userId??"",
         'limit': 25,
-        'preference' :preference?.toArray()
+        'preference' :preference?.toArray(),
+        'recommendTimestamp':recommendTimestamp.millisecondsSinceEpoch.toString()
       });
 
       ////print('Raw response from Cloud Function: ${result.data['articles'][0]}');
@@ -440,7 +448,7 @@ class FirebaseDBOperations {
 
       return articles;
     } catch (error) {
-      //print('Error performing vector search: $error');
+      print('Error performing vector search: $error');
       return [];
     }
   }

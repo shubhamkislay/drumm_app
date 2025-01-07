@@ -629,12 +629,11 @@ class ArticleReelsState extends State<ArticleReels>
                   value);
             }
 
-            if (widget.preloadList?.elementAt(value).article?.similarId !=
-                null) {
+            //
               getSimilarNews(
                   widget.preloadList?.elementAt(value).article ?? Article(),
                   value);
-            }
+            //}
 
             print("Current page index is ${currentVisiblePageIndex}");
 
@@ -1648,11 +1647,11 @@ class ArticleReelsState extends State<ArticleReels>
 
       }
 
-      if (widget.preloadList
-          ?.elementAt(widget.articlePosition ?? 0)
-          .article
-          ?.similarId !=
-          null) {
+      // if (widget.preloadList
+      //     ?.elementAt(widget.articlePosition ?? 0)
+      //     .article
+      //     ?.similarId !=
+      //     null) {
         getSimilarNews(
             widget.preloadList
                 ?.elementAt(widget.articlePosition ?? 0)
@@ -1660,7 +1659,7 @@ class ArticleReelsState extends State<ArticleReels>
                 Article(),
             widget.articlePosition ?? 0);
 
-      }
+      //}
 
 
       setState(() {
