@@ -442,9 +442,23 @@ class FirebaseDBOperations {
 
 
       // Parse the response
-      final List<Article> articles = (result.data['articles'] as List<dynamic>)
+      List<Article> articles = (result.data['articles'] as List<dynamic>)
           .map((articleData) => Article.fromCloudFunction(articleData))
           .toList();
+
+      if(articles.isEmpty){
+        //
+        AlgoliaArticles algoliaArticles = await FirebaseDBOperations.checkForFreshRecommendedArticles(null,null,false);
+        List<Article>? fetchedArticles = algoliaArticles.articles;
+        int fetchedArticlesSize = fetchedArticles?.length??0;
+        if(fetchedArticlesSize==0){
+          AlgoliaArticles algoliaArticles = await FirebaseDBOperations.getArticlesData(null,null,false);
+          List<Article>? fetchedArticles = algoliaArticles.articles;
+          articles = fetchedArticles??[];
+        }else{
+          articles = fetchedArticles??[];
+        }
+      }
 
       return articles;
     } catch (error) {
