@@ -208,6 +208,7 @@ class ConnectToChannel {
           debugPrint("onJoinChannelSuccess called channelID: $channelID");
           print(channelID);
           print("Local user uid:${connection.localUid} joined the channel");
+          onPlayMusicPressed();
 
           _isJoined = true;
           // Start the timer to call updateLastActive every 10 seconds
@@ -367,6 +368,20 @@ class ConnectToChannel {
     // }
 
     await fetchToken(uid, channelID, tokenRole);
+  }
+
+  static Future<void> onPlayMusicPressed() async {
+    const firebasePath = "aivoice/introduction.mp3";
+
+    await FirebaseDBOperations.convertTextToSpeech("Welcome to your first Drumm. Here you can talk to me your Drumm AI, and other people as well on the latest pressing issues around the world. Like for this example. ${jam?.question}. Wait for others to join."??"This is a test question", jam?.jamId??"id1234", _rtcEngine);
+
+    // await FirebaseDBOperations.playMusicFromFirebase(
+    //   firebaseStorageFilePath: firebasePath,
+    //   engine: _rtcEngine,
+    //   loopback: false,  // publish to remote participants only
+    //   replace: false,   // mix mic + music
+    //   cycle: 1,         // play once
+    // );
   }
 
   static Future<void> leaveChannel() async {

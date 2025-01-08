@@ -1,9 +1,13 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
 
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:algolia/algolia.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/custom/helper/access_firebase_token.dart';
 import 'package:drumm_app/model/Stats.dart';
@@ -16,8 +20,10 @@ import 'package:drumm_app/model/Drummer.dart';
 import 'package:drumm_app/model/article.dart';
 import 'package:drumm_app/model/jam.dart';
 import 'package:drumm_app/model/question.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/animation.dart';
 import 'package:ogg_opus_player/ogg_opus_player.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
@@ -2684,6 +2690,120 @@ class FirebaseDBOperations {
       await drummerLastOpened.update({"lastOpened": Timestamp.now()});
     }catch(e){
 
+    }
+  }
+
+  static Future<void> playMusicFromFirebase({
+    required String firebaseStorageFilePath,
+    required RtcEngine engine,             // Your initialized Agora engine
+    bool loopback = false,                      // if local user should also hear the music
+    bool replace = false,                       // false => music + mic; true => only music
+    int cycle = 1,                              // how many times to loop the file
+    int startPos = 0,                           // start position in milliseconds
+  }) async {
+    try {
+      // 1. Obtain a reference to the Firebase Storage file
+      //final ref = FirebaseStorage.instance.ref(firebaseStorageFilePath);
+
+      // 2. Get a download URL
+      //final downloadUrl = await ref.getDownloadURL();
+      // NOTE: For large files, direct streaming might be tricky if 'startAudioMixing'
+      //       does not accept a remote URL in your version.
+      //       We'll demonstrate a local download approach here.
+
+      // 3. Download the file to a local temporary directory
+      final Directory tempDir = await getTemporaryDirectory();
+      final String filename = firebaseStorageFilePath.split('/').last;
+      // e.g. "my_music.mp3"
+      final String localFilePath = '${tempDir.path}/$filename';
+
+      // Use Dio to download
+      final dio = Dio();
+      await dio.download("https://firebasestorage.googleapis.com/v0/b/drummapp.appspot.com/o/aivoice%2Fintroducing.mp3?alt=media&token=284dbee3-c3e0-48de-8a55-9d1b07a51d18", localFilePath);//await dio.download(downloadUrl, localFilePath);
+
+      // 4. Start audio mixing with the just-downloaded local file
+      await engine.startAudioMixing(
+        filePath: localFilePath,
+        loopback: loopback,
+        cycle: cycle,
+        startPos: startPos,
+      );
+
+      print('✅ Music download & mixing started successfully.');
+    } catch (e) {
+      print('❌ Failed to play music from Firebase: $e');
+      rethrow;
+    }
+  }
+  static Future<void> convertTextToSpeech(String text, String id, RtcEngine engine) async {
+    print("Converting text to speech");
+    try {
+      //audioPlayer.stop();
+      FirebaseDBOperations.OggOpus_Player.pause();
+      FirebaseDBOperations.OggOpus_Player.dispose();
+    } catch (e) {}
+    final apiKey = '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';//'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';
+    final endpoint = 'https://api.openai.com/v1/audio/speech';
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $apiKey',
+    };
+
+    // Define a list of voices
+    final voices = [
+      //'alloy',
+      //'fable',
+      //'echo',
+      //'onyx',
+      //'nova',
+      'shimmer'
+    ]; //'echo', 'onyx', 'nova', 'shimmer'
+
+    // Randomly select a voice from the list
+    final random = Random();
+    final selectedVoice = voices[random.nextInt(voices.length)];
+
+    // Set the selected voice in the data
+    final data = {
+      'input': text,
+      'model': 'tts-1',
+      'voice': selectedVoice,
+      //'response_format': 'opus',
+    };
+
+    final response = await http.post(
+      Uri.parse(endpoint),
+      headers: headers,
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode == 200) {
+      //  //await audioPlayer.play(BytesSource(response.bodyBytes));
+      final audioBytes = response.bodyBytes;
+      final appDir = await getApplicationDocumentsDirectory();
+      final audioFile = File('${appDir.path}/$id.mp3');
+      await audioFile.writeAsBytes(audioBytes);
+      //if (articleTop == id) {
+      // audioPlayer.setFilePath(audioFile.path);
+      // audioPlayer.play();
+
+      await engine.startAudioMixing(
+        filePath: audioFile.path,
+        loopback: false,
+        cycle: 1,
+        startPos: 0,
+      );
+
+
+
+
+
+      //}
+    } else {
+      // Handle API error
+      print("Error generating audio ${response.statusCode} ${response.body}");
+      //createTTS(text);
     }
   }
 }
