@@ -411,7 +411,7 @@ class ConnectToChannel {
 
       // Print words
       for (var word in transcription.words) {
-        print("Word: ${word.text}, Start MS: ${word.startMs}, Duration: ${word.durationMs}");
+        print("Word: ${word.text}");
       }
 
       // Print translations
