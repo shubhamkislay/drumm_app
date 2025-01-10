@@ -51,7 +51,6 @@ dependencies:
   image: ^4.0.17
   shared_preferences: ^2.1.1
   webview_flutter: ^4.2.1
-  agora_rtc_engine: ^6.1.1+1
   permission_handler: ^11.3.1
   debounce_throttle: ^2.0.0
   animated_text_kit: ^4.2.2
@@ -119,6 +118,10 @@ dependencies:
   cloud_functions: ^5.2.0
   flutter_tts: ^4.2.1
   dio: ^5.7.0
+  agora_rtc_engine: ^6.5.0
+  agora_token_service: ^0.1.2
+  fixnum: ^1.1.1
+  protobuf: ^3.1.0
 
 dev_dependencies:
   flutter_test:

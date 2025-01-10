@@ -275,7 +275,7 @@ class FirebaseDBOperations {
       //print("preference is not null");
       if (!isTimestampWithinThreeHours(drummer.lastRecommendationTimestamp ?? Timestamp.fromDate(DateTime(2000)))) {
 
-        //print("User recommendations are outdated, so calling the vector search.");
+        print("User recommendations are outdated, so calling the vector search.");
         // Your code here
         Timestamp recommendTimestamp = drummer.lastRecommendationTimestamp ?? Timestamp.fromDate(DateTime(2000));
         generateRecommendation(recommendTimestamp);
@@ -319,7 +319,7 @@ class FirebaseDBOperations {
       try {
         query = query.startAfterDocument(_lastDocument!);
       }catch(e){
-        _lastDocument = null;
+        //_lastDocument = null;
         //query = query.startAfterDocument(_lastDocument!);
       }
     }
@@ -332,7 +332,13 @@ class FirebaseDBOperations {
           snapshot.docs.last; // Save the last document for the next page
       fetchedStartDocument = snapshot.docs.first;
     } else {
-      //print('Nothing found');
+      print('Nothing found in recommendations');
+      AlgoliaArticles algoliaArticles = await  getArticlesData(_startDocument, _lastDocument, reverse);
+
+      algoliaArticles.setLastDocument(fetchedLastDocument);
+      algoliaArticles.setStartDocument(fetchedStartDocument);
+
+      return algoliaArticles;
     }
 
     AlgoliaArticles algoliaArticles = AlgoliaArticles(
@@ -381,7 +387,7 @@ class FirebaseDBOperations {
           snapshot.docs.last; // Save the last document for the next page
       fetchedStartDocument = snapshot.docs.first;
     } else {
-      //print('Nothing found');
+      print('Nothing found in recommendations');
       AlgoliaArticles algoliaArticles = await  getArticlesData(_startDocument, _lastDocument, reverse);
 
       algoliaArticles.setLastDocument(fetchedLastDocument);
@@ -454,6 +460,7 @@ class FirebaseDBOperations {
 
       if(articles.isEmpty){
         //
+        print('No Articles fetched from vector search. Checking for existing recommended data');
         AlgoliaArticles algoliaArticles = await FirebaseDBOperations.checkForFreshRecommendedArticles(null,null,false);
         List<Article>? fetchedArticles = algoliaArticles.articles;
         int fetchedArticlesSize = fetchedArticles?.length??0;

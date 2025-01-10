@@ -26,7 +26,7 @@ class Jam {
     'jamId': jamId,
     'articleId': articleId,
     'title': title,
-    'question': question,
+    'question': question?.trim(),
     'membersID': membersID,
     'broadcast': broadcast,
     'imageUrl': imageUrl,
@@ -39,7 +39,7 @@ class Jam {
         bandId = json['bandId'],
         broadcast = json['broadcast'],
         count = json['count'],
-        question = json['question'],
+        question = json['question'].toString().trim(),
         embedding = json['embedding'] is List<dynamic>
             ? VectorValue(List<double>.from(json['embedding'] as List<dynamic>))
             : null,
@@ -56,7 +56,7 @@ class Jam {
         bandId = json['bandId']?.toString(),
         broadcast = json['broadcast']?.toString()?.toLowerCase() == 'true',
         count = int.tryParse(json['count']?.toString() ?? '0'),
-        question = json['question']?.toString(),
+        question = json['question']?.toString().trim(),
         creationTime = json['creationTime']?.toString(),
         embedding = json['embedding'] is List<dynamic>
             ? VectorValue(List<double>.from(json['embedding'] as List<dynamic>))
@@ -76,7 +76,7 @@ class Jam {
       : startedBy = snapshot.data()['startedBy'],
         bandId = snapshot.data()['bandId'],
         count = snapshot.data()['count'],
-        question = snapshot.data()['question'],
+        question = snapshot.data()['question'].toString(),
         creationTime = snapshot.data()['creationTime']?.toString(),
         title = snapshot.data()['title'],
         broadcast = snapshot.data()['broadcast'],
@@ -93,7 +93,7 @@ class Jam {
       : startedBy = snapshot['startedBy'],
         bandId = snapshot['bandId'],
         count = snapshot['count'],
-        question = snapshot['question'],
+        question = snapshot['question'].toString().trim(),
         creationTime = snapshot['creationTime']?.toString(),
         title = snapshot['title'],
         broadcast = snapshot['broadcast'],
@@ -109,7 +109,7 @@ class Jam {
       : startedBy = snapshot.get('startedBy'),
         bandId = snapshot.get('bandId'),
         count = snapshot.get('count'),
-        question = snapshot.get('question'),
+        question = snapshot.get('question').toString().trim(),
         creationTime = snapshot.get('creationTime')?.toString(),
         title = snapshot.get('title'),
         broadcast = snapshot.get('broadcast'),

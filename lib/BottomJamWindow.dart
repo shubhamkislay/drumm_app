@@ -179,7 +179,7 @@ class _BottomJamWindowState extends State<BottomJamWindow> {
         userConnected = connected;
         mute = micMute;
 
-        print("mic Mute is $micMute");
+        //print("mic Mute is $micMute");
 
         //print("Jam is ${jam.title}");
 
