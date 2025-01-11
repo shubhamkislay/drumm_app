@@ -3,6 +3,10 @@ import 'dart:convert';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/features/authentication/presentation/bloc/drummer/remote/remote_drummer_bloc.dart';
+import 'package:drumm_app/features/authentication/presentation/bloc/drummer/remote/remote_drummer_event.dart';
+import 'package:drumm_app/features/authentication/presentation/pages/drummer_profile.dart';
+import 'package:drumm_app/injection_container.dart';
 import 'package:drumm_app/model/algolia_article.dart';
 import 'package:drumm_app/model/question.dart';
 import 'package:drumm_app/professionDetailsPage.dart';
@@ -18,6 +22,7 @@ import 'package:floating_frosted_bottom_bar/floating_frosted_bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_callkit_incoming/entities/android_params.dart';
 import 'package:flutter_callkit_incoming/entities/call_event.dart';
@@ -72,16 +77,22 @@ Future<String> triggerCloudFunction() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDependencies();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   ThemeManager themeManager = ThemeManager();
 
-  runApp(MaterialApp(
-    home: const MyApp(),
-    themeMode: ThemeMode.dark,
-    darkTheme: darkTheme,
-    debugShowCheckedModeBanner: false,
+
+
+  runApp(BlocProvider<RemoteDrummerBloc>(
+    create: (context) => s1()..add(GetDrummer(FirebaseAuth.instance.currentUser?.uid??"")),
+    child: MaterialApp(
+      home: DrummerProfile(),//const MyApp(),
+      themeMode: ThemeMode.dark,
+      darkTheme: darkTheme,
+      debugShowCheckedModeBanner: false,
+    ),
   ));
 }
 
