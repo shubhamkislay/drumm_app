@@ -5,8 +5,9 @@ import 'package:equatable/equatable.dart';
 abstract class RemoteDrummerState extends Equatable{
   final DrummerEntity ? drummerEntity;
   final DioException ? error;
+  final bool ? isAuthenticated;
 
-  const RemoteDrummerState({this.drummerEntity, this.error});
+  const RemoteDrummerState({this.drummerEntity, this.error, this.isAuthenticated});
 
   @override
   List<Object> get props => [drummerEntity!, error!];
@@ -23,4 +24,9 @@ class RemoteDrummerDone extends RemoteDrummerState{
 class RemoteDrummerError extends RemoteDrummerState{
   const RemoteDrummerError(DioException error) : super(error: error);
 }
+
+class RemoteDrummerAuthenticated extends RemoteDrummerState{
+  const RemoteDrummerAuthenticated(bool isAuthenticated) : super(isAuthenticated: isAuthenticated);
+}
+
 

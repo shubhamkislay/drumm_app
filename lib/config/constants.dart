@@ -1,0 +1,1 @@
+final String DRUMM_LOGO = "images/logo_dark.png";

@@ -3,9 +3,17 @@ import 'dart:convert';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/core/presentation/pages/splashscreen.dart';
+import 'package:drumm_app/features/constants.dart';
+import 'package:drumm_app/features/authentication/presentation/bloc/drummer/hybrid/hybrid_initial_screen_event.dart';
+import 'package:drumm_app/features/authentication/presentation/bloc/drummer/hybrid/hybrid_initial_screen_state.dart';
 import 'package:drumm_app/features/authentication/presentation/bloc/drummer/remote/remote_drummer_bloc.dart';
 import 'package:drumm_app/features/authentication/presentation/bloc/drummer/remote/remote_drummer_event.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/drummer_profile.dart';
+import 'package:drumm_app/features/authentication/presentation/pages/onboarding_page.dart';
+import 'package:drumm_app/features/authentication/presentation/pages/profession_selection_page.dart';
+import 'package:drumm_app/features/authentication/presentation/pages/register_page.dart';
+import 'package:drumm_app/features/news%20feed/presentation/pages/news_discovery_page.dart';
 import 'package:drumm_app/injection_container.dart';
 import 'package:drumm_app/model/algolia_article.dart';
 import 'package:drumm_app/model/question.dart';
@@ -59,6 +67,8 @@ import 'custom/drumm_app_bar.dart';
 import 'package:http/http.dart' as http;
 
 import 'custom/helper/connect_channel.dart';
+import 'features/authentication/presentation/bloc/drummer/hybrid/hybrid_initial_screen_bloc.dart';
+import 'features/authentication/presentation/pages/login_page.dart';
 import 'firebase_options.dart';
 import 'model/article.dart';
 
@@ -85,10 +95,23 @@ void main() async {
 
 
 
-  runApp(BlocProvider<RemoteDrummerBloc>(
-    create: (context) => s1()..add(GetDrummer(FirebaseAuth.instance.currentUser?.uid??"")),
+  runApp(BlocProvider<HybridInitialScreenBloc>(
+    create: (context) => s1()..add(GetInitialScreen(FirebaseAuth.instance.currentUser?.uid ?? "")),
     child: MaterialApp(
-      home: DrummerProfile(),//const MyApp(),
+      home: BlocBuilder<HybridInitialScreenBloc, HybridInitialScreenState>(
+        builder: (context, state) {
+          if (state is FetchingInitialScreen) {
+            return Splashscreen();
+          } else if((state is InitialScreenFetched)){
+            if (state.initialScreen == SCREEN_NEWS_DISCOVERY) return NewsDiscoveryPage();
+            if (state.initialScreen == SCREEN_ONBOARDING) return OnboardingPage();
+            if (state.initialScreen == SCREEN_REGISTER) return RegisterPage();
+            if (state.initialScreen == SCREEN_LOGIN) return LoginPage();
+            if (state.initialScreen == SCREEN_PROFESSIONAL) return ProfessionSelectionPage();
+          }
+          return OnboardingPage();
+        },
+      ),
       themeMode: ThemeMode.dark,
       darkTheme: darkTheme,
       debugShowCheckedModeBanner: false,

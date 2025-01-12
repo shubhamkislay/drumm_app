@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:drumm_app/core/resources/data_state.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../models/drummer.dart';
 
@@ -27,5 +28,9 @@ class FirebaseService{
     }on DioException catch(e){
       return DataFailed(e);
     }
+  }
+
+  bool isAuthenticated(){
+    return FirebaseAuth.instance.currentUser != null;
   }
 }
