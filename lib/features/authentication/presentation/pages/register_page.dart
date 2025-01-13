@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatelessWidget {
-  const RegisterPage({super.key});
+  String ? name;
+  String ? email;
+  RegisterPage({this.name, this.email});
 
   @override
   Widget build(BuildContext context) {

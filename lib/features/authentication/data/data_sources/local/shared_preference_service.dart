@@ -17,4 +17,12 @@ class SharedPreferenceService{
     prefs = await SharedPreferences.getInstance();
     prefs.setBool("isOnboarded", true);
   }
+
+  Future<bool> selectedBands() async{
+
+    prefs = await SharedPreferences.getInstance();
+    bool selectedBands = prefs.getBool('selectedBands') ?? false;
+
+    return selectedBands;
+  }
 }

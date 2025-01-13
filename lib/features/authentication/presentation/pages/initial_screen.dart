@@ -29,7 +29,7 @@ class InitialScreen extends StatelessWidget {
           } else if ((blocState is InitialScreenFetched)) {
             if (blocState.initialScreen == SCREEN_NEWS_DISCOVERY) return NewsDiscoveryPage();
             if (blocState.initialScreen == SCREEN_ONBOARDING) return OnboardingPage();
-            if (blocState.initialScreen == SCREEN_REGISTER) return RegisterPage();
+            if (blocState.initialScreen == SCREEN_REGISTER) return RegisterPage(name: "",email: "",);
             if (blocState.initialScreen == SCREEN_LOGIN) return LoginPage();
             if (blocState.initialScreen == SCREEN_PROFESSIONAL) return ProfessionSelectionPage();
           }

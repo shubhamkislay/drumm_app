@@ -2,6 +2,8 @@ import 'package:drumm_app/features/authentication/presentation/pages/initial_scr
 import 'package:drumm_app/features/authentication/presentation/pages/onboarding_page.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/profession_selection_page.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/register_page.dart';
+import 'package:drumm_app/features/news%20feed/presentation/pages/news_discovery_page.dart';
+import 'package:drumm_app/features/onboarding/presentation/pages/interests_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -26,9 +28,11 @@ class PageRoutes{
           },
         ),
         GoRoute(
-          path: '/register',
+          path: '/register/:email/:name',
           builder: (BuildContext context, GoRouterState state) {
-            return const RegisterPage();
+            final email = state.pathParameters['email'];
+            final name = state.pathParameters['name'];
+            return RegisterPage(name: name,email: email);
           },
         ),
         GoRoute(
@@ -41,6 +45,18 @@ class PageRoutes{
           path: '/professionSelection',
           builder: (BuildContext context, GoRouterState state) {
             return const ProfessionSelectionPage();
+          },
+        ),
+        GoRoute(
+          path: '/newsDiscovery',
+          builder: (BuildContext context, GoRouterState state) {
+            return const NewsDiscoveryPage();
+          },
+        ),
+        GoRoute(
+          path: '/interestsPage',
+          builder: (BuildContext context, GoRouterState state) {
+            return const InterestsPage();
           },
         ),
       ],
