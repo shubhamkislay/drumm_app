@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/config/routes/page_routes.dart';
 import 'package:drumm_app/core/presentation/pages/splashscreen.dart';
+import 'package:drumm_app/features/authentication/presentation/pages/initial_screen.dart';
 import 'package:drumm_app/features/constants.dart';
 import 'package:drumm_app/features/authentication/presentation/bloc/drummer/hybrid/hybrid_initial_screen_event.dart';
 import 'package:drumm_app/features/authentication/presentation/bloc/drummer/hybrid/hybrid_initial_screen_state.dart';
@@ -57,6 +59,7 @@ import 'package:drumm_app/onboarding.dart';
 import 'package:drumm_app/swipe_page.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/theme/theme_manager.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -93,29 +96,11 @@ void main() async {
   );
   ThemeManager themeManager = ThemeManager();
 
-
-
-  runApp(BlocProvider<HybridInitialScreenBloc>(
-    create: (context) => s1()..add(GetInitialScreen(FirebaseAuth.instance.currentUser?.uid ?? "")),
-    child: MaterialApp(
-      home: BlocBuilder<HybridInitialScreenBloc, HybridInitialScreenState>(
-        builder: (context, state) {
-          if (state is FetchingInitialScreen) {
-            return Splashscreen();
-          } else if((state is InitialScreenFetched)){
-            if (state.initialScreen == SCREEN_NEWS_DISCOVERY) return NewsDiscoveryPage();
-            if (state.initialScreen == SCREEN_ONBOARDING) return OnboardingPage();
-            if (state.initialScreen == SCREEN_REGISTER) return RegisterPage();
-            if (state.initialScreen == SCREEN_LOGIN) return LoginPage();
-            if (state.initialScreen == SCREEN_PROFESSIONAL) return ProfessionSelectionPage();
-          }
-          return OnboardingPage();
-        },
-      ),
-      themeMode: ThemeMode.dark,
-      darkTheme: darkTheme,
-      debugShowCheckedModeBanner: false,
-    ),
+  runApp(MaterialApp.router(
+    routerConfig: PageRoutes.getGoRouter(),
+    themeMode: ThemeMode.dark,
+    darkTheme: darkTheme,
+    debugShowCheckedModeBanner: false,
   ));
 }
 
