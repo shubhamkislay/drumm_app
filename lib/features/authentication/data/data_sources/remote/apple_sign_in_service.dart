@@ -28,24 +28,6 @@ class AppleSignInService{
       return DataFailed(DioException(message: e.toString(), requestOptions: RequestOptions()));
     }
     return DataSuccess(AppleCredentialModel(appleCredential,rawNonce));
-
-    // FirebaseAuth.instance.signInWithCredential(oauthCredential).then((value) {
-    //   if (value.credential != null) {
-    //     checkIfUserExistsApple(value, "apple",appleCredential);
-    //   }
-    //   else {
-    //     setState(() {
-    //       signingIn = false;
-    //       signingIN = "";
-    //       apple = "Continue with Apple";
-    //     });
-    //     return DataFailed(DioException(message: "Null credential received from auth provider!", requestOptions: RequestOptions()));
-    //   }
-    // });
-    // signin.then((value) => {checkIfUserExists(value)});
-
-    // Once signed in, return the UserCredential
-    // return await FirebaseAuth.instance.signInWithCredential(credential);
   }
   String sha256ofString(String input) {
     final bytes = utf8.encode(input);

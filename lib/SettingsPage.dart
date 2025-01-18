@@ -11,6 +11,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -61,8 +62,9 @@ class _SettingsPageState extends State<SettingsPage> {
     }
     FirebaseAuth.instance.signOut().then((value) {
       removedPreferences();
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => MyApp()), (_) => false);
+      // Navigator.pushAndRemoveUntil(context,
+      //     MaterialPageRoute(builder: (context) => MyApp()), (_) => false);
+      context.go("/");
     });
     print('Logged out'); // You can replace this with your actual logout logic
   }

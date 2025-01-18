@@ -1,7 +1,8 @@
 import 'package:drumm_app/core/resources/data_state.dart';
 import 'package:drumm_app/features/authentication/data/data_sources/local/shared_preference_service.dart';
-import 'package:drumm_app/features/authentication/data/data_sources/remote/apple_sign_service.dart';
+import 'package:drumm_app/features/authentication/data/data_sources/remote/apple_sign_in_service.dart';
 import 'package:drumm_app/features/authentication/data/data_sources/remote/firebase_service.dart';
+import 'package:drumm_app/features/authentication/data/data_sources/remote/google_sign_in_service.dart';
 import 'package:drumm_app/features/authentication/data/models/apple_credential.dart';
 import 'package:drumm_app/features/authentication/data/models/drummer.dart';
 import 'package:drumm_app/features/authentication/domain/entities/drummer.dart';
@@ -13,9 +14,10 @@ class DrummerRepositoryImpl implements DrummerRepository {
   final FirebaseService firebaseService;
   final SharedPreferenceService sharedPreferenceService;
   final AppleSignInService appleSignInService;
+  final GoogleSignInService googleSignInService;
 
   DrummerRepositoryImpl(this.firebaseService, this.sharedPreferenceService,
-      this.appleSignInService);
+      this.appleSignInService, this.googleSignInService);
 
   @override
   Future<DataState<DrummerModel>> getDrummer(String uid) {
@@ -56,5 +58,10 @@ class DrummerRepositoryImpl implements DrummerRepository {
   @override
   Future<bool> selectedBands() {
     return sharedPreferenceService.selectedBands();
+  }
+
+  @override
+  Future<DataState<OAuthCredential>> getGoogleCredential() {
+    return googleSignInService.getGoogleCredential();
   }
 }

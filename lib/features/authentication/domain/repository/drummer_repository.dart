@@ -20,6 +20,8 @@ abstract class DrummerRepository{
 
   Future<DataState<AppleCredentialEntity>> getAppleCredential();
 
+  Future<DataState<OAuthCredential>> getGoogleCredential();
+
   Future<DataState<UserCredential>> getUserCredential(AuthCredential authCredential);
 
 }

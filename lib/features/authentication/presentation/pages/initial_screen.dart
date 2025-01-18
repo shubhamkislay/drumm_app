@@ -8,6 +8,7 @@ import 'package:drumm_app/features/authentication/presentation/pages/profession_
 import 'package:drumm_app/features/authentication/presentation/pages/register_page.dart';
 import 'package:drumm_app/features/constants.dart';
 import 'package:drumm_app/features/news%20feed/presentation/pages/news_discovery_page.dart';
+import 'package:drumm_app/launcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +28,7 @@ class InitialScreen extends StatelessWidget {
           if (blocState is FetchingInitialScreen) {
             return Splashscreen();
           } else if ((blocState is InitialScreenFetched)) {
-            if (blocState.initialScreen == SCREEN_NEWS_DISCOVERY) return NewsDiscoveryPage();
+            if (blocState.initialScreen == SCREEN_NEWS_DISCOVERY) return LauncherPage();//NewsDiscoveryPage();
             if (blocState.initialScreen == SCREEN_ONBOARDING) return OnboardingPage();
             if (blocState.initialScreen == SCREEN_REGISTER) return RegisterPage(name: "",email: "",);
             if (blocState.initialScreen == SCREEN_LOGIN) return LoginPage();
