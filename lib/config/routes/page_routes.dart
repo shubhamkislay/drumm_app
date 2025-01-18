@@ -1,5 +1,5 @@
 import 'package:drumm_app/features/authentication/presentation/pages/initial_screen.dart';
-import 'package:drumm_app/features/authentication/presentation/pages/onboarding_page.dart';
+import 'package:drumm_app/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/profession_selection_page.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/register_page.dart';
 import 'package:drumm_app/features/news%20feed/presentation/pages/news_discovery_page.dart';

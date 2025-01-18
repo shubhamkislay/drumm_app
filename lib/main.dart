@@ -12,7 +12,7 @@ import 'package:drumm_app/features/authentication/presentation/bloc/drummer/hybr
 import 'package:drumm_app/features/authentication/presentation/bloc/drummer/remote/remote_drummer_bloc.dart';
 import 'package:drumm_app/features/authentication/presentation/bloc/drummer/remote/remote_drummer_event.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/drummer_profile.dart';
-import 'package:drumm_app/features/authentication/presentation/pages/onboarding_page.dart';
+import 'package:drumm_app/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/profession_selection_page.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/register_page.dart';
 import 'package:drumm_app/features/news%20feed/presentation/pages/news_discovery_page.dart';

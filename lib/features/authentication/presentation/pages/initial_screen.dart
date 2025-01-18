@@ -3,7 +3,7 @@ import 'package:drumm_app/features/authentication/presentation/bloc/drummer/hybr
 import 'package:drumm_app/features/authentication/presentation/bloc/drummer/hybrid/hybrid_initial_screen_event.dart';
 import 'package:drumm_app/features/authentication/presentation/bloc/drummer/hybrid/hybrid_initial_screen_state.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/login_page.dart';
-import 'package:drumm_app/features/authentication/presentation/pages/onboarding_page.dart';
+import 'package:drumm_app/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/profession_selection_page.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/register_page.dart';
 import 'package:drumm_app/features/constants.dart';

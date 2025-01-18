@@ -59,16 +59,3 @@ class PolicyTextWidget extends StatelessWidget {
     }
   }
 }
-
-void main() {
-  runApp(MaterialApp(
-    home: Scaffold(
-      appBar: AppBar(
-        title: Text('Policy and Terms'),
-      ),
-      body: Center(
-        child: PolicyTextWidget(),
-      ),
-    ),
-  ));
-}

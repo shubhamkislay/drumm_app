@@ -1,4 +1,4 @@
-import 'package:drumm_app/features/authentication/presentation/widgets/drumm_onboarding_slider.dart';
+import 'package:drumm_app/features/onboarding/presentation/widgets/drumm_onboarding_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
