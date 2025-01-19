@@ -31,11 +31,15 @@ class SignInWithAppleUseCase implements UseCase<DataState<String>, void> {
 
         String? uname = drummerState.data?.username!;
 
-
         if (userExists(uname ?? "")) {
-          bool selectedBands = await drummerRepository.selectedBands();
-          if (selectedBands) {
-            route = "/newsDiscovery";
+          var onBoardedDataState = await drummerRepository.isUserOnboarded();
+          if (onBoardedDataState is DataSuccess) {
+            bool isUserOnboarded = onBoardedDataState.data!;
+            if (isUserOnboarded) {
+              route = "/newsDiscovery";
+            } else {
+              route = "/interestsPage";
+            }
           } else {
             route = "/interestsPage";
           }

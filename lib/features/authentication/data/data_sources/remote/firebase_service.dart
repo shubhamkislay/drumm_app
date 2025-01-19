@@ -6,8 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../models/drummer.dart';
 
-class FirebaseService{
-
+class FirebaseService {
   Future<DataState<DrummerModel>> getDrummer(String uid) async {
     print("uid passed $uid");
     try {
@@ -17,45 +16,78 @@ class FirebaseService{
           .doc(uid)
           .get()
           .onError((error, stackTrace) {
-            throw DioException(requestOptions:  RequestOptions(data: stackTrace),message: error.toString());
+        throw DioException(
+            requestOptions: RequestOptions(data: stackTrace),
+            message: error.toString());
       });
       if (data.exists) {
         drummerModel = DrummerModel.fromDocumentSnapshot(data);
         return DataSuccess(drummerModel);
       } else {
-        return DataFailed(DioException(message: "This drummer does not Exist!",
+        return DataFailed(DioException(
+            message: "This drummer does not Exist!",
             requestOptions: RequestOptions(data: data)));
       }
-    }on DioException catch(e){
+    } on DioException catch (e) {
       return DataFailed(e);
     }
   }
 
-  Future<DataState<UserCredential>> getUserCredential(AuthCredential authCredential) async{
-    await FirebaseAuth.instance.signInWithCredential(authCredential).then((value) {
+  Future<DataState<UserCredential>> getUserCredential(
+      AuthCredential authCredential) async {
+    await FirebaseAuth.instance
+        .signInWithCredential(authCredential)
+        .then((value) {
       if (value.credential != null) {
-       return DataSuccess(value);
-      }
-      else {
-        return DataFailed(DioException(message: "Null credential received from auth provider!", requestOptions: RequestOptions()));
+        return DataSuccess(value);
+      } else {
+        return DataFailed(DioException(
+            message: "Null credential received from auth provider!",
+            requestOptions: RequestOptions()));
       }
     });
-    return DataFailed(DioException(message: "Null credential received from auth provider!", requestOptions: RequestOptions()));
+    return DataFailed(DioException(
+        message: "Null credential received from auth provider!",
+        requestOptions: RequestOptions()));
   }
 
-  DataState<String> getDrummerId(){
-
+  DataState<String> getDrummerId() {
     FirebaseAuth auth = FirebaseAuth.instance;
     String? uid = auth.currentUser?.uid;
-    if(uid == null){
-      return DataFailed(DioException(requestOptions: RequestOptions(),message: "Unable to get user Id. User may not authenticated"));
-    } else{
+    if (uid == null) {
+      return DataFailed(DioException(
+          requestOptions: RequestOptions(),
+          message: "Unable to get user Id. User may not authenticated"));
+    } else {
       return DataSuccess(uid);
     }
-
   }
 
-  bool isAuthenticated(){
+  bool isAuthenticated() {
     return FirebaseAuth.instance.currentUser != null;
+  }
+
+  Future<DataState<bool>> isUserOnboarded() async {
+    try {
+      var userID = getDrummerId().data;
+
+      CollectionReference userBandsCollectionRef = FirebaseFirestore.instance
+          .collection("users")
+          .doc(userID)
+          .collection("mybands");
+      var bandsData = await userBandsCollectionRef.get();
+      List<String> list = List.from(bandsData.docs.map((e) {
+        return (e.data() as Map)["bandId"].toString();
+      }));
+      if (list.isEmpty) {
+        return DataSuccess(false);
+      } else {
+        return DataSuccess(true);
+      }
+    } on DioException catch (e) {
+      return DataFailed(DioException(
+          requestOptions: RequestOptions(),
+          message: "Failed to check user is user onboarded or not"));
+    }
   }
 }

@@ -24,4 +24,6 @@ abstract class DrummerRepository{
 
   Future<DataState<UserCredential>> getUserCredential(AuthCredential authCredential);
 
+  Future<DataState<bool>> isUserOnboarded();
+
 }

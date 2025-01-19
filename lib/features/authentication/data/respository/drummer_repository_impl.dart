@@ -64,4 +64,9 @@ class DrummerRepositoryImpl implements DrummerRepository {
   Future<DataState<OAuthCredential>> getGoogleCredential() {
     return googleSignInService.getGoogleCredential();
   }
+
+  @override
+  Future<DataState<bool>> isUserOnboarded() {
+    return firebaseService.isUserOnboarded();
+  }
 }

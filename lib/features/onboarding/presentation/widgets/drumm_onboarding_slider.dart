@@ -238,9 +238,6 @@ class _FlutterOnBoardingSliderState extends State<FlutterOnBoardingSlider> {
 
   /// Slide to Next Page.
   void slide(int page) {
-    if(kDebugMode){
-      print("Current page is $page");
-    }
     setState(() {
       _currentPage = page;
     });
