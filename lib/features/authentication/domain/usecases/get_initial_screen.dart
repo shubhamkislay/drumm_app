@@ -5,13 +5,13 @@ import 'package:drumm_app/features/authentication/domain/entities/drummer.dart';
 import 'package:drumm_app/features/authentication/domain/repository/drummer_repository.dart';
 import 'package:flutter/foundation.dart';
 
-class GetInitialScreenUseCase implements UseCase<String,String>{
+class GetInitialScreenUseCase implements UseCase<String,void>{
   final DrummerRepository drummerRepository;
 
   GetInitialScreenUseCase(this.drummerRepository);
 
   @override
-  Future<String> call({String ? params}) async {
+  Future<String> call({void params}) async {
 
     try {
       bool isAuthenticated = drummerRepository.isAuthenticated();
@@ -23,8 +23,13 @@ class GetInitialScreenUseCase implements UseCase<String,String>{
         return SCREEN_NEWS_DISCOVERY;
       }
 
+      var dataStateDrummerId = drummerRepository.getDrummerId();
+      if(dataStateDrummerId is DataFailed) return SCREEN_ONBOARDING;
+
+      String userID = dataStateDrummerId.data!;
+
       DataState<DrummerEntity> dataState = await drummerRepository.getDrummer(
-          params!);
+          userID);
 
       if (dataState is DataSuccess) {
         DrummerEntity drummerEntity = dataState.data!;

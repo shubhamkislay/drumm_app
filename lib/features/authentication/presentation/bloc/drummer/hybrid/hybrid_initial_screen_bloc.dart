@@ -14,7 +14,7 @@ class HybridInitialScreenBloc
 
   void onGetInitialScreen(
       GetInitialScreen event, Emitter<HybridInitialScreenState> emit) async {
-    final initialScreen = await getInitialScreenUseCase(params: event.uid);
+    final initialScreen = await getInitialScreenUseCase();
     emit(InitialScreenFetched(initialScreen));
   }
 }

@@ -12,6 +12,7 @@ import 'package:drumm_app/launcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../injection_container.dart';
 
@@ -22,20 +23,21 @@ class InitialScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<HybridInitialScreenBloc>(
         create: (context) => s1()
-      ..add(GetInitialScreen(FirebaseAuth.instance.currentUser?.uid ?? "")),
-      child: BlocBuilder<HybridInitialScreenBloc, HybridInitialScreenState>(
-        builder: (context, blocState) {
-          if (blocState is FetchingInitialScreen) {
-            return Splashscreen();
-          } else if ((blocState is InitialScreenFetched)) {
-            if (blocState.initialScreen == SCREEN_NEWS_DISCOVERY) return LauncherPage();//NewsDiscoveryPage();
-            if (blocState.initialScreen == SCREEN_ONBOARDING) return OnboardingPage();
-            if (blocState.initialScreen == SCREEN_REGISTER) return RegisterPage(name: "",email: "",);
-            if (blocState.initialScreen == SCREEN_LOGIN) return LoginPage();
-            if (blocState.initialScreen == SCREEN_PROFESSIONAL) return ProfessionSelectionPage();
+      ..add(GetInitialScreen()),
+      child: BlocListener<HybridInitialScreenBloc, HybridInitialScreenState>(
+        listener: (context, state) {
+          if (state is InitialScreenFetched){
+            context.go(state.initialScreen??SCREEN_ONBOARDING);
           }
-          return OnboardingPage();
         },
+        child: BlocBuilder<HybridInitialScreenBloc, HybridInitialScreenState>(
+          builder: (context, blocState) {
+            if (blocState is FetchingInitialScreen) {
+              return Splashscreen();
+            }
+            return Container();
+          },
+        ),
       ),
     );
   }
