@@ -3,6 +3,6 @@ abstract class RemoteArticlesEvent{
 }
 
 class GetArticles extends RemoteArticlesEvent{
-  String category;
-  GetArticles(this.category);
+  final String category;
+  const GetArticles(this.category);
 }
