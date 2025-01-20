@@ -16,7 +16,7 @@ import 'package:drumm_app/features/onboarding/presentation/pages/onboarding_page
 import 'package:drumm_app/features/authentication/presentation/pages/profession_selection_page.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/register_page.dart';
 import 'package:drumm_app/features/news%20feed/presentation/pages/news_discovery_page.dart';
-import 'package:drumm_app/injection_container.dart';
+import 'package:drumm_app/config/injection_container.dart';
 import 'package:drumm_app/model/algolia_article.dart';
 import 'package:drumm_app/model/question.dart';
 import 'package:drumm_app/professionDetailsPage.dart';

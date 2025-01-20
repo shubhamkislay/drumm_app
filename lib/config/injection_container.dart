@@ -13,28 +13,52 @@ import 'package:drumm_app/features/authentication/domain/usecases/sign_in_with_g
 import 'package:drumm_app/features/authentication/presentation/bloc/drummer/hybrid/hybrid_initial_screen_bloc.dart';
 import 'package:drumm_app/features/authentication/presentation/bloc/drummer/remote/remote_drummer_bloc.dart';
 import 'package:drumm_app/features/authentication/presentation/bloc/sign_in/sign_in_bloc.dart';
+import 'package:drumm_app/features/news%20feed/data/data_sources/remote/article_service.dart';
+import 'package:drumm_app/features/news%20feed/data/respository/article_repository_impl.dart';
+import 'package:drumm_app/features/news%20feed/domain/repository/article_repository.dart';
+import 'package:drumm_app/features/news%20feed/domain/usecases/get_articles.dart';
+import 'package:drumm_app/features/news%20feed/presentation/bloc/article/remote/remote_articles_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 final s1 = GetIt.instance;
 
 Future<void> initializeDependencies() async {
-  // Dependencies
+  /**
+   * Dependencies
+   */
+  //authentication
   s1.registerSingleton<FirebaseService>(FirebaseService());
   s1.registerSingleton<SharedPreferenceService>(SharedPreferenceService());
   s1.registerSingleton<AppleSignInService>(AppleSignInService());
   s1.registerSingleton<GoogleSignInService>(GoogleSignInService());
+  //news feed
+  s1.registerSingleton<ArticleService>(ArticleService());
 
+  /**
+   * Repositories
+   */
   s1.registerSingleton<DrummerRepository>(DrummerRepositoryImpl(s1(), s1(),s1(),s1()));
+  s1.registerSingleton<ArticleRepository>(ArticleRespositoryImpl(s1()));
 
-  //UseCases
+  /**
+   * UseCases
+   */
+  //authentication
   s1.registerSingleton<GetDrummerUseCase>(GetDrummerUseCase(s1()));
   s1.registerSingleton<IsAuthenticatedUseCase>(IsAuthenticatedUseCase(s1()));
   s1.registerSingleton<GetInitialScreenUseCase>(GetInitialScreenUseCase(s1()));
   s1.registerSingleton<SignInWithAppleUseCase>(SignInWithAppleUseCase(s1()));
   s1.registerSingleton<SignInWithGoogleUseCase>(SignInWithGoogleUseCase(s1()));
+  //news feed
+  s1.registerSingleton<GetArticlesUseCase>(GetArticlesUseCase(s1()));
 
-  //Blocs
+  /**
+   * Bloc
+   */
+  //authentication
   s1.registerFactory<RemoteDrummerBloc>(() => RemoteDrummerBloc(s1(), s1()));
   s1.registerFactory<HybridInitialScreenBloc>(() => HybridInitialScreenBloc(s1()));
   s1.registerFactory<SignInBloc>(() => SignInBloc(s1(),s1()));
+  //news feed
+  s1.registerFactory<RemoteArticlesBloc>(() => RemoteArticlesBloc(s1()));
 }

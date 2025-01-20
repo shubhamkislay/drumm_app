@@ -5,10 +5,8 @@ import 'package:drumm_app/features/authentication/data/data_sources/remote/fireb
 import 'package:drumm_app/features/authentication/data/data_sources/remote/google_sign_in_service.dart';
 import 'package:drumm_app/features/authentication/data/models/apple_credential.dart';
 import 'package:drumm_app/features/authentication/data/models/drummer.dart';
-import 'package:drumm_app/features/authentication/domain/entities/drummer.dart';
 import 'package:drumm_app/features/authentication/domain/repository/drummer_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class DrummerRepositoryImpl implements DrummerRepository {
   final FirebaseService firebaseService;

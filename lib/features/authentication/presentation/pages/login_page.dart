@@ -2,7 +2,7 @@ import 'package:drumm_app/features/authentication/presentation/bloc/sign_in/sign
 import 'package:drumm_app/features/authentication/presentation/bloc/sign_in/sign_in_event.dart';
 import 'package:drumm_app/features/authentication/presentation/bloc/sign_in/sign_in_state.dart';
 import 'package:drumm_app/features/authentication/presentation/widgets/policy_text_widget.dart';
-import 'package:drumm_app/injection_container.dart';
+import 'package:drumm_app/config/injection_container.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
