@@ -1,4 +1,10 @@
 import 'package:drumm_app/config/routes/page_routes.dart';
+import 'package:drumm_app/core/features/get%20bands/data/data_sources/remote/band_service.dart';
+import 'package:drumm_app/core/features/get%20bands/data/repository/band_repository_impl.dart';
+import 'package:drumm_app/core/features/get%20bands/domain/repository/band_repository.dart';
+import 'package:drumm_app/core/features/get%20bands/domain/usecases/get_bands.dart';
+import 'package:drumm_app/core/features/get%20bands/domain/usecases/get_current_user_bands.dart';
+import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/remote_bands_bloc.dart';
 import 'package:drumm_app/features/authentication/data/data_sources/local/shared_preference_service.dart';
 import 'package:drumm_app/features/authentication/data/data_sources/remote/apple_sign_in_service.dart';
 import 'package:drumm_app/features/authentication/data/data_sources/remote/firebase_service.dart';
@@ -33,12 +39,16 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<GoogleSignInService>(GoogleSignInService());
   //news feed
   s1.registerSingleton<ArticleService>(ArticleService());
+  //core
+  s1.registerSingleton<BandService>(BandService());
 
   /**
    * Repositories
    */
   s1.registerSingleton<DrummerRepository>(DrummerRepositoryImpl(s1(), s1(),s1(),s1()));
   s1.registerSingleton<ArticleRepository>(ArticleRespositoryImpl(s1()));
+  //core
+  s1.registerSingleton<BandRepository>(BandRepositoryImpl(s1()));
 
   /**
    * UseCases
@@ -51,6 +61,9 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<SignInWithGoogleUseCase>(SignInWithGoogleUseCase(s1()));
   //news feed
   s1.registerSingleton<GetArticlesUseCase>(GetArticlesUseCase(s1()));
+  //core
+  s1.registerSingleton<GetBandsUseCase>(GetBandsUseCase(s1()));
+  s1.registerSingleton<GetCurrentUserBandsUseCase>(GetCurrentUserBandsUseCase(s1()));
 
   /**
    * Bloc
@@ -61,4 +74,6 @@ Future<void> initializeDependencies() async {
   s1.registerFactory<SignInBloc>(() => SignInBloc(s1(),s1()));
   //news feed
   s1.registerFactory<RemoteArticlesBloc>(() => RemoteArticlesBloc(s1()));
+  //core
+  s1.registerFactory<RemoteBandsBloc>(() => RemoteBandsBloc(s1(),s1()));
 }
