@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:drumm_app/core/resources/data_state.dart';
 import 'package:drumm_app/core/usecase/usecase.dart';
-import 'package:drumm_app/features/authentication/domain/repository/drummer_repository.dart';
+import 'package:drumm_app/features/authentication/domain/repository/auth_repository.dart';
 
 class SignInWithGoogleUseCase implements UseCase<DataState<String>, void> {
-  final DrummerRepository drummerRepository;
+  final AuthRepository drummerRepository;
 
   SignInWithGoogleUseCase(this.drummerRepository);
   @override

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drumm_app/features/authentication/domain/entities/drummer.dart';
+import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 
 class DrummerModel extends DrummerEntity {
   String? token;

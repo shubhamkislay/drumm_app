@@ -1,3 +1,4 @@
+import 'package:drumm_app/features/drummer%20profile/presentation/pages/drummer_profile.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/initial_screen.dart';
 import 'package:drumm_app/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/profession_selection_page.dart';
@@ -57,6 +58,12 @@ class PageRoutes{
           path: '/interestsPage',
           builder: (BuildContext context, GoRouterState state) {
             return const InterestsPage();
+          },
+        ),
+        GoRoute(
+          path: '/drummerProfile',
+          builder: (BuildContext context, GoRouterState state) {
+            return const DrummerProfile();
           },
         ),
       ],

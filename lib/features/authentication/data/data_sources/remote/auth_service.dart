@@ -4,35 +4,9 @@ import 'package:drumm_app/core/resources/data_state.dart';
 import 'package:drumm_app/features/authentication/data/models/apple_credential.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../models/drummer.dart';
+import '../../../../../core/features/get drummer/data/model/drummer.dart';
 
-class FirebaseService {
-  Future<DataState<DrummerModel>> getDrummer(String uid) async {
-    print("uid passed $uid");
-    try {
-      DrummerModel drummerModel = DrummerModel();
-      var data = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .get()
-          .onError((error, stackTrace) {
-        throw DioException(
-            requestOptions: RequestOptions(data: stackTrace),
-            message: error.toString());
-      });
-      if (data.exists) {
-        drummerModel = DrummerModel.fromDocumentSnapshot(data);
-        return DataSuccess(drummerModel);
-      } else {
-        return DataFailed(DioException(
-            message: "This drummer does not Exist!",
-            requestOptions: RequestOptions(data: data)));
-      }
-    } on DioException catch (e) {
-      return DataFailed(e);
-    }
-  }
-
+class AuthService {
   Future<DataState<UserCredential>> getUserCredential(
       AuthCredential authCredential) async {
     await FirebaseAuth.instance
@@ -51,25 +25,12 @@ class FirebaseService {
         requestOptions: RequestOptions()));
   }
 
-  DataState<String> getDrummerId() {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    String? uid = auth.currentUser?.uid;
-    if (uid == null) {
-      return DataFailed(DioException(
-          requestOptions: RequestOptions(),
-          message: "Unable to get user Id. User may not authenticated"));
-    } else {
-      return DataSuccess(uid);
-    }
-  }
-
   bool isAuthenticated() {
     return FirebaseAuth.instance.currentUser != null;
   }
-
   Future<DataState<bool>> isUserOnboarded() async {
     try {
-      var userID = getDrummerId().data;
+      var userID = FirebaseAuth.instance.currentUser!.uid;
 
       CollectionReference userBandsCollectionRef = FirebaseFirestore.instance
           .collection("users")

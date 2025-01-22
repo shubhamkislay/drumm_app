@@ -19,7 +19,7 @@ class InitialScreen extends StatelessWidget {
       child: BlocListener<HybridInitialScreenBloc, HybridInitialScreenState>(
         listener: (context, state) {
           if (state is InitialScreenFetched) {
-            context.go(state.initialScreen ?? SCREEN_ONBOARDING);
+            context.go(SCREEN_DRUMMER_PROFILE);//state.initialScreen ?? SCREEN_ONBOARDING);
           }
         },
         child: BlocBuilder<HybridInitialScreenBloc, HybridInitialScreenState>(

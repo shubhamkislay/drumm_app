@@ -4,4 +4,5 @@ final String SCREEN_REGISTER = "/register";
 final String SCREEN_PROFESSIONAL = "/professionSelection";
 final String SCREEN_LOGIN = "/login";
 final String SCREEN_ONBOARDING = "/onboarding";
+final String SCREEN_DRUMMER_PROFILE = "/drummerProfile";
 

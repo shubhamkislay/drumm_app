@@ -1,13 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:drumm_app/features/authentication/domain/entities/drummer.dart';
+import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class RemoteDrummerState extends Equatable{
   final DrummerEntity ? drummerEntity;
   final DioException ? error;
-  final bool ? isAuthenticated;
 
-  const RemoteDrummerState({this.drummerEntity, this.error, this.isAuthenticated});
+  const RemoteDrummerState({this.drummerEntity, this.error});
 
   @override
   List<Object> get props => [drummerEntity!, error!];
@@ -23,10 +22,6 @@ class RemoteDrummerDone extends RemoteDrummerState{
 
 class RemoteDrummerError extends RemoteDrummerState{
   const RemoteDrummerError(DioException error) : super(error: error);
-}
-
-class RemoteDrummerAuthenticated extends RemoteDrummerState{
-  const RemoteDrummerAuthenticated(bool isAuthenticated) : super(isAuthenticated: isAuthenticated);
 }
 
 

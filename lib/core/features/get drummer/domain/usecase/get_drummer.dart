@@ -1,0 +1,16 @@
+import 'package:dio/dio.dart';
+import 'package:drumm_app/core/features/get%20drummer/domain/repository/drummer_repository.dart';
+import 'package:drumm_app/core/resources/data_state.dart';
+import 'package:drumm_app/core/usecase/usecase.dart';
+import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
+class GetDrummerUseCase implements UseCase<DataState<DrummerEntity>, String?>{
+
+  final DrummerRepository drummerRepository;
+
+  GetDrummerUseCase(this.drummerRepository);
+
+  @override
+  Future<DataState<DrummerEntity>> call({String? params}) {
+    return drummerRepository.getDrummer(uid: params);
+  }
+}

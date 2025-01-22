@@ -1,30 +1,32 @@
+import 'package:drumm_app/core/features/get%20drummer/data/data_sources/remote/drummer_service.dart';
 import 'package:drumm_app/core/resources/data_state.dart';
 import 'package:drumm_app/features/authentication/data/data_sources/local/shared_preference_service.dart';
 import 'package:drumm_app/features/authentication/data/data_sources/remote/apple_sign_in_service.dart';
-import 'package:drumm_app/features/authentication/data/data_sources/remote/firebase_service.dart';
+import 'package:drumm_app/features/authentication/data/data_sources/remote/auth_service.dart';
 import 'package:drumm_app/features/authentication/data/data_sources/remote/google_sign_in_service.dart';
 import 'package:drumm_app/features/authentication/data/models/apple_credential.dart';
-import 'package:drumm_app/features/authentication/data/models/drummer.dart';
-import 'package:drumm_app/features/authentication/domain/repository/drummer_repository.dart';
+import 'package:drumm_app/core/features/get%20drummer/data/model/drummer.dart';
+import 'package:drumm_app/features/authentication/domain/repository/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class DrummerRepositoryImpl implements DrummerRepository {
-  final FirebaseService firebaseService;
+class AuthRepositoryImpl implements AuthRepository {
+  final AuthService authService;
   final SharedPreferenceService sharedPreferenceService;
   final AppleSignInService appleSignInService;
   final GoogleSignInService googleSignInService;
+  final DrummerService drummerService;
 
-  DrummerRepositoryImpl(this.firebaseService, this.sharedPreferenceService,
-      this.appleSignInService, this.googleSignInService);
+  AuthRepositoryImpl(this.authService, this.sharedPreferenceService,
+      this.appleSignInService, this.googleSignInService, this.drummerService);
 
   @override
   Future<DataState<DrummerModel>> getDrummer(String uid) {
-    return firebaseService.getDrummer(uid);
+    return drummerService.getDrummer(uid: uid);
   }
 
   @override
   bool isAuthenticated() {
-    return firebaseService.isAuthenticated();
+    return authService.isAuthenticated();
   }
 
   @override
@@ -45,12 +47,12 @@ class DrummerRepositoryImpl implements DrummerRepository {
   @override
   Future<DataState<UserCredential>> getUserCredential(
       AuthCredential authCredential) {
-    return firebaseService.getUserCredential(authCredential);
+    return authService.getUserCredential(authCredential);
   }
 
   @override
   DataState<String> getDrummerId() {
-    return firebaseService.getDrummerId();
+    return drummerService.getDrummerId();
   }
 
   @override
@@ -65,6 +67,6 @@ class DrummerRepositoryImpl implements DrummerRepository {
 
   @override
   Future<DataState<bool>> isUserOnboarded() {
-    return firebaseService.isUserOnboarded();
+    return authService.isUserOnboarded();
   }
 }

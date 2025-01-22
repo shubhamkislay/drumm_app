@@ -1,12 +1,9 @@
-import 'package:dio/dio.dart';
-import 'package:drumm_app/core/resources/data_state.dart';
 import 'package:drumm_app/core/usecase/usecase.dart';
-import 'package:drumm_app/features/authentication/domain/entities/drummer.dart';
-import 'package:drumm_app/features/authentication/domain/repository/drummer_repository.dart';
+import 'package:drumm_app/features/authentication/domain/repository/auth_repository.dart';
 
 class IsAuthenticatedUseCase implements UseCaseSynchronous<bool, void>{
 
-  final DrummerRepository drummerRepository;
+  final AuthRepository drummerRepository;
 
   IsAuthenticatedUseCase(this.drummerRepository);
 
