@@ -1,15 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
+import 'package:drumm_app/features/news%20feed/domain/entities/article_list.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class RemoteArticlesState extends Equatable{
-  final List<ArticleEntity> ? articleEntityList;
+  final ArticleListEntity ? articleEntityList;
   final DioException ? error;
 
   const RemoteArticlesState({this.articleEntityList, this.error});
 
   @override
-  List<Object> get props => [articleEntityList!, error!];
+  List<Object> get props => [articleEntityList!,error??DioException(requestOptions: RequestOptions())];
 }
 
 class RemoteArticlesLoading extends RemoteArticlesState{
@@ -17,7 +18,7 @@ class RemoteArticlesLoading extends RemoteArticlesState{
 }
 
 class RemoteArticlesFetched extends RemoteArticlesState{
-  const RemoteArticlesFetched(List<ArticleEntity> articleEntityList) : super(articleEntityList: articleEntityList);
+  const RemoteArticlesFetched(ArticleListEntity articleEntityList) : super(articleEntityList: articleEntityList);
 }
 
 class RemoteArticlesError extends RemoteArticlesState{
