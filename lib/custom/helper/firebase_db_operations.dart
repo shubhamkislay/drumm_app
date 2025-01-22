@@ -695,51 +695,6 @@ class FirebaseDBOperations {
     return algoliaArticles;
   }
 
-  static Future<AlgoliaArticles> getArticlesByBandHookFromAlgolia(
-      Band selectedBand, int page) async {
-    //List<String> seenPosts = await FirebaseDBOperations.fetchSeenList();
-    String userToken = await FirebaseAuth.instance.currentUser?.uid ?? "";
-    List hooks = selectedBand.hooks ?? [];
-
-    AlgoliaQuery algoliaQuery = algolia.instance
-        .index("stories")
-        .setFacets(['meta'])
-        .setHitsPerPage(7)
-        //.query("Youtube")
-        .setPage(page)
-        .setUserToken(userToken)
-        .setDistinct(value: true);
-    //.setPersonalizationImpact(value: 75)
-    //.setEnablePersonalization(enabled: true);
-
-    List<String> filterStr = [];
-    for (String hook in hooks) {
-      filterStr.add("category:${hook}");
-      //algoliaQuery = algoliaQuery.facetFilter("'category:${hook}'");
-    }
-    //filterStr.add("source:youtube");
-    algoliaQuery = algoliaQuery.facetFilter(filterStr);
-    //
-    // for(String post in seenPosts){
-    //   algoliaQuery.setOptionalFilter("objectID:-${post}");
-    // }
-
-    AlgoliaQuerySnapshot getArticles = await algoliaQuery.getObjects();
-
-    List<Article> result =
-        List.from(getArticles.hits.map((e) => Article.fromSnapshot(e.data)));
-
-    // List<Article> filteredList = [];
-    // for (Article farticle in result) {
-    //   if (!seenPosts.contains(farticle.articleId)) filteredList.add(farticle);
-    // }
-
-    AlgoliaArticles algoliaArticles =
-        AlgoliaArticles(articles: result, queryID: getArticles.queryID);
-
-    return algoliaArticles;
-  }
-
   static void updateArticle(
       String articleID, Article updatedArticle, UpdateCallback callback) {
     FirebaseFirestore.instance
