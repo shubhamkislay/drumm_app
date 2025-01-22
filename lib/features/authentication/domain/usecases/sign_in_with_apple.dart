@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:drumm_app/core/resources/data_state.dart';
-import 'package:drumm_app/core/domain/usecases/usecase.dart';
+import 'package:drumm_app/core/usecase/usecase.dart';
 import 'package:drumm_app/features/authentication/domain/entities/apple_credential.dart';
 import 'package:drumm_app/features/authentication/domain/entities/drummer.dart';
 import 'package:drumm_app/features/authentication/domain/entities/user_auth_details.dart';
