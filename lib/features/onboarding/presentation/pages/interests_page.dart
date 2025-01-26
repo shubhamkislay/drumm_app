@@ -1,12 +1,264 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drumm_app/custom/helper/image_uploader.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
+import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
+import 'package:drumm_app/model/band.dart';
+import 'package:drumm_app/theme/theme_constants.dart';
+import 'package:drumm_app/theme/theme_manager.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class InterestsPage extends StatelessWidget {
-  const InterestsPage({super.key});
+class InterestsPage extends StatefulWidget {
+  final FirebaseAnalyticsObserver? observer;
+  final FirebaseAnalytics? analytics;
+  final ThemeManager? themeManager;
+
+  const InterestsPage({
+    this.observer,
+    this.analytics,
+    this.themeManager,
+  });
+
+  @override
+  _InterestsPageState createState() => _InterestsPageState();
+}
+
+class _InterestsPageState extends State<InterestsPage> {
+  List<String> selectedInterests = [];
+  List<Band> selectedBands = [];
+
+  int minInterests = 1;
+
+  final List<String> interests = [
+    "GENERAL",
+    "TECHNOLOGY",
+    "BUSINESS",
+    "ENTERTAINMENT",
+    "HEALTH",
+    "POLITICS",
+    "SCIENCE",
+    "SPORTS",
+  ];
+
+  List<GestureDetector> bandCards = [];
+  List<Band> bands = [];
+
+  void toggleInterest(String interest) {
+    setState(() {
+      if (selectedInterests.contains(interest)) {
+        selectedInterests.remove(interest);
+      } else {
+        if (selectedInterests.length < 7) {
+          selectedInterests.add(interest);
+        } else {
+          // Show a toast or display an error message indicating the limit has been reached
+          print('Maximum selection limit reached');
+        }
+      }
+    });
+  }
+
+  void selectBand(Band band) {
+    setState(() {
+      if (selectedBands.contains(band)) {
+        selectedBands.remove(band);
+      } else {
+        if (selectedBands.length < 7) {
+          selectedBands.add(band);
+        } else {
+          // Show a toast or display an error message indicating the limit has been reached
+          print('Maximum selection limit reached');
+        }
+      }
+      toggleInterest(band.name ?? "");
+    });
+  }
+
+  void getUserBands() async {
+    List<Band> bandList = await FirebaseDBOperations.getBandByUser();
+
+    if (bandList.length > 0) {
+      _onboardingComplete();
+    } else {
+      List<Band> fetchedBands =
+          await FirebaseDBOperations.getOnboardingBands(); //getUserBands();
+      bands = fetchedBands;
+      setState(() {
+        bandCards = bands
+            .map(
+              (band) => GestureDetector(
+                onTap: () {
+                  selectBand(band);
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: Container(
+                    padding: const EdgeInsets.all(2.0),
+                    color: selectedBands.contains(band)
+                        ? Colors.blue
+                        : Colors.grey.shade900,
+                    child: Text("${band.name}"),
+                  ),
+                ),
+              ),
+            )
+            .toList();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      body: Center(child: Text("Interests Page"),),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(vertical: 42, horizontal: 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            SizedBox(height: 36.0),
+            Image.asset(
+                alignment: Alignment.center,
+                color: Colors.white,
+                width: 76,
+                "images/team_active.png",
+                height: 76),
+            SizedBox(height: 8.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 4,
+                horizontal: 20,
+              ),
+              child: Text(
+                'Select the bands that you\'re passionate or curious about',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: APP_FONT_MEDIUM,
+                  fontSize: 16,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+            SizedBox(height: 36.0),
+            Center(
+              child: Wrap(
+                runSpacing: 8.0,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                runAlignment: WrapAlignment.spaceBetween,
+                spacing: 12,
+                alignment: WrapAlignment.spaceEvenly,
+                children: bands
+                    .map(
+                      (band) => GestureDetector(
+                        onTap: () => selectBand(band),
+                        child: Column(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(24),
+                              child: Container(
+                                padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                    color: COLOR_PRIMARY_DARK,
+                                    borderRadius: BorderRadius.circular(24),
+                                    border: Border.all(
+                                        color: selectedBands.contains(band)
+                                            ? Colors
+                                                .white //Color(COLOR_PRIMARY_VAL)
+                                            : Colors.grey.shade900,
+                                        width: 2.5)),
+                                child: Container(
+                                    height: 160,
+                                    width: 150,
+                                    margin: EdgeInsets.all(1),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: CachedNetworkImage(
+                                          fit: BoxFit.cover,
+                                          imageUrl: modifyImageUrl(
+                                              band.url ?? "", "300x300")),
+                                    )),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "${band.name}",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    color: selectedBands.contains(band)
+                                        ? Colors.white
+                                        : Colors.grey.shade700,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: APP_FONT_MEDIUM,
+                                    fontSize: 14),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+            SizedBox(height: 100.0),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+        onPressed: () {
+          if (selectedInterests.length >= minInterests) {
+            _onboardingComplete();
+            print('Selected Interests: $selectedInterests');
+          } else {
+            print('Select at least $minInterests interests');
+            setState(() {
+              AnimatedSnackBar.material(
+                'Choose at least one band to continue',
+                type: AnimatedSnackBarType.error,
+                mobileSnackBarPosition: MobileSnackBarPosition.bottom,
+              ).show(context);
+            });
+          }
+        },
+        child: Icon(
+          Icons.done,
+          color: Colors.black,
+        ),
+      ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserBands();
+  }
+
+  void _onboardingComplete() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isOnboarded', true);
+    await prefs.setBool('addedOccupation', true);
+    joinBand();
+    context.go("/");
+  }
+
+  void getPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> userInterests = prefs.getStringList('interestList')!;
+    setState(() {
+      selectedInterests = userInterests;
+    });
+  }
+
+  void joinBand() {
+    for (Band band in selectedBands) {
+      FirebaseDBOperations.joinBand(band);
+    }
   }
 }

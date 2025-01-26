@@ -42,19 +42,12 @@ class _ProfessionDetailsPageState extends State<ProfessionDetailsPage> {
         child: Stack(
           children: [
             SingleChildScrollView(
-              child: Container(
+              child: SizedBox(
                 width: double.maxFinite,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: 0,),
-                   if(false) Image.asset(
-                      "images/verify.png",
-                      width: 150,
-                      height: 150,
-                      color: Colors.white,
-                    ),
                     SizedBox(
                       height: 12,
                     ),
@@ -78,29 +71,6 @@ class _ProfessionDetailsPageState extends State<ProfessionDetailsPage> {
                         saveUserDetails();
                       },
                     ),
-                    if (professions.isNotEmpty &&false)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: SearchProfessionDropdown(
-                          professions: professions,
-                          professionSelectedCallback: (Profession profession) {
-                            setState(() {
-                              selectedProfession = profession;
-                              widget.drummer?.occupation = profession.departmentName;
-                              selectedDesignation = "";
-
-                              selectedItem = Container();
-                              moreAbout = Container();
-                              textEditingController.clear();
-                              moreAboutTxt = "";
-                              setWidget();
-
-                            });
-                          },
-
-                        ),
-                      ),
-
                     SizedBox(
                       height: 12,
                     ),
@@ -111,37 +81,7 @@ class _ProfessionDetailsPageState extends State<ProfessionDetailsPage> {
                     SizedBox(
                       height: 12,
                     ),
-                   if(false) Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: moreAbout
-                    ),
                   ],
-                ),
-              ),
-            ),
-            if(selectedDesignation.isNotEmpty&&selectedProfession.departmentName!.isNotEmpty&&false)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GestureDetector(
-                onTap: () {
-                  saveUserDetails();
-                },
-                child: Container(
-                  alignment: Alignment.bottomRight,
-                  padding: EdgeInsets.all(4),
-
-                  child: Container(
-                    height: 54,
-                    width: 54,
-                    decoration: BoxDecoration(
-                        color: Colors.blue.shade600,
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Icon(
-                      Icons.keyboard_arrow_right_rounded,
-                      size: 36,
-                    ),
-                  ),
                 ),
               ),
             ),
@@ -235,31 +175,12 @@ class _ProfessionDetailsPageState extends State<ProfessionDetailsPage> {
 
     FirebaseDBOperations.subscribeToYourExpertise(widget.drummer?.occupation??"",widget.drummer?.jobTitle??"");
 
-    // _checkOnboardingStatus(drummer.username??"");
-    // Navigator.pushReplacement(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) => ProfessionDetailsPage(
-    //         )));
-
     if(moveToInterestPage) {
-      // Navigator.pushReplacement(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => InterestsPage()));
-
       context.go("/interestsPage");
     }
     else {
-      // Navigator.pushReplacement(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => LauncherPage()));
-
       context.go("/launcherPage");
     }
 
-    // Navigator.of(context)
-    //     .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
   }
 }
