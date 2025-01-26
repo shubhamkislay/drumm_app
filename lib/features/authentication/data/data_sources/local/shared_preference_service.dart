@@ -25,4 +25,17 @@ class SharedPreferenceService{
 
     return selectedBands;
   }
+
+  void setAuthProvider(String authProvider)async{
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString("authProvider", authProvider);
+  }
+
+  Future<String> getAuthProvider() async{
+
+    prefs = await SharedPreferences.getInstance();
+    String authProvider = prefs.getString('authProvider') ?? "apple";
+
+    return authProvider;
+  }
 }

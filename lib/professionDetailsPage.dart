@@ -5,6 +5,7 @@ import 'package:drumm_app/launcher.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'InterestPage.dart';
 import 'custom/ProfessionChipSelectionWidget.dart';
@@ -235,23 +236,27 @@ class _ProfessionDetailsPageState extends State<ProfessionDetailsPage> {
     FirebaseDBOperations.subscribeToYourExpertise(widget.drummer?.occupation??"",widget.drummer?.jobTitle??"");
 
     // _checkOnboardingStatus(drummer.username??"");
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ProfessionDetailsPage(
-            )));
+    // Navigator.pushReplacement(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) => ProfessionDetailsPage(
+    //         )));
 
     if(moveToInterestPage) {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => InterestsPage()));
+      // Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => InterestsPage()));
+
+      context.go("/interestsPage");
     }
     else {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => LauncherPage()));
+      // Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => LauncherPage()));
+
+      context.go("/launcherPage");
     }
 
     // Navigator.of(context)

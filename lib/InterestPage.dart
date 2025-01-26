@@ -7,6 +7,7 @@ import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/model/band.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/theme/theme_manager.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'custom/helper/image_uploader.dart';
@@ -265,27 +266,6 @@ class _InterestsPageState extends State<InterestsPage> {
           ],
         ),
       ),
-      // floatingActionButton: FloatingActionButton.extended(
-      //   backgroundColor:  Colors.blue,
-      //   onPressed: () {
-      //     // Handle the selected interests and navigate to the next page`
-      //     if (selectedInterests.length >= minInterests) {
-      //       _onboardingComplete(context, selectedInterests);
-      //       print('Selected Interests: $selectedInterests');
-      //     } else {
-      //       print('Select at least $minInterests interests');
-      //     }
-      //   },
-      //   label: Container(
-      //     child: Text(
-      //       ''
-      //     ),
-      //   ),
-      //   icon: Icon(
-      //     Icons.done,
-      //     color: Colors.white,
-      //   ),
-      // ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
         onPressed: () {
@@ -313,8 +293,6 @@ class _InterestsPageState extends State<InterestsPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    //getPrefs();
     super.initState();
     getUserBands();
   }
@@ -323,14 +301,8 @@ class _InterestsPageState extends State<InterestsPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isOnboarded', true);
     await prefs.setBool('addedOccupation', true);
-    // await prefs.setStringList('interestList', interestList);
     joinBand();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MyApp(),
-      ),
-    );
+    context.go("/");
   }
 
   void getPrefs() async {

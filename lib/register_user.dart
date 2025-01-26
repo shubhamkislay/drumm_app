@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:drumm_app/custom/helper/image_uploader.dart';
 import 'package:drumm_app/launcher.dart';
 import 'package:drumm_app/theme/theme_manager.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'custom/rounded_button.dart';
@@ -22,16 +23,16 @@ import 'model/Drummer.dart';
 class RegisterUser extends StatefulWidget {
   String? name;
   String? email;
-  final ThemeManager themeManager;
-  final FirebaseAnalyticsObserver observer;
-  final FirebaseAnalytics analytics;
+  ThemeManager? themeManager;
+  FirebaseAnalyticsObserver? observer;
+  FirebaseAnalytics? analytics;
   RegisterUser({
     Key? key,
-    required this.name,
-    required this.email,
-    required this.themeManager,
-    required this.observer,
-    required this.analytics,
+     this.name,
+     this.email,
+     this.themeManager,
+     this.observer,
+     this.analytics,
   }) : super(key: key);
 
   @override
@@ -390,11 +391,12 @@ class _RegisterUserState extends State<RegisterUser> {
         .set(drummer.toJson(), SetOptions(merge: true));
 
    // _checkOnboardingStatus(drummer.username??"");
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ProfessionDetailsPage(
-            )));
+   //  Navigator.pushReplacement(
+   //      context,
+   //      MaterialPageRoute(
+   //          builder: (context) => ProfessionDetailsPage(
+   //          )));
+    context.go("/professionSelection");
 
     // Navigator.of(context)
     //     .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);

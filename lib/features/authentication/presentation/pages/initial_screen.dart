@@ -3,6 +3,7 @@ import 'package:drumm_app/features/authentication/presentation/bloc/drummer/hybr
 import 'package:drumm_app/features/authentication/presentation/bloc/drummer/hybrid/hybrid_initial_screen_event.dart';
 import 'package:drumm_app/features/authentication/presentation/bloc/drummer/hybrid/hybrid_initial_screen_state.dart';
 import 'package:drumm_app/features/constants.dart';
+import 'package:drumm_app/launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -19,7 +20,7 @@ class InitialScreen extends StatelessWidget {
       child: BlocListener<HybridInitialScreenBloc, HybridInitialScreenState>(
         listener: (context, state) {
           if (state is InitialScreenFetched) {
-            context.go(SCREEN_DRUMMER_PROFILE);//state.initialScreen ?? SCREEN_ONBOARDING);
+            context.go(state.initialScreen ?? SCREEN_ONBOARDING);
           }
         },
         child: BlocBuilder<HybridInitialScreenBloc, HybridInitialScreenState>(

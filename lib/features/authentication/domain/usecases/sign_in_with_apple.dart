@@ -48,6 +48,7 @@ class SignInWithAppleUseCase implements UseCase<DataState<String>, void> {
           String? email = userCredentialState.data?.user?.email;
           route = "/register?name=$displayName/email=${email}";
         }
+        drummerRepository.setAuthProvider("apple");
         return DataSuccess(route);
       } else {
         return DataFailed(DioException(

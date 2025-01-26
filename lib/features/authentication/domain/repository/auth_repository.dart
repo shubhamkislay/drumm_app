@@ -25,4 +25,8 @@ abstract class AuthRepository{
 
   Future<DataState<bool>> isUserOnboarded();
 
+  void setAuthProvider(String authProvider);
+
+  Future<String> getAuthProvider();
+
 }

@@ -69,4 +69,15 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<DataState<bool>> isUserOnboarded() {
     return authService.isUserOnboarded();
   }
+
+  @override
+  void setAuthProvider(String authProvider) {
+    return sharedPreferenceService.setAuthProvider(authProvider);
+  }
+
+  @override
+  Future<String> getAuthProvider() {
+    return sharedPreferenceService.getAuthProvider();
+  }
+
 }

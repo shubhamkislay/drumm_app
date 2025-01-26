@@ -84,11 +84,9 @@ class _SettingsPageState extends State<SettingsPage> {
       removedPreferences();
       FirebaseAuth.instance
           .signOut()
-          .then((value) => Navigator.pushAndRemoveUntil(context,
-              MaterialPageRoute(builder: (context) => MyApp()), (_) => false))
+          .then((value) => context.go("/"))
           .onError((error, stackTrace) {
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (context) => MyApp()), (_) => false);
+            context.go("/");
       });
     }).onError((error, stackTrace) {
       print("The user cannot be deleted because ${error}");
@@ -436,18 +434,23 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
         nonce: nonce,
       );
-    } catch (e) {}
+    } catch (e) {
+      print("Failed to get AppleIDCredential ${e.toString()}");
+    }
 
     // Create an `OAuthCredential` from the credential returned by Apple.
     final oauthCredential = OAuthProvider("apple.com").credential(
       idToken: appleCredential.identityToken,
       rawNonce: rawNonce,
+      accessToken: appleCredential.authorizationCode,
     );
 
     FirebaseAuth.instance.currentUser
         ?.reauthenticateWithCredential(oauthCredential)
         .then((value) {
       deleteUser();
+    }).onError((error, stackTrace) {
+      print("The user cannot be deleted because ${error}");
     });
     // signin.then((value) => {checkIfUserExists(value)});
 

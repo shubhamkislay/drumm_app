@@ -39,6 +39,7 @@ class SignInWithGoogleUseCase implements UseCase<DataState<String>, void> {
           String? email = userCredentialState.data?.user?.email;
           route = "/register?name=$displayName/email=${email}";
         }
+        drummerRepository.setAuthProvider("google");
         return DataSuccess(route);
       } else {
         return DataFailed(DioException(
