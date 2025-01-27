@@ -1,10 +1,13 @@
+import 'package:drumm_app/config/routes/router_constants.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/profession_selection_page.dart';
 import 'package:drumm_app/features/drummer%20profile/presentation/pages/drummer_profile.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/initial_screen.dart';
+import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/features/news%20feed/presentation/pages/news_discovery_page.dart';
 import 'package:drumm_app/features/onboarding/presentation/pages/interests_page.dart';
 import 'package:drumm_app/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/register_page.dart';
+import 'package:drumm_app/features/read%20article/presentation/pages/read_article_page.dart';
 import 'package:drumm_app/launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -78,6 +81,16 @@ class PageRoutes{
           builder: (BuildContext context, GoRouterState state) {
             return const DrummerProfile();
           },
+        ),
+        GoRoute(
+          path: SCREEN_READ_ARTICLE,
+          builder: (context, state) {
+            ArticleEntity article = state.extra as ArticleEntity;
+            return ReadArticlePage(
+              article: article,
+            );
+          },
+
         ),
       ],
     );

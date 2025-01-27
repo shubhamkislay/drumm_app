@@ -1,3 +1,4 @@
+import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/theme_constants.dart';
@@ -20,9 +21,8 @@ class InstagramDateTimeWidget extends StatelessWidget {
       textAlign: TextAlign.end,
       style: TextStyle(
         fontSize: textSize??12,
-        fontFamily: APP_FONT_MEDIUM,
-        fontWeight: fontWeight??FontWeight.normal,
-        color: fontColor??Colors.white.withOpacity(0.8),
+        fontWeight: FontWeight.bold,
+        color: DrummTheme.primaryTextColor(context).withOpacity(0.5),
       ),
     );
   }

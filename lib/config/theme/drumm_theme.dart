@@ -7,7 +7,7 @@ class DrummTheme{
      fontFamily: "opensansmedium",
     brightness: Brightness.dark,
     primaryColor: const Color(0xFF0080FF), // Accent color
-    scaffoldBackgroundColor: const Color(0xFF000000), // Background color
+    scaffoldBackgroundColor:  primaryDarkBackgroundColor, // Background color
     appBarTheme: const AppBarTheme(
       backgroundColor: Color(0xFF000000),
       iconTheme: IconThemeData(color: Color(0xFFFFFFFF)),
@@ -76,7 +76,7 @@ class DrummTheme{
     fontFamily: "opensansmedium",
     brightness: Brightness.light,
     primaryColor: const Color(0xFF0080FF), // Accent color for the app
-    scaffoldBackgroundColor: const Color(0xFFFFFFFF), // Background color
+    scaffoldBackgroundColor: primaryLightBackgroundColor, // Background color
     appBarTheme: const AppBarTheme(
       backgroundColor: Color(0xFFFFFFFF),
       iconTheme: IconThemeData(color: Color(0xFF000000)),
@@ -143,11 +143,12 @@ class DrummTheme{
   );
 
    static Color primaryTextColorLight = Colors.black;
-   static Color primaryLightBackgroundColor = Color(0xff080808);
+   static Color primaryLightBackgroundColor = Color(0xffe7e7e7);//Color(0xffF1F1F1);
+   static Color primaryLightItemColor = Color(0xffffffff);// Color(0xffffffff);
 
    static Color primaryTextColorDark = Colors.white;
-   static Color primaryDarkBackgroundColor = Color(0xff080808);
-   static Color primaryDarkItemColor = Color(0xff111111);
+   static Color primaryDarkItemColor = Color(0xff1c1c1c);//Color(0xff111111);
+   static Color primaryDarkBackgroundColor = Color(0xff151515);//Color(0xff080808);
 
 
   static ThemeData getTheme(BuildContext context){
@@ -170,7 +171,12 @@ class DrummTheme{
 
    static Color primaryItemColor(BuildContext context){
      bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
-     return isDarkMode ? primaryDarkItemColor:primaryDarkItemColor;
+     return isDarkMode ? primaryDarkItemColor:primaryLightItemColor;
+   }
+
+   static Color primaryItemBackground(BuildContext context){
+     bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
+     return isDarkMode ? primaryDarkBackgroundColor:primaryLightBackgroundColor;
    }
 
 }
