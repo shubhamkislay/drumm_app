@@ -1,0 +1,158 @@
+import 'package:flutter/material.dart';
+
+const Color DARK_BACKGROUND = Color(0xff080808);
+
+class DrummTheme{
+   ThemeData drummDarkTheme = ThemeData(
+    brightness: Brightness.dark,
+    primaryColor: const Color(0xFF0080FF), // Accent color
+    scaffoldBackgroundColor: const Color(0xFF000000), // Background color
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Color(0xFF000000),
+      iconTheme: IconThemeData(color: Color(0xFFFFFFFF)),
+      titleTextStyle: TextStyle(
+        color: Color(0xFFFFFFFF),
+        fontSize: 20.0,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    textTheme: const TextTheme(
+      headlineLarge: TextStyle(
+        color: Color(0xFFFFFFFF),
+        fontSize: 32.0,
+        fontWeight: FontWeight.bold,
+      ),
+      headlineMedium: TextStyle(
+        color: Color(0xFFFFFFFF),
+        fontSize: 24.0,
+        fontWeight: FontWeight.bold,
+      ),
+      bodyLarge: TextStyle(
+        color: Color(0xFFFFFFFF),
+        fontSize: 16.0,
+      ),
+      bodyMedium: TextStyle(
+        color: Color(0xFFFFFFFF),
+        fontSize: 14.0,
+      ),
+    ),
+    cardColor: const Color(0xFF1A1A1A), // Darker background for cards
+    iconTheme: const IconThemeData(
+      color: Color(0xFFFFFFFF),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF0080FF), // Button background color
+        foregroundColor: const Color(0xFFFFFFFF), // Button text color
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: const Color(0xFF0080FF), // TextButton color
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: const Color(0xFF0080FF), // OutlinedButton text color
+        side: const BorderSide(color: Color(0xFF0080FF)), // OutlinedButton border color
+      ),
+    ),
+    dividerColor: const Color(0xFFFFFFFF).withOpacity(0.5), // Divider color
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: const Color(0xFF1A1A1A), // Darker fill for inputs
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: BorderSide.none,
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+    ),
+  );
+   ThemeData drummLightTheme = ThemeData(
+    fontFamily: "opensansmedium",
+    brightness: Brightness.light,
+    primaryColor: const Color(0xFF0080FF), // Accent color for the app
+    scaffoldBackgroundColor: const Color(0xFFFFFFFF), // Background color
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Color(0xFFFFFFFF),
+      iconTheme: IconThemeData(color: Color(0xFF000000)),
+      titleTextStyle: TextStyle(
+        color: Color(0xFF000000),
+        fontSize: 20.0,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    textTheme: const TextTheme(
+      headlineLarge: TextStyle(
+        color: Color(0xFF000000),
+        fontSize: 32.0,
+        fontWeight: FontWeight.bold,
+      ),
+      headlineMedium: TextStyle(
+        color: Color(0xFF000000),
+        fontSize: 24.0,
+        fontWeight: FontWeight.bold,
+      ),
+      bodyLarge: TextStyle(
+        color: Color(0xFF000000),
+        fontSize: 16.0,
+      ),
+      bodyMedium: TextStyle(
+        color: Color(0xFF000000),
+        fontSize: 14.0,
+      ),
+    ),
+    cardColor: const Color(0xFFF1F1F1), // Background for cards
+    iconTheme: const IconThemeData(
+      color: Color(0xFF000000),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF0080FF), // Background color for ElevatedButton
+        foregroundColor: const Color(0xFFFFFFFF), // Text color for ElevatedButton
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: const Color(0xFF0080FF), // Text color for TextButton
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: const Color(0xFF0080FF), // Text color for OutlinedButton
+        side: const BorderSide(color: Color(0xFF0080FF)), // Border color
+      ),
+    ),
+    dividerColor: const Color(0xFF000000).withOpacity(0.5), // Divider color
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: const Color(0xFFF1F1F1),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: BorderSide.none,
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+    ),
+  );
+
+  ThemeData getTheme(BuildContext context){
+    bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    return isDarkMode ? drummDarkTheme:drummLightTheme;
+  }
+
+  ThemeData getDakTheme(){
+    return drummDarkTheme;
+  }
+
+  ThemeData getLightTheme(){
+    return drummLightTheme;
+  }
+
+}
+

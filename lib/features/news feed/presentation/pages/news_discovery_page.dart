@@ -1,6 +1,5 @@
 import 'package:drumm_app/config/injection_container.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
-import 'package:drumm_app/features/news%20feed/domain/entities/article_list.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/get_articles_parameter.dart';
 import 'package:drumm_app/features/news%20feed/presentation/bloc/article/remote/remote_articles_bloc.dart';
 import 'package:drumm_app/features/news%20feed/presentation/bloc/article/remote/remote_articles_event.dart';

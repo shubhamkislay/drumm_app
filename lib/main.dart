@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/config/routes/page_routes.dart';
 import 'package:drumm_app/config/injection_container.dart';
+import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/model/algolia_article.dart';
 import 'package:drumm_app/model/question.dart';
 import 'package:drumm_app/professionDetailsPage.dart';
@@ -86,8 +87,9 @@ void main() async {
 
   runApp(MaterialApp.router(
     routerConfig: PageRoutes.getGoRouter(),
-    themeMode: ThemeMode.dark,
-    darkTheme: darkTheme,
+    themeMode: ThemeMode.system,
+    theme: DrummTheme().getLightTheme(),
+    darkTheme:DrummTheme().getDakTheme(),
     debugShowCheckedModeBanner: false,
   ));
 }
