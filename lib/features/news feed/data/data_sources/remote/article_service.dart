@@ -11,12 +11,13 @@ class ArticleService {
       GetArticlesParams getArticlesParams) async {
     try {
       Query<Map<String, dynamic>> query = FirebaseFirestore.instance
-          .collection("stories")
+          .collection("recommendations")
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection("articles")
           .where('category', whereIn: getArticlesParams.category)
-          .where('country', isEqualTo: 'us')
-          .where('publishedAt', isNotEqualTo: null)
-          .orderBy("publishedAt", descending: true)
-          .limit(10);
+          .where('isRepresentative', isEqualTo: true)
+          .orderBy("recommendedTimestamp", descending: true)
+          .limit(20);
 
       if (getArticlesParams.lastDocument != null) {
         query = query.startAfterDocument(getArticlesParams.lastDocument!);
@@ -41,6 +42,7 @@ class ArticleService {
             message: "Unable to fetch articles"));
       }
     } on DioException catch (e) {
+      print(e);
       return DataFailed(e);
     }
   }

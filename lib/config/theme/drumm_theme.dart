@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 const Color DARK_BACKGROUND = Color(0xff080808);
 
 class DrummTheme{
-   ThemeData drummDarkTheme = ThemeData(
+   static ThemeData drummDarkTheme = ThemeData(
+     fontFamily: "opensansmedium",
     brightness: Brightness.dark,
     primaryColor: const Color(0xFF0080FF), // Accent color
     scaffoldBackgroundColor: const Color(0xFF000000), // Background color
@@ -71,7 +72,7 @@ class DrummTheme{
       contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
     ),
   );
-   ThemeData drummLightTheme = ThemeData(
+   static ThemeData drummLightTheme = ThemeData(
     fontFamily: "opensansmedium",
     brightness: Brightness.light,
     primaryColor: const Color(0xFF0080FF), // Accent color for the app
@@ -141,18 +142,36 @@ class DrummTheme{
     ),
   );
 
-  ThemeData getTheme(BuildContext context){
+   static Color primaryTextColorLight = Colors.black;
+   static Color primaryLightBackgroundColor = Color(0xff080808);
+
+   static Color primaryTextColorDark = Colors.white;
+   static Color primaryDarkBackgroundColor = Color(0xff080808);
+   static Color primaryDarkItemColor = Color(0xff111111);
+
+
+  static ThemeData getTheme(BuildContext context){
     bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return isDarkMode ? drummDarkTheme:drummLightTheme;
   }
 
-  ThemeData getDakTheme(){
+  static ThemeData getDarkTheme(){
     return drummDarkTheme;
   }
 
-  ThemeData getLightTheme(){
+  static ThemeData getLightTheme(){
     return drummLightTheme;
   }
+
+  static Color primaryTextColor(BuildContext context){
+    bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    return isDarkMode ? primaryTextColorDark:primaryTextColorLight;
+  }
+
+   static Color primaryItemColor(BuildContext context){
+     bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
+     return isDarkMode ? primaryDarkItemColor:primaryDarkItemColor;
+   }
 
 }
 

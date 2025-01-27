@@ -27,26 +27,26 @@ class NewsDiscoveryPage extends StatelessWidget {
               List<ArticleEntity> fArticleList = state.articleEntityList?.articleList??[];
               articleList.addAll(fArticleList);
               lastDocument = state.articleEntityList?.lastDocument!;
-              return Column(
-                children: [
-                  Center(
-                    child: Text(result),
-                  ),
-                  Expanded(
-                    child: ArticleListWidget(
-                      articles: articleList,
-                      loadMoreArticles: () {
-                        // Dispatch event to fetch more articles
-                        context.read<RemoteArticlesBloc>().add(
-                          GetArticles(GetArticlesParams(
-                            category: ["For You"],
-                            lastDocument: lastDocument,
-                          )),
-                        );
-                      },
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ArticleListWidget(
+                        articles: articleList,
+                        loadMoreArticles: () {
+                          // Dispatch event to fetch more articles
+                          context.read<RemoteArticlesBloc>().add(
+                            GetArticles(GetArticlesParams(
+                              category: ["For You"],
+                              lastDocument: lastDocument,
+                            )),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             }
 

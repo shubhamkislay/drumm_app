@@ -88,8 +88,8 @@ void main() async {
   runApp(MaterialApp.router(
     routerConfig: PageRoutes.getGoRouter(),
     themeMode: ThemeMode.system,
-    theme: DrummTheme().getLightTheme(),
-    darkTheme:DrummTheme().getDakTheme(),
+    theme: DrummTheme.getLightTheme(),
+    darkTheme:DrummTheme.getDarkTheme(),
     debugShowCheckedModeBanner: false,
   ));
 }

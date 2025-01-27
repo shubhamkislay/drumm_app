@@ -1,3 +1,4 @@
+import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20bands/data/data_sources/remote/band_service.dart';
 import 'package:drumm_app/core/features/get%20bands/data/repository/band_repository_impl.dart';
 import 'package:drumm_app/core/features/get%20bands/domain/repository/band_repository.dart';
@@ -33,6 +34,7 @@ import 'package:get_it/get_it.dart';
 final s1 = GetIt.instance;
 
 Future<void> initializeDependencies() async {
+
   /**
    * Dependencies
    */
