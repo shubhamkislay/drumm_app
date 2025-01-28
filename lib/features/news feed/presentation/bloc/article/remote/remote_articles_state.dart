@@ -21,6 +21,10 @@ class RemoteArticlesFetched extends RemoteArticlesState{
   const RemoteArticlesFetched(ArticleListEntity articleEntityList) : super(articleEntityList: articleEntityList);
 }
 
+class RemoteArticlesLoadingMoreArticles extends RemoteArticlesState{
+  const RemoteArticlesLoadingMoreArticles();
+}
+
 class RemoteArticlesError extends RemoteArticlesState{
   const RemoteArticlesError(DioException error) : super(error: error);
 }

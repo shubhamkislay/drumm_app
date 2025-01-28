@@ -16,11 +16,13 @@ class RemoteArticlesBloc
 
   void onGetArticles(
       GetArticles event, Emitter<RemoteArticlesState> emit) async {
+    emit(RemoteArticlesLoadingMoreArticles());
     final dataState = await getArticlesUseCase(params: event.getArticlesParams);
 
     if (dataState is DataSuccess) {
-      if(dataState.data?.articleList !=null)
+      if(dataState.data?.articleList !=null) {
         emit(RemoteArticlesFetched(dataState.data??ArticleListEntity()));
+      }
     }
     if (dataState is DataFailed) {
       emit(RemoteArticlesError(dataState.error!));

@@ -23,7 +23,7 @@ class NewsDiscoveryPage extends StatelessWidget {
             String result = "News Discovery";
             if(state is RemoteArticlesLoading) {
               result = "Fetching articles...";
-            } if(state is RemoteArticlesFetched) {
+            } else if(state is! RemoteArticlesError) {
               List<ArticleEntity> fArticleList = state.articleEntityList?.articleList??[];
               articleList.addAll(fArticleList);
               lastDocument = state.articleEntityList?.lastDocument!;
@@ -36,7 +36,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                         articles: articleList,
                         loadMoreArticles: () {
                           // Dispatch event to fetch more articles
-                          context.read<RemoteArticlesBloc>().add(
+                            context.read<RemoteArticlesBloc>().add(
                             GetArticles(GetArticlesParams(
                               category: ["For You"],
                               lastDocument: lastDocument,
