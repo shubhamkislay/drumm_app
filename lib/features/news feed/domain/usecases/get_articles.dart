@@ -29,8 +29,7 @@ class GetArticlesUseCase
       } else {
         return DataFailed(DioException(
             requestOptions: RequestOptions(),
-            message:
-                "Failed to fetch articles because ${articleDataState.error!.message}"));
+            message:articleDataState.error?.message));
       }
     } on DioException catch (e) {
       return DataFailed(e);

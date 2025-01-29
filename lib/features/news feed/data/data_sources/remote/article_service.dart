@@ -27,7 +27,7 @@ class ArticleService {
           await query.get().onError((error, stackTrace) {
         throw DioException(
             requestOptions: RequestOptions(data: stackTrace),
-            message: error.toString());
+            message: "Error fetching file: ${error.toString()}");
       });
       if (snapshot.docs.isNotEmpty) {
         List<ArticleModel> newArticles = snapshot.docs
@@ -38,10 +38,9 @@ class ArticleService {
       } else {
         return DataFailed(DioException(
             requestOptions: RequestOptions(),
-            message: "Unable to fetch articles"));
+            message: "There aren't any articles for this band."));
       }
     } on DioException catch (e) {
-      print(e);
       return DataFailed(e);
     }
   }

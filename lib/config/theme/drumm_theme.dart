@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 const Color DARK_BACKGROUND = Color(0xff080808);
+const String DRUMM_FONT_FAMILY = "opensansmedium";
 
 class DrummTheme{
    static ThemeData drummDarkTheme = ThemeData(
@@ -169,9 +170,19 @@ class DrummTheme{
     return isDarkMode ? primaryTextColorDark:primaryTextColorLight;
   }
 
+   static Color primarySelectedTextColor(BuildContext context){
+     bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
+     return isDarkMode ? primaryTextColorLight:primaryTextColorDark;
+   }
+
    static Color primaryItemColor(BuildContext context){
      bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
      return isDarkMode ? primaryDarkItemColor:primaryLightItemColor;
+   }
+
+   static Color primarySelectedItemColor(BuildContext context){
+     bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
+     return isDarkMode ? primaryLightItemColor:primaryDarkItemColor;
    }
 
    static Color primaryItemBackground(BuildContext context){

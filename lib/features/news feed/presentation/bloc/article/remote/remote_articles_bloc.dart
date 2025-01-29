@@ -12,6 +12,7 @@ class RemoteArticlesBloc
   RemoteArticlesBloc(this.getArticlesUseCase)
       : super(const RemoteArticlesLoading()) {
     on<GetArticles>(onGetArticles);
+    on<GetArticlesFromDifferentCategory>(onGetArticlesFromDifferentCategory);
   }
 
   void onGetArticles(
@@ -22,6 +23,21 @@ class RemoteArticlesBloc
     if (dataState is DataSuccess) {
       if(dataState.data?.articleList !=null) {
         emit(RemoteArticlesFetched(dataState.data??ArticleListEntity()));
+      }
+    }
+    if (dataState is DataFailed) {
+      emit(RemoteArticlesError(dataState.error!));
+    }
+  }
+
+  void onGetArticlesFromDifferentCategory(
+      GetArticlesFromDifferentCategory event, Emitter<RemoteArticlesState> emit) async {
+    emit(RemoteArticlesLoading());
+    final dataState = await getArticlesUseCase(params: event.getArticlesParams);
+
+    if (dataState is DataSuccess) {
+      if(dataState.data?.articleList !=null) {
+        emit(RemoteArticlesFetchedFromDifferentCategory(dataState.data??ArticleListEntity()));
       }
     }
     if (dataState is DataFailed) {

@@ -8,3 +8,8 @@ class GetArticles extends RemoteArticlesEvent{
   final GetArticlesParams getArticlesParams;
   const GetArticles(this.getArticlesParams);
 }
+
+class GetArticlesFromDifferentCategory extends RemoteArticlesEvent{
+  final GetArticlesParams getArticlesParams;
+  const GetArticlesFromDifferentCategory(this.getArticlesParams);
+}

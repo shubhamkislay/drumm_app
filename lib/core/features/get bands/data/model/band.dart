@@ -40,7 +40,7 @@ class BandModel extends BandEntity{
     return BandModel(
         foundedBy:snapshot.data()!['foundedBy'],
       bandId:snapshot.data()!['bandId'],
-      count:snapshot.data()!['count'],
+      count:snapshot.data()!['count'].toString(),
       creationTime:snapshot.data()!['creationTime'],
       name:snapshot.data()!['name'],
       url:snapshot.data()!['url'],
