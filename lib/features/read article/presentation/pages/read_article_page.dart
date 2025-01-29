@@ -48,6 +48,7 @@ class ReadArticlePage extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
+                          fontFamily: DRUMM_FONT_FAMILY,
                           color: DrummTheme.primaryTextColor(context)
                               .withOpacity(0.5),
                         ),
@@ -62,6 +63,7 @@ class ReadArticlePage extends StatelessWidget {
                         style: TextStyle(
                             fontSize: 26,
                             color: DrummTheme.primaryTextColor(context),
+                            fontFamily: DRUMM_FONT_FAMILY,
                             fontWeight: FontWeight.w900,
                             overflow: TextOverflow.clip),
                       ),
@@ -75,6 +77,7 @@ class ReadArticlePage extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 18,
                           color: DrummTheme.primaryTextColor(context),
+                          fontFamily: DRUMM_FONT_FAMILY,
                         ),
                       ),
                       SizedBox(
@@ -86,6 +89,7 @@ class ReadArticlePage extends StatelessWidget {
                           height: 1.75,
                           fontSize: 16,
                           color: DrummTheme.primaryTextColor(context),
+                          fontFamily: DRUMM_FONT_FAMILY,
                         ),
                       )
                     ],

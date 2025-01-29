@@ -5,12 +5,12 @@ const String DRUMM_FONT_FAMILY = "opensansmedium";
 
 class DrummTheme{
    static ThemeData drummDarkTheme = ThemeData(
-     fontFamily: "opensansmedium",
+     fontFamily: DRUMM_FONT_FAMILY,
     brightness: Brightness.dark,
     primaryColor: const Color(0xFF0080FF), // Accent color
     scaffoldBackgroundColor:  primaryDarkBackgroundColor, // Background color
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF000000),
+    appBarTheme:  AppBarTheme(
+      backgroundColor: primaryDarkBackgroundColor,
       iconTheme: IconThemeData(color: Color(0xFFFFFFFF)),
       titleTextStyle: TextStyle(
         color: Color(0xFFFFFFFF),
@@ -38,7 +38,7 @@ class DrummTheme{
         fontSize: 14.0,
       ),
     ),
-    cardColor: const Color(0xFF1A1A1A), // Darker background for cards
+    cardColor:  primaryDarkItemColor, // Darker background for cards
     iconTheme: const IconThemeData(
       color: Color(0xFFFFFFFF),
     ),
@@ -74,12 +74,12 @@ class DrummTheme{
     ),
   );
    static ThemeData drummLightTheme = ThemeData(
-    fontFamily: "opensansmedium",
+    fontFamily: DRUMM_FONT_FAMILY,
     brightness: Brightness.light,
     primaryColor: const Color(0xFF0080FF), // Accent color for the app
     scaffoldBackgroundColor: primaryLightBackgroundColor, // Background color
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFFFFFFFF),
+    appBarTheme: AppBarTheme(
+      backgroundColor: primaryLightBackgroundColor,
       iconTheme: IconThemeData(color: Color(0xFF000000)),
       titleTextStyle: TextStyle(
         color: Color(0xFF000000),

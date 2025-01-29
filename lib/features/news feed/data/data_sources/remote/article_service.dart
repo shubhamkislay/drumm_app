@@ -17,7 +17,7 @@ class ArticleService {
           .where('category', whereIn: getArticlesParams.category)
           .where('isRepresentative', isEqualTo: true)
           .orderBy("recommendedTimestamp", descending: true)
-          .limit(25);
+          .limit(15);
 
       if (getArticlesParams.lastDocument != null) {
         query = query.startAfterDocument(getArticlesParams.lastDocument!);

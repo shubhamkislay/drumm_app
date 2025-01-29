@@ -22,6 +22,7 @@ class InstagramDateTimeWidget extends StatelessWidget {
       style: TextStyle(
         fontSize: textSize??12,
         fontWeight: FontWeight.bold,
+        fontFamily: DRUMM_FONT_FAMILY,
         color: DrummTheme.primaryTextColor(context).withOpacity(0.5),
       ),
     );

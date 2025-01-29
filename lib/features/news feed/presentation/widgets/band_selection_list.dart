@@ -1,4 +1,5 @@
 import 'package:drumm_app/config/injection_container.dart';
+import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
 import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/remote_bands_bloc.dart';
 import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/remote_bands_event.dart';
@@ -40,8 +41,25 @@ class BandSelectionList extends StatelessWidget {
               );
             }
             return Container(
-              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               height: 32,
+              child: ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                itemCount: 5,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    height: 32,
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    width: index == 0 ?70:128,
+                    decoration: BoxDecoration(
+                        color: DrummTheme.primaryItemColor(context),
+                        borderRadius: BorderRadius.circular(16)
+                    ),
+                  );
+                },
+              ),
             );
           },
         ));

@@ -44,6 +44,7 @@ class ArticleItemCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
+                fontFamily: DRUMM_FONT_FAMILY,
                 color: DrummTheme.primaryTextColor(context).withOpacity(0.5),
               ),
             ),
@@ -70,6 +71,7 @@ class ArticleItemCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
+                fontFamily: DRUMM_FONT_FAMILY,
                 color: DrummTheme.primaryTextColor(context).withOpacity(0.75),
               ),
             ),
@@ -106,6 +108,7 @@ class ArticleItemCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
+                    fontFamily: DRUMM_FONT_FAMILY,
                     color:
                         DrummTheme.primaryTextColor(context).withOpacity(0.5),
                   ),
@@ -114,6 +117,7 @@ class ArticleItemCard extends StatelessWidget {
                   " • ",
                   style: TextStyle(
                     fontSize: 12,
+                    fontFamily: DRUMM_FONT_FAMILY,
                     fontWeight: FontWeight.bold,
                     color:
                         DrummTheme.primaryTextColor(context).withOpacity(0.5),
