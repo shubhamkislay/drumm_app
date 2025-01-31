@@ -80,9 +80,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       DrummTheme.primaryItemBackground(context),
-                      DrummTheme.primaryItemBackground(context).withOpacity(0.85),
                       DrummTheme.primaryItemBackground(context).withOpacity(0.75),
-                      Colors.transparent
+                      DrummTheme.primaryItemBackground(context).withOpacity(0.0),
                     ],
                   )),
                   child: FlexibleSpaceBar(
