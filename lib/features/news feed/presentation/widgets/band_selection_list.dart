@@ -8,6 +8,7 @@ import 'package:drumm_app/features/news%20feed/presentation/widgets/band_select_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 typedef void BandSelectedCallback(BandEntity bandEntity);
 
@@ -55,12 +56,19 @@ class BandSelectionList extends StatelessWidget {
                 itemCount: 5,
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
-                    height: 32,
                     margin: const EdgeInsets.symmetric(horizontal: 4),
-                    width: index == 0 ?70:128,
-                    decoration: BoxDecoration(
-                        color: DrummTheme.primaryItemColor(context),
-                        borderRadius: BorderRadius.circular(24)
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(24),
+                      child: Shimmer(
+                        child: Container(
+                          height: 32,
+                          width: index == 0 ?70:128,
+                          decoration: BoxDecoration(
+                              color: DrummTheme.primaryItemColor(context),
+                              borderRadius: BorderRadius.circular(24)
+                          ),
+                        ),
+                      ),
                     ),
                   );
                 },

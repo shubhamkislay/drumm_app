@@ -1,6 +1,7 @@
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class ArticleDrummButton extends StatelessWidget {
   ArticleDrummButton({super.key});
@@ -12,8 +13,8 @@ class ArticleDrummButton extends StatelessWidget {
         Vibrate.feedback(FeedbackType.success);
       },
       child: Container(
-        height: 28,
-        width: 28,
+        height: 32,
+        width: 32,
         padding: EdgeInsets.all(7),
         decoration: BoxDecoration(
           color: DrummTheme.primarySelectedItemColor(context).withAlpha(5),
@@ -35,8 +36,8 @@ class ArticleDrummButtonLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 28,
-      width: 28,
+      height: 32,
+      width: 32,
       decoration: BoxDecoration(
           color: DrummTheme.primaryItemBackground(context),
           borderRadius: BorderRadius.circular(24)

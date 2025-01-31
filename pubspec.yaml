@@ -138,6 +138,7 @@ dependencies:
   #Hooks
   flutter_hooks: ^0.20.5
   go_router: ^14.6.3
+  shimmer_animation: ^2.2.2
 
 
 
