@@ -13,6 +13,8 @@ typedef void BandSelectedCallback(BandEntity bandEntity);
 
 class BandSelectionList extends StatelessWidget {
   BandSelectedCallback onSelect;
+
+  String? selectBandEntityId = "For You";
   BandSelectionList({super.key, required this.onSelect});
 
   @override
@@ -35,13 +37,16 @@ class BandSelectionList extends StatelessWidget {
 
               return Container(
                 alignment: Alignment.centerLeft,
-                height: 32,
+                height: 38,
                 child: BandSelectContainer(
-                    onSelect: onSelect, bandsCards: mulList),
+                    onSelect: (bandEntity){
+                      selectBandEntityId = bandEntity.bandId;
+                      onSelect(bandEntity);
+                    }, bandsCards: mulList),
               );
             }
             return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               height: 32,
               child: ListView.builder(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -55,7 +60,7 @@ class BandSelectionList extends StatelessWidget {
                     width: index == 0 ?70:128,
                     decoration: BoxDecoration(
                         color: DrummTheme.primaryItemColor(context),
-                        borderRadius: BorderRadius.circular(16)
+                        borderRadius: BorderRadius.circular(24)
                     ),
                   );
                 },
@@ -68,7 +73,7 @@ class BandSelectionList extends StatelessWidget {
   getBandCard(BandEntity element) {
     return MultiSelectCard(
       value: element,
-      selected: (element.bandId == "For You"),
+      selected: (element.bandId == selectBandEntityId),
       child: Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 8),

@@ -1,11 +1,8 @@
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/band_selection_list.dart';
-import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
-import 'package:go_router/go_router.dart';
-
 class BandSelectContainer extends StatelessWidget {
   BandSelectedCallback onSelect;
   List<MultiSelectCard<dynamic>> bandsCards;
@@ -13,11 +10,12 @@ class BandSelectContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double multiSelectRadius = CURVE+3;
+    double multiSelectRadius = 24;
 
     return MultiSelectContainer(
       showInListView: true,
       listViewSettings: ListViewSettings(
+        padding: EdgeInsets.only(left: 12,right: 12),
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         separatorBuilder: (_, __) => const SizedBox(
@@ -41,14 +39,14 @@ class BandSelectContainer extends StatelessWidget {
         selectedTextStyle: TextStyle(
           color: DrummTheme.primarySelectedTextColor(context),
           fontWeight: FontWeight.bold,
-          fontSize: 13,
-          wordSpacing: 0.01,
+          fontSize: 14,
+          wordSpacing: 0.7,
           fontFamily: DRUMM_FONT_FAMILY,
         ),
         textStyle: TextStyle(
           color: DrummTheme.primaryTextColor(context),
             fontWeight: FontWeight.w700,
-          fontSize: 13,
+          fontSize: 14,
           wordSpacing: 0.01,
           fontFamily: DRUMM_FONT_FAMILY
         ),
@@ -58,7 +56,7 @@ class BandSelectContainer extends StatelessWidget {
         onSelect(item);
       },
       singleSelectedItem: true,
-      itemsPadding: const EdgeInsets.all(0),
+      itemsPadding: const EdgeInsets.symmetric(vertical: 4,horizontal: 2),
     );
   }
 }
