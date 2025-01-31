@@ -5,6 +5,7 @@ import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/custom/instagram_date_time_widget.dart';
 import 'package:drumm_app/features/constants.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
+import 'package:drumm_app/features/news%20feed/presentation/widgets/article_drumm_button.dart';
 import 'package:drumm_app/features/read%20article/presentation/pages/read_article_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
@@ -21,9 +22,9 @@ class ArticleItemCard extends StatelessWidget {
         Vibrate.feedback(FeedbackType.medium);
         showModalBottomSheet(
           context: context,
-
           builder: (_) => ReadArticlePage(article: article),
           isScrollControlled: true, // For making the sheet extendable
+          backgroundColor: Colors.transparent,
         );
       },
       child: Container(
@@ -37,16 +38,22 @@ class ArticleItemCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            AutoSizeText(
-              article.category ?? "",
-              minFontSize: 12,
-              maxLines: 1,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                fontFamily: DRUMM_FONT_FAMILY,
-                color: DrummTheme.primaryTextColor(context).withOpacity(0.5),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                AutoSizeText(
+                  article.category ?? "",
+                  minFontSize: 12,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: DRUMM_FONT_FAMILY,
+                    color: DrummTheme.primaryTextColor(context).withOpacity(0.5),
+                  ),
+                ),
+                ArticleDrummButton(),
+              ],
             ),
             SizedBox(
               height: 4,

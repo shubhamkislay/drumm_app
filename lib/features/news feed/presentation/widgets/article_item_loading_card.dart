@@ -5,6 +5,7 @@ import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/custom/instagram_date_time_widget.dart';
 import 'package:drumm_app/features/constants.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
+import 'package:drumm_app/features/news%20feed/presentation/widgets/article_drumm_button.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/article_item_card.dart';
 import 'package:drumm_app/features/read%20article/presentation/pages/read_article_page.dart';
 import 'package:flutter/material.dart';
@@ -27,12 +28,18 @@ class ArticleItemLoadingCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Container(
-            height: 12,
-            width: 100,
-            decoration: BoxDecoration(
-                color: DrummTheme.primaryItemBackground(context),
-                borderRadius: BorderRadius.circular(12)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                height: 12,
+                width: 100,
+                decoration: BoxDecoration(
+                    color: DrummTheme.primaryItemBackground(context),
+                    borderRadius: BorderRadius.circular(12)),
+              ),
+              ArticleDrummButtonLoading()
+            ],
           ),
           SizedBox(
             height:12,
