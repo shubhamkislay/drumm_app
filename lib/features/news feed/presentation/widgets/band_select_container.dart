@@ -30,14 +30,14 @@ class BandSelectContainer extends StatelessWidget {
             color: DrummTheme.primaryItemColor(context),
             borderRadius: BorderRadius.circular(multiSelectRadius)),
         selectedDecoration: BoxDecoration(
-            color: DrummTheme.primarySelectedItemColor(context),
+            color: DrummTheme.drummPrimaryColor,//DrummTheme.primarySelectedItemColor(context),
             borderRadius: BorderRadius.circular(multiSelectRadius)),
       ),
 
       items: bandsCards,
       textStyles:  MultiSelectTextStyles(
         selectedTextStyle: TextStyle(
-          color: DrummTheme.primarySelectedTextColor(context),
+          color: Colors.white,//DrummTheme.primarySelectedTextColor(context),
           fontWeight: FontWeight.bold,
           fontSize: 14,
           wordSpacing: 0.7,

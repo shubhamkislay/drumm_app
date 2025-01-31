@@ -143,7 +143,10 @@ class DrummTheme{
     ),
   );
 
-   static Color primaryTextColorLight = Colors.black;
+
+   static Color drummPrimaryColor =  Color(0xFF0080FF);
+
+       static Color primaryTextColorLight = Colors.black;
    static Color primaryLightBackgroundColor = Color(0xffe7e7e7);//Color(0xffF1F1F1);
    static Color primaryLightItemColor = Color(0xffffffff);// Color(0xffffffff);
 

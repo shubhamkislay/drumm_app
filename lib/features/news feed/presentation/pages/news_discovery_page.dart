@@ -10,7 +10,9 @@ import 'package:drumm_app/features/news%20feed/presentation/bloc/article/remote/
 import 'package:drumm_app/features/news%20feed/presentation/widgets/article_item_loading_card.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/article_list_widget.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/band_selection_list.dart';
+import 'package:drumm_app/features/news%20feed/presentation/widgets/profile_image_icon.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/safe_area_persistent_header_delegate.dart';
+import 'package:drumm_app/features/news%20feed/presentation/widgets/search_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
@@ -88,9 +90,10 @@ class NewsDiscoveryPage extends StatelessWidget {
                     collapseMode: CollapseMode.none,
                     background: Container(
                       alignment: Alignment.bottomLeft,
-                      padding: EdgeInsets.only(left: 12, bottom: 64),
+                      padding: EdgeInsets.only(left: 12, bottom: 64,right: 12),
                       width: double.maxFinite,
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             "Discover",
@@ -101,6 +104,14 @@ class NewsDiscoveryPage extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          Expanded(child: SizedBox()),
+                          SearchButton(
+                            onPressed: (){
+
+                            },
+                          ),
+                          SizedBox(width: 8,),
+                          ProfileImageIcon()
                         ],
                       ),
                     ),
