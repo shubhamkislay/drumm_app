@@ -2,6 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
+import 'package:drumm_app/features/read%20article/presentation/widgets/close_dialog_button.dart';
+import 'package:drumm_app/features/read%20article/presentation/widgets/share_button.dart';
 import 'package:flutter/material.dart';
 
 class ReadArticlePage extends StatelessWidget {
@@ -108,9 +110,20 @@ class ReadArticlePage extends StatelessWidget {
                           ],
                         ),
                       ),
+                      SizedBox(height: 200,)
                     ],
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CloseDialogButton(),
+                      ArticleShareButton(article: article),
+                    ],
+                  ),
+                )
               ],
             ),
           ),
