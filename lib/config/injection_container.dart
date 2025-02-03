@@ -28,6 +28,8 @@ import 'package:drumm_app/features/news%20feed/data/data_sources/remote/article_
 import 'package:drumm_app/features/news%20feed/data/respository/article_repository_impl.dart';
 import 'package:drumm_app/features/news%20feed/domain/repository/article_repository.dart';
 import 'package:drumm_app/features/news%20feed/domain/usecases/get_articles.dart';
+import 'package:drumm_app/features/news%20feed/domain/usecases/get_clustered_articles.dart';
+import 'package:drumm_app/features/news%20feed/domain/usecases/get_similar_articles.dart';
 import 'package:drumm_app/features/news%20feed/presentation/bloc/article/remote/remote_articles_bloc.dart';
 import 'package:get_it/get_it.dart';
 
@@ -70,6 +72,8 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<SignInWithGoogleUseCase>(SignInWithGoogleUseCase(s1()));
   //news feed
   s1.registerSingleton<GetArticlesUseCase>(GetArticlesUseCase(s1()));
+  s1.registerSingleton<GetSimilarArticlesUseCase>(GetSimilarArticlesUseCase(s1()));
+  s1.registerSingleton<GetClusteredArticlesUseCase>(GetClusteredArticlesUseCase(s1()));
   //core
   s1.registerSingleton<GetBandsUseCase>(GetBandsUseCase(s1()));
   s1.registerSingleton<GetCurrentUserBandsUseCase>(GetCurrentUserBandsUseCase(s1()));
@@ -84,7 +88,7 @@ Future<void> initializeDependencies() async {
   s1.registerFactory<HybridInitialScreenBloc>(() => HybridInitialScreenBloc(s1()));
   s1.registerFactory<SignInBloc>(() => SignInBloc(s1(),s1()));
   //news feed
-  s1.registerFactory<RemoteArticlesBloc>(() => RemoteArticlesBloc(s1()));
+  s1.registerFactory<RemoteArticlesBloc>(() => RemoteArticlesBloc(s1(),s1(),s1()));
   //core
   s1.registerFactory<RemoteDrummerBloc>(() => RemoteDrummerBloc(s1())); //get drummer
   s1.registerFactory<RemoteBandsBloc>(() => RemoteBandsBloc(s1(),s1())); //get band

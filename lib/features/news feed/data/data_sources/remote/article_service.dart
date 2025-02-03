@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:dio/dio.dart';
 import 'package:drumm_app/core/resources/data_state.dart';
 import 'package:drumm_app/features/news%20feed/data/models/article.dart';
 import 'package:drumm_app/features/news%20feed/data/models/article_list.dart';
+import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/get_articles_parameter.dart';
+import 'package:drumm_app/features/news%20feed/domain/entities/get_similar_articles_parameter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 class ArticleService {
   Future<DataState<ArticleListModel>> getArticles(
@@ -56,5 +60,81 @@ class ArticleService {
     }));
 
     return DataSuccess(list);
+  }
+
+  Future<DataState<ArticleListModel>> getClusteredArticles(
+      ArticleEntity article) async {
+    List<ArticleModel> clusteredArticles = [];
+    clusteredArticles.add(article as ArticleModel);
+
+    DocumentSnapshot<Map<String, dynamic>> articleSnapshot =
+        await FirebaseFirestore.instance
+            .collection('stories')
+            .doc(article.articleId)
+            .get();
+
+    if (!articleSnapshot.exists) {
+      return DataFailed(DioException(
+          requestOptions: RequestOptions(), message: "Cannot find article"));
+    }
+
+    ArticleModel updatedArticle =
+        ArticleModel.fromDocumentSnapshot(articleSnapshot);
+
+    if (updatedArticle.clusterId == null) {
+      if (kDebugMode) {
+        print("Article is not part of any cluster");
+      }
+
+      return DataSuccess(ArticleListModel(articleList: clusteredArticles));
+    }
+
+    Query<Map<String, dynamic>> query = FirebaseFirestore.instance
+        .collection("stories")
+        .where('clusterId', isEqualTo: updatedArticle.clusterId)
+        .where('isRepresentative', isEqualTo: false)
+        .orderBy("publishedAt", descending: true);
+
+    final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+    if (snapshot.docs.isNotEmpty) {
+      clusteredArticles = snapshot.docs
+          .map((doc) => ArticleModel.fromDocumentSnapshot(doc))
+          .toList();
+    } else {
+      print('Nothing found');
+    }
+
+    return DataSuccess(ArticleListModel(
+        articleList: clusteredArticles, lastDocument: snapshot.docs.last));
+  }
+
+  Future<DataState<ArticleListModel>> getSimilarArticles(
+      GetSimilarArticlesParams params) async {
+    try {
+      // Create a callable reference to the vectorSearch Cloud Function
+
+      final HttpsCallable callable =
+          FirebaseFunctions.instance.httpsCallable('semanticSearch');
+
+      //print('The user Id is : $userId');
+
+      // Call the Cloud Function with userId and limit
+      final result = await callable
+          .call({'limit': 5, 'embedding': params.embedding?.toArray()});
+
+      ////print('Raw response from Cloud Function: ${result.data['articles'][0]}');
+
+      // Parse the response
+      final List<ArticleModel> articles =
+          (result.data['articles'] as List<dynamic>)
+              .map((articleData) => ArticleModel.fromCloudFunction(articleData))
+              .toList();
+
+      articles.removeWhere((similarArticle) =>
+          similarArticle.articleId == params.article!.articleId);
+      return DataSuccess(ArticleListModel(articleList: articles));
+    } on DioException catch (error) {
+      return DataFailed(error);
+    }
   }
 }

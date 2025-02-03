@@ -117,4 +117,33 @@ class ArticleModel extends ArticleEntity {
       content: snapshot.data()?['content'],
     );
   }
+
+  ArticleModel.fromCloudFunction(snapshot) {
+    reads = snapshot['reads'];
+    meta = snapshot['meta'];
+    liked = snapshot['liked'];
+    likes = snapshot['likes'];
+    summary = snapshot['summary'];
+    source = snapshot['source'];
+    dump = snapshot['dump'];
+    category = snapshot['category'];
+    question = snapshot['question'];
+    articleId = snapshot['articleId'];
+    similarId = snapshot['similarId'];
+    clusterId = snapshot['clusterId'];
+    jamId = snapshot['jamId'];
+    relatedImageUrls = snapshot['relatedImageUrls'];
+    country = snapshot['country'];
+    title = snapshot['title'];
+    description = snapshot['description'];
+    embedding = VectorValue(snapshot['embedding']['_values'].cast<double>());
+    url = snapshot['url'];
+    imageUrl = snapshot['imageUrl'];
+    publishedAt = Timestamp.fromMillisecondsSinceEpoch(snapshot['publishedAt']);
+    content = snapshot['content'];
+    boostamp = Timestamp.fromMillisecondsSinceEpoch(snapshot['boostamp'] ?? 0);
+    boosts = 0; //snapshot['boosts'];
+    uid = snapshot['uid'];
+    aiVoiceUrl = snapshot['aiVoiceUrl'];
+  }
 }

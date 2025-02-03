@@ -32,3 +32,19 @@ class RemoteArticlesLoadingMoreArticles extends RemoteArticlesState{
 class RemoteArticlesError extends RemoteArticlesState{
   const RemoteArticlesError(DioException error) : super(error: error);
 }
+
+class RemoteClusteredArticlesLoading extends RemoteArticlesState{
+  const RemoteClusteredArticlesLoading();
+}
+
+class RemoteSimilarArticlesLoading extends RemoteArticlesState{
+  const RemoteSimilarArticlesLoading();
+}
+
+class RemoteClusteredArticlesFetched extends RemoteArticlesState{
+  const RemoteClusteredArticlesFetched(ArticleListEntity articleEntityList) : super(articleEntityList: articleEntityList);
+}
+
+class RemoteSimilarArticlesFetched extends RemoteArticlesState{
+  const RemoteSimilarArticlesFetched(ArticleListEntity articleEntityList) : super(articleEntityList: articleEntityList);
+}
