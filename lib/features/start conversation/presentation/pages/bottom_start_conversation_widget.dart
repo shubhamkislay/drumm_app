@@ -5,12 +5,12 @@ import 'package:drumm_app/features/read%20article/presentation/widgets/start_dru
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 
-class BottomStartCoversationWidget extends StatelessWidget {
+class BottomStartConversationWidget extends StatelessWidget {
   final ArticleEntity article;
   final List<BandEntity> bands;
 
-  const BottomStartCoversationWidget(
-      {required this.article, required this.bands});
+  const BottomStartConversationWidget(
+      {super.key, required this.article, required this.bands});
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -47,6 +47,7 @@ class BottomStartCoversationWidget extends StatelessWidget {
                   margin: EdgeInsets.only(bottom: 28),
                   child: StartDrummButton(
                     article: ArticleEntity(articleId: ""),
+                    size: 92,
                     buttonText: "Tap to start a conversation",
                     onPressed: () {
                       Vibrate.feedback(FeedbackType.impact);

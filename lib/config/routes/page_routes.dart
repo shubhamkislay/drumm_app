@@ -17,7 +17,7 @@ import 'package:drumm_app/features/onboarding/presentation/pages/interests_page.
 import 'package:drumm_app/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/register_page.dart';
 import 'package:drumm_app/features/read%20article/presentation/pages/read_article_page.dart';
-import 'package:drumm_app/features/start%20conversation/presentation/widgets/bottom_start_conversation_widget.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/pages/bottom_start_conversation_widget.dart';
 import 'package:drumm_app/launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -81,7 +81,7 @@ class PageRoutes {
             ArticleEntity article = articleBands.article!;
             return CustomTransitionPage(
               key: state.pageKey,
-              child: BottomStartCoversationWidget(
+              child: BottomStartConversationWidget(
                 article: article,
                 bands: articleBands.bands??[],
               ), // The bottom sheet

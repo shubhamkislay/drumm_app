@@ -8,7 +8,7 @@ import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/get_similar_articles_parameter.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/article_sources_widget.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/close_dialog_button.dart';
-import 'package:drumm_app/features/start%20conversation/presentation/widgets/bottom_start_conversation_widget.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/pages/bottom_start_conversation_widget.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/share_button.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/similar_articles_widget.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/start_drumm_button.dart';
