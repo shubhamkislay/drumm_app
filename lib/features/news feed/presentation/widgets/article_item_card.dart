@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/config/routes/router_constants.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
+import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
 import 'package:drumm_app/custom/instagram_date_time_widget.dart';
 import 'package:drumm_app/features/constants.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
@@ -13,7 +14,8 @@ import 'package:go_router/go_router.dart';
 
 class ArticleItemCard extends StatelessWidget {
   ArticleEntity article;
-  ArticleItemCard({super.key, required this.article});
+  final List<BandEntity> bands;
+  ArticleItemCard({super.key, required this.article, required this.bands});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class ArticleItemCard extends StatelessWidget {
         Vibrate.feedback(FeedbackType.medium);
         showModalBottomSheet(
           context: context,
-          builder: (_) => ReadArticlePage(article: article),
+          builder: (_) => ReadArticlePage(article: article, bands: bands,),
           isScrollControlled: true, // For making the sheet extendable
           backgroundColor: Colors.transparent,
         );
@@ -52,7 +54,7 @@ class ArticleItemCard extends StatelessWidget {
                     color: DrummTheme.primaryTextColor(context).withOpacity(0.5),
                   ),
                 ),
-                ArticleDrummButton(),
+                ArticleDrummButton(article: article,bands: bands,),
               ],
             ),
             SizedBox(

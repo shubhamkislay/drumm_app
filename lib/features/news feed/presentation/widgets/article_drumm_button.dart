@@ -1,16 +1,24 @@
+import 'package:drumm_app/config/routes/router_constants.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
+import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
+import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
+import 'package:drumm_app/core/util/article_band.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 class ArticleDrummButton extends StatelessWidget {
-  ArticleDrummButton({super.key});
+  final ArticleEntity article;
+  final List<BandEntity> bands;
+  const ArticleDrummButton({super.key, required this.article, required this.bands});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        Vibrate.feedback(FeedbackType.success);
+        Vibrate.feedback(FeedbackType.impact);
+        context.push(SCREEN_BOTTOM_CONVERSATION,extra: ArticleBands(article: article,bands: bands),);
       },
       child: Container(
         height: 32,

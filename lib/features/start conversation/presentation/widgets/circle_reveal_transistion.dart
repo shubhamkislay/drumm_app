@@ -4,8 +4,11 @@ class CircleRevealBottomSheet extends StatelessWidget {
   final Animation<double> animation;
   final Widget child;
 
-  const CircleRevealBottomSheet({Key? key, required this.animation, required this.child})
-      : super(key: key);
+  const CircleRevealBottomSheet({
+    Key? key,
+    required this.animation,
+    required this.child,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,10 @@ class CircleRevealBottomSheet extends StatelessWidget {
               right: 0,
               bottom: 0,
               child: ClipPath(
-                clipper: CircleRevealClipper(animation.value, MediaQuery.of(context).size),
+                clipper: CircleRevealClipper(
+                  animation.value,
+                  MediaQuery.of(context).size,
+                ),
                 child: child,
               ),
             ),
@@ -50,9 +56,14 @@ class CircleRevealClipper extends CustomClipper<Path> {
 
   @override
   Path getClip(Size size) {
-    double radius = screenSize.width * progress * 1.25; // Expand circle effect
-    return Path()
-      ..addOval(Rect.fromCircle(center: Offset(screenSize.width / 2, screenSize.height/1.15), radius: radius));
+    // Increase the radius based on animation progress.
+    double radius = screenSize.width * progress;
+
+    // Set the circle's center to be at the horizontal center of the screen,
+    // and 80 pixels from the bottom.
+    final center = Offset(screenSize.width / 2, screenSize.height - 100);
+
+    return Path()..addOval(Rect.fromCircle(center: center, radius: radius));
   }
 
   @override

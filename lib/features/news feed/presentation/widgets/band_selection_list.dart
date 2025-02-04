@@ -14,9 +14,15 @@ typedef void BandSelectedCallback(BandEntity bandEntity);
 
 class BandSelectionList extends StatelessWidget {
   BandSelectedCallback onSelect;
+  RemoteBandsState state;
+  List<BandEntity> bands;
 
   String? selectBandEntityId = "For You";
-  BandSelectionList({super.key, required this.onSelect});
+  BandSelectionList(
+      {super.key,
+      required this.onSelect,
+      required this.bands,
+      required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -25,57 +31,51 @@ class BandSelectionList extends StatelessWidget {
     List<BandEntity> bands = [];
     bands.add(forYouBand);
 
-    return BlocProvider<RemoteBandsBloc>(
-        create: (providerContext) => s1()..add(GetCurrentUserBands()),
-        child: BlocBuilder<RemoteBandsBloc, RemoteBandsState>(
-          builder: (context, state) {
-            if (state is RemoteBandsFetched) {
-              bands.addAll(state.bands ?? []);
+    if (state is RemoteBandsFetched) {
+      bands.addAll(state.bands ?? []);
 
-              for (var element in bands) {
-                mulList.add(getBandCard(element));
-              }
+      for (var element in bands) {
+        mulList.add(getBandCard(element));
+      }
 
-              return Container(
-                alignment: Alignment.centerLeft,
-                height: 38,
-                child: BandSelectContainer(
-                    onSelect: (bandEntity){
-                      selectBandEntityId = bandEntity.bandId;
-                      onSelect(bandEntity);
-                    }, bandsCards: mulList),
-              );
-            }
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              height: 32,
-              child: ListView.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                itemCount: 5,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(24),
-                      child: Shimmer(
-                        child: Container(
-                          height: 32,
-                          width: index == 0 ?70:128,
-                          decoration: BoxDecoration(
-                              color: DrummTheme.primaryItemColor(context),
-                              borderRadius: BorderRadius.circular(24)
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
+      return Container(
+        alignment: Alignment.centerLeft,
+        height: 38,
+        child: BandSelectContainer(
+            onSelect: (bandEntity) {
+              selectBandEntityId = bandEntity.bandId;
+              onSelect(bandEntity);
+            },
+            bandsCards: mulList),
+      );
+    }
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      height: 32,
+      child: ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
+        itemCount: 5,
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Shimmer(
+                child: Container(
+                  height: 32,
+                  width: index == 0 ? 70 : 128,
+                  decoration: BoxDecoration(
+                      color: DrummTheme.primaryItemColor(context),
+                      borderRadius: BorderRadius.circular(24)),
+                ),
               ),
-            );
-          },
-        ));
+            ),
+          );
+        },
+      ),
+    );
   }
 
   getBandCard(BandEntity element) {

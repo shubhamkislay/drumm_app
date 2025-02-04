@@ -33,7 +33,7 @@ class StartDrummButton extends StatelessWidget {
           ),
           if(buttonText!=null)Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text("$buttonText"),
+            child: Text("$buttonText",style: TextStyle(color: Colors.white),),
           )
         ],
       ),

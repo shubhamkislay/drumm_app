@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/config/injection_container.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
+import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
 import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/custom/instagram_date_time_widget.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/get_similar_articles_parameter.dart';
@@ -15,7 +16,8 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 
 class SimilarArticlesWidget extends StatelessWidget {
   GetSimilarArticlesParams params;
-  SimilarArticlesWidget({super.key, required this.params});
+  final List<BandEntity> bands;
+  SimilarArticlesWidget({super.key, required this.params, required this.bands});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,7 @@ class SimilarArticlesWidget extends StatelessWidget {
                           Vibrate.feedback(FeedbackType.medium);
                           showModalBottomSheet(
                             context: context,
-                            builder: (_) => ReadArticlePage(article: article),
+                            builder: (_) => ReadArticlePage(article: article, bands: bands,),
                             isScrollControlled: true, // For making the sheet extendable
                             backgroundColor: Colors.transparent,
                           );

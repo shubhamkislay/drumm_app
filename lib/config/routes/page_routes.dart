@@ -1,6 +1,10 @@
 import 'package:drumm_app/config/injection_container.dart';
 import 'package:drumm_app/config/routes/router_constants.dart';
-import 'package:drumm_app/core/util/circle_reveal_transistion.dart';
+import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
+import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/remote_bands_bloc.dart';
+import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/remote_bands_event.dart';
+import 'package:drumm_app/core/util/article_band.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/widgets/circle_reveal_transistion.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/profession_selection_page.dart';
 import 'package:drumm_app/features/drummer%20profile/presentation/pages/drummer_profile.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/initial_screen.dart';
@@ -13,7 +17,7 @@ import 'package:drumm_app/features/onboarding/presentation/pages/interests_page.
 import 'package:drumm_app/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/register_page.dart';
 import 'package:drumm_app/features/read%20article/presentation/pages/read_article_page.dart';
-import 'package:drumm_app/features/read%20article/presentation/widgets/scale_bottom.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/widgets/bottom_start_conversation_widget.dart';
 import 'package:drumm_app/launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -71,16 +75,22 @@ class PageRoutes {
           },
         ),
         GoRoute(
-          path: '/second',
+          path: SCREEN_BOTTOM_CONVERSATION,
           pageBuilder: (context, state) {
-            ArticleEntity article = state.extra as ArticleEntity;
+            ArticleBands articleBands = state.extra as ArticleBands;
+            ArticleEntity article = articleBands.article!;
             return CustomTransitionPage(
               key: state.pageKey,
-              child: BottomStartCoversationWidget(article: article,), // The bottom sheet
+              child: BottomStartCoversationWidget(
+                article: article,
+                bands: articleBands.bands??[],
+              ), // The bottom sheet
               opaque: false, // Allows background visibility
               transitionDuration: Duration(milliseconds: 150),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                return CircleRevealBottomSheet(animation: animation, child: child);
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return CircleRevealBottomSheet(
+                    animation: animation, child: child);
               },
             );
           },
@@ -88,10 +98,18 @@ class PageRoutes {
         GoRoute(
           path: '/newsDiscovery',
           builder: (BuildContext context, GoRouterState state) {
-            return BlocProvider<RemoteArticlesBloc>(
-                create: (providerContext) => s1()
-                  ..add(GetArticles(GetArticlesParams(category: ["For You"]))),
-                child: NewsDiscoveryPage());
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider<RemoteArticlesBloc>(
+                    create: (providerContext) => s1()
+                      ..add(GetArticles(
+                          GetArticlesParams(category: ["For You"])))),
+                BlocProvider<RemoteBandsBloc>(
+                    create: (providerContext) =>
+                        s1()..add(GetCurrentUserBands())),
+              ],
+              child: NewsDiscoveryPage(),
+            );
           },
         ),
         GoRoute(
@@ -104,15 +122,6 @@ class PageRoutes {
           path: '/drummerProfile',
           builder: (BuildContext context, GoRouterState state) {
             return const DrummerProfile();
-          },
-        ),
-        GoRoute(
-          path: SCREEN_READ_ARTICLE,
-          builder: (context, state) {
-            ArticleEntity article = state.extra as ArticleEntity;
-            return ReadArticlePage(
-              article: article,
-            );
           },
         ),
       ],

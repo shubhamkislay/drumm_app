@@ -1,11 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drumm_app/config/routes/router_constants.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
+import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
+import 'package:drumm_app/core/util/article_band.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/get_similar_articles_parameter.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/article_sources_widget.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/close_dialog_button.dart';
-import 'package:drumm_app/features/read%20article/presentation/widgets/scale_bottom.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/widgets/bottom_start_conversation_widget.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/share_button.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/similar_articles_widget.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/start_drumm_button.dart';
@@ -14,8 +17,9 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:go_router/go_router.dart';
 
 class ReadArticlePage extends StatelessWidget {
-  ArticleEntity article;
-  ReadArticlePage({super.key, required this.article});
+  final ArticleEntity article;
+  final List<BandEntity> bands;
+  const ReadArticlePage({super.key, required this.article, required this.bands});
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +132,7 @@ class ReadArticlePage extends StatelessWidget {
                               SimilarArticlesWidget(
                                   params: GetSimilarArticlesParams(
                                       article: article,
-                                      embedding: article.embedding)),
+                                      embedding: article.embedding), bands: bands,),
                             ],
                           ),
                         ),
@@ -144,7 +148,7 @@ class ReadArticlePage extends StatelessWidget {
                       margin: EdgeInsets.only(bottom: 64),
                         child: StartDrummButton(article: article, onPressed: () {
                           Vibrate.feedback(FeedbackType.impact);
-                          context.push('/second',extra: article);
+                          context.push(SCREEN_BOTTOM_CONVERSATION,extra: ArticleBands(article: article,bands: bands));
                         },)),
 
                   ),
