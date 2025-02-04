@@ -5,9 +5,13 @@ import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/get_similar_articles_parameter.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/article_sources_widget.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/close_dialog_button.dart';
+import 'package:drumm_app/features/read%20article/presentation/widgets/scale_bottom.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/share_button.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/similar_articles_widget.dart';
+import 'package:drumm_app/features/read%20article/presentation/widgets/start_drumm_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:go_router/go_router.dart';
 
 class ReadArticlePage extends StatelessWidget {
   ArticleEntity article;
@@ -133,6 +137,16 @@ class ReadArticlePage extends StatelessWidget {
                         )
                       ],
                     ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 64),
+                        child: StartDrummButton(article: article, onPressed: () {
+                          Vibrate.feedback(FeedbackType.impact);
+                          context.push('/second',extra: article);
+                        },)),
+
                   ),
                   Padding(
                     padding: const EdgeInsets.all(12.0),
