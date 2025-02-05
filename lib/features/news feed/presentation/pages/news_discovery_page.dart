@@ -30,138 +30,146 @@ class NewsDiscoveryPage extends StatelessWidget {
     RemoteArticlesState remoteState = RemoteArticlesLoading();
     return Scaffold(
       extendBodyBehindAppBar: true,
-      body: NotificationListener<ScrollNotification>(
-        onNotification: (scrollNotification) {
-          if (scrollNotification is ScrollUpdateNotification &&
-              scrollNotification.metrics.extentAfter < 500 &&
-              remoteState is! RemoteArticlesLoadingMoreArticles &&
-              remoteState is! RemoteArticlesLoading &&
-              remoteState is! RemoteArticlesError) {
-            context.read<RemoteArticlesBloc>().add(
-                  GetArticles(GetArticlesParams(
-                    category: [selectedBandId],
-                    lastDocument: lastDocument,
-                  )),
-                );
-          }
-          return false;
-        },
-        child: BlocBuilder<RemoteBandsBloc,RemoteBandsState>(
-          builder: (BuildContext context, bandState) { return CustomScrollView(
-            shrinkWrap: true,
-            slivers: [
-              SliverAppBar(
-                pinned: true,
-                backgroundColor: Colors.transparent,
-                surfaceTintColor: Colors.transparent,
-                bottom: PreferredSize(
-                    preferredSize: Size.fromHeight(50),
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.only(bottom: 12),
-                      child: BandSelectionList(
-                        onSelect: (bandEntity) {
-                          Vibrate.feedback(FeedbackType.selection);
-                          lastDocument = null;
-                          if (selectedBandId != bandEntity.bandId) {
-                            selectedBandId = bandEntity.bandId ?? "For You";
-                            context.read<RemoteArticlesBloc>().add(
-                              GetArticlesFromDifferentCategory(
-                                GetArticlesParams(
-                                  category: [selectedBandId],
-                                  lastDocument: lastDocument,
+      body: BlocBuilder<RemoteBandsBloc, RemoteBandsState>(
+        builder: (BuildContext context, bandState) {
+          return NotificationListener<ScrollNotification>(
+            onNotification: (scrollNotification) {
+              if (scrollNotification.metrics.axisDirection == AxisDirection.down && scrollNotification is ScrollUpdateNotification &&
+                  scrollNotification.metrics.extentAfter < 500 &&
+                  remoteState is! RemoteArticlesLoadingMoreArticles &&
+                  remoteState is! RemoteArticlesLoading &&
+                  remoteState is! RemoteArticlesError) {
+              context.read<RemoteArticlesBloc>().add(
+                    GetArticles(GetArticlesParams(
+                      category: [selectedBandId],
+                      lastDocument: lastDocument,
+                    )),
+                  );
+              }
+              return false;
+            },
+            child: CustomScrollView(
+              shrinkWrap: true,
+              slivers: [
+                SliverAppBar(
+                  pinned: true,
+                  backgroundColor: Colors.transparent,
+                  surfaceTintColor: Colors.transparent,
+                  bottom: PreferredSize(
+                      preferredSize: Size.fromHeight(50),
+                      child: Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(bottom: 12),
+                        child: BandSelectionList(
+                          onSelect: (bandEntity) {
+                            Vibrate.feedback(FeedbackType.selection);
+                            lastDocument = null;
+                            if (selectedBandId != bandEntity.bandId) {
+                              selectedBandId = bandEntity.bandId ?? "For You";
+                              context.read<RemoteArticlesBloc>().add(
+                                    GetArticlesFromDifferentCategory(
+                                      GetArticlesParams(
+                                        category: [selectedBandId],
+                                        lastDocument: lastDocument,
+                                      ),
+                                    ),
+                                  );
+                            }
+                          },
+                          bands: bandState.bands ?? [],
+                          state: bandState,
+                        ),
+                      )),
+                  flexibleSpace: LayoutBuilder(builder: (context, constraints) {
+                    return Container(
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          DrummTheme.primaryItemBackground(context),
+                          DrummTheme.primaryItemBackground(context)
+                              .withOpacity(0.75),
+                          DrummTheme.primaryItemBackground(context)
+                              .withOpacity(0.0),
+                        ],
+                      )),
+                      child: FlexibleSpaceBar(
+                        collapseMode: CollapseMode.none,
+                        background: Container(
+                          alignment: Alignment.bottomLeft,
+                          padding:
+                              EdgeInsets.only(left: 12, bottom: 64, right: 12),
+                          width: double.maxFinite,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Discover",
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontFamily: DRUMM_FONT_FAMILY,
+                                  color: DrummTheme.primaryTextColor(context),
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            );
-                          }
-                        }, bands: bandState.bands??[], state: bandState,
-                      ),
-                    )),
-                flexibleSpace: LayoutBuilder(builder: (context, constraints) {
-                  return Container(
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            DrummTheme.primaryItemBackground(context),
-                            DrummTheme.primaryItemBackground(context).withOpacity(0.75),
-                            DrummTheme.primaryItemBackground(context).withOpacity(0.0),
-                          ],
-                        )),
-                    child: FlexibleSpaceBar(
-                      collapseMode: CollapseMode.none,
-                      background: Container(
-                        alignment: Alignment.bottomLeft,
-                        padding: EdgeInsets.only(left: 12, bottom: 64,right: 12),
-                        width: double.maxFinite,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Discover",
-                              style: TextStyle(
-                                fontSize: 28,
-                                fontFamily: DRUMM_FONT_FAMILY,
-                                color: DrummTheme.primaryTextColor(context),
-                                fontWeight: FontWeight.bold,
+                              Expanded(child: SizedBox()),
+                              SearchButton(
+                                onPressed: () {},
                               ),
-                            ),
-                            Expanded(child: SizedBox()),
-                            SearchButton(
-                              onPressed: (){
-
-                              },
-                            ),
-                            SizedBox(width: 8,),
-                            ProfileImageIcon()
-                          ],
+                              SizedBox(
+                                width: 8,
+                              ),
+                              ProfileImageIcon()
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }),
-                toolbarHeight: 0,
-                collapsedHeight: 0,
-                expandedHeight: 120,
-              ),
-              SliverToBoxAdapter(
-                child: BlocBuilder<RemoteArticlesBloc, RemoteArticlesState>(
-                  builder: (context, state) {
-                    remoteState = state;
-                    if (state is RemoteArticlesLoading) {
-                      articleList.clear();
-                    } else if (state is! RemoteArticlesError) {
-                      List<ArticleEntity> fArticleList =
-                          state.articleEntityList?.articleList ?? [];
-                      if (state is RemoteArticlesFetchedFromDifferentCategory) {
-                        articleList.clear();
-                      }
-                      articleList.addAll(fArticleList);
-                      lastDocument = state.articleEntityList?.lastDocument!;
-                    } else {
-                      if (articleList.isEmpty) {
-                        return SizedBox(
-                            height: 500,
-                            child:
-                            Center(child: Text("${state.error?.message}")));
-                      }
-                    }
-
-                    return Container(
-                      alignment: Alignment.topCenter,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: ArticleListWidget(
-                        articles: articleList,
-                        bands: bandState.bands??[],
-                      ),
                     );
-                  },
+                  }),
+                  toolbarHeight: 0,
+                  collapsedHeight: 0,
+                  expandedHeight: 120,
                 ),
-              )
-            ],
-          ); },
-        ),
+                SliverToBoxAdapter(
+                  child: BlocBuilder<RemoteArticlesBloc, RemoteArticlesState>(
+                    builder: (context, state) {
+                      remoteState = state;
+                      if (state is RemoteArticlesLoading) {
+                        articleList.clear();
+                      } else if (state is! RemoteArticlesError) {
+                        List<ArticleEntity> fArticleList =
+                            state.articleEntityList?.articleList ?? [];
+                        if (state
+                            is RemoteArticlesFetchedFromDifferentCategory) {
+                          articleList.clear();
+                        }
+                        articleList.addAll(fArticleList);
+                        lastDocument = state.articleEntityList?.lastDocument!;
+                      } else {
+                        if (articleList.isEmpty) {
+                          return SizedBox(
+                              height: 500,
+                              child: Center(
+                                  child: Text("${state.error?.message}")));
+                        }
+                      }
+
+                      return Container(
+                        alignment: Alignment.topCenter,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: ArticleListWidget(
+                          articles: articleList,
+                          bands: bandState.bands ?? [],
+                        ),
+                      );
+                    },
+                  ),
+                )
+              ],
+            ),
+          );
+        },
       ),
     );
   }
