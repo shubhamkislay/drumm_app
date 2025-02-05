@@ -53,6 +53,7 @@ class BottomStartConversationWidget extends StatelessWidget {
                         itemExtent: textStyle.fontSize!,
                         diameterRatio: 5,
                         magnification: 1.15,
+                        squeeze: 1,
                         selectionOverlay: CupertinoPickerDefaultSelectionOverlay(
                           background: Colors.black.withAlpha(25),
                         ),
