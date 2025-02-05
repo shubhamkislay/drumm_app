@@ -57,7 +57,7 @@ class CircleRevealClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     // Increase the radius based on animation progress.
-    double radius = screenSize.width * progress;
+    double radius = screenSize.width * progress * 0.85;
 
     // Set the circle's center to be at the horizontal center of the screen,
     // and 80 pixels from the bottom.
