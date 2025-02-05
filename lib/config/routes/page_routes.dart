@@ -16,7 +16,6 @@ import 'package:drumm_app/features/news%20feed/presentation/pages/news_discovery
 import 'package:drumm_app/features/onboarding/presentation/pages/interests_page.dart';
 import 'package:drumm_app/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/register_page.dart';
-import 'package:drumm_app/features/read%20article/presentation/pages/read_article_page.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/pages/bottom_start_conversation_widget.dart';
 import 'package:drumm_app/launcher.dart';
 import 'package:flutter/material.dart';
@@ -108,14 +107,14 @@ class PageRoutes {
                     create: (providerContext) =>
                         s1()..add(GetCurrentUserBands())),
               ],
-              child: NewsDiscoveryPage(),
+              child: const NewsDiscoveryPage(),
             );
           },
         ),
         GoRoute(
           path: '/interestsPage',
           builder: (BuildContext context, GoRouterState state) {
-            return InterestsPage();
+            return const InterestsPage();
           },
         ),
         GoRoute(
