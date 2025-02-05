@@ -3,6 +3,7 @@ import 'package:drumm_app/config/routes/router_constants.dart';
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
 import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/remote_bands_bloc.dart';
 import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/remote_bands_event.dart';
+import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
 import 'package:drumm_app/core/util/article_band.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/circle_reveal_transistion.dart';
 import 'package:drumm_app/features/authentication/presentation/pages/profession_selection_page.dart';
@@ -80,9 +81,12 @@ class PageRoutes {
             ArticleEntity article = articleBands.article!;
             return CustomTransitionPage(
               key: state.pageKey,
-              child: BottomStartConversationWidget(
-                article: article,
-                bands: articleBands.bands??[],
+              child: BlocProvider<UserActivityBloc>(
+                create: (context) => s1(),
+                child: BottomStartConversationWidget(
+                  article: article,
+                  bands: articleBands.bands??[],
+                ),
               ), // The bottom sheet
               opaque: false, // Allows background visibility
               transitionDuration: Duration(milliseconds: 150),
@@ -99,6 +103,8 @@ class PageRoutes {
           builder: (BuildContext context, GoRouterState state) {
             return MultiBlocProvider(
               providers: [
+                BlocProvider<UserActivityBloc>(
+                    create: (providerContext) => s1()),
                 BlocProvider<RemoteArticlesBloc>(
                     create: (providerContext) => s1()
                       ..add(GetArticles(

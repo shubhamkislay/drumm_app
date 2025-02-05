@@ -49,6 +49,14 @@ const double WEIGHT_JOINED = 0.9;
 const double WEIGHT_SHARED = 0.8;
 const double WEIGHT_LISTENED = 0.7;
 const double WEIGHT_READ = 0.6;
+const double WEIGHT_OPENED = 0.4;
+const double WEIGHT_STARTED = 1.0;
+
+const String INTERACTION_OPENED = "opened";
+const String INTERACTION_READ = "read";
+const String INTERACTION_JOINED = "joined";
+const String INTERACTION_SHARED = "shared";
+const String INTERACTION_STARTED = "started";
 
 const String DEFAULT_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/drummapp.appspot.com/o/asset_image%2Flogo_dark_300x300.png?alt=media&token=a2e1bc5c-a34c-4def-b86b-5a806443c921";
 

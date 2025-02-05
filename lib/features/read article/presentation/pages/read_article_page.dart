@@ -1,9 +1,15 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/config/routes/router_constants.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
+import 'package:drumm_app/core/features/user%20activity/domain/entities/user_activity_entity.dart';
+import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
+import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_event.dart';
 import 'package:drumm_app/core/util/article_band.dart';
+import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/get_similar_articles_parameter.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/article_sources_widget.dart';
@@ -12,14 +18,25 @@ import 'package:drumm_app/features/start%20conversation/presentation/pages/botto
 import 'package:drumm_app/features/read%20article/presentation/widgets/share_button.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/similar_articles_widget.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/start_drumm_button.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:go_router/go_router.dart';
 
-class ReadArticlePage extends StatelessWidget {
+class ReadArticlePage extends StatefulWidget {
   final ArticleEntity article;
   final List<BandEntity> bands;
-  const ReadArticlePage({super.key, required this.article, required this.bands});
+  const ReadArticlePage(
+      {super.key, required this.article, required this.bands});
+
+  @override
+  State<ReadArticlePage> createState() => _ReadArticlePageState();
+}
+
+class _ReadArticlePageState extends State<ReadArticlePage> {
+  Timer? _timer;
+  bool _isTriggered = false;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +63,7 @@ class ReadArticlePage extends StatelessWidget {
                     child: Column(
                       children: [
                         CachedNetworkImage(
-                          imageUrl: article.imageUrl ?? "",
+                          imageUrl: widget.article.imageUrl ?? "",
                           height: 375,
                           width: double.maxFinite,
                           fit: BoxFit.cover,
@@ -70,7 +87,7 @@ class ReadArticlePage extends StatelessWidget {
                                 height: 12,
                               ),
                               AutoSizeText(
-                                article.category ?? "",
+                                widget.article.category ?? "",
                                 minFontSize: 12,
                                 maxLines: 1,
                                 style: TextStyle(
@@ -85,11 +102,12 @@ class ReadArticlePage extends StatelessWidget {
                                 height: 4,
                               ),
                               AutoSizeText(
-                                article.question ?? "",
+                                widget.article.question ?? "",
                                 minFontSize: 18,
-                                maxLines: (article.question ?? "").length < 30
-                                    ? 1
-                                    : 2,
+                                maxLines:
+                                    (widget.article.question ?? "").length < 30
+                                        ? 1
+                                        : 2,
                                 style: TextStyle(
                                     fontSize: 26,
                                     color: DrummTheme.primaryTextColor(context),
@@ -101,7 +119,9 @@ class ReadArticlePage extends StatelessWidget {
                                 height: 8,
                               ),
                               AutoSizeText(
-                                article.meta ?? article.title ?? "",
+                                widget.article.meta ??
+                                    widget.article.title ??
+                                    "",
                                 minFontSize: 12,
                                 maxLines: 1,
                                 style: TextStyle(
@@ -113,12 +133,12 @@ class ReadArticlePage extends StatelessWidget {
                               SizedBox(
                                 height: 8,
                               ),
-                              ArticleSourcesWidget(article: article),
+                              ArticleSourcesWidget(article: widget.article),
                               SizedBox(
                                 height: 8,
                               ),
                               Text(
-                                article.summary ?? "",
+                                widget.article.summary ?? "",
                                 style: TextStyle(
                                   height: 1.75,
                                   fontSize: 16,
@@ -130,9 +150,11 @@ class ReadArticlePage extends StatelessWidget {
                                 height: 8,
                               ),
                               SimilarArticlesWidget(
-                                  params: GetSimilarArticlesParams(
-                                      article: article,
-                                      embedding: article.embedding), bands: bands,),
+                                params: GetSimilarArticlesParams(
+                                    article: widget.article,
+                                    embedding: widget.article.embedding),
+                                bands: widget.bands,
+                              ),
                             ],
                           ),
                         ),
@@ -145,12 +167,17 @@ class ReadArticlePage extends StatelessWidget {
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
-                      margin: EdgeInsets.only(bottom: 64),
-                        child: StartDrummButton(article: article, onPressed: () {
-                          Vibrate.feedback(FeedbackType.impact);
-                          context.push(SCREEN_BOTTOM_CONVERSATION,extra: ArticleBands(article: article,bands: bands));
-                        },)),
-
+                        margin: EdgeInsets.only(bottom: 64),
+                        child: StartDrummButton(
+                          article: widget.article,
+                          onPressed: () {
+                            Vibrate.feedback(FeedbackType.impact);
+                            context.push(SCREEN_BOTTOM_CONVERSATION,
+                                extra: ArticleBands(
+                                    article: widget.article,
+                                    bands: widget.bands));
+                          },
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(12.0),
@@ -158,7 +185,7 @@ class ReadArticlePage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CloseDialogButton(),
-                        ArticleShareButton(article: article),
+                        ArticleShareButton(article: widget.article),
                       ],
                     ),
                   )
@@ -169,5 +196,47 @@ class ReadArticlePage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer = Timer(const Duration(seconds: 5), () {
+      _onPageOpenForFiveSeconds();
+    });
+  }
+
+  void _onPageOpenForFiveSeconds() {
+    if (mounted) {
+      _isTriggered = true;
+      _performAction();
+    }
+  }
+
+  void _performAction() {
+    if (kDebugMode) {
+      print("Function executed after 5 seconds");
+    }
+    context.read<UserActivityBloc>().add(RecordUserActivity(UserActivityEntity(
+          type: INTERACTION_READ,
+          weight: WEIGHT_READ,
+          articleId: widget.article.articleId!,
+          embedding: widget.article.embedding!,
+        )));
+  }
+
+  @override
+  void dispose() {
+    if (!_isTriggered) {
+      if (kDebugMode) {
+        print("Page closed before 5 seconds, function not called.");
+      }
+    }
+    _timer?.cancel();
+    super.dispose();
   }
 }

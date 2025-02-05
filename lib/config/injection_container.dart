@@ -10,6 +10,11 @@ import 'package:drumm_app/core/features/get%20drummer/data/repository/drummer_re
 import 'package:drumm_app/core/features/get%20drummer/domain/repository/drummer_repository.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/usecase/get_drummer_id.dart';
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_bloc.dart';
+import 'package:drumm_app/core/features/user%20activity/data/data_sources/user_activity_service.dart';
+import 'package:drumm_app/core/features/user%20activity/data/respository/user_activity_repository_impl.dart';
+import 'package:drumm_app/core/features/user%20activity/domain/repository/user_activity_repository.dart';
+import 'package:drumm_app/core/features/user%20activity/domain/usecases/record_user_activity.dart';
+import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
 import 'package:drumm_app/features/authentication/data/data_sources/local/shared_preference_service.dart';
 import 'package:drumm_app/features/authentication/data/data_sources/remote/apple_sign_in_service.dart';
 import 'package:drumm_app/features/authentication/data/data_sources/remote/auth_service.dart';
@@ -50,6 +55,7 @@ Future<void> initializeDependencies() async {
   //core
   s1.registerSingleton<BandService>(BandService());
   s1.registerSingleton<DrummerService>(DrummerService());
+  s1.registerSingleton<UserActivityService>(UserActivityService());
 
   /**
    * Repositories
@@ -61,6 +67,7 @@ Future<void> initializeDependencies() async {
   //core
   s1.registerSingleton<BandRepository>(BandRepositoryImpl(s1()));
   s1.registerSingleton<DrummerRepository>(DrummerRepositoryImpl(s1()));
+  s1.registerSingleton<UserActivityRepository>(UserActivityRepositoryImpl(s1()));
 
   /**
    * UseCases
@@ -79,6 +86,7 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<GetCurrentUserBandsUseCase>(GetCurrentUserBandsUseCase(s1()));
   s1.registerSingleton<GetDrummerUseCase>(GetDrummerUseCase(s1()));
   s1.registerSingleton<GetDrummerIdUseCase>(GetDrummerIdUseCase(s1()));
+  s1.registerSingleton<RecordUserActivityUseCase>(RecordUserActivityUseCase(s1()));
 
   /**
    * Bloc
@@ -92,4 +100,5 @@ Future<void> initializeDependencies() async {
   //core
   s1.registerFactory<RemoteDrummerBloc>(() => RemoteDrummerBloc(s1())); //get drummer
   s1.registerFactory<RemoteBandsBloc>(() => RemoteBandsBloc(s1(),s1())); //get band
+  s1.registerFactory<UserActivityBloc>(() => UserActivityBloc(s1())); //record useractivity
 }

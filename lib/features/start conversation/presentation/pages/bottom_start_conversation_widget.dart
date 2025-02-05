@@ -1,10 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
+import 'package:drumm_app/core/features/user%20activity/domain/entities/user_activity_entity.dart';
+import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
+import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_event.dart';
+import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/start_drumm_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 
 class BottomStartConversationWidget extends StatelessWidget {
@@ -106,6 +111,14 @@ class BottomStartConversationWidget extends StatelessWidget {
                     buttonText: "Tap to start a conversation",
                     onPressed: () {
                       Vibrate.feedback(FeedbackType.impact);
+                      context
+                          .read<UserActivityBloc>()
+                          .add(RecordUserActivity(UserActivityEntity(
+                        type: INTERACTION_STARTED,
+                        weight: WEIGHT_STARTED,
+                        articleId: article.articleId!,
+                        embedding: article.embedding!,
+                      )));
                       Navigator.pop(context);
                     },
                     background: Colors.black.withAlpha(25),

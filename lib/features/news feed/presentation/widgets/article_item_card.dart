@@ -3,12 +3,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/config/routes/router_constants.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
+import 'package:drumm_app/core/features/user%20activity/domain/entities/user_activity_entity.dart';
+import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
+import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_event.dart';
+import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/custom/instagram_date_time_widget.dart';
 import 'package:drumm_app/features/constants.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/article_drumm_button.dart';
 import 'package:drumm_app/features/read%20article/presentation/pages/read_article_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:go_router/go_router.dart';
 
@@ -22,9 +27,19 @@ class ArticleItemCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Vibrate.feedback(FeedbackType.medium);
+        context
+            .read<UserActivityBloc>()
+            .add(RecordUserActivity(UserActivityEntity(
+          type: INTERACTION_OPENED,
+          weight: WEIGHT_OPENED,
+          articleId: article.articleId!,
+          embedding: article.embedding!,
+        )));
         showModalBottomSheet(
           context: context,
-          builder: (_) => ReadArticlePage(article: article, bands: bands,),
+          builder: (_) => BlocProvider.value(
+          value: context.read<UserActivityBloc>(), // Provide the existing bloc
+          child: ReadArticlePage(article: article, bands: bands)),
           isScrollControlled: true, // For making the sheet extendable
           backgroundColor: Colors.transparent,
         );
