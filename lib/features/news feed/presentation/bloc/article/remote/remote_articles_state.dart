@@ -6,8 +6,9 @@ import 'package:equatable/equatable.dart';
 abstract class RemoteArticlesState extends Equatable{
   final ArticleListEntity ? articleEntityList;
   final DioException ? error;
+  final int ? interactions;
 
-  const RemoteArticlesState({this.articleEntityList, this.error});
+  const RemoteArticlesState({this.articleEntityList, this.error, this.interactions});
 
   @override
   List<Object> get props => [articleEntityList!,error??DioException(requestOptions: RequestOptions())];
@@ -35,6 +36,26 @@ class RemoteArticlesError extends RemoteArticlesState{
 
 class RemoteClusteredArticlesLoading extends RemoteArticlesState{
   const RemoteClusteredArticlesLoading();
+}
+
+class GeneratingRecommendation extends RemoteArticlesState{
+  const GeneratingRecommendation(ArticleListEntity articleEntityList) : super(articleEntityList: articleEntityList);
+}
+
+class GeneratedRecommendationArticle extends RemoteArticlesState{
+  const GeneratedRecommendationArticle(ArticleListEntity articleEntityList) : super(articleEntityList: articleEntityList);
+}
+
+class GeneratedRecommendationArticleApplied extends RemoteArticlesState{
+  const GeneratedRecommendationArticleApplied(ArticleListEntity articleEntityList) : super(articleEntityList: articleEntityList);
+}
+
+class NoNewRecommendations extends RemoteArticlesState{
+  const NoNewRecommendations();
+}
+
+class InteractToGenerateRecommendation extends RemoteArticlesState{
+  const InteractToGenerateRecommendation(int interactions) : super(interactions : interactions);
 }
 
 class RemoteSimilarArticlesLoading extends RemoteArticlesState{

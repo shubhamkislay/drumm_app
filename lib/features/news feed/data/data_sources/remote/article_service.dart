@@ -49,6 +49,106 @@ class ArticleService {
     }
   }
 
+  Future<DataState<ArticleListModel>> getLatestArticles(
+      GetArticlesParams getArticlesParams) async {
+    try {
+      Query<Map<String, dynamic>> query = FirebaseFirestore.instance
+          .collection("stories")
+          .where('category', whereIn: getArticlesParams.category)
+          .where('isRepresentative', isEqualTo: true)
+          .orderBy("recommendedTimestamp", descending: true)
+          .limit(15);
+
+      if (getArticlesParams.lastDocument != null) {
+        query = query.startAfterDocument(getArticlesParams.lastDocument!);
+      }
+
+      final QuerySnapshot<Map<String, dynamic>> snapshot =
+      await query.get().onError((error, stackTrace) {
+        throw DioException(
+            requestOptions: RequestOptions(data: stackTrace),
+            message: "Error fetching file: ${error.toString()}");
+      });
+      if (snapshot.docs.isNotEmpty) {
+        List<ArticleModel> newArticles = snapshot.docs
+            .map((doc) => ArticleModel.fromDocumentSnapshot(doc))
+            .toList();
+        return DataSuccess(ArticleListModel(
+            articleList: newArticles, lastDocument: snapshot.docs.last));
+      } else {
+        return DataFailed(DioException(
+            requestOptions: RequestOptions(),
+            message: "There aren't any articles for this band."));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  Future<DataState<ArticleListModel>> performVectorSearch(
+      GetArticlesParams getArticlesParams) async {
+    try {
+      // Create a callable reference to the vectorSearch Cloud Function
+      print("Perform vector search");
+
+      final HttpsCallable callable =
+      FirebaseFunctions.instance.httpsCallable('vectorSearch');
+
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+
+      Timestamp recommendTimestamp = getArticlesParams.drummerEntity!.lastRecommendationTimestamp ?? Timestamp.fromDate(DateTime(2000));
+
+      //print('The user Id is : $userId');
+
+      // Call the Cloud Function with userId and limit
+      final result = await callable.call({
+        'userId': userId??"",
+        'limit': 25,
+        'preference' :getArticlesParams.drummerEntity!.preference?.toArray(),
+        'recommendTimestamp':recommendTimestamp.millisecondsSinceEpoch.toString()
+      });
+
+      ////print('Raw response from Cloud Function: ${result.data['articles'][0]}');
+
+      // Parse the response
+      final List<ArticleModel> articles =
+      (result.data['articles'] as List<dynamic>)
+          .map((articleData) => ArticleModel.fromCloudFunction(articleData))
+          .toList();
+
+      generateRecommendation(recommendTimestamp);
+      return DataSuccess(ArticleListModel(articleList: articles));
+    } on DioException catch (error) {
+      return DataFailed(error);
+    }
+  }
+
+  void generateRecommendation(Timestamp recommendTimestamp) async {
+    try {
+      // Create a callable reference to the vectorSearch Cloud Function
+
+      print("Calling generateRecommendation function");
+
+      final HttpsCallable callable =
+      FirebaseFunctions.instance.httpsCallable('generateRecommendations');
+
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+
+
+
+      // Call the Cloud Function with userId and limit
+      final result = await callable.call({
+        'userId': userId??"",
+        'recommendTimestamp':recommendTimestamp.millisecondsSinceEpoch.toString()??"",
+      });
+
+      //print("Finished generating recommendation with the result${result.data['message']}");
+    } catch (error) {
+      //print('Error performing vector search: $error');
+      //return [];
+    }
+  }
+
   Future<DataState<List<String>>> getBandsCategoryList() async {
     CollectionReference userBandsCollectionRef = FirebaseFirestore.instance
         .collection("users")
@@ -135,6 +235,22 @@ class ArticleService {
       return DataSuccess(ArticleListModel(articleList: articles));
     } on DioException catch (error) {
       return DataFailed(error);
+    }
+  }
+
+  Future<int> getInteractionsCount() async {
+    try {
+      CollectionReference interactionsRef = FirebaseFirestore.instance
+          .collection('userActivity')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('interactions');
+
+      QuerySnapshot snapshot = await interactionsRef.get();
+
+      return snapshot.size; // Returns the number of documents in the collection
+    } catch (e) {
+      print('Error fetching interactions count: $e');
+      return 0; // Returns 0 in case of an error
     }
   }
 }

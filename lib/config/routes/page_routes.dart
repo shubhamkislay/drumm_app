@@ -3,6 +3,8 @@ import 'package:drumm_app/config/routes/router_constants.dart';
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
 import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/remote_bands_bloc.dart';
 import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/remote_bands_event.dart';
+import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_bloc.dart';
+import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_event.dart';
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
 import 'package:drumm_app/core/util/article_band.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/circle_reveal_transistion.dart';
@@ -103,12 +105,12 @@ class PageRoutes {
           builder: (BuildContext context, GoRouterState state) {
             return MultiBlocProvider(
               providers: [
+            BlocProvider<RemoteDrummerBloc>(
+            create: (BuildContext context) => s1()..add(GetDrummer())),
                 BlocProvider<UserActivityBloc>(
                     create: (providerContext) => s1()),
                 BlocProvider<RemoteArticlesBloc>(
-                    create: (providerContext) => s1()
-                      ..add(GetArticles(
-                          GetArticlesParams(category: ["For You"])))),
+                    create: (providerContext) => s1()),
                 BlocProvider<RemoteBandsBloc>(
                     create: (providerContext) =>
                         s1()..add(GetCurrentUserBands())),

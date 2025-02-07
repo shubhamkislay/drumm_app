@@ -35,4 +35,19 @@ class ArticleRespositoryImpl implements ArticleRepository {
       GetSimilarArticlesParams params) {
     return articleService.getSimilarArticles(params);
   }
+
+  @override
+  Future<DataState<ArticleListEntity>> performVectorSearch(GetArticlesParams params) {
+    return articleService.performVectorSearch(params);
+  }
+
+  @override
+  Future<DataState<ArticleListEntity>> getLatestArticles(GetArticlesParams getArticlesParams) {
+    return articleService.getLatestArticles(getArticlesParams);
+  }
+
+  @override
+  Future<int> getInteractionsCount() {
+    return articleService.getInteractionsCount();
+  }
 }

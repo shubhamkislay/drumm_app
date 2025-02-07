@@ -8,9 +8,17 @@ import 'package:drumm_app/features/news%20feed/domain/entities/get_similar_artic
 abstract class ArticleRepository {
   Future<DataState<ArticleListEntity>> getArticles(
       GetArticlesParams getArticlesParams);
+  Future<DataState<ArticleListEntity>> getLatestArticles(
+      GetArticlesParams getArticlesParams);
   Future<DataState<List<String>>> getBandsCategoryList();
   Future<DataState<ArticleListEntity>> getClusteredArticles(
       ArticleEntity article);
   Future<DataState<ArticleListEntity>> getSimilarArticles(
       GetSimilarArticlesParams params);
+
+  Future<DataState<ArticleListEntity>> performVectorSearch(
+      GetArticlesParams params);
+
+  Future<int> getInteractionsCount();
+
 }

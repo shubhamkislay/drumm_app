@@ -1,4 +1,5 @@
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
+import 'package:drumm_app/features/news%20feed/domain/entities/article_list.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/get_articles_parameter.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/get_similar_articles_parameter.dart';
 
@@ -11,6 +12,11 @@ class GetArticles extends RemoteArticlesEvent{
   const GetArticles(this.getArticlesParams);
 }
 
+class GetRecommendedArticles extends RemoteArticlesEvent{
+  final GetArticlesParams getArticlesParams;
+  const GetRecommendedArticles(this.getArticlesParams);
+}
+
 class GetArticlesFromDifferentCategory extends RemoteArticlesEvent{
   final GetArticlesParams getArticlesParams;
   const GetArticlesFromDifferentCategory(this.getArticlesParams);
@@ -19,6 +25,11 @@ class GetArticlesFromDifferentCategory extends RemoteArticlesEvent{
 class GetClusteredArticles extends RemoteArticlesEvent{
   final ArticleEntity article;
   const GetClusteredArticles(this.article);
+}
+
+class SetArticleListEntity extends RemoteArticlesEvent{
+  final ArticleListEntity articleListEntity;
+  const SetArticleListEntity(this.articleListEntity);
 }
 
 class GetSimilarArticles extends RemoteArticlesEvent{

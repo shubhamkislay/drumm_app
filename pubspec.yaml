@@ -224,6 +224,7 @@ flutter:
     - images/lottie_ripple.json
     - images/pulse.json
     - images/pulse_white.json
+    - images/puzzle-game.png
     - images/join_room.json
     - images/lottie_pulse.json
     - images/notif.png

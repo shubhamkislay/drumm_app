@@ -12,39 +12,38 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:go_router/go_router.dart';
 
 class ProfileImageIcon extends StatelessWidget {
-  ProfileImageIcon({super.key});
+  final RemoteDrummerState state;
+  const ProfileImageIcon({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<RemoteDrummerBloc>(
-      create: (BuildContext context) => s1()..add(GetDrummer()),
-      child: BlocBuilder<RemoteDrummerBloc, RemoteDrummerState>(
-          builder: (context, state) {
-            if(state is RemoteDrummerLoading){
-              return Container(
-                height: 36,
-                width: 36,
-                decoration: BoxDecoration(
-                  color: DrummTheme.primaryItemColor(context),
-                  borderRadius: BorderRadius.circular(32),
-                ),
-              );
-            }
-        return GestureDetector(
-          onTap: (){
-            Vibrate.feedback(FeedbackType.selection);
-            context.pushTransparentRoute(
-              UserProfilePage(
-                fromSearch: true,
-              ),
-            );
-          },
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(24),
-            child: CachedNetworkImage(imageUrl: state.drummerEntity?.imageUrl??"",height: 36,width: 36,),
+    if (state is RemoteDrummerLoading) {
+      return Container(
+        height: 36,
+        width: 36,
+        decoration: BoxDecoration(
+          color: DrummTheme.primaryItemColor(context),
+          borderRadius: BorderRadius.circular(32),
+        ),
+      );
+    }
+    return GestureDetector(
+      onTap: () {
+        Vibrate.feedback(FeedbackType.selection);
+        context.pushTransparentRoute(
+          UserProfilePage(
+            fromSearch: true,
           ),
         );
-      }),
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: CachedNetworkImage(
+          imageUrl: state.drummerEntity?.imageUrl ?? "",
+          height: 36,
+          width: 36,
+        ),
+      ),
     );
   }
 }
