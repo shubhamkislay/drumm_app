@@ -21,32 +21,15 @@ class ArticleDrummButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Vibrate.feedback(FeedbackType.impact);
-        context
-            .read<UserActivityBloc>()
-            .add(RecordUserActivity(UserActivityEntity(
-          type: INTERACTION_OPENED,
-          weight: WEIGHT_OPENED,
-          articleId: article.articleId!,
-          embedding: article.embedding!,
-        )));
-        context.push(
-          SCREEN_BOTTOM_CONVERSATION,
-          extra: ArticleBands(article: article, bands: bands),
-        );
-      },
-      child: Container(
-        height: 32,
-        width: 32,
-        padding: EdgeInsets.all(7),
-        decoration: BoxDecoration(
-            color: DrummTheme.primarySelectedItemColor(context).withAlpha(5),
-            borderRadius: BorderRadius.circular(24)),
-        child: Image.asset('images/audio-waves.png',
-            color: DrummTheme.primaryTextColor(context), fit: BoxFit.contain),
-      ),
+    return Container(
+      height: 32,
+      width: 32,
+      padding: EdgeInsets.all(7),
+      decoration: BoxDecoration(
+          //color: DrummTheme.primarySelectedItemColor(context).withAlpha(5),
+          borderRadius: BorderRadius.circular(24)),
+      child: Image.asset('images/audio-waves.png',
+          color: DrummTheme.primaryTextColor(context), fit: BoxFit.contain),
     );
   }
 }

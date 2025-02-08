@@ -6,6 +6,7 @@ import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
 import 'package:drumm_app/core/features/user%20activity/domain/entities/user_activity_entity.dart';
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_event.dart';
+import 'package:drumm_app/core/util/article_band.dart';
 import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/custom/instagram_date_time_widget.dart';
 import 'package:drumm_app/features/constants.dart';
@@ -57,22 +58,16 @@ class ArticleItemCard extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  AutoSizeText(
-                    article.category ?? "",
-                    minFontSize: 12,
-                    maxLines: 1,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: DRUMM_FONT_FAMILY,
-                      color: DrummTheme.primaryTextColor(context).withOpacity(0.5),
-                    ),
-                  ),
-                  ArticleDrummButton(article: article,bands: bands,),
-                ],
+              child: AutoSizeText(
+                article.category ?? "",
+                minFontSize: 12,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: DRUMM_FONT_FAMILY,
+                  color: DrummTheme.primaryTextColor(context).withOpacity(0.5),
+                ),
               ),
             ),
             SizedBox(
@@ -95,18 +90,48 @@ class ArticleItemCard extends StatelessWidget {
             SizedBox(
               height: 8,
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: AutoSizeText(
-                (article.question ?? "").trim(),
-                minFontSize: 12,
-                maxLines: 2,
-                softWrap: true,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: DRUMM_FONT_FAMILY,
-                  color: DrummTheme.primaryTextColor(context),//.withAlpha(100),
+            GestureDetector(
+              onTap: (){
+                Vibrate.feedback(FeedbackType.impact);
+                context
+                    .read<UserActivityBloc>()
+                    .add(RecordUserActivity(UserActivityEntity(
+                  type: INTERACTION_OPENED,
+                  weight: WEIGHT_OPENED,
+                  articleId: article.articleId!,
+                  embedding: article.embedding!,
+                )));
+                context.push(
+                  SCREEN_BOTTOM_CONVERSATION,
+                  extra: ArticleBands(article: article, bands: bands),
+                );
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 8,vertical: 8),
+                margin: EdgeInsets.symmetric(horizontal: 12,vertical: 0),
+                decoration: BoxDecoration(
+                  color: DrummTheme.primarySelectedItemColor(context).withAlpha(15),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    ArticleDrummButton(article: article,bands: bands,),
+                    SizedBox(width: 8,),
+                    Flexible(
+                      child: AutoSizeText(
+                        (article.question ?? "").trim(),
+                        minFontSize: 12,
+                        maxLines: 2,
+                        softWrap: true,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: DRUMM_FONT_FAMILY,
+                          color: DrummTheme.primaryTextColor(context),//.withAlpha(100),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
