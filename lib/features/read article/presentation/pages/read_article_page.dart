@@ -102,10 +102,11 @@ class _ReadArticlePageState extends State<ReadArticlePage> {
                                 height: 4,
                               ),
                               AutoSizeText(
-                                widget.article.question ?? "",
+                                widget.article.meta ?? "",
                                 minFontSize: 18,
+                                softWrap: true,
                                 maxLines:
-                                    (widget.article.question ?? "").length < 30
+                                    (widget.article.meta ?? "").length < 30
                                         ? 1
                                         : 2,
                                 style: TextStyle(
@@ -119,13 +120,12 @@ class _ReadArticlePageState extends State<ReadArticlePage> {
                                 height: 8,
                               ),
                               AutoSizeText(
-                                widget.article.meta ??
-                                    widget.article.title ??
-                                    "",
-                                minFontSize: 12,
-                                maxLines: 1,
+                                widget.article.question ?? "",
+                                minFontSize: 14,
+                                maxLines: 2,
+                                softWrap: true,
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 20,
                                   color: DrummTheme.primaryTextColor(context),
                                   fontFamily: DRUMM_FONT_FAMILY,
                                 ),

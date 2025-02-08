@@ -56,7 +56,7 @@ class ArticleService {
           .collection("stories")
           .where('category', whereIn: getArticlesParams.category)
           .where('isRepresentative', isEqualTo: true)
-          .orderBy("recommendedTimestamp", descending: true)
+          .orderBy("publishedAt", descending: true)
           .limit(15);
 
       if (getArticlesParams.lastDocument != null) {

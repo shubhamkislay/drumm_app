@@ -81,9 +81,10 @@ class ArticleItemCard extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: AutoSizeText(
-                article.question ?? "",
+                article.meta ?? "",
                 minFontSize: 18,
-                maxLines: (article.question ?? "").length < 30 ? 1 : 2,
+                softWrap: true,
+                maxLines: (article.meta ?? "").length < 30 ? 1 : 2,
                 style: TextStyle(
                     fontSize: 26,
                     color: DrummTheme.primaryTextColor(context),
@@ -97,14 +98,15 @@ class ArticleItemCard extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: AutoSizeText(
-                article.meta ?? article.title ?? "",
+                (article.question ?? "").trim(),
                 minFontSize: 12,
-                maxLines: 1,
+                maxLines: 2,
+                softWrap: true,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.w700,
                   fontFamily: DRUMM_FONT_FAMILY,
-                  color: DrummTheme.primaryTextColor(context).withOpacity(0.75),
+                  color: DrummTheme.primaryTextColor(context),//.withAlpha(100),
                 ),
               ),
             ),
