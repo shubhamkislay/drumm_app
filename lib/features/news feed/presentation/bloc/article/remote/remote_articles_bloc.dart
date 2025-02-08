@@ -105,7 +105,22 @@ class RemoteArticlesBloc
         if (dataState.data?.articleList != null) {
           emit(RemoteArticlesFetched(dataState.data ?? ArticleListEntity()));
           int interactions = await getInteractionCountsUseCase();
-          emit(InteractToGenerateRecommendation(interactions));
+          if(interactions<10) {
+
+            emit(InteractToGenerateRecommendation(10-interactions));
+          }else{
+            emit(GeneratingRecommendation(
+                dataState.data ?? ArticleListEntity()));
+            final vectorDataState = await generateAndLoadRecommendedArticlesUseCase(
+                params: event.getArticlesParams);
+
+            if (vectorDataState is DataSuccess) {
+              emit(GeneratedRecommendationArticle());
+            }
+            if (vectorDataState is DataFailed) {
+              emit(NoNewRecommendations());
+            }
+          }
         }
       }
       if (dataState is DataFailed) {

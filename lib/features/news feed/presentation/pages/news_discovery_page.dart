@@ -49,6 +49,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                     scrollNotification is ScrollUpdateNotification &&
                     scrollNotification.metrics.extentAfter < 500 &&
                     remoteState is! RemoteArticlesLoadingMoreArticles &&
+                    remoteState is! GeneratingRecommendation &&
                     remoteState is! RemoteArticlesLoading &&
                     remoteState is! RemoteArticlesError) {
                   context.read<RemoteArticlesBloc>().add(
