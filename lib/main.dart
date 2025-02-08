@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/config/routes/page_routes.dart';
 import 'package:drumm_app/config/injection_container.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
+import 'package:drumm_app/core/util/debouncer_brightness.dart';
 import 'package:drumm_app/model/algolia_article.dart';
 import 'package:drumm_app/model/question.dart';
 import 'package:drumm_app/professionDetailsPage.dart';
@@ -50,6 +51,7 @@ import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:drumm_app/theme/theme_manager.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -63,7 +65,8 @@ import 'features/authentication/presentation/bloc/drummer/hybrid/hybrid_initial_
 import 'features/authentication/presentation/pages/login_page.dart';
 import 'firebase_options.dart';
 import 'model/article.dart';
-
+final ValueNotifier<ThemeMode> themeModeNotifier = ValueNotifier(ThemeMode.system);
+ThemeMode currentAppTheme = ThemeMode.dark;
 Future<String> triggerCloudFunction() async {
   final triggerUrl =
       'https://us-central1-drummapp.cloudfunctions.net/getTopHeadlines';
@@ -83,27 +86,66 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  ThemeManager themeManager = ThemeManager();
-
-  runApp(MaterialApp.router(
-    routerConfig: PageRoutes.getGoRouter(),
-    themeMode: ThemeMode.system,
-    theme: DrummTheme.getLightTheme(),
-    darkTheme:DrummTheme.getDarkTheme(),
-    debugShowCheckedModeBanner: false,
-  ));
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => DebouncedBrightnessProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Assume we're using a ValueNotifier<ThemeMode> named themeModeNotifier.
+
+    return MaterialApp.router(
+      routerConfig: PageRoutes.getGoRouter(),
+      themeMode: ThemeMode.system,
+      theme: DrummTheme.getLightTheme(),
+      darkTheme: DrummTheme.getDarkTheme(),
+      debugShowCheckedModeBanner: false,
+    );
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: themeModeNotifier,
+      builder: (context, themeMode, child) {
+        // Get the corresponding ThemeData for the current mode.
+        final ThemeData currentTheme = themeMode == ThemeMode.dark
+            ? DrummTheme.getDarkTheme()
+            : DrummTheme.getLightTheme();
+
+        currentAppTheme = themeMode;
+
+
+        return AnimatedTheme(
+          data: currentTheme,
+          duration: const Duration(milliseconds: 500), // adjust as needed
+          child: MaterialApp.router(
+            routerConfig: PageRoutes.getGoRouter(),
+            themeMode: themeMode,
+            theme: DrummTheme.getLightTheme(),
+            darkTheme: DrummTheme.getDarkTheme(),
+            debugShowCheckedModeBanner: false,
+          ),
+        );
+      },
+    );
+  }
+}
+
 
 ThemeManager _themeManager = ThemeManager();
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class MyAppOld extends StatefulWidget {
+  const MyAppOld({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<MyAppOld> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp>
+class _MyAppState extends State<MyAppOld>
     with WidgetsBindingObserver //with SingleTickerProviderStateMixin
 {
   // late int currentPage;

@@ -5,13 +5,14 @@ import 'package:equatable/equatable.dart';
 
 abstract class RemoteArticlesState extends Equatable{
   final ArticleListEntity ? articleEntityList;
+  final List<String> ? category;
   final DioException ? error;
   final int ? interactions;
 
-  const RemoteArticlesState({this.articleEntityList, this.error, this.interactions});
+  const RemoteArticlesState({this.articleEntityList, this.error, this.interactions, this.category});
 
   @override
-  List<Object> get props => [articleEntityList!,error??DioException(requestOptions: RequestOptions())];
+  List<Object> get props => [articleEntityList!,category??["For You"],interactions??0,error??DioException(requestOptions: RequestOptions())];
 }
 
 class RemoteArticlesLoading extends RemoteArticlesState{
@@ -19,11 +20,11 @@ class RemoteArticlesLoading extends RemoteArticlesState{
 }
 
 class RemoteArticlesFetched extends RemoteArticlesState{
-  const RemoteArticlesFetched(ArticleListEntity articleEntityList) : super(articleEntityList: articleEntityList);
+  const RemoteArticlesFetched(ArticleListEntity articleEntityList, List<String> category) : super(articleEntityList: articleEntityList,category: category);
 }
 
 class RemoteArticlesFetchedFromDifferentCategory extends RemoteArticlesState{
-  const RemoteArticlesFetchedFromDifferentCategory(ArticleListEntity articleEntityList) : super(articleEntityList: articleEntityList);
+  const RemoteArticlesFetchedFromDifferentCategory(ArticleListEntity articleEntityList, List<String> category) : super(articleEntityList: articleEntityList,category: category);
 }
 
 class RemoteArticlesLoadingMoreArticles extends RemoteArticlesState{
@@ -39,7 +40,7 @@ class RemoteClusteredArticlesLoading extends RemoteArticlesState{
 }
 
 class GeneratingRecommendation extends RemoteArticlesState{
-  const GeneratingRecommendation(ArticleListEntity articleEntityList) : super(articleEntityList: articleEntityList);
+  const GeneratingRecommendation(ArticleListEntity articleEntityList, List<String> category) : super(articleEntityList: articleEntityList,category: category);
 }
 
 class GeneratedRecommendationArticle extends RemoteArticlesState{
@@ -47,7 +48,7 @@ class GeneratedRecommendationArticle extends RemoteArticlesState{
 }
 
 class GeneratedRecommendationArticleApplied extends RemoteArticlesState{
-  const GeneratedRecommendationArticleApplied(ArticleListEntity articleEntityList) : super(articleEntityList: articleEntityList);
+  const GeneratedRecommendationArticleApplied(ArticleListEntity articleEntityList, List<String> category) : super(articleEntityList: articleEntityList,category: category);
 }
 
 class NoNewRecommendations extends RemoteArticlesState{
@@ -55,7 +56,7 @@ class NoNewRecommendations extends RemoteArticlesState{
 }
 
 class InteractToGenerateRecommendation extends RemoteArticlesState{
-  const InteractToGenerateRecommendation(int interactions) : super(interactions : interactions);
+  const InteractToGenerateRecommendation(int interactions,List<String> category) : super(interactions : interactions,category: category);
 }
 
 class RemoteSimilarArticlesLoading extends RemoteArticlesState{

@@ -27,11 +27,6 @@ class GetClusteredArticles extends RemoteArticlesEvent{
   const GetClusteredArticles(this.article);
 }
 
-class SetArticleListEntity extends RemoteArticlesEvent{
-  final ArticleListEntity articleListEntity;
-  const SetArticleListEntity(this.articleListEntity);
-}
-
 class GetSimilarArticles extends RemoteArticlesEvent{
   final GetSimilarArticlesParams params;
   const GetSimilarArticles(this.params);

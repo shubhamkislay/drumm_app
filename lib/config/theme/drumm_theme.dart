@@ -1,4 +1,7 @@
+import 'package:drumm_app/core/util/debouncer_brightness.dart';
+import 'package:drumm_app/main.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 const Color DARK_BACKGROUND = Color(0xff080808);
 const String DRUMM_FONT_FAMILY = "opensansmedium";
@@ -154,10 +157,15 @@ class DrummTheme{
    static Color primaryDarkItemColor = Color(0xff1c1c1c);//Color(0xff111111);
    static Color primaryDarkBackgroundColor = Color(0xff151515);//Color(0xff080808);
 
+   /*
+   * themeModeNotifier.value = themeModeNotifier.value == ThemeMode.dark
+    ? ThemeMode.light
+    : ThemeMode.dark;
+   *
+   * */
 
   static ThemeData getTheme(BuildContext context){
-    bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    return isDarkMode ? drummDarkTheme:drummLightTheme;
+    return isDarkMode(context) ? drummDarkTheme:drummLightTheme;
   }
 
   static ThemeData getDarkTheme(){
@@ -169,28 +177,29 @@ class DrummTheme{
   }
 
   static Color primaryTextColor(BuildContext context){
-    bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    return isDarkMode ? primaryTextColorDark:primaryTextColorLight;
+    return isDarkMode(context) ? primaryTextColorDark:primaryTextColorLight;
   }
 
    static Color primarySelectedTextColor(BuildContext context){
-     bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
-     return isDarkMode ? primaryTextColorLight:primaryTextColorDark;
+     return isDarkMode(context) ? primaryTextColorLight:primaryTextColorDark;
    }
 
    static Color primaryItemColor(BuildContext context){
-     bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
-     return isDarkMode ? primaryDarkItemColor:primaryLightItemColor;
+     return isDarkMode(context) ? primaryDarkItemColor:primaryLightItemColor;
    }
 
    static Color primarySelectedItemColor(BuildContext context){
-     bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
-     return isDarkMode ? primaryLightItemColor:primaryDarkItemColor;
+     return isDarkMode(context) ? primaryLightItemColor:primaryDarkItemColor;
    }
 
    static Color primaryItemBackground(BuildContext context){
-     bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
-     return isDarkMode ? primaryDarkBackgroundColor:primaryLightBackgroundColor;
+     return isDarkMode(context) ? primaryDarkBackgroundColor:primaryLightBackgroundColor;
+   }
+
+   static bool isDarkMode(BuildContext context){
+    //return MediaQuery.of(context).platformBrightness == Brightness.dark;
+     final stableBrightness = Provider.of<DebouncedBrightnessProvider>(context).stableBrightness;
+     return stableBrightness == Brightness.dark;
    }
 
 }
