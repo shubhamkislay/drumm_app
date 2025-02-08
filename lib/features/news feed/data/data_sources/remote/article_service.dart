@@ -117,7 +117,7 @@ class ArticleService {
           .toList();
 
       generateRecommendation(recommendTimestamp);
-      return DataSuccess(ArticleListModel(articleList: articles));
+      return DataSuccess(ArticleListModel(articleList: articles,));
     } on DioException catch (error) {
       return DataFailed(error);
     }
@@ -146,6 +146,24 @@ class ArticleService {
     } catch (error) {
       //print('Error performing vector search: $error');
       //return [];
+    }
+  }
+
+  Future<DataState<bool>> generateAndLoadRecommendedArticles(GetArticlesParams getArticlesParams) async {
+    try {
+      Timestamp recommendTimestamp = getArticlesParams.drummerEntity!.lastRecommendationTimestamp ?? Timestamp.fromDate(DateTime(2000));
+      print("Calling generateRecommendation function");
+      final HttpsCallable callable =
+      FirebaseFunctions.instance.httpsCallable('generateRecommendations');
+
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+      final result = await callable.call({
+        'userId': userId??"",
+        'recommendTimestamp':recommendTimestamp.millisecondsSinceEpoch.toString()??"",
+      });
+     return DataSuccess(true);
+    } catch (error) {
+      return DataSuccess(false);
     }
   }
 

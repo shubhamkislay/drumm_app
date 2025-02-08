@@ -21,11 +21,11 @@ class ArticleItemLoadingCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(8),
         child: Shimmer(
           color: DrummTheme.drummPrimaryColor,
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            padding: EdgeInsets.symmetric(vertical: 16,),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 color: DrummTheme.primaryItemColor(context)),
@@ -34,67 +34,79 @@ class ArticleItemLoadingCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      height: 12,
-                      width: 100,
-                      decoration: BoxDecoration(
-                          color: DrummTheme.primaryItemBackground(context),
-                          borderRadius: BorderRadius.circular(12)),
-                    ),
-                    ArticleDrummButtonLoading()
-                  ],
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        height: 12,
+                        width: 100,
+                        decoration: BoxDecoration(
+                            color: DrummTheme.primaryItemBackground(context),
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                      ArticleDrummButtonLoading()
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height:12,
                 ),
-                Container(
-                  height: 26,
-                  width: double.maxFinite,
-                  decoration: BoxDecoration(
-                      color: DrummTheme.primaryItemBackground(context),
-                      borderRadius: BorderRadius.circular(12)),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Container(
+                    height: 26,
+                    width: double.maxFinite,
+                    decoration: BoxDecoration(
+                        color: DrummTheme.primaryItemBackground(context),
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
                 ),
                 SizedBox(
                   height: 8,
                 ),
-                Container(
-                  height: 26,
-                  width: 250,
-                  decoration: BoxDecoration(
-                      color: DrummTheme.primaryItemBackground(context),
-                      borderRadius: BorderRadius.circular(12)),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Container(
+                    height: 26,
+                    width: 250,
+                    decoration: BoxDecoration(
+                        color: DrummTheme.primaryItemBackground(context),
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
                 ),
                 SizedBox(
                   height: 12,
                 ),
-                Container(
-                  height: 18,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      color: DrummTheme.primaryItemBackground(context),
-                      borderRadius: BorderRadius.circular(12)),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Container(
+                    height: 18,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        color: DrummTheme.primaryItemBackground(context),
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
                 ),
                 SizedBox(
                   height: 20,
                 ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    height: 250,
-                      color: DrummTheme.primaryItemBackground(context)),
-                ),
+                Container(
+                  height: 250,
+                    color: DrummTheme.primaryItemBackground(context)),
                 SizedBox(
                   height: 16,
                 ),
-                Container(
-                  height: 12,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      color: DrummTheme.primaryItemBackground(context),
-                      borderRadius: BorderRadius.circular(12)),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Container(
+                    height: 12,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        color: DrummTheme.primaryItemBackground(context),
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
                 ),
               ],
             ),

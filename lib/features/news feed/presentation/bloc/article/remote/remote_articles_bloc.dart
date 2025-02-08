@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/core/resources/data_state.dart';
 import 'package:drumm_app/core/util/core_utils.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article_list.dart';
+import 'package:drumm_app/features/news%20feed/domain/usecases/generate_and_load_recommended_articles.dart';
 import 'package:drumm_app/features/news%20feed/domain/usecases/get_articles.dart';
 import 'package:drumm_app/features/news%20feed/domain/usecases/get_clustered_articles.dart';
 import 'package:drumm_app/features/news%20feed/domain/usecases/get_interaction_counts.dart';
@@ -20,9 +21,17 @@ class RemoteArticlesBloc
   final PerformVectorSearchUseCase performVectorSearchUseCase;
   final GetLatestArticlesUseCase getLatestArticlesUseCase;
   final GetInteractionCountsUseCase getInteractionCountsUseCase;
+  final GenerateAndLoadRecommendedArticlesUseCase
+      generateAndLoadRecommendedArticlesUseCase;
 
-  RemoteArticlesBloc(this.getArticlesUseCase, this.getClusteredArticlesUseCase,
-      this.getSimilarArticlesUseCase, this.performVectorSearchUseCase, this.getLatestArticlesUseCase, this.getInteractionCountsUseCase)
+  RemoteArticlesBloc(
+      this.getArticlesUseCase,
+      this.getClusteredArticlesUseCase,
+      this.getSimilarArticlesUseCase,
+      this.performVectorSearchUseCase,
+      this.getLatestArticlesUseCase,
+      this.getInteractionCountsUseCase,
+      this.generateAndLoadRecommendedArticlesUseCase)
       : super(const RemoteArticlesLoading()) {
     on<GetArticles>(onGetArticles);
     on<SetArticleListEntity>(onSetArticleListEntity);
@@ -54,24 +63,18 @@ class RemoteArticlesBloc
     if (event.getArticlesParams.drummerEntity?.preference != null) {
       if (!CoreUtils.isTimestampWithinThreeHours(
           event.getArticlesParams.drummerEntity?.lastRecommendationTimestamp ??
-              Timestamp.fromDate(DateTime(2000))))
-      {
+              Timestamp.fromDate(DateTime(2000)))) {
         final dataState =
             await getArticlesUseCase(params: event.getArticlesParams);
         if (dataState is DataSuccess) {
           if (dataState.data?.articleList != null) {
             emit(GeneratingRecommendation(
                 dataState.data ?? ArticleListEntity()));
-            final vectorDataState = await performVectorSearchUseCase(
+            final vectorDataState = await generateAndLoadRecommendedArticlesUseCase(
                 params: event.getArticlesParams);
 
             if (vectorDataState is DataSuccess) {
-              if (vectorDataState.data?.articleList != null) {
-                emit(GeneratedRecommendationArticle(
-                    vectorDataState.data ?? ArticleListEntity()));
-              }else{
-                emit(NoNewRecommendations());
-              }
+              emit(GeneratedRecommendationArticle());
             }
             if (vectorDataState is DataFailed) {
               emit(NoNewRecommendations());
@@ -81,8 +84,9 @@ class RemoteArticlesBloc
         if (dataState is DataFailed) {
           emit(RemoteArticlesError(dataState.error!));
         }
-      }else{
-        final dataState = await getArticlesUseCase(params: event.getArticlesParams);
+      } else {
+        final dataState =
+            await getArticlesUseCase(params: event.getArticlesParams);
 
         if (dataState is DataSuccess) {
           if (dataState.data?.articleList != null) {
@@ -93,8 +97,9 @@ class RemoteArticlesBloc
           emit(RemoteArticlesError(dataState.error!));
         }
       }
-    }else{
-      final dataState = await getLatestArticlesUseCase(params: event.getArticlesParams);
+    } else {
+      final dataState =
+          await getLatestArticlesUseCase(params: event.getArticlesParams);
 
       if (dataState is DataSuccess) {
         if (dataState.data?.articleList != null) {
@@ -119,8 +124,9 @@ class RemoteArticlesBloc
       if (dataState.data?.articleList != null) {
         emit(RemoteArticlesFetchedFromDifferentCategory(
             dataState.data ?? ArticleListEntity()));
-      }else{
-        final dataState = await getLatestArticlesUseCase(params: event.getArticlesParams);
+      } else {
+        final dataState =
+            await getLatestArticlesUseCase(params: event.getArticlesParams);
         if (dataState is DataSuccess) {
           if (dataState.data?.articleList != null) {
             emit(RemoteArticlesFetched(dataState.data ?? ArticleListEntity()));
@@ -132,7 +138,8 @@ class RemoteArticlesBloc
       }
     }
     if (dataState is DataFailed) {
-      final dataState = await getLatestArticlesUseCase(params: event.getArticlesParams);
+      final dataState =
+          await getLatestArticlesUseCase(params: event.getArticlesParams);
       if (dataState is DataSuccess) {
         if (dataState.data?.articleList != null) {
           emit(RemoteArticlesFetched(dataState.data ?? ArticleListEntity()));
@@ -180,6 +187,8 @@ class RemoteArticlesBloc
 
   void onSetArticleListEntity(
       SetArticleListEntity event, Emitter<RemoteArticlesState> emit) async {
+    print(
+        "Passed value from event ${event.articleListEntity.articleList?.length ?? 0}");
     emit(GeneratedRecommendationArticleApplied(event.articleListEntity));
   }
 }

@@ -43,7 +43,7 @@ class GeneratingRecommendation extends RemoteArticlesState{
 }
 
 class GeneratedRecommendationArticle extends RemoteArticlesState{
-  const GeneratedRecommendationArticle(ArticleListEntity articleEntityList) : super(articleEntityList: articleEntityList);
+  const GeneratedRecommendationArticle();
 }
 
 class GeneratedRecommendationArticleApplied extends RemoteArticlesState{

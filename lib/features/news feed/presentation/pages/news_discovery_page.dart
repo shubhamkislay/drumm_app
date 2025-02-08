@@ -35,9 +35,10 @@ class NewsDiscoveryPage extends StatelessWidget {
       body: BlocBuilder<RemoteDrummerBloc, RemoteDrummerState>(
           builder: (context, drummerState) {
         if (drummerState is RemoteDrummerDone) {
-          context.read<RemoteArticlesBloc>().add(GetRecommendedArticles(GetArticlesParams(
-              category: ["For You"],
-              drummerEntity: drummerState.drummerEntity)));
+          context.read<RemoteArticlesBloc>().add(GetRecommendedArticles(
+              GetArticlesParams(
+                  category: ["For You"],
+                  drummerEntity: drummerState.drummerEntity)));
         }
         return BlocBuilder<RemoteBandsBloc, RemoteBandsState>(
           builder: (BuildContext context, bandState) {
@@ -60,92 +61,96 @@ class NewsDiscoveryPage extends StatelessWidget {
                 return false;
               },
               child: BlocBuilder<RemoteArticlesBloc, RemoteArticlesState>(
-                builder: (context, articleState) {
-                  return CustomScrollView(
-                    shrinkWrap: true,
-                    slivers: [
-                      SliverAppBar(
-                        pinned: true,
-                        backgroundColor: Colors.transparent,
-                        surfaceTintColor: Colors.transparent,
-                        bottom: PreferredSize(
-                            preferredSize: Size.fromHeight(50),
-                            child: Container(
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.only(bottom: 12),
-                              child: BandSelectionList(
-                                onSelect: (bandEntity) {
-                                  Vibrate.feedback(FeedbackType.selection);
-                                  lastDocument = null;
-                                  if (selectedBandId != bandEntity.bandId) {
-                                    selectedBandId = bandEntity.bandId ?? "For You";
-                                    context.read<RemoteArticlesBloc>().add(
-                                          GetArticlesFromDifferentCategory(
-                                            GetArticlesParams(
-                                              category: [selectedBandId],
-                                              lastDocument: lastDocument,
-                                            ),
+                  builder: (context, articleState) {
+                return CustomScrollView(
+                  shrinkWrap: true,
+                  slivers: [
+                    SliverAppBar(
+                      pinned: true,
+                      backgroundColor: Colors.transparent,
+                      surfaceTintColor: Colors.transparent,
+                      bottom: PreferredSize(
+                          preferredSize: Size.fromHeight(50),
+                          child: Container(
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.only(bottom: 12),
+                            child: BandSelectionList(
+                              onSelect: (bandEntity) {
+                                Vibrate.feedback(FeedbackType.selection);
+                                lastDocument = null;
+                                if (selectedBandId != bandEntity.bandId) {
+                                  selectedBandId =
+                                      bandEntity.bandId ?? "For You";
+                                  context.read<RemoteArticlesBloc>().add(
+                                        GetArticlesFromDifferentCategory(
+                                          GetArticlesParams(
+                                            category: [selectedBandId],
+                                            lastDocument: lastDocument,
                                           ),
-                                        );
-                                  }
-                                },
-                                bands: bandState.bands ?? [],
-                                state: bandState,
-                              ),
-                            )),
-                        flexibleSpace:
-                            LayoutBuilder(builder: (context, constraints) {
-                          return Container(
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                DrummTheme.primaryItemBackground(context),
-                                DrummTheme.primaryItemBackground(context)
-                                    .withOpacity(0.75),
-                                DrummTheme.primaryItemBackground(context)
-                                    .withOpacity(0.0),
-                              ],
-                            )),
-                            child: FlexibleSpaceBar(
-                              collapseMode: CollapseMode.none,
-                              background: Container(
-                                alignment: Alignment.bottomLeft,
-                                padding: EdgeInsets.only(
-                                    left: 12, bottom: 64, right: 12),
-                                width: double.maxFinite,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Discover",
-                                      style: TextStyle(
-                                        fontSize: 28,
-                                        fontFamily: DRUMM_FONT_FAMILY,
-                                        color: DrummTheme.primaryTextColor(context),
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                        ),
+                                      );
+                                }
+                              },
+                              bands: bandState.bands ?? [],
+                              state: bandState,
+                            ),
+                          )),
+                      flexibleSpace:
+                          LayoutBuilder(builder: (context, constraints) {
+                        return Container(
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              DrummTheme.primaryItemBackground(context),
+                              DrummTheme.primaryItemBackground(context)
+                                  .withOpacity(0.75),
+                              DrummTheme.primaryItemBackground(context)
+                                  .withOpacity(0.0),
+                            ],
+                          )),
+                          child: FlexibleSpaceBar(
+                            collapseMode: CollapseMode.none,
+                            background: Container(
+                              alignment: Alignment.bottomLeft,
+                              padding: EdgeInsets.only(
+                                  left: 12, bottom: 64, right: 12),
+                              width: double.maxFinite,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Discover",
+                                    style: TextStyle(
+                                      fontSize: 28,
+                                      fontFamily: DRUMM_FONT_FAMILY,
+                                      color:
+                                          DrummTheme.primaryTextColor(context),
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    Expanded(child: SizedBox()),
-                                    SearchButton(
-                                      onPressed: () {},
-                                    ),
-                                    SizedBox(
-                                      width: 8,
-                                    ),
-                                    ProfileImageIcon(state: drummerState)
-                                  ],
-                                ),
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  SearchButton(
+                                    onPressed: () {},
+                                  ),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  ProfileImageIcon(state: drummerState)
+                                ],
                               ),
                             ),
-                          );
-                        }),
-                        toolbarHeight: 0,
-                        collapsedHeight: 0,
-                        expandedHeight: 120,
-                      ),
-                      if (articleState is GeneratingRecommendation) SliverAppBar(
+                          ),
+                        );
+                      }),
+                      toolbarHeight: 0,
+                      collapsedHeight: 0,
+                      expandedHeight: 120,
+                    ),
+                    if (articleState is GeneratingRecommendation)
+                      SliverAppBar(
                         pinned: true,
                         toolbarHeight: 0,
                         collapsedHeight: 0,
@@ -154,13 +159,13 @@ class NewsDiscoveryPage extends StatelessWidget {
                         flexibleSpace: Container(
                           height: 44,
                           width: double.maxFinite,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 12),
-                          margin: EdgeInsets.symmetric(vertical: 0,horizontal: 12),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                          margin:
+                              EdgeInsets.symmetric(vertical: 0, horizontal: 12),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              color:
-                              DrummTheme.primaryItemColor(context)),
+                              color: DrummTheme.primaryItemColor(context)),
                           child: Row(
                             children: [
                               Image.asset('images/sparkles.png',
@@ -173,8 +178,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                                 "Fetching news that you might be interested in...",
                                 maxLines: 2,
                                 style: TextStyle(
-                                    color: DrummTheme.primaryTextColor(
-                                        context),
+                                    color: DrummTheme.primaryTextColor(context),
                                     fontFamily: DRUMM_FONT_FAMILY,
                                     fontSize: 12),
                               )
@@ -182,7 +186,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      if (articleState is RemoteArticlesLoading) SliverAppBar(
+                    if (articleState is RemoteArticlesLoading)
+                      SliverAppBar(
                         pinned: true,
                         toolbarHeight: 0,
                         collapsedHeight: 0,
@@ -191,13 +196,13 @@ class NewsDiscoveryPage extends StatelessWidget {
                         flexibleSpace: Container(
                           height: 44,
                           width: double.maxFinite,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 12),
-                          margin: EdgeInsets.symmetric(vertical: 0,horizontal: 12),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                          margin:
+                              EdgeInsets.symmetric(vertical: 0, horizontal: 12),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              color:
-                              DrummTheme.primaryItemColor(context)),
+                              color: DrummTheme.primaryItemColor(context)),
                           child: Row(
                             children: [
                               SizedBox(
@@ -215,8 +220,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                                 "Checking what's happening around the world",
                                 maxLines: 2,
                                 style: TextStyle(
-                                    color: DrummTheme.primaryTextColor(
-                                        context),
+                                    color: DrummTheme.primaryTextColor(context),
                                     fontFamily: DRUMM_FONT_FAMILY,
                                     fontSize: 12),
                               )
@@ -224,7 +228,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      if (articleState is InteractToGenerateRecommendation) SliverAppBar(
+                    if (articleState is InteractToGenerateRecommendation)
+                      SliverAppBar(
                         pinned: true,
                         toolbarHeight: 0,
                         collapsedHeight: 0,
@@ -233,13 +238,13 @@ class NewsDiscoveryPage extends StatelessWidget {
                         flexibleSpace: Container(
                           height: 44,
                           width: double.maxFinite,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 12),
-                          margin: EdgeInsets.symmetric(vertical: 0,horizontal: 12),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                          margin:
+                              EdgeInsets.symmetric(vertical: 0, horizontal: 12),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              color:
-                              DrummTheme.primaryItemColor(context)),
+                              color: DrummTheme.primaryItemColor(context)),
                           child: Row(
                             children: [
                               Image.asset('images/puzzle-game.png',
@@ -252,8 +257,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                                 "Check ${articleState.interactions} more articles to personalise feed",
                                 maxLines: 2,
                                 style: TextStyle(
-                                    color: DrummTheme.primaryTextColor(
-                                        context),
+                                    color: DrummTheme.primaryTextColor(context),
                                     fontFamily: DRUMM_FONT_FAMILY,
                                     fontSize: 12),
                               )
@@ -261,16 +265,21 @@ class NewsDiscoveryPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      if (articleState is GeneratedRecommendationArticle) SliverAppBar(
+                    if (articleState is GeneratedRecommendationArticle)
+                      SliverAppBar(
                         pinned: true,
                         toolbarHeight: 0,
                         collapsedHeight: 0,
                         backgroundColor: Colors.transparent,
                         surfaceTintColor: Colors.transparent,
                         flexibleSpace: GestureDetector(
-                          onTap: (){
+                          onTap: () {
+                            articleList.clear();
                             context.read<RemoteArticlesBloc>().add(
-                                SetArticleListEntity(articleState.articleEntityList!));
+                              GetArticles(GetArticlesParams(
+                                category: [selectedBandId],
+                              )),
+                            );
                           },
                           child: Container(
                             height: 44,
@@ -278,7 +287,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                             alignment: Alignment.center,
                             padding: EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 12),
-                            margin: EdgeInsets.symmetric(vertical: 0,horizontal: 12),
+                            margin: EdgeInsets.symmetric(
+                                vertical: 0, horizontal: 12),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
                                 color: DrummTheme.drummPrimaryColor),
@@ -292,62 +302,60 @@ class NewsDiscoveryPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SliverToBoxAdapter(
-                        child: Builder(
-                          builder: (context) {
-
-                            remoteState = articleState;
-                            if (articleState is RemoteArticlesLoading) {
-                              articleList.clear();
-                            } else if (articleState is! RemoteArticlesError) {
-                              List<ArticleEntity> fArticleList = [];
-                              if (articleState is RemoteArticlesFetched ||
-                                  articleState
-                                      is RemoteArticlesFetchedFromDifferentCategory ||
-                                  articleState is GeneratingRecommendation ||
-                                  articleState is GeneratedRecommendationArticleApplied ||
-                                  articleState is InteractToGenerateRecommendation) {
-                                fArticleList =
-                                    articleState.articleEntityList?.articleList ?? [];
-
-                                if (articleState
-                                    is RemoteArticlesFetchedFromDifferentCategory) {
-                                  articleList.clear();
-                                }
-
-                                if (articleState is GeneratedRecommendationArticleApplied) {
-                                  fArticleList.addAll(articleList);
-                                  articleList.clear();
-                                }
-                                articleList.addAll(fArticleList);
-                                lastDocument =
-                                articleState.articleEntityList?.lastDocument!;
+                    SliverToBoxAdapter(
+                      child: Builder(
+                        builder: (context) {
+                          remoteState = articleState;
+                          if (articleState is RemoteArticlesLoading) {
+                            articleList.clear();
+                          } else if (articleState is! RemoteArticlesError) {
+                            List<ArticleEntity> fArticleList = [];
+                            if (articleState is RemoteArticlesFetched ||
+                                articleState
+                                    is RemoteArticlesFetchedFromDifferentCategory ||
+                                articleState is GeneratingRecommendation ||
+                                articleState
+                                    is GeneratedRecommendationArticleApplied ||
+                                articleState
+                                    is InteractToGenerateRecommendation) {
+                              if (articleState.articleEntityList != null) {
+                                fArticleList = articleState
+                                        .articleEntityList?.articleList ??
+                                    [];
                               }
-                            } else {
-                              if (articleList.isEmpty) {
-                                return SizedBox(
-                                    height: 500,
-                                    child: Center(
-                                        child: Text("${articleState.error?.message}")));
+
+                              if (articleState is RemoteArticlesFetchedFromDifferentCategory ||
+                                  articleState is GeneratedRecommendationArticleApplied) {
+                                articleList.clear();
                               }
+                              articleList.addAll(fArticleList);
+
+                              lastDocument =
+                                  articleState.articleEntityList?.lastDocument??null;
                             }
-                            return Container(
-                              alignment: Alignment.topCenter,
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
-                              child: ArticleListWidget(
-                                articles: articleList,
-                                bands: bandState.bands ?? [],
-                              ),
-                            );
-
-                          },
-                        ),
+                          } else {
+                            if (articleList.isEmpty) {
+                              return SizedBox(
+                                  height: 500,
+                                  child: Center(
+                                      child: Text(
+                                          "${articleState.error?.message}")));
+                            }
+                          }
+                          return Container(
+                            alignment: Alignment.topCenter,
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: ArticleListWidget(
+                              articles: articleList,
+                              bands: bandState.bands ?? [],
+                            ),
+                          );
+                        },
                       ),
-
-                    ],
-                  );
-                }
-              ),
+                    ),
+                  ],
+                );
+              }),
             );
           },
         );

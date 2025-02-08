@@ -45,111 +45,120 @@ class ArticleItemCard extends StatelessWidget {
         );
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        padding: EdgeInsets.symmetric(vertical: 16),
         margin: EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(8),
             color: DrummTheme.primaryItemColor(context)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AutoSizeText(
-                  article.category ?? "",
-                  minFontSize: 12,
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: DRUMM_FONT_FAMILY,
-                    color: DrummTheme.primaryTextColor(context).withOpacity(0.5),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  AutoSizeText(
+                    article.category ?? "",
+                    minFontSize: 12,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: DRUMM_FONT_FAMILY,
+                      color: DrummTheme.primaryTextColor(context).withOpacity(0.5),
+                    ),
                   ),
-                ),
-                ArticleDrummButton(article: article,bands: bands,),
-              ],
+                  ArticleDrummButton(article: article,bands: bands,),
+                ],
+              ),
             ),
             SizedBox(
               height: 4,
             ),
-            AutoSizeText(
-              article.question ?? "",
-              minFontSize: 18,
-              maxLines: (article.question ?? "").length < 30 ? 1 : 2,
-              style: TextStyle(
-                  fontSize: 26,
-                  color: DrummTheme.primaryTextColor(context),
-                  fontWeight: FontWeight.w900,
-                  overflow: TextOverflow.clip),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: AutoSizeText(
+                article.question ?? "",
+                minFontSize: 18,
+                maxLines: (article.question ?? "").length < 30 ? 1 : 2,
+                style: TextStyle(
+                    fontSize: 26,
+                    color: DrummTheme.primaryTextColor(context),
+                    fontWeight: FontWeight.w900,
+                    overflow: TextOverflow.clip),
+              ),
             ),
             SizedBox(
               height: 8,
             ),
-            AutoSizeText(
-              article.meta ?? article.title ?? "",
-              minFontSize: 12,
-              maxLines: 1,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                fontFamily: DRUMM_FONT_FAMILY,
-                color: DrummTheme.primaryTextColor(context).withOpacity(0.75),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: AutoSizeText(
+                article.meta ?? article.title ?? "",
+                minFontSize: 12,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: DRUMM_FONT_FAMILY,
+                  color: DrummTheme.primaryTextColor(context).withOpacity(0.75),
+                ),
               ),
             ),
             SizedBox(
               height: 16,
             ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: CachedNetworkImage(
-                imageUrl: article.imageUrl ?? "",
-                height: 250,
-                width: double.maxFinite,
-                fit: BoxFit.cover,
-                errorWidget: (context, url, error) {
-                  return Container(
-                      color: DrummTheme.primaryItemBackground(context));
-                },
-                placeholder: (context, url) {
-                  return Container(
-                      color: DrummTheme.primaryItemBackground(context));
-                },
-              ),
+            CachedNetworkImage(
+              imageUrl: article.imageUrl ?? "",
+              height: 250,
+              width: double.maxFinite,
+              fit: BoxFit.cover,
+              errorWidget: (context, url, error) {
+                return Container(
+                    color: DrummTheme.primaryItemBackground(context));
+              },
+              placeholder: (context, url) {
+                return Container(
+                    color: DrummTheme.primaryItemBackground(context));
+              },
             ),
             SizedBox(
               height: 12,
             ),
-            Row(
-              children: [
-                Text(
-                  (article.relatedImageUrls ?? []).isNotEmpty
-                      ? "${(article.relatedImageUrls ?? []).length + 1} sources"
-                      : article.source ?? "",
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: DRUMM_FONT_FAMILY,
-                    color:
-                        DrummTheme.primaryTextColor(context).withOpacity(0.5),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  Text(
+                    (article.relatedImageUrls ?? []).isNotEmpty
+                        ? "${(article.relatedImageUrls ?? []).length + 1} sources"
+                        : article.source ?? "",
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: DRUMM_FONT_FAMILY,
+                      color:
+                          DrummTheme.primaryTextColor(context).withOpacity(0.5),
+                    ),
                   ),
-                ),
-                Text(
-                  " • ",
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontFamily: DRUMM_FONT_FAMILY,
-                    fontWeight: FontWeight.bold,
-                    color:
-                        DrummTheme.primaryTextColor(context).withOpacity(0.5),
+                  Text(
+                    " • ",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: DRUMM_FONT_FAMILY,
+                      fontWeight: FontWeight.bold,
+                      color:
+                          DrummTheme.primaryTextColor(context).withOpacity(0.5),
+                    ),
                   ),
-                ),
-                InstagramDateTimeWidget(
-                    publishedAt: article.publishedAt.toString())
-              ],
+                  InstagramDateTimeWidget(
+                      publishedAt: article.publishedAt.toString())
+                ],
+              ),
             )
           ],
         ),

@@ -19,6 +19,9 @@ abstract class ArticleRepository {
   Future<DataState<ArticleListEntity>> performVectorSearch(
       GetArticlesParams params);
 
+  Future<DataState<bool>> generateAndLoadRecommendedArticles(
+      GetArticlesParams params);
+
   Future<int> getInteractionsCount();
 
 }

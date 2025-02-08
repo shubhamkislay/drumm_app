@@ -19,13 +19,13 @@ class ArticleRespositoryImpl implements ArticleRepository {
   }
 
   @override
-  Future<DataState<ArticleListModel>> getArticles(
+  Future<DataState<ArticleListEntity>> getArticles(
       GetArticlesParams getArticlesParams) {
     return articleService.getArticles(getArticlesParams);
   }
 
   @override
-  Future<DataState<ArticleListModel>> getClusteredArticles(
+  Future<DataState<ArticleListEntity>> getClusteredArticles(
       ArticleEntity article) {
     return articleService.getClusteredArticles(article);
   }
@@ -49,5 +49,10 @@ class ArticleRespositoryImpl implements ArticleRepository {
   @override
   Future<int> getInteractionsCount() {
     return articleService.getInteractionsCount();
+  }
+
+  @override
+  Future<DataState<bool>> generateAndLoadRecommendedArticles(GetArticlesParams params) {
+    return articleService.generateAndLoadRecommendedArticles(params);
   }
 }
