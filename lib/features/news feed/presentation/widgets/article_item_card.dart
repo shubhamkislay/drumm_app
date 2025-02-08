@@ -176,11 +176,11 @@ class ArticleItemCard extends StatelessWidget {
               fit: BoxFit.cover,
               errorWidget: (context, url, error) {
                 return Container(
-                    color: DrummTheme.primaryItemBackground(context));
+                    color: DrummTheme.primaryItemColor(context).withAlpha(100));
               },
               placeholder: (context, url) {
                 return Container(
-                    color: DrummTheme.primaryItemBackground(context));
+                    color: DrummTheme.primaryItemColor(context).withAlpha(100));
               },
             ),
             SizedBox(

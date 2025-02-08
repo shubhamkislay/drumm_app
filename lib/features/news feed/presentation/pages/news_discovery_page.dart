@@ -21,6 +21,8 @@ import 'package:drumm_app/features/news%20feed/presentation/widgets/search_butto
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:lottie/lottie.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class NewsDiscoveryPage extends StatelessWidget {
   const NewsDiscoveryPage({super.key});
@@ -227,30 +229,45 @@ class NewsDiscoveryPage extends StatelessWidget {
                         flexibleSpace: Container(
                           height: 44,
                           width: double.maxFinite,
-                          padding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+
                           margin:
                               EdgeInsets.symmetric(vertical: 0, horizontal: 12),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
                               color: DrummTheme.primaryItemColor(context)),
-                          child: Row(
-                            children: [
-                              Image.asset('images/sparkles.png',
-                                  color: DrummTheme.drummPrimaryColor,
-                                  fit: BoxFit.contain),
-                              SizedBox(
-                                width: 12,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Shimmer(
+                              color: DrummTheme.primaryTextColor(context),
+                              duration: Duration(milliseconds: 2000),
+                              interval: Duration(milliseconds: 0),
+                              child: Padding(
+                                padding:
+                                EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      Lottie.asset('images/sparkle.json',
+                                          fit: BoxFit.contain,
+                                          height: 32,
+                                          width: 32),
+                                      SizedBox(
+                                        width: 12,
+                                      ),
+                                      Text(
+                                        "Fetching news that you might be interested in...",
+                                        maxLines: 2,
+                                        style: TextStyle(
+                                            color: DrummTheme.primaryTextColor(context),
+                                            fontFamily: DRUMM_FONT_FAMILY,
+                                            fontSize: 12),
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ),
-                              Text(
-                                "Fetching news that you might be interested in...",
-                                maxLines: 2,
-                                style: TextStyle(
-                                    color: DrummTheme.primaryTextColor(context),
-                                    fontFamily: DRUMM_FONT_FAMILY,
-                                    fontSize: 12),
-                              )
-                            ],
+                            ),
                           ),
                         ),
                       ),

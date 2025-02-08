@@ -234,6 +234,7 @@ flutter:
     - images/radio.png
     - images/swipe_right.json
     - images/swipe_left.json
+    - images/sparkle.json
     - images/notification_active.png
     - images/notification_inactive.png
     - images/caught_up.json
