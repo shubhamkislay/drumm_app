@@ -7,6 +7,7 @@ import 'package:drumm_app/core/features/user%20activity/domain/entities/user_act
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_event.dart';
 import 'package:drumm_app/core/util/article_band.dart';
+import 'package:drumm_app/core/util/core_utils.dart';
 import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/custom/instagram_date_time_widget.dart';
 import 'package:drumm_app/features/constants.dart';
@@ -58,15 +59,45 @@ class ArticleItemCard extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
-              child: AutoSizeText(
-                article.category ?? "",
-                minFontSize: 12,
-                maxLines: 1,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: DRUMM_FONT_FAMILY,
-                  color: DrummTheme.primaryTextColor(context).withOpacity(0.5),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    AutoSizeText(
+                      (article.meta ?? ""),
+                      minFontSize: 12,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: DRUMM_FONT_FAMILY,
+                        color: DrummTheme.drummPrimaryColor,
+                      ),
+                    ),
+                    AutoSizeText(
+                      " • ",
+                      minFontSize: 12,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: DRUMM_FONT_FAMILY,
+                        color: DrummTheme.primaryTextColor(context).withAlpha(100),
+                      ),
+                    ),
+                    AutoSizeText(
+                      article.category ?? "",
+                      minFontSize: 12,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: DRUMM_FONT_FAMILY,
+                        color: DrummTheme.primaryTextColor(context).withAlpha(100),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -76,10 +107,10 @@ class ArticleItemCard extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: AutoSizeText(
-                article.meta ?? "",
+                CoreUtils.removeTitleSource(article.title ?? ""),
                 minFontSize: 18,
                 softWrap: true,
-                maxLines: (article.meta ?? "").length < 30 ? 1 : 2,
+                maxLines: (article.title ?? "").length < 30 ? 1 : 2,
                 style: TextStyle(
                     fontSize: 26,
                     color: DrummTheme.primaryTextColor(context),

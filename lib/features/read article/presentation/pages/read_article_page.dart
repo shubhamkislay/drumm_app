@@ -9,6 +9,7 @@ import 'package:drumm_app/core/features/user%20activity/domain/entities/user_act
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_event.dart';
 import 'package:drumm_app/core/util/article_band.dart';
+import 'package:drumm_app/core/util/core_utils.dart';
 import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/get_similar_articles_parameter.dart';
@@ -86,27 +87,52 @@ class _ReadArticlePageState extends State<ReadArticlePage> {
                               SizedBox(
                                 height: 12,
                               ),
-                              AutoSizeText(
-                                widget.article.category ?? "",
-                                minFontSize: 12,
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: DRUMM_FONT_FAMILY,
-                                  color: DrummTheme.primaryTextColor(context)
-                                      .withOpacity(0.5),
-                                ),
+                              Row(
+                                children: [
+                                  AutoSizeText(
+                                    widget.article.meta ?? "",
+                                    minFontSize: 12,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: DRUMM_FONT_FAMILY,
+                                      color: DrummTheme.drummPrimaryColor,
+                                    ),
+                                  ),
+                                  AutoSizeText(
+                                    " • ",
+                                    minFontSize: 12,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: DRUMM_FONT_FAMILY,
+                                      color: DrummTheme.primaryTextColor(context).withAlpha(100),
+                                    ),
+                                  ),
+                                  AutoSizeText(
+                                    widget.article.category ?? "",
+                                    minFontSize: 12,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: DRUMM_FONT_FAMILY,
+                                      color: DrummTheme.primaryTextColor(context).withAlpha(100),
+                                    ),
+                                  ),
+                                ],
                               ),
                               SizedBox(
                                 height: 4,
                               ),
                               AutoSizeText(
-                                widget.article.meta ?? "",
-                                minFontSize: 18,
+                                CoreUtils.removeTitleSource(widget.article.title ?? ""),
+                                minFontSize: 20,
                                 softWrap: true,
                                 maxLines:
-                                    (widget.article.meta ?? "").length < 30
+                                    (widget.article.title ?? "").length < 30
                                         ? 1
                                         : 2,
                                 style: TextStyle(
@@ -125,7 +151,7 @@ class _ReadArticlePageState extends State<ReadArticlePage> {
                                 maxLines: 2,
                                 softWrap: true,
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 18,
                                   color: DrummTheme.primaryTextColor(context),
                                   fontFamily: DRUMM_FONT_FAMILY,
                                 ),

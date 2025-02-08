@@ -19,5 +19,16 @@ class CoreUtils{
     return differenceMilliseconds < threeHoursInMs;
   }
 
+  static String removeTitleSource(String title){
+    List<String>? titleList =
+    title.split('-');
+    String? finalTitle = titleList![0] ?? "";
+    int titleLength = titleList?.length ?? 0;
+    for (int i = 1; i < titleLength - 1; i++) {
+      finalTitle = "${finalTitle}-${titleList![i]}";
+    }
+    return finalTitle??title;
+  }
+
 
 }

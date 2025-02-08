@@ -27,7 +27,7 @@ class ArticleItemLoadingCard extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 16,),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(8),
                 color: DrummTheme.primaryItemColor(context)),
             child: Column(
               mainAxisSize: MainAxisSize.min,
