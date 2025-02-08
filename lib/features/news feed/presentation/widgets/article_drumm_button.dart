@@ -29,7 +29,7 @@ class ArticleDrummButton extends StatelessWidget {
           //color: DrummTheme.primarySelectedItemColor(context).withAlpha(5),
           borderRadius: BorderRadius.circular(24)),
       child: Image.asset('images/audio-waves.png',
-          color: DrummTheme.primaryTextColor(context), fit: BoxFit.contain),
+          color: DrummTheme.drummPrimaryColor, fit: BoxFit.contain),
     );
   }
 }

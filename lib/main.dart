@@ -86,66 +86,33 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(
     ChangeNotifierProvider(
       create: (_) => DebouncedBrightnessProvider(),
-      child: const MyApp(),
+      child: MaterialApp.router(
+        routerConfig: PageRoutes.getGoRouter(),
+        themeMode: ThemeMode.system,
+        theme: DrummTheme.getLightTheme(),
+        darkTheme: DrummTheme.getDarkTheme(),
+        debugShowCheckedModeBanner: false,
+      ),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // Assume we're using a ValueNotifier<ThemeMode> named themeModeNotifier.
-
-    return MaterialApp.router(
-      routerConfig: PageRoutes.getGoRouter(),
-      themeMode: ThemeMode.system,
-      theme: DrummTheme.getLightTheme(),
-      darkTheme: DrummTheme.getDarkTheme(),
-      debugShowCheckedModeBanner: false,
-    );
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: themeModeNotifier,
-      builder: (context, themeMode, child) {
-        // Get the corresponding ThemeData for the current mode.
-        final ThemeData currentTheme = themeMode == ThemeMode.dark
-            ? DrummTheme.getDarkTheme()
-            : DrummTheme.getLightTheme();
-
-        currentAppTheme = themeMode;
-
-
-        return AnimatedTheme(
-          data: currentTheme,
-          duration: const Duration(milliseconds: 500), // adjust as needed
-          child: MaterialApp.router(
-            routerConfig: PageRoutes.getGoRouter(),
-            themeMode: themeMode,
-            theme: DrummTheme.getLightTheme(),
-            darkTheme: DrummTheme.getDarkTheme(),
-            debugShowCheckedModeBanner: false,
-          ),
-        );
-      },
-    );
-  }
-}
 
 
 ThemeManager _themeManager = ThemeManager();
 
-class MyAppOld extends StatefulWidget {
-  const MyAppOld({super.key});
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
 
   @override
-  State<MyAppOld> createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyAppOld>
+class _MyAppState extends State<MyApp>
     with WidgetsBindingObserver //with SingleTickerProviderStateMixin
 {
   // late int currentPage;

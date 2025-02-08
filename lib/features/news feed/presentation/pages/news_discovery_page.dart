@@ -22,14 +22,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 
-class NewsDiscoveryPage extends StatefulWidget {
+class NewsDiscoveryPage extends StatelessWidget {
   const NewsDiscoveryPage({super.key});
 
-  @override
-  State<NewsDiscoveryPage> createState() => _NewsDiscoveryPageState();
-}
-
-class _NewsDiscoveryPageState extends State<NewsDiscoveryPage> {
   @override
   Widget build(BuildContext context) {
     List<ArticleEntity> articleList = [];
@@ -283,7 +278,7 @@ class _NewsDiscoveryPageState extends State<NewsDiscoveryPage> {
                                 width: 18,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 4,
-                                  color: DrummTheme.primaryTextColor(context),
+                                  color: DrummTheme.drummPrimaryColor,
                                 ),
                               ),
                               SizedBox(

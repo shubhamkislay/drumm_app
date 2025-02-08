@@ -60,7 +60,7 @@ class _CustomBandSelectContainerState extends State<CustomBandSelectContainer> {
             },
             child: Container(
               alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               height: 32,
               decoration: BoxDecoration(
                 color: isSelected
