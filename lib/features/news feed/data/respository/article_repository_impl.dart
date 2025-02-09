@@ -55,4 +55,9 @@ class ArticleRespositoryImpl implements ArticleRepository {
   Future<DataState<bool>> generateAndLoadRecommendedArticles(GetArticlesParams params) {
     return articleService.generateAndLoadRecommendedArticles(params);
   }
+
+  @override
+  Future<DataState<bool>> vectorSearchAndLoadRecommendedArticles(GetArticlesParams params) {
+    return articleService.vectorSearchAndLoadRecommendedArticles(params);
+  }
 }

@@ -167,6 +167,26 @@ class ArticleService {
     }
   }
 
+  Future<DataState<bool>> vectorSearchAndLoadRecommendedArticles(GetArticlesParams getArticlesParams) async {
+    try {
+      Timestamp recommendTimestamp = getArticlesParams.drummerEntity!.lastRecommendationTimestamp ?? Timestamp.fromDate(DateTime(2000));
+      print("Calling vectorSearchAndStore function");
+      final HttpsCallable callable =
+      FirebaseFunctions.instance.httpsCallable('vectorSearchAndStore');
+
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+      final result = await callable.call({
+        'userId': userId??"",
+        'limit': 25,
+        'preference' :getArticlesParams.drummerEntity!.preference?.toArray(),
+        'recommendTimestamp':recommendTimestamp.millisecondsSinceEpoch.toString()
+      });
+      return DataSuccess(true);
+    } catch (error) {
+      return DataSuccess(false);
+    }
+  }
+
   Future<DataState<List<String>>> getBandsCategoryList() async {
     CollectionReference userBandsCollectionRef = FirebaseFirestore.instance
         .collection("users")
