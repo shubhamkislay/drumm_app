@@ -1,4 +1,5 @@
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
+import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/features/news%20feed/presentation/bloc/article/remote/remote_articles_bloc.dart';
 import 'package:drumm_app/features/news%20feed/presentation/bloc/article/remote/remote_articles_state.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/article_item_card.dart';
@@ -10,11 +11,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ArticleListWidget extends StatelessWidget {
   final List<ArticleEntity> articles;
   final List<BandEntity> bands;
+  final DrummerEntity? drummerEntity;
 
    const ArticleListWidget({
     super.key,
     required this.articles,
-    required this.bands,
+    required this.bands, required this.drummerEntity,
   });
 
   @override
@@ -38,6 +40,7 @@ class ArticleListWidget extends StatelessWidget {
             return ArticleItemCard(
               article: article,
               bands: bands,
+              drummerEntity: drummerEntity,
             );
           },
         ),

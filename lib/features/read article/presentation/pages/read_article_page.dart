@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/config/routes/router_constants.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
+import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/core/features/user%20activity/domain/entities/user_activity_entity.dart';
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_event.dart';
@@ -28,8 +29,9 @@ import 'package:go_router/go_router.dart';
 class ReadArticlePage extends StatefulWidget {
   final ArticleEntity article;
   final List<BandEntity> bands;
+  final DrummerEntity ? drummerEntity;
   const ReadArticlePage(
-      {super.key, required this.article, required this.bands});
+      {super.key, required this.article, required this.bands, required this.drummerEntity});
 
   @override
   State<ReadArticlePage> createState() => _ReadArticlePageState();
@@ -197,11 +199,13 @@ class _ReadArticlePageState extends State<ReadArticlePage> {
                         child: StartDrummButton(
                           article: widget.article,
                           onPressed: () {
+                            List<Object> parameters = [];
+                            parameters.add(widget.article);
+                            parameters.add(widget.drummerEntity??DrummerEntity());
+                            parameters.add(widget.bands);
                             Vibrate.feedback(FeedbackType.impact);
                             context.push(SCREEN_BOTTOM_CONVERSATION,
-                                extra: ArticleBands(
-                                    article: widget.article,
-                                    bands: widget.bands));
+                                extra: parameters);
                           },
                         )),
                   ),

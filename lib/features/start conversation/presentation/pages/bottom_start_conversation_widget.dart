@@ -1,10 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:drumm_app/config/constants.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
+import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/core/features/user%20activity/domain/entities/user_activity_entity.dart';
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_event.dart';
 import 'package:drumm_app/custom/constants/Constants.dart';
+import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
+import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_event.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/start_drumm_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,12 +16,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 
+import '../../../drumm audio/presentation/pages/drumm_audio_bottom_sheet.dart';
+
 class BottomStartConversationWidget extends StatelessWidget {
   final ArticleEntity article;
   final List<BandEntity> bands;
+  final DrummerEntity drummerEntity;
 
   const BottomStartConversationWidget(
-      {super.key, required this.article, required this.bands});
+      {super.key, required this.article, required this.bands, required this.drummerEntity});
   @override
   Widget build(BuildContext context) {
     const textStyle = TextStyle(
@@ -25,110 +32,138 @@ class BottomStartConversationWidget extends StatelessWidget {
       height: 1.5,
     );
     return Material(
-      color: Colors.transparent, // Transparent background
-      child: Align(
-        alignment: Alignment.bottomCenter, // Bottom Sheet Position
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: DrummTheme.drummPrimaryColor,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
+          color: Colors.transparent, // Transparent background
           child: Align(
-            alignment: Alignment.bottomCenter, // B
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
+            alignment: Alignment.bottomCenter, // Bottom Sheet Position
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: DrummTheme.drummPrimaryColor,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              child: Align(
+                alignment: Alignment.bottomCenter, // B
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset(
-                      color: Colors.white,
-                      width: 32,
-                      "images/team_active.png",
-                      height: 32,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          color: Colors.white,
+                          width: 32,
+                          "images/team_active.png",
+                          height: 32,
+                        ),
+                        SizedBox(
+                          height: 75,
+                          width: 150,
+                          child: CupertinoPicker(
+                            itemExtent: textStyle.fontSize!,
+                            diameterRatio: 5,
+                            magnification: 1.15,
+                            squeeze: 1,
+                            selectionOverlay: CupertinoPickerDefaultSelectionOverlay(
+                              background: Colors.black.withAlpha(25),
+                            ),
+                            onSelectedItemChanged: (index) {
+                              print("Band Name ${bands[index].name}");
+                            },
+                            children: List.generate(
+                              bands.length,
+                                  (index) {
+                                return Container(
+                                  alignment: Alignment.center,
+                                  margin: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    '${bands[index].name}',
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontFamily: DRUMM_FONT_FAMILY),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 32,),
+
+                      ],
                     ),
-                    SizedBox(
-                      height: 75,
-                      width: 150,
-                      child: CupertinoPicker(
-                        itemExtent: textStyle.fontSize!,
-                        diameterRatio: 5,
-                        magnification: 1.15,
-                        squeeze: 1,
-                        selectionOverlay: CupertinoPickerDefaultSelectionOverlay(
-                          background: Colors.black.withAlpha(25),
-                        ),
-                        onSelectedItemChanged: (index) {
-                          print("Band Name ${bands[index].name}");
-                        },
-                        children: List.generate(
-                          bands.length,
-                              (index) {
-                            return Container(
-                              alignment: Alignment.center,
-                              margin: const EdgeInsets.all(8.0),
-                              child: Text(
-                                '${bands[index].name}',
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontFamily: DRUMM_FONT_FAMILY),
-                              ),
-                            );
-                          },
-                        ),
+                    SizedBox(height: 32),
+                    Container(
+                      height: 135,
+                      padding: const EdgeInsets.all(16.0),
+                      child: AutoSizeText(
+                        "${article.question}",
+                        maxFontSize: 32,
+                        minFontSize: 12,
+                        style: TextStyle(
+                            fontSize: 32,
+                            color: Colors.white,
+                            fontFamily: DRUMM_FONT_FAMILY),
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                    SizedBox(width: 32,),
 
+                    Container(
+                      margin: EdgeInsets.only(bottom: 28),
+                      child: StartDrummButton(
+                        article: ArticleEntity(articleId: ""),
+                        size: 92,
+                        buttonText: "Tap to start a conversation",
+                        onPressed: () {
+                          Vibrate.feedback(FeedbackType.impact);
+                          context
+                              .read<UserActivityBloc>()
+                              .add(RecordUserActivity(UserActivityEntity(
+                            type: INTERACTION_STARTED,
+                            weight: WEIGHT_STARTED,
+                            articleId: article.articleId!,
+                            embedding: article.embedding!,
+                          )));
+
+                          _startOrSwitchChannel(context,(drummerEntity.rid)??11);
+                          //Navigator.pop(context);
+                        },
+                        background: Colors.black.withAlpha(25),
+                      ),
+                    )
                   ],
                 ),
-                SizedBox(height: 32),
-                Container(
-                  height: 135,
-                  padding: const EdgeInsets.all(16.0),
-                  child: AutoSizeText(
-                    "${article.question}",
-                    maxFontSize: 32,
-                    minFontSize: 12,
-                    style: TextStyle(
-                        fontSize: 32,
-                        color: Colors.white,
-                        fontFamily: DRUMM_FONT_FAMILY),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-
-                Container(
-                  margin: EdgeInsets.only(bottom: 28),
-                  child: StartDrummButton(
-                    article: ArticleEntity(articleId: ""),
-                    size: 92,
-                    buttonText: "Tap to start a conversation",
-                    onPressed: () {
-                      Vibrate.feedback(FeedbackType.impact);
-                      context
-                          .read<UserActivityBloc>()
-                          .add(RecordUserActivity(UserActivityEntity(
-                        type: INTERACTION_STARTED,
-                        weight: WEIGHT_STARTED,
-                        articleId: article.articleId!,
-                        embedding: article.embedding!,
-                      )));
-                      Navigator.pop(context);
-                    },
-                    background: Colors.black.withAlpha(25),
-                  ),
-                )
-              ],
+              ),
             ),
           ),
-        ),
+        );
+
+  }
+
+  void _startOrSwitchChannel(BuildContext context,int uid) {
+    context.read<DrummAudioBloc>().add(
+      StartOrSwitchChannelEvent(
+        appId: DrummConstants.appId,
+        token: DrummConstants.generateAgoraToken(uid.toString(), article.jamId??""),
+        channelName: article.jamId??"",
+        uid: uid,
+        isMuted: false,
       ),
     );
+    _showCallBottomSheet(context);
   }
+
+  void _showCallBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return const DrummAudioBottomSheet();
+      },
+      isScrollControlled: true, // optional for a full-screen bottom sheet
+    );
+  }
+
+
 }

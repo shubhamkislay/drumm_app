@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/config/injection_container.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
+import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/custom/instagram_date_time_widget.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/get_similar_articles_parameter.dart';
@@ -50,7 +51,7 @@ class SimilarArticlesWidget extends StatelessWidget {
                           Vibrate.feedback(FeedbackType.medium);
                           showModalBottomSheet(
                             context: context,
-                            builder: (_) => ReadArticlePage(article: article, bands: bands,),
+                            builder: (_) => ReadArticlePage(article: article, bands: bands,drummerEntity: DrummerEntity(),),
                             isScrollControlled: true, // For making the sheet extendable
                             backgroundColor: Colors.transparent,
                           );

@@ -16,7 +16,7 @@ class Splashscreen extends StatelessWidget {
           ),
           // Logo at the center
           Image.asset(
-            DRUMM_LOGO,
+            DrummConstants.DRUMM_LOGO,
             fit: BoxFit.fitWidth,
           ),
         ],

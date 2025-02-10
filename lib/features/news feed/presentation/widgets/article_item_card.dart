@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/config/routes/router_constants.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
+import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/core/features/user%20activity/domain/entities/user_activity_entity.dart';
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_event.dart';
@@ -22,7 +23,8 @@ import 'package:go_router/go_router.dart';
 class ArticleItemCard extends StatelessWidget {
   ArticleEntity article;
   final List<BandEntity> bands;
-  ArticleItemCard({super.key, required this.article, required this.bands});
+  final DrummerEntity? drummerEntity;
+  ArticleItemCard({super.key, required this.article, required this.bands, required this.drummerEntity});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,7 @@ class ArticleItemCard extends StatelessWidget {
           context: context,
           builder: (_) => BlocProvider.value(
           value: context.read<UserActivityBloc>(), // Provide the existing bloc
-          child: ReadArticlePage(article: article, bands: bands)),
+          child: ReadArticlePage(article: article, bands: bands, drummerEntity: drummerEntity,)),
           isScrollControlled: true, // For making the sheet extendable
           backgroundColor: Colors.transparent,
         );
@@ -132,9 +134,15 @@ class ArticleItemCard extends StatelessWidget {
                   articleId: article.articleId!,
                   embedding: article.embedding!,
                 )));
+
+                List<Object> parameters = [];
+                parameters.add(article);
+                parameters.add(drummerEntity??DrummerEntity());
+                parameters.add(bands);
+
                 context.push(
                   SCREEN_BOTTOM_CONVERSATION,
-                  extra: ArticleBands(article: article, bands: bands),
+                  extra: parameters,
                 );
               },
               child: Container(

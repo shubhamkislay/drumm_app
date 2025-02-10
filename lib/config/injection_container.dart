@@ -29,6 +29,14 @@ import 'package:drumm_app/features/authentication/domain/usecases/sign_in_with_g
 import 'package:drumm_app/features/authentication/presentation/bloc/drummer/hybrid/hybrid_initial_screen_bloc.dart';
 import 'package:drumm_app/features/authentication/presentation/bloc/drummer/remote/remote_auth_bloc.dart';
 import 'package:drumm_app/features/authentication/presentation/bloc/sign_in/sign_in_bloc.dart';
+import 'package:drumm_app/features/drumm%20audio/data/data_sources/drumm_audio_service.dart';
+import 'package:drumm_app/features/drumm%20audio/data/respository/drumm_audio_repository_impl.dart';
+import 'package:drumm_app/features/drumm%20audio/domain/repository/drumm_repository.dart';
+import 'package:drumm_app/features/drumm%20audio/domain/usecases/join_drumm_usecase.dart';
+import 'package:drumm_app/features/drumm%20audio/domain/usecases/leave_drumm_usecase.dart';
+import 'package:drumm_app/features/drumm%20audio/domain/usecases/listen_drumm_events_usecase.dart';
+import 'package:drumm_app/features/drumm%20audio/domain/usecases/mute_drumm_audio_usecase.dart';
+import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
 import 'package:drumm_app/features/news%20feed/data/data_sources/remote/article_service.dart';
 import 'package:drumm_app/features/news%20feed/data/respository/article_repository_impl.dart';
 import 'package:drumm_app/features/news%20feed/domain/repository/article_repository.dart';
@@ -61,6 +69,8 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<BandService>(BandService());
   s1.registerSingleton<DrummerService>(DrummerService());
   s1.registerSingleton<UserActivityService>(UserActivityService());
+  //drumm audio
+  s1.registerSingleton<DrummAudioService>(DrummAudioService());
 
   /**
    * Repositories
@@ -73,6 +83,8 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<BandRepository>(BandRepositoryImpl(s1()));
   s1.registerSingleton<DrummerRepository>(DrummerRepositoryImpl(s1()));
   s1.registerSingleton<UserActivityRepository>(UserActivityRepositoryImpl(s1()));
+  //drumm audio
+  s1.registerSingleton<IDrummRepository>(DrummAudioRepositoryImpl(drummAudioService: s1()));
 
   /**
    * UseCases
@@ -97,6 +109,11 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<GetDrummerUseCase>(GetDrummerUseCase(s1()));
   s1.registerSingleton<GetDrummerIdUseCase>(GetDrummerIdUseCase(s1()));
   s1.registerSingleton<RecordUserActivityUseCase>(RecordUserActivityUseCase(s1()));
+  //drumm audio
+  s1.registerSingleton<JoinDrummUseCase>(JoinDrummUseCase(s1()));
+  s1.registerSingleton<LeaveDrummUseCase>(LeaveDrummUseCase(s1()));
+  s1.registerSingleton<ListenDrummEventsUseCase>(ListenDrummEventsUseCase(s1()));
+  s1.registerSingleton<MuteDrummAudioUseCase>(MuteDrummAudioUseCase(s1()));
 
   /**
    * Bloc
@@ -111,4 +128,7 @@ Future<void> initializeDependencies() async {
   s1.registerFactory<RemoteDrummerBloc>(() => RemoteDrummerBloc(s1())); //get drummer
   s1.registerFactory<RemoteBandsBloc>(() => RemoteBandsBloc(s1(),s1())); //get band
   s1.registerFactory<UserActivityBloc>(() => UserActivityBloc(s1())); //record useractivity
+  //drumm audio
+  s1.registerFactory<DrummAudioBloc>(() => DrummAudioBloc(joinUseCase: s1(),leaveUseCase: s1(),listenUseCase: s1(),muteUseCase: s1(),repository: s1()));
+
 }

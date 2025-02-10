@@ -39,11 +39,14 @@ class NewsDiscoveryPage extends StatelessWidget {
       body: BlocBuilder<RemoteDrummerBloc, RemoteDrummerState>(
           builder: (context, drummerState) {
         if (drummerState is RemoteDrummerDone) {
+          print("State is RemoteDrummerDone NewsDiscoveryPage");
           context.read<RemoteArticlesBloc>().add(GetRecommendedArticles(
               GetArticlesParams(
                   category: ["For You"],
                   drummerEntity: drummerState.drummerEntity)));
         }
+        if(drummerState is RemoteDrummerLoading) {
+          print("State is RemoteDrummerLoading NewsDiscoveryPage");}
         return BlocBuilder<RemoteBandsBloc, RemoteBandsState>(
           builder: (BuildContext context, bandState) {
             List<BandEntity> ? bands = [];
@@ -436,6 +439,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                             child: ArticleListWidget(
                               articles: articleList,
                               bands: bandState.bands ?? [],
+                              drummerEntity: drummerState.drummerEntity
                             ),
                           );
                         },
