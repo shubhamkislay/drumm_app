@@ -74,7 +74,7 @@ class ArticleItemCard extends StatelessWidget {
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         fontFamily: DRUMM_FONT_FAMILY,
-                        color: DrummTheme.drummPrimaryColor,
+                        color: DrummTheme.primaryTextColor(context).withAlpha(100),
                       ),
                     ),
                     AutoSizeText(

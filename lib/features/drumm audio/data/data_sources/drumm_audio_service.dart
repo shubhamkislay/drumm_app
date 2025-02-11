@@ -54,7 +54,6 @@ class DrummAudioService {
       },
       onJoinChannelSuccess: (RtcConnection connection, int elapsed){
         _remoteEventsController.add(DrummLocalUserJoined());
-        print("Channel Joined successfully");
       },
     );
 
