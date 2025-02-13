@@ -1,11 +1,6 @@
-// presentation/bloc/drumm_audio/drumm_audio_event.dart
-
 abstract class DrummAudioEvent {}
 
-/// A single event to do everything:
-/// 1) Initialize engine
-/// 2) Subscribe to remote events
-/// 3) Join the channel
+/// Event to initialize, join, and subscribe to channel events.
 class InitializeJoinListenDrummEvent extends DrummAudioEvent {
   final String appId;
   final String token;
@@ -22,39 +17,52 @@ class InitializeJoinListenDrummEvent extends DrummAudioEvent {
   });
 }
 
-/// Leave channel
+/// Event to leave the channel.
 class LeaveDrummChannelEvent extends DrummAudioEvent {}
 
-/// Mute local audio
+/// Event to mute/unmute local audio.
 class MuteDrummAudioEvent extends DrummAudioEvent {
   final bool muted;
-  MuteDrummAudioEvent(this.muted);
+  final String channelName;
+  MuteDrummAudioEvent(this.muted, this.channelName);
 }
 
-/// These events are triggered **internally** when we get updates
-/// from the DrummAudioService's stream:
+/// Event fired internally when a remote user joins.
 class DrummRemoteUserJoinedEvent extends DrummAudioEvent {
   final int uid;
-  DrummRemoteUserJoinedEvent(this.uid);
+  final String channelName;
+  DrummRemoteUserJoinedEvent(this.uid, this.channelName);
 }
 
+class DrummRemoteUserLeftEvent extends DrummAudioEvent {
+  final int uid;
+  final String channelName;
+  DrummRemoteUserLeftEvent(this.uid, this.channelName);
+}
 
+/// Event fired internally when the local user joins.
 class DrummChannelJoined extends DrummAudioEvent {
-  DrummChannelJoined();
+  final String channelName;
+  DrummChannelJoined(this.channelName);
 }
 
+/// Event fired internally when a remote user is muted.
 class DrummRemoteUserMutedEvent extends DrummAudioEvent {
   final int uid;
   final bool isMuted;
-  DrummRemoteUserMutedEvent(this.uid, this.isMuted);
+  final String channelName;
+  DrummRemoteUserMutedEvent(this.uid, this.isMuted, this.channelName);
 }
 
+/// Event fired internally when a remote user's talking status changes.
 class DrummRemoteUserTalkingEvent extends DrummAudioEvent {
   final int uid;
   final bool isTalking;
-  DrummRemoteUserTalkingEvent(this.uid, this.isTalking);
+  final String channelName;
+  DrummRemoteUserTalkingEvent(this.uid, this.isTalking, this.channelName);
 }
 
+/// Event to start or switch channels.
 class StartOrSwitchChannelEvent extends DrummAudioEvent {
   final String appId;
   final String token;

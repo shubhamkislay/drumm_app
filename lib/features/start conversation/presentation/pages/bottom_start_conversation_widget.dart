@@ -159,7 +159,7 @@ class BottomStartConversationWidget extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       builder: (_) {
-        return const DrummAudioBottomSheet();
+        return DrummAudioBottomSheet(channelName:article.jamId??"");
       },
       isScrollControlled: true, // optional for a full-screen bottom sheet
     );

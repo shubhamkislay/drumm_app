@@ -1,28 +1,22 @@
-// drumm_audio_bottom_sheet.dart
-
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_event.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_state.dart';
+import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DrummAudioBottomSheet extends StatefulWidget {
-  const DrummAudioBottomSheet({Key? key}) : super(key: key);
+  final String channelName;
+  const DrummAudioBottomSheet({Key? key, required this.channelName}) : super(key: key);
 
   @override
   State<DrummAudioBottomSheet> createState() => _DrummAudioBottomSheetState();
 }
 
 class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
-  // List to keep track of remote user IDs
-  final List<int> _remoteUserIds = [];
-  // Map to keep track of talking status for each remote user (uid -> bool)
-  final Map<int, bool> _talkingStatus = {};
-  int i = 0;
-
   void _muteAudio(BuildContext context, bool mute) {
-    context.read<DrummAudioBloc>().add(MuteDrummAudioEvent(mute));
+    context.read<DrummAudioBloc>().add(MuteDrummAudioEvent(mute, widget.channelName));
   }
 
   void _leaveChannel(BuildContext context) {
@@ -38,84 +32,54 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
           print("DrummAudioError: ${state.message}");
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(state.message)));
-        } else if (state is DrummAudioRemoteUserJoined) {
-          //print("DrummAudioRemoteUserJoined: uid ${state.uid}");
-          // Add the remote UID if not already present
-          int id = (state.uid == 0)?12345:state.uid;
-          if (!_remoteUserIds.contains(id)) {
-            setState(() {
-              _remoteUserIds.add(id);
-            });
-          }
-        } else if (state is DrummAudioRemoteUserMuted) {
-          //print("DrummAudioRemoteUserMuted: uid ${state.uid}");
-
-        } else if (state is DrummAudioRemoteUserTalking) {
-          //print("DrummAudioRemoteUserTalking: uid ${state.uid} talking ${state.isTalking}");
-          // Update the talking status for the given uid
-          if (!_remoteUserIds.contains(12345))
-          setState(() {
-            _remoteUserIds.add(12345);
-            print("Total users${_remoteUserIds.length}");
-          });
-          int id = (state.uid == 0)?12345:state.uid;
-          setState(() {
-            _talkingStatus[id] = state.isTalking;
-          });
-        } else if (state is DrummChannelJoined) {
-          print("DrummChannelJoined");
-          setState(() {
-            _remoteUserIds.add(12345);
-            print("Total users${_remoteUserIds.length}");
-          });
         }
+        // You no longer need to update local _remoteUserIds or _talkingStatus here,
+        // as these values are maintained in the Bloc's state.
       },
       builder: (context, state) {
-        if (state is !DrummAudioError && state is !DrummAudioLoading) {
+        if (state is !DrummAudioLoading && state is !DrummAudioError && state is !DrummAudioInitial) {
           return Container(
-            height: MediaQuery.sizeOf(context).height*0.8, // Fixed height for the bottom sheet
+            height: MediaQuery.sizeOf(context).height * 0.8, // Fixed height for bottom sheet
             color: DrummTheme.primaryItemColor(context),
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Grid view to show remote users
+                // Grid view to show remote users.
                 Expanded(
-                  child: Container(
-                    child: _remoteUserIds.isNotEmpty
-                        ? GridView.builder(
-                      scrollDirection: Axis.vertical,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        childAspectRatio: 1,
-                      ),
-                      itemCount: _remoteUserIds.length,
-                      itemBuilder: (context, index) {
-                        final uid = _remoteUserIds[index];
-                        // If the user is talking, show a green border; otherwise, gray.
-                        final isTalking = _talkingStatus[uid] ?? false;
-                        return Container(
-                          margin: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: isTalking ? Colors.green : Colors.grey,
-                              width: isTalking ? 3 : 1,
-                            ),
+                  child: state.remoteUserIds.isNotEmpty
+                      ? GridView.builder(
+                    scrollDirection: Axis.vertical,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 1,
+                    ),
+                    itemCount: state.remoteUserIds.length,
+                    itemBuilder: (context, index) {
+                      final uid = state.remoteUserIds[index];
+                      // If the user is talking, show a green border; otherwise, gray.
+                      final isTalking = state.talkingStatus[uid] ?? false;
+                      return Container(
+                        margin: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: isTalking ? Colors.green : Colors.grey,
+                            width: isTalking ? 3 : 1,
                           ),
-                          width: 60,
-                          height: 60,
-                          child: Center(
-                            child: Text(
-                              uid.toString(),
-                              style: const TextStyle(fontSize: 16),
-                            ),
+                        ),
+                        width: 60,
+                        height: 60,
+                        child: Center(
+                          child: Text(
+                            uid.toString(),
+                            style: const TextStyle(fontSize: 16),
                           ),
-                        );
-                      },
-                    )
-                        : Center(child: Text("Total users${_remoteUserIds.length}")),
-                  ),
+                        ),
+                      );
+                    },
+                  )
+                      : Center(child: Text("Total users: ${state.remoteUserIds.length}")),
                 ),
                 const SizedBox(height: 16),
                 // Other controls
