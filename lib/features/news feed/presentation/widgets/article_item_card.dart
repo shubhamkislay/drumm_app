@@ -60,7 +60,7 @@ class ArticleItemCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: 12),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -107,7 +107,7 @@ class ArticleItemCard extends StatelessWidget {
               height: 4,
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: 12),
               child: AutoSizeText(
                 CoreUtils.removeTitleSource(article.title ?? ""),
                 minFontSize: 18,
@@ -122,6 +122,23 @@ class ArticleItemCard extends StatelessWidget {
             ),
             SizedBox(
               height: 8,
+            ),
+            CachedNetworkImage(
+              imageUrl: article.imageUrl ?? "",
+              height: 325,
+              width: double.maxFinite,
+              fit: BoxFit.cover,
+              errorWidget: (context, url, error) {
+                return Container(
+                    color: DrummTheme.primaryItemColor(context).withAlpha(100));
+              },
+              placeholder: (context, url) {
+                return Container(
+                    color: DrummTheme.primaryItemColor(context).withAlpha(100));
+              },
+            ),
+            SizedBox(
+              height: 16,
             ),
             GestureDetector(
               onTap: (){
@@ -146,7 +163,7 @@ class ArticleItemCard extends StatelessWidget {
                 );
               },
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8,vertical: 8),
+                padding: EdgeInsets.symmetric(horizontal: 6,vertical: 8),
                 margin: EdgeInsets.symmetric(horizontal: 12,vertical: 0),
                 decoration: BoxDecoration(
                   color: DrummTheme.primarySelectedItemColor(context).withAlpha(15),
@@ -155,7 +172,7 @@ class ArticleItemCard extends StatelessWidget {
                 child: Row(
                   children: [
                     ArticleDrummButton(article: article,bands: bands,),
-                    SizedBox(width: 8,),
+                    SizedBox(width: 4,),
                     Flexible(
                       child: AutoSizeText(
                         (article.question ?? "").trim(),
@@ -174,28 +191,12 @@ class ArticleItemCard extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
-              height: 16,
-            ),
-            CachedNetworkImage(
-              imageUrl: article.imageUrl ?? "",
-              height: 250,
-              width: double.maxFinite,
-              fit: BoxFit.cover,
-              errorWidget: (context, url, error) {
-                return Container(
-                    color: DrummTheme.primaryItemColor(context).withAlpha(100));
-              },
-              placeholder: (context, url) {
-                return Container(
-                    color: DrummTheme.primaryItemColor(context).withAlpha(100));
-              },
-            ),
+
             SizedBox(
               height: 12,
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: 12),
               child: Row(
                 children: [
                   Text(

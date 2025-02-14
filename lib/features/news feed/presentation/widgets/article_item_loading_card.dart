@@ -73,11 +73,18 @@ class ArticleItemLoadingCard extends StatelessWidget {
                 SizedBox(
                   height: 12,
                 ),
+
+                Container(
+                  height: 325,
+                    color: DrummTheme.primaryItemBackground(context)),
+                SizedBox(
+                  height: 16,
+                ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
-                    height: 18,
-                    width: 100,
+                    height: 22,
+                    width: 250,
                     decoration: BoxDecoration(
                         color: DrummTheme.primaryItemBackground(context),
                         borderRadius: BorderRadius.circular(12)),
@@ -85,12 +92,6 @@ class ArticleItemLoadingCard extends StatelessWidget {
                 ),
                 SizedBox(
                   height: 20,
-                ),
-                Container(
-                  height: 250,
-                    color: DrummTheme.primaryItemBackground(context)),
-                SizedBox(
-                  height: 16,
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
