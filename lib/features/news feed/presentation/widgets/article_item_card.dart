@@ -13,6 +13,9 @@ import 'package:drumm_app/core/util/core_utils.dart';
 import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/custom/instagram_date_time_widget.dart';
 import 'package:drumm_app/features/constants.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_event.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/presentation/pages/music_player_bottom_sheet.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/article_drumm_button.dart';
 import 'package:drumm_app/features/read%20article/presentation/pages/read_article_page.dart';
@@ -38,26 +41,34 @@ class ArticleItemCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Vibrate.feedback(FeedbackType.medium);
-        context
-            .read<UserActivityBloc>()
-            .add(RecordUserActivity(UserActivityEntity(
-              type: INTERACTION_OPENED,
-              weight: WEIGHT_OPENED,
-              articleId: article.articleId!,
-              embedding: article.embedding!,
-            )));
+        // context
+        //     .read<UserActivityBloc>()
+        //     .add(RecordUserActivity(UserActivityEntity(
+        //       type: INTERACTION_OPENED,
+        //       weight: WEIGHT_OPENED,
+        //       articleId: article.articleId!,
+        //       embedding: article.embedding!,
+        //     )));
+        // showModalBottomSheet(
+        //   context: context,
+        //   builder: (_) => BlocProvider.value(
+        //       value:
+        //           context.read<UserActivityBloc>(), // Provide the existing bloc
+        //       child: ReadArticlePage(
+        //         article: article,
+        //         bands: bands,
+        //         drummerEntity: drummerEntity,
+        //       )),
+        //   isScrollControlled: true, // For making the sheet extendable
+        //   backgroundColor: Colors.transparent,
+        // );
+
+        String audioUrl = "https://autocontentapi.blob.core.windows.net/audios/8cd1310d-c278-423d-b08f-4579c2af1387_20250214092532.wav";
+        context.read<MusicPlayerBloc>().add(LoadMusic(audioUrl));
         showModalBottomSheet(
           context: context,
-          builder: (_) => BlocProvider.value(
-              value:
-                  context.read<UserActivityBloc>(), // Provide the existing bloc
-              child: ReadArticlePage(
-                article: article,
-                bands: bands,
-                drummerEntity: drummerEntity,
-              )),
-          isScrollControlled: true, // For making the sheet extendable
-          backgroundColor: Colors.transparent,
+          isScrollControlled: true, // Enables full-screen bottom sheet behavior.
+          builder: (_) => MusicPlayerBottomSheet(),
         );
       },
       child: Container(

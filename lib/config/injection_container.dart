@@ -38,6 +38,7 @@ import 'package:drumm_app/features/drumm%20audio/domain/usecases/leave_drumm_use
 import 'package:drumm_app/features/drumm%20audio/domain/usecases/listen_drumm_events_usecase.dart';
 import 'package:drumm_app/features/drumm%20audio/domain/usecases/mute_drumm_audio_usecase.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
 import 'package:drumm_app/features/news%20feed/data/data_sources/remote/article_service.dart';
 import 'package:drumm_app/features/news%20feed/data/respository/article_repository_impl.dart';
 import 'package:drumm_app/features/news%20feed/domain/repository/article_repository.dart';
@@ -132,5 +133,7 @@ Future<void> initializeDependencies() async {
   s1.registerFactory<UserActivityBloc>(() => UserActivityBloc(s1())); //record useractivity
   //drumm audio
   s1.registerFactory<DrummAudioBloc>(() => DrummAudioBloc(joinUseCase: s1(),leaveUseCase: s1(),listenUseCase: s1(),muteUseCase: s1(),repository: s1()));
+  // drumm podcast player
+  s1.registerFactory<MusicPlayerBloc>(() => MusicPlayerBloc());
 
 }

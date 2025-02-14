@@ -1,6 +1,7 @@
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,6 +41,8 @@ class PageRoutes {
           builder: (BuildContext context, GoRouterState state, Widget child) {
             return MultiBlocProvider(
               providers: [
+                BlocProvider(
+                create: (_) => MusicPlayerBloc(),),
             BlocProvider<RemoteDrummerBloc>(
             create: (context) => s1()..add(GetDrummer())),
                 BlocProvider<DrummAudioBloc>(
