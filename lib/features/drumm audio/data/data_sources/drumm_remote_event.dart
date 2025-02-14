@@ -13,7 +13,8 @@ class DrummRemoteUserLeft extends DrummRemoteEvent {
 }
 
 class DrummLocalUserJoined extends DrummRemoteEvent {
-  DrummLocalUserJoined();
+  final int uid;
+  DrummLocalUserJoined(this.uid);
 }
 
 class DrummRemoteUserMuted extends DrummRemoteEvent {

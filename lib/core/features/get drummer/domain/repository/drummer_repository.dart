@@ -8,6 +8,10 @@ abstract class DrummerRepository{
 
   Future<DataState<DrummerEntity>> getDrummer({String ? uid});
 
+  Future<DataState<DrummerEntity>> getDrummerByRid({int ? rid});
+
   DataState<String> getDrummerId();
+
+
 
 }

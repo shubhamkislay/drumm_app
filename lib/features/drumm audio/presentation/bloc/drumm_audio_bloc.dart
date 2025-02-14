@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 import 'package:bloc/bloc.dart';
 import 'package:drumm_app/features/drumm audio/data/data_sources/drumm_remote_event.dart';
 import 'package:drumm_app/features/drumm audio/domain/repository/drumm_repository.dart';
@@ -21,6 +20,7 @@ class DrummAudioBloc extends Bloc<DrummAudioEvent, DrummAudioState> {
   // Persistent lists to store remote user IDs and their talking statuses.
   final List<int> _remoteUserIds = [];
   final Map<int, bool> _talkingStatus = {};
+  final Map<int, bool> _muteStatus = {};
 
   DrummAudioBloc({
     required this.repository,
@@ -28,7 +28,7 @@ class DrummAudioBloc extends Bloc<DrummAudioEvent, DrummAudioState> {
     required this.leaveUseCase,
     required this.muteUseCase,
     required this.listenUseCase,
-  }) : super(DrummAudioInitial('',[],HashMap<int, bool>())) {
+  }) : super(DrummAudioInitial('',[],{},{})) {
     on<StartOrSwitchChannelEvent>(_onStartOrSwitchChannelEvent);
     on<LeaveDrummChannelEvent>(_onLeaveChannel);
     on<MuteDrummAudioEvent>(_onMuteAudio);
@@ -43,6 +43,7 @@ class DrummAudioBloc extends Bloc<DrummAudioEvent, DrummAudioState> {
         event.channelName,
         List.from(_remoteUserIds),
         Map.from(_talkingStatus),
+        Map.from(_muteStatus),
       ));
     });
 
@@ -55,12 +56,14 @@ class DrummAudioBloc extends Bloc<DrummAudioEvent, DrummAudioState> {
         event.channelName,
         List.from(_remoteUserIds),
         Map.from(_talkingStatus),
+        Map.from(_muteStatus),
       ));
     });
 
     // When a remote user is muted, emit a muted state.
     on<DrummRemoteUserMutedEvent>((event, emit) {
-      emit(DrummAudioRemoteUserMuted(event.uid, event.isMuted, event.channelName,[],HashMap<int, bool>()));
+      _muteStatus[event.uid] = event.isMuted;
+      emit(DrummAudioRemoteUserMuted(event.uid, event.isMuted, event.channelName,[],{},muteStatus: Map.from(_muteStatus)));
     });
 
     // When a remote user's talking status changes, update the map and re-emit the joined state.
@@ -70,19 +73,20 @@ class DrummAudioBloc extends Bloc<DrummAudioEvent, DrummAudioState> {
         channelName: event.channelName,
         remoteUserIds: List.from(_remoteUserIds),
         talkingStatus: Map.from(_talkingStatus),
+        muteStatus: Map.from(_muteStatus),
       ));
     });
 
     // When the local user joins, add them (using 0 as local uid) and emit updated state.
     on<DrummChannelJoined>((event, emit) {
-      if (!_remoteUserIds.contains(0)) {
-        _remoteUserIds.add(0);
+      if (!_remoteUserIds.contains(event.uid)) {
+        _remoteUserIds.add(event.uid);
       }
-      emit(DrummAudioLocalUserJoined(event.channelName,[],HashMap<int, bool>()));
       emit(DrummAudioJoined(
         channelName: event.channelName,
         remoteUserIds: List.from(_remoteUserIds),
         talkingStatus: Map.from(_talkingStatus),
+        muteStatus: Map.from(_muteStatus),
       ));
       print("DrummChannelJoined event received.");
     });
@@ -106,6 +110,7 @@ class DrummAudioBloc extends Bloc<DrummAudioEvent, DrummAudioState> {
             channelName: currentChannel,
             remoteUserIds: List.from(_remoteUserIds),
             talkingStatus: Map.from(_talkingStatus),
+            muteStatus: Map.from(_muteStatus)
           ));
           return;
         } else {
@@ -114,6 +119,7 @@ class DrummAudioBloc extends Bloc<DrummAudioEvent, DrummAudioState> {
           await leaveUseCase.call();
           _remoteUserIds.clear();
           _talkingStatus.clear();
+          _muteStatus.clear();
         }
       } else {
         print("State is: $state");
@@ -133,7 +139,7 @@ class DrummAudioBloc extends Bloc<DrummAudioEvent, DrummAudioState> {
           add(DrummRemoteUserTalkingEvent(drummEvent.uid, drummEvent.isTalking, event.channelName));
         } else if (drummEvent is DrummLocalUserJoined) {
           print("drummEvent is DrummLocalUserJoined");
-          add(DrummChannelJoined(event.channelName));
+          add(DrummChannelJoined(event.channelName,drummEvent.uid));
         } else if (drummEvent is DrummRemoteUserLeft) {
           add(DrummRemoteUserLeftEvent(drummEvent.uid, event.channelName));
         }
@@ -152,9 +158,10 @@ class DrummAudioBloc extends Bloc<DrummAudioEvent, DrummAudioState> {
         channelName: event.channelName,
         remoteUserIds: List.from(_remoteUserIds),
         talkingStatus: Map.from(_talkingStatus),
+        muteStatus: Map.from(_muteStatus),
       ));
     } catch (e) {
-      emit(DrummAudioError('Failed to start or switch channel: $e',[],HashMap<int, bool>()));
+      emit(DrummAudioError('Failed to start or switch channel: $e',[],{},{}));
     }
   }
 
@@ -162,15 +169,16 @@ class DrummAudioBloc extends Bloc<DrummAudioEvent, DrummAudioState> {
       LeaveDrummChannelEvent event,
       Emitter<DrummAudioState> emit,
       ) async {
-    emit(DrummAudioLoading('',[],HashMap<int, bool>()));
+    emit(DrummAudioLoading('',[],{},{}));
     try {
       await leaveUseCase.call();
       // Clear persistent lists upon leaving.
       _remoteUserIds.clear();
       _talkingStatus.clear();
-      emit(DrummAudioLeft('',[],HashMap<int, bool>()));
+      _muteStatus.clear();
+      emit(DrummAudioLeft('',[],{},{}));
     } catch (e) {
-      emit(DrummAudioError('Failed to leave channel: $e',[],HashMap<int, bool>()));
+      emit(DrummAudioError('Failed to leave channel: $e',[],{},{}));
     }
   }
 
@@ -181,7 +189,7 @@ class DrummAudioBloc extends Bloc<DrummAudioEvent, DrummAudioState> {
     try {
       await muteUseCase.call(event.muted);
     } catch (e) {
-      emit(DrummAudioError('Failed to mute/unmute: $e',[],HashMap<int, bool>()));
+      emit(DrummAudioError('Failed to mute/unmute: $e',[],{},{}));
     }
   }
 

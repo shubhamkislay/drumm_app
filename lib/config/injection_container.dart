@@ -8,6 +8,7 @@ import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/rem
 import 'package:drumm_app/core/features/get%20drummer/data/data_sources/remote/drummer_service.dart';
 import 'package:drumm_app/core/features/get%20drummer/data/repository/drummer_repository_impl.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/repository/drummer_repository.dart';
+import 'package:drumm_app/core/features/get%20drummer/domain/usecase/get_drummer_by_rid.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/usecase/get_drummer_id.dart';
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_bloc.dart';
 import 'package:drumm_app/core/features/user%20activity/data/data_sources/user_activity_service.dart';
@@ -108,6 +109,7 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<GetCurrentUserBandsUseCase>(GetCurrentUserBandsUseCase(s1()));
   s1.registerSingleton<GetDrummerUseCase>(GetDrummerUseCase(s1()));
   s1.registerSingleton<GetDrummerIdUseCase>(GetDrummerIdUseCase(s1()));
+  s1.registerSingleton<GetDrummerByRidUseCase>(GetDrummerByRidUseCase(s1()));
   s1.registerSingleton<RecordUserActivityUseCase>(RecordUserActivityUseCase(s1()));
   //drumm audio
   s1.registerSingleton<JoinDrummUseCase>(JoinDrummUseCase(s1()));
@@ -125,7 +127,7 @@ Future<void> initializeDependencies() async {
   //news feed
   s1.registerFactory<RemoteArticlesBloc>(() => RemoteArticlesBloc(s1(),s1(),s1(),s1(),s1(),s1(),s1(),s1()));
   //core
-  s1.registerFactory<RemoteDrummerBloc>(() => RemoteDrummerBloc(s1())); //get drummer
+  s1.registerFactory<RemoteDrummerBloc>(() => RemoteDrummerBloc(s1(),s1())); //get drummer
   s1.registerFactory<RemoteBandsBloc>(() => RemoteBandsBloc(s1(),s1())); //get band
   s1.registerFactory<UserActivityBloc>(() => UserActivityBloc(s1())); //record useractivity
   //drumm audio

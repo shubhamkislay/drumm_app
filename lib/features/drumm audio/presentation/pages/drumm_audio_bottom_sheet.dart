@@ -2,6 +2,7 @@ import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_event.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_state.dart';
+import 'package:drumm_app/features/drumm%20audio/presentation/widgets/drummer_join_card.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,31 +53,15 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
                     scrollDirection: Axis.vertical,
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
-                      childAspectRatio: 1,
+                      childAspectRatio: 0.9,
                     ),
                     itemCount: state.remoteUserIds.length,
                     itemBuilder: (context, index) {
                       final uid = state.remoteUserIds[index];
                       // If the user is talking, show a green border; otherwise, gray.
                       final isTalking = state.talkingStatus[uid] ?? false;
-                      return Container(
-                        margin: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: isTalking ? Colors.green : Colors.grey,
-                            width: isTalking ? 3 : 1,
-                          ),
-                        ),
-                        width: 60,
-                        height: 60,
-                        child: Center(
-                          child: Text(
-                            uid.toString(),
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      );
+                      final isMute = state.muteStatus[uid]??false;
+                      return DrummerJoinCard(drummerId: uid,talking: isTalking,muted: isMute,);
                     },
                   )
                       : Center(child: Text("Total users: ${state.remoteUserIds.length}")),
@@ -102,18 +87,37 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
               ],
             ),
           );
-        } else if (state is DrummAudioLoading) {
-          return const SizedBox(
-            height: 300,
-            child: Center(child: CircularProgressIndicator()),
-          );
-        } else {
+        } else  {
           return Container(
-            height: 300,
+            height: MediaQuery.sizeOf(context).height * 0.8, // Fixed height for bottom sheet
+            color: DrummTheme.primaryItemColor(context),
             padding: const EdgeInsets.all(16),
-            color: Colors.white,
-            child: const Center(
-              child: Text('Not in a call'),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Grid view to show remote users.
+                Expanded(
+                  child: Container()
+                ),
+                const SizedBox(height: 16),
+                // Other controls
+                const Text('Drumm Audio Bottom Sheet'),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => _muteAudio(context, true),
+                  child: const Text('Mute'),
+                ),
+                const SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: () => _muteAudio(context, false),
+                  child: const Text('Unmute'),
+                ),
+                const SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: () => _leaveChannel(context),
+                  child: const Text('Leave Channel'),
+                ),
+              ],
             ),
           );
         }

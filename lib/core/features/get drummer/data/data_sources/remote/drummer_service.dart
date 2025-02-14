@@ -36,6 +36,31 @@ class DrummerService{
     }
   }
 
+  Future<DataState<DrummerModel>> getDrummerByRid({int ? rid}) async {
+
+    late Query<Map<String, dynamic>> query;
+      query = FirebaseFirestore.instance
+          .collection("users")
+          .where("rid", isEqualTo: rid).limit(1);
+
+    final QuerySnapshot<Map<String, dynamic>> snapshot =
+    await query.get().onError((error, stackTrace) {
+      throw DioException(
+          requestOptions: RequestOptions(data: stackTrace),
+          message: error.toString());
+    });
+    if (snapshot.docs.isNotEmpty) {
+      List<DrummerModel> drummer = snapshot.docs
+          .map((doc) => DrummerModel.fromDocumentSnapshot(doc))
+          .toList();
+      return DataSuccess(drummer.elementAt(0));
+    } else {
+      return DataFailed(DioException(
+          requestOptions: RequestOptions(),
+          message: "Unable to fetch bands"));
+    }
+  }
+
   DataState<String> getDrummerId() {
     FirebaseAuth auth = FirebaseAuth.instance;
     String? uid = auth.currentUser?.uid;

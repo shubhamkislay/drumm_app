@@ -43,7 +43,8 @@ class DrummRemoteUserLeftEvent extends DrummAudioEvent {
 /// Event fired internally when the local user joins.
 class DrummChannelJoined extends DrummAudioEvent {
   final String channelName;
-  DrummChannelJoined(this.channelName);
+  final int uid;
+  DrummChannelJoined(this.channelName, this.uid);
 }
 
 /// Event fired internally when a remote user is muted.

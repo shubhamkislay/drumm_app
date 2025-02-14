@@ -1,3 +1,4 @@
+import 'package:drumm_app/core/features/get%20drummer/domain/usecase/get_drummer_by_rid.dart';
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_event.dart';
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_state.dart';
 import 'package:drumm_app/core/resources/data_state.dart';
@@ -8,9 +9,11 @@ class RemoteDrummerBloc extends Bloc<RemoteDrummerEvent,RemoteDrummerState>{
 
 
   final GetDrummerUseCase getDrummerUseCase;
+  final GetDrummerByRidUseCase getDrummerByRidUseCase;
 
-  RemoteDrummerBloc(this.getDrummerUseCase) : super(const RemoteDrummerLoading()){
+  RemoteDrummerBloc(this.getDrummerUseCase, this.getDrummerByRidUseCase) : super(const RemoteDrummerLoading()){
     on <GetDrummer> (onGetDrummer);
+    on <GetDrummerByRid>(onGetDrummerByRid);
   }
 
   void onGetDrummer(GetDrummer event, Emitter<RemoteDrummerState> emit)async{
@@ -25,6 +28,22 @@ class RemoteDrummerBloc extends Bloc<RemoteDrummerEvent,RemoteDrummerState>{
     if(dataState is DataFailed){
       emit(
         RemoteDrummerError(dataState.error!)
+      );
+    }
+  }
+
+  void onGetDrummerByRid(GetDrummerByRid event, Emitter<RemoteDrummerState> emit)async{
+    final dataState = await getDrummerByRidUseCase(params: event.rid);
+
+    if(dataState is DataSuccess){
+      emit(
+          RemoteDrummerDone(dataState.data!)
+      );
+    }
+
+    if(dataState is DataFailed){
+      emit(
+          RemoteDrummerError(dataState.error!)
       );
     }
   }

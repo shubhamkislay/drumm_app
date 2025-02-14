@@ -18,4 +18,9 @@ class DrummerRepositoryImpl implements DrummerRepository {
     return drummerService.getDrummerId();
   }
 
+  @override
+  Future<DataState<DrummerEntity>> getDrummerByRid({int? rid}) {
+    return drummerService.getDrummerByRid(rid: rid);
+  }
+
 }

@@ -9,6 +9,7 @@ class DrummAudioService {
 
   // Flag to ensure initialization only happens once.
   bool _isInitialized = false;
+  int localUid = 0;
 
   /// Expose the stream of remote events.
   Stream<DrummRemoteEvent> get remoteEventsStream =>
@@ -40,14 +41,14 @@ class DrummAudioService {
             if (speaker.uid != null) {
               bool isTalking = (speaker.volume != null && speaker.volume! > 50);
               _remoteEventsController.add(
-                DrummRemoteUserTalking(uid: speaker.uid!, isTalking: isTalking),
+                DrummRemoteUserTalking(uid: (speaker.uid!=0)?speaker.uid!:localUid, isTalking: isTalking),
               );
             }
           }
         },
         onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
           print("onJoinChannelSuccess called");
-          _remoteEventsController.add(DrummLocalUserJoined());
+          _remoteEventsController.add(DrummLocalUserJoined(localUid));
         },
         onUserOffline: (RtcConnection connection, int remoteUid,
             UserOfflineReasonType reason) {
@@ -83,6 +84,7 @@ class DrummAudioService {
     required int uid,
     required bool isMuted,
   }) async {
+    localUid = uid;
     await _engine.joinChannel(
       token: token,
       channelId: channelName,
@@ -104,6 +106,8 @@ class DrummAudioService {
   Future<void> muteLocalAudio(bool muted) async {
     print("${(muted) ? 'Muting' : 'Un-muting'} local audio");
     await _engine.muteLocalAudioStream(muted);
+    _remoteEventsController
+        .add(DrummRemoteUserMuted(uid: localUid, isMuted: muted));
   }
 
   /// Dispose the engine and close the event stream.
