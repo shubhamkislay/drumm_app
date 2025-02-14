@@ -117,6 +117,7 @@ class BottomStartConversationWidget extends StatelessWidget {
                         size: 92,
                         buttonText: "Tap to start a conversation",
                         onPressed: () {
+                          Navigator.pop(context);
                           Vibrate.feedback(FeedbackType.impact);
                           context
                               .read<UserActivityBloc>()
@@ -128,7 +129,7 @@ class BottomStartConversationWidget extends StatelessWidget {
                           )));
 
                           _startOrSwitchChannel(context,(drummerEntity.rid)??11);
-                          //Navigator.pop(context);
+
                         },
                         background: Colors.black.withAlpha(25),
                       ),
