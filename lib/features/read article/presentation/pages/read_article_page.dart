@@ -14,6 +14,7 @@ import 'package:drumm_app/core/util/core_utils.dart';
 import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/get_similar_articles_parameter.dart';
+import 'package:drumm_app/features/news%20feed/presentation/widgets/article_drumm_button.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/article_sources_widget.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/close_dialog_button.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/pages/bottom_start_conversation_widget.dart';
@@ -25,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rive/rive.dart';
 
 class ReadArticlePage extends StatefulWidget {
   final ArticleEntity article;
@@ -55,7 +57,7 @@ class _ReadArticlePageState extends State<ReadArticlePage> {
         maxChildSize: 1,
         builder: (BuildContext context, ScrollController scrollController) {
           return ClipRRect(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
             child: Container(
               color: DrummTheme.primaryItemColor(context),
               child: Stack(
@@ -147,21 +149,44 @@ class _ReadArticlePageState extends State<ReadArticlePage> {
                               SizedBox(
                                 height: 8,
                               ),
-                              AutoSizeText(
-                                widget.article.question ?? "",
-                                minFontSize: 14,
-                                maxLines: 2,
-                                softWrap: true,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: DrummTheme.primaryTextColor(context),
-                                  fontFamily: DRUMM_FONT_FAMILY,
-                                ),
+                              Row(
+                                children: [
+                                  ArticleDrummButton(
+                                    article: ArticleEntity(),
+                                    bands: [],
+                                    color: DrummTheme.primaryTextColor(context),
+                                  ),
+                                  SizedBox(width: 12,),
+                                  Flexible(
+                                    child: AutoSizeText(
+                                      widget.article.question ?? "",
+                                      minFontSize: 14,
+                                      maxLines: 2,
+                                      softWrap: true,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: DrummTheme.primaryTextColor(context),
+                                        fontFamily: DRUMM_FONT_FAMILY,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                               SizedBox(
                                 height: 8,
                               ),
                               ArticleSourcesWidget(article: widget.article),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Row(
+                                children: [
+                                  Text("Summary",style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold
+                                  ),),
+                                ],
+                              ),
                               SizedBox(
                                 height: 8,
                               ),

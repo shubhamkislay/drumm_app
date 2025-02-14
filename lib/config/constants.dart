@@ -6,6 +6,7 @@ import 'package:agora_token_service/agora_token_service.dart';
 class DrummConstants {
 
   static final String DRUMM_LOGO = "images/logo_dark.png";
+  static final String DRUMM_LOGO_ICON = "images/logo_background_white.png";
 
 
   static const String appId = "0608d9da67a9458db263b255c8f30778";

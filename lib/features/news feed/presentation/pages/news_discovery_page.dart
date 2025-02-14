@@ -160,7 +160,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                       background: Container(
                         alignment: Alignment.bottomLeft,
                         padding: EdgeInsets.only(
-                            left: 12, bottom: 64, right: 12),
+                            left: 16, bottom: 64, right: 16),
                         width: double.maxFinite,
                         child: Row(
                           mainAxisAlignment:
@@ -435,7 +435,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                           }
                           return Container(
                             alignment: Alignment.topCenter,
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: ArticleListWidget(
                               articles: articleList,
                               bands: bandState.bands ?? [],

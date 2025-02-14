@@ -18,16 +18,17 @@ class ArticleItemLoadingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double curve = 16;
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(curve),
         child: Shimmer(
           color: DrummTheme.drummPrimaryColor,
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 16,),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(curve),
                 color: DrummTheme.primaryItemColor(context)),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -37,37 +38,11 @@ class ArticleItemLoadingCard extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
-                    height: 12,
+                    height: 16,
                     width: 100,
                     decoration: BoxDecoration(
                         color: DrummTheme.primaryItemBackground(context),
-                        borderRadius: BorderRadius.circular(12)),
-                  ),
-                ),
-                SizedBox(
-                  height:12,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Container(
-                    height: 26,
-                    width: double.maxFinite,
-                    decoration: BoxDecoration(
-                        color: DrummTheme.primaryItemBackground(context),
-                        borderRadius: BorderRadius.circular(12)),
-                  ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Container(
-                    height: 26,
-                    width: 250,
-                    decoration: BoxDecoration(
-                        color: DrummTheme.primaryItemBackground(context),
-                        borderRadius: BorderRadius.circular(12)),
+                        borderRadius: BorderRadius.circular(curve)),
                   ),
                 ),
                 SizedBox(
@@ -75,7 +50,7 @@ class ArticleItemLoadingCard extends StatelessWidget {
                 ),
 
                 Container(
-                  height: 325,
+                  height: 350,
                     color: DrummTheme.primaryItemBackground(context)),
                 SizedBox(
                   height: 16,
@@ -83,11 +58,11 @@ class ArticleItemLoadingCard extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
-                    height: 22,
-                    width: 250,
+                    height: 12,
+                    width: 100,
                     decoration: BoxDecoration(
                         color: DrummTheme.primaryItemBackground(context),
-                        borderRadius: BorderRadius.circular(12)),
+                        borderRadius: BorderRadius.circular(curve)),
                   ),
                 ),
                 SizedBox(
@@ -96,13 +71,14 @@ class ArticleItemLoadingCard extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
-                    height: 12,
-                    width: 100,
+                    height: 22,
+                    width: 250,
                     decoration: BoxDecoration(
                         color: DrummTheme.primaryItemBackground(context),
-                        borderRadius: BorderRadius.circular(12)),
+                        borderRadius: BorderRadius.circular(curve)),
                   ),
                 ),
+
               ],
             ),
           ),

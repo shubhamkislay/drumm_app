@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drumm_app/config/constants.dart';
 import 'package:drumm_app/config/routes/router_constants.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
@@ -24,26 +25,37 @@ class ArticleItemCard extends StatelessWidget {
   ArticleEntity article;
   final List<BandEntity> bands;
   final DrummerEntity? drummerEntity;
-  ArticleItemCard({super.key, required this.article, required this.bands, required this.drummerEntity});
+  ArticleItemCard(
+      {super.key,
+      required this.article,
+      required this.bands,
+      required this.drummerEntity});
 
   @override
   Widget build(BuildContext context) {
+    double height = 350;
+    double curve = 16;
     return GestureDetector(
       onTap: () {
         Vibrate.feedback(FeedbackType.medium);
         context
             .read<UserActivityBloc>()
             .add(RecordUserActivity(UserActivityEntity(
-          type: INTERACTION_OPENED,
-          weight: WEIGHT_OPENED,
-          articleId: article.articleId!,
-          embedding: article.embedding!,
-        )));
+              type: INTERACTION_OPENED,
+              weight: WEIGHT_OPENED,
+              articleId: article.articleId!,
+              embedding: article.embedding!,
+            )));
         showModalBottomSheet(
           context: context,
           builder: (_) => BlocProvider.value(
-          value: context.read<UserActivityBloc>(), // Provide the existing bloc
-          child: ReadArticlePage(article: article, bands: bands, drummerEntity: drummerEntity,)),
+              value:
+                  context.read<UserActivityBloc>(), // Provide the existing bloc
+              child: ReadArticlePage(
+                article: article,
+                bands: bands,
+                drummerEntity: drummerEntity,
+              )),
           isScrollControlled: true, // For making the sheet extendable
           backgroundColor: Colors.transparent,
         );
@@ -52,7 +64,7 @@ class ArticleItemCard extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 16),
         margin: EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(curve),
             color: DrummTheme.primaryItemColor(context)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -74,7 +86,7 @@ class ArticleItemCard extends StatelessWidget {
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         fontFamily: DRUMM_FONT_FAMILY,
-                        color: DrummTheme.primaryTextColor(context).withAlpha(100),
+                        color: DrummTheme.primaryTextColor(context),
                       ),
                     ),
                     AutoSizeText(
@@ -85,7 +97,8 @@ class ArticleItemCard extends StatelessWidget {
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         fontFamily: DRUMM_FONT_FAMILY,
-                        color: DrummTheme.primaryTextColor(context).withAlpha(100),
+                        color:
+                            DrummTheme.primaryTextColor(context).withAlpha(100),
                       ),
                     ),
                     AutoSizeText(
@@ -96,7 +109,8 @@ class ArticleItemCard extends StatelessWidget {
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         fontFamily: DRUMM_FONT_FAMILY,
-                        color: DrummTheme.primaryTextColor(context).withAlpha(100),
+                        color:
+                            DrummTheme.primaryTextColor(context).withAlpha(100),
                       ),
                     ),
                   ],
@@ -104,96 +118,63 @@ class ArticleItemCard extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 4,
+              height: 12,
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: AutoSizeText(
-                CoreUtils.removeTitleSource(article.title ?? ""),
-                minFontSize: 18,
-                softWrap: true,
-                maxLines: (article.title ?? "").length < 30 ? 1 : 2,
-                style: TextStyle(
-                    fontSize: 26,
-                    color: DrummTheme.primaryTextColor(context),
-                    fontWeight: FontWeight.w900,
-                    overflow: TextOverflow.clip),
-              ),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            CachedNetworkImage(
-              imageUrl: article.imageUrl ?? "",
-              height: 325,
-              width: double.maxFinite,
-              fit: BoxFit.cover,
-              errorWidget: (context, url, error) {
-                return Container(
-                    color: DrummTheme.primaryItemColor(context).withAlpha(100));
-              },
-              placeholder: (context, url) {
-                return Container(
-                    color: DrummTheme.primaryItemColor(context).withAlpha(100));
-              },
+            Stack(
+              children: [
+                CachedNetworkImage(
+                  imageUrl: article.imageUrl ?? "",
+                  height: height,
+                  width: double.maxFinite,
+                  fit: BoxFit.cover,
+                  errorWidget: (context, url, error) {
+                    return Image.asset(
+                      DrummConstants.DRUMM_LOGO_ICON,
+                      color:
+                          DrummTheme.primaryTextColor(context).withAlpha(150),
+                      width: 48,
+                      height: 48,
+                      fit: BoxFit.contain,
+                    );
+                  },
+                  placeholder: (context, url) {
+                    return Container(
+                        color: DrummTheme.primaryItemColor(context)
+                            .withAlpha(100));
+                  },
+                ),
+                Container(
+                  height: height,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: [
+                        Colors.black,
+                        Colors.transparent
+                      ])),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                  height: height,
+                  alignment: Alignment.bottomCenter,
+                  child: AutoSizeText(
+                    (article.title ?? ""),
+                    minFontSize: 18,
+                    softWrap: true,
+                    maxLines: (article.title ?? "").length < 30 ? 1 : 2,
+                    style: TextStyle(
+                        fontSize: 28,
+                        color: Colors
+                            .white, //DrummTheme.primaryTextColor(context),
+                        fontWeight: FontWeight.w900,
+                        overflow: TextOverflow.clip),
+                  ),
+                ),
+              ],
             ),
             SizedBox(
               height: 16,
-            ),
-            GestureDetector(
-              onTap: (){
-                Vibrate.feedback(FeedbackType.impact);
-                context
-                    .read<UserActivityBloc>()
-                    .add(RecordUserActivity(UserActivityEntity(
-                  type: INTERACTION_OPENED,
-                  weight: WEIGHT_OPENED,
-                  articleId: article.articleId!,
-                  embedding: article.embedding!,
-                )));
-
-                List<Object> parameters = [];
-                parameters.add(article);
-                parameters.add(drummerEntity??DrummerEntity());
-                parameters.add(bands);
-
-                context.push(
-                  SCREEN_BOTTOM_CONVERSATION,
-                  extra: parameters,
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 6,vertical: 8),
-                margin: EdgeInsets.symmetric(horizontal: 12,vertical: 0),
-                decoration: BoxDecoration(
-                  color: DrummTheme.primarySelectedItemColor(context).withAlpha(15),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    ArticleDrummButton(article: article,bands: bands,),
-                    SizedBox(width: 4,),
-                    Flexible(
-                      child: AutoSizeText(
-                        (article.question ?? "").trim(),
-                        minFontSize: 12,
-                        maxLines: 2,
-                        softWrap: true,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          fontFamily: DRUMM_FONT_FAMILY,
-                          color: DrummTheme.primaryTextColor(context),//.withAlpha(100),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            SizedBox(
-              height: 12,
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
@@ -208,8 +189,7 @@ class ArticleItemCard extends StatelessWidget {
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                       fontFamily: DRUMM_FONT_FAMILY,
-                      color:
-                          DrummTheme.primaryTextColor(context).withOpacity(0.5),
+                      color: DrummTheme.primaryTextColor(context),
                     ),
                   ),
                   Text(
@@ -226,7 +206,68 @@ class ArticleItemCard extends StatelessWidget {
                       publishedAt: article.publishedAt.toString())
                 ],
               ),
-            )
+            ),
+            SizedBox(
+              height: 12,
+            ),
+            GestureDetector(
+              onTap: () {
+                Vibrate.feedback(FeedbackType.impact);
+                context
+                    .read<UserActivityBloc>()
+                    .add(RecordUserActivity(UserActivityEntity(
+                      type: INTERACTION_OPENED,
+                      weight: WEIGHT_OPENED,
+                      articleId: article.articleId!,
+                      embedding: article.embedding!,
+                    )));
+
+                List<Object> parameters = [];
+                parameters.add(article);
+                parameters.add(drummerEntity ?? DrummerEntity());
+                parameters.add(bands);
+
+                context.push(
+                  SCREEN_BOTTOM_CONVERSATION,
+                  extra: parameters,
+                );
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                margin: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                decoration: BoxDecoration(
+                  color: DrummTheme.primarySelectedItemColor(context)
+                      .withAlpha(15),
+                  borderRadius: BorderRadius.circular(curve),
+                ),
+                child: Row(
+                  children: [
+                    ArticleDrummButton(
+                      article: article,
+                      bands: bands,
+                    ),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Flexible(
+                      child: AutoSizeText(
+                        (article.question ?? "").trim(),
+                        minFontSize: 12,
+                        maxLines: 2,
+                        softWrap: true,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: DRUMM_FONT_FAMILY,
+                          color: DrummTheme.primaryTextColor(
+                              context), //.withAlpha(100),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),

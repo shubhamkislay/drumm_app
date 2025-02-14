@@ -16,8 +16,9 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 class ArticleDrummButton extends StatelessWidget {
   final ArticleEntity article;
   final List<BandEntity> bands;
+  final Color ? color;
   const ArticleDrummButton(
-      {super.key, required this.article, required this.bands});
+      {super.key, required this.article, required this.bands, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class ArticleDrummButton extends StatelessWidget {
           //color: DrummTheme.primarySelectedItemColor(context).withAlpha(5),
           borderRadius: BorderRadius.circular(24)),
       child: Image.asset('images/audio-waves.png',
-          color: DrummTheme.drummPrimaryColor, fit: BoxFit.contain),
+          color: (color==null)?DrummTheme.drummPrimaryColor:color, fit: BoxFit.contain),
     );
   }
 }

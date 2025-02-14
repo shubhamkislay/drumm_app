@@ -19,16 +19,16 @@ class CoreUtils{
     return differenceMilliseconds < threeHoursInMs;
   }
 
-  static String removeTitleSource(String title){
-    List<String>? titleList =
-    title.split('-');
-    String? finalTitle = titleList![0] ?? "";
-    int titleLength = titleList?.length ?? 0;
-    for (int i = 1; i < titleLength - 1; i++) {
-      finalTitle = "${finalTitle}-${titleList![i]}";
+  static String removeTitleSource(String title) {
+    int lastDashIndex = title.lastIndexOf('-');
+    if (lastDashIndex == -1) {
+      // No dash found, return original
+      return title;
     }
-    return finalTitle??title;
+    // Everything up to (but not including) the last dash
+    return title.substring(0, lastDashIndex);
   }
+
 
 
 }
