@@ -11,16 +11,22 @@ class PodcastItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 200,
+      width: 300,
       margin: const EdgeInsets.all(8),
-      padding: const EdgeInsets.all(8),
-      color: DrummTheme.primaryItemColor(context),
+      padding: const EdgeInsets.all(16),
+      
+      decoration: BoxDecoration(
+        color: DrummTheme.primaryItemColor(context),
+        borderRadius: BorderRadius.circular(12)
+      ),
       child: Center(
         child: Text(
           "${CoreUtils.getWeekDay(podcast.updatedAt)}, ${CoreUtils.getFormattedDate(podcast.updatedAt)}\n${CoreUtils.getFormattedTime(podcast.updatedAt)}\n\n${podcast.podcastTitle}",
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.start,
           style: TextStyle(
-            color: DrummTheme.primaryTextColor(context)
+            color:DrummTheme.primaryTextColor(context),
+            fontFamily: DRUMM_FONT_FAMILY,
+            fontWeight: FontWeight.bold
           ),
         ),
       ),

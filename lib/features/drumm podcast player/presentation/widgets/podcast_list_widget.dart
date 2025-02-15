@@ -21,6 +21,7 @@ class PodcastListWidget extends StatelessWidget {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: podcasts.length,
+        padding: EdgeInsets.symmetric(horizontal:6),
         itemBuilder: (context, index) {
           final podcast = podcasts[index];
           return GestureDetector(
@@ -58,10 +59,11 @@ class PodcastListLoadingWidget extends StatelessWidget {
         itemBuilder: (context, index) {
           return Container(
             height: 200,
-            width: 200,
+            width: 300,
             margin: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: DrummTheme.primaryItemColor(context),
+              borderRadius: BorderRadius.circular(12)
             ),
           );
         },
