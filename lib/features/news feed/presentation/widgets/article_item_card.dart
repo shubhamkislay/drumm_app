@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/config/constants.dart';
 import 'package:drumm_app/config/routes/router_constants.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
@@ -47,7 +48,7 @@ class ArticleItemCard extends StatelessWidget {
               type: INTERACTION_OPENED,
               weight: WEIGHT_OPENED,
               articleId: article.articleId!,
-              embedding: article.embedding!,
+              embedding: article.embedding??VectorValue([]),
             )));
         showModalBottomSheet(
           context: context,
