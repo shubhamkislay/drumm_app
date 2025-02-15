@@ -1803,7 +1803,7 @@ class FirebaseDBOperations {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     await messaging.unsubscribeFromTopic(topic);
     await messaging.subscribeToTopic(topic);
-    //print('Subscribed to topic: $topic');
+    print('Subscribed to topic: $topic');
   }
 
   static void subscribeToUserBands() async {

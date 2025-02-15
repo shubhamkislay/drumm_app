@@ -4,12 +4,12 @@ class PodcastModel extends PodcastEntity {
   PodcastModel({
     required String audioTitle,
     required String audioUrl,
-    required int status,
+    required int requestStatus,
     required DateTime updatedAt,
   }) : super(
     audioTitle: audioTitle,
     audioUrl: audioUrl,
-    status: status,
+    requestStatus: requestStatus,
     updatedAt: updatedAt,
   );
 
@@ -18,7 +18,7 @@ class PodcastModel extends PodcastEntity {
     return PodcastModel(
       audioTitle: data['audio_title'] ?? '',
       audioUrl: data['audio_url'] ?? '',
-      status: data['status'] ?? 0,
+      requestStatus: data['request_status'] ?? 0,
       // Convert Firestore's Timestamp to DateTime
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );

@@ -7,6 +7,7 @@ import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/rem
 import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/remote_bands_state.dart';
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_bloc.dart';
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_state.dart';
+import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_event.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_state.dart';
@@ -21,6 +22,7 @@ import 'package:drumm_app/features/news%20feed/presentation/bloc/article/remote/
 import 'package:drumm_app/features/news%20feed/presentation/widgets/article_item_loading_card.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/article_list_widget.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/custom_band_list.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/presentation/widgets/podcast_list_widget.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/profile_image_icon.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/safe_area_persistent_header_delegate.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/search_button.dart';
@@ -37,6 +39,7 @@ class NewsDiscoveryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseDBOperations.subscribeToTopic("broadcast");
     List<ArticleEntity> articleList = [];
     var lastDocument;
     String selectedBandId = "For You";
@@ -53,11 +56,12 @@ class NewsDiscoveryPage extends StatelessWidget {
                   category: ["For You"],
                   drummerEntity: drummerState.drummerEntity)));
         }
-        if(drummerState is RemoteDrummerLoading) {
-          print("State is RemoteDrummerLoading NewsDiscoveryPage");}
+        if (drummerState is RemoteDrummerLoading) {
+          print("State is RemoteDrummerLoading NewsDiscoveryPage");
+        }
         return BlocBuilder<RemoteBandsBloc, RemoteBandsState>(
           builder: (BuildContext context, bandState) {
-            List<BandEntity> ? bands = [];
+            List<BandEntity>? bands = [];
             SliverAppBar sliverAppBar = SliverAppBar(
               pinned: true,
               backgroundColor: Colors.transparent,
@@ -69,39 +73,35 @@ class NewsDiscoveryPage extends StatelessWidget {
                     padding: EdgeInsets.only(bottom: 12),
                     child: const BandsPlaceHolder(),
                   )),
-              flexibleSpace:
-              LayoutBuilder(builder: (context, constraints) {
+              flexibleSpace: LayoutBuilder(builder: (context, constraints) {
                 return Container(
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          DrummTheme.primaryItemBackground(context),
-                          DrummTheme.primaryItemBackground(context)
-                              .withOpacity(0.75),
-                          DrummTheme.primaryItemBackground(context)
-                              .withOpacity(0.0),
-                        ],
-                      )),
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      DrummTheme.primaryItemBackground(context),
+                      DrummTheme.primaryItemBackground(context)
+                          .withOpacity(0.75),
+                      DrummTheme.primaryItemBackground(context)
+                          .withOpacity(0.0),
+                    ],
+                  )),
                   child: FlexibleSpaceBar(
                     collapseMode: CollapseMode.none,
                     background: Container(
                       alignment: Alignment.bottomLeft,
-                      padding: EdgeInsets.only(
-                          left: 12, bottom: 64, right: 12),
+                      padding: EdgeInsets.only(left: 12, bottom: 64, right: 12),
                       width: double.maxFinite,
                       child: Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             "Discover",
                             style: TextStyle(
                               fontSize: 28,
                               fontFamily: DRUMM_FONT_FAMILY,
-                              color: DrummTheme.primaryTextColor(
-                                  context),
+                              color: DrummTheme.primaryTextColor(context),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -123,10 +123,10 @@ class NewsDiscoveryPage extends StatelessWidget {
               collapsedHeight: 0,
               expandedHeight: 120,
             );
-            if(bandState is RemoteBandsFetched) {
+            if (bandState is RemoteBandsFetched) {
               print("Band state is RemoteBandsFetched");
               bands = bandState.bands;
-              sliverAppBar =  SliverAppBar(
+              sliverAppBar = SliverAppBar(
                 pinned: true,
                 backgroundColor: Colors.transparent,
                 surfaceTintColor: Colors.transparent,
@@ -136,51 +136,49 @@ class NewsDiscoveryPage extends StatelessWidget {
                       alignment: Alignment.center,
                       padding: EdgeInsets.only(bottom: 12),
                       child: CustomBandSelectContainer(
-                        bandEntities: bands??[], onSelect: (BandEntity bandEntity) {
-                        context.read<RemoteArticlesBloc>().add(
-                          GetArticlesFromDifferentCategory(
-                            GetArticlesParams(
-                              category: [bandEntity.bandId ?? "For You"],
-                              lastDocument: null,
-                            ),
-                          ),
-                        );
-                      },
+                        bandEntities: bands ?? [],
+                        onSelect: (BandEntity bandEntity) {
+                          context.read<RemoteArticlesBloc>().add(
+                                GetArticlesFromDifferentCategory(
+                                  GetArticlesParams(
+                                    category: [bandEntity.bandId ?? "For You"],
+                                    lastDocument: null,
+                                  ),
+                                ),
+                              );
+                        },
                       ),
                     )),
-                flexibleSpace:
-                LayoutBuilder(builder: (context, constraints) {
+                flexibleSpace: LayoutBuilder(builder: (context, constraints) {
                   return Container(
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            DrummTheme.primaryItemBackground(context),
-                            DrummTheme.primaryItemBackground(context)
-                                .withOpacity(0.75),
-                            DrummTheme.primaryItemBackground(context)
-                                .withOpacity(0.0),
-                          ],
-                        )),
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        DrummTheme.primaryItemBackground(context),
+                        DrummTheme.primaryItemBackground(context)
+                            .withOpacity(0.75),
+                        DrummTheme.primaryItemBackground(context)
+                            .withOpacity(0.0),
+                      ],
+                    )),
                     child: FlexibleSpaceBar(
                       collapseMode: CollapseMode.none,
                       background: Container(
                         alignment: Alignment.bottomLeft,
-                        padding: EdgeInsets.only(
-                            left: 16, bottom: 64, right: 16),
+                        padding:
+                            EdgeInsets.only(left: 16, bottom: 64, right: 16),
                         width: double.maxFinite,
                         child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               "Discover",
                               style: TextStyle(
                                 fontSize: 28,
                                 fontFamily: DRUMM_FONT_FAMILY,
-                                color: DrummTheme.primaryTextColor(
-                                    context),
+                                color: DrummTheme.primaryTextColor(context),
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -225,13 +223,35 @@ class NewsDiscoveryPage extends StatelessWidget {
               },
               child: BlocBuilder<RemoteArticlesBloc, RemoteArticlesState>(
                   builder: (context, articleState) {
-
                 return Stack(
                   children: [
                     CustomScrollView(
                       shrinkWrap: true,
                       slivers: [
                         sliverAppBar,
+                        SliverToBoxAdapter(
+                          child: BlocBuilder<PodcastBloc, PodcastState>(
+                            builder: (context, state) {
+                              if (state is PodcastLoading) {
+                                return PodcastListLoadingWidget();
+                              } else if (state is PodcastLoaded) {
+                                final podcasts = state.podcasts;
+                                if (podcasts.isNotEmpty) {
+                                  return PodcastListWidget(
+                                    podcasts: podcasts,
+                                  );
+                                } else {
+                                  return const SizedBox.shrink();
+                                }
+                              } else if (state is PodcastError) {
+                                return Center(
+                                    child: Text('Error: ${state.message}'));
+                              } else {
+                                return const SizedBox.shrink();
+                              }
+                            },
+                          ),
+                        ),
                         if (articleState is GeneratingRecommendation)
                           SliverAppBar(
                             pinned: true,
@@ -242,9 +262,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                             flexibleSpace: Container(
                               height: 44,
                               width: double.maxFinite,
-
-                              margin:
-                                  EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 12),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
                                   color: DrummTheme.primaryItemColor(context)),
@@ -255,8 +274,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                                   duration: Duration(milliseconds: 2000),
                                   interval: Duration(milliseconds: 0),
                                   child: Padding(
-                                    padding:
-                                    EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 12),
                                     child: SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,
                                       child: Row(
@@ -272,7 +291,9 @@ class NewsDiscoveryPage extends StatelessWidget {
                                             "Fetching news that you might be interested in...",
                                             maxLines: 2,
                                             style: TextStyle(
-                                                color: DrummTheme.primaryTextColor(context),
+                                                color:
+                                                    DrummTheme.primaryTextColor(
+                                                        context),
                                                 fontFamily: DRUMM_FONT_FAMILY,
                                                 fontSize: 12),
                                           )
@@ -294,10 +315,10 @@ class NewsDiscoveryPage extends StatelessWidget {
                             flexibleSpace: Container(
                               height: 44,
                               width: double.maxFinite,
-                              padding:
-                                  EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                              margin:
-                                  EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 12),
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 12),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
                                   color: DrummTheme.primaryItemColor(context)),
@@ -318,7 +339,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                                     "Checking what's happening around the world",
                                     maxLines: 2,
                                     style: TextStyle(
-                                        color: DrummTheme.primaryTextColor(context),
+                                        color: DrummTheme.primaryTextColor(
+                                            context),
                                         fontFamily: DRUMM_FONT_FAMILY,
                                         fontSize: 12),
                                   )
@@ -336,10 +358,10 @@ class NewsDiscoveryPage extends StatelessWidget {
                             flexibleSpace: Container(
                               height: 44,
                               width: double.maxFinite,
-                              padding:
-                                  EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                              margin:
-                                  EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 12),
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 12),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
                                   color: DrummTheme.primaryItemColor(context)),
@@ -355,7 +377,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                                     "Check ${articleState.interactions} more articles to personalise feed",
                                     maxLines: 2,
                                     style: TextStyle(
-                                        color: DrummTheme.primaryTextColor(context),
+                                        color: DrummTheme.primaryTextColor(
+                                            context),
                                         fontFamily: DRUMM_FONT_FAMILY,
                                         fontSize: 12),
                                   )
@@ -401,54 +424,6 @@ class NewsDiscoveryPage extends StatelessWidget {
                             ),
                           ),
                         SliverToBoxAdapter(
-                          child: BlocBuilder<PodcastBloc, PodcastState>(
-                            builder: (context, state) {
-                              if (state is PodcastLoading) {
-                                return const Center(child: CircularProgressIndicator());
-                              } else if (state is PodcastLoaded) {
-                                final podcasts = state.podcasts;
-                                return SizedBox(
-                                  height: 200,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: podcasts.length,
-                                    itemBuilder: (context, index) {
-                                      final podcast = podcasts[index];
-                                      return GestureDetector(
-                                        onTap: () {
-                                          // Show a bottom sheet with the selected audio
-                                          Vibrate.feedback(FeedbackType.medium);
-                                          context.read<MusicPlayerBloc>().add(LoadMusic(podcast.audioUrl));
-                                          showModalBottomSheet(
-                                            context: context,
-                                            isScrollControlled: true, // Enables full-screen bottom sheet behavior.
-                                            builder: (_) => MusicPlayerBottomSheet(),
-                                          );
-                                        },
-                                        child: Container(
-                                          width: 200,
-                                          margin: const EdgeInsets.all(8),
-                                          color: Colors.grey[200],
-                                          child: Center(
-                                            child: Text(
-                                              podcast.audioTitle,
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                );
-                              } else if (state is PodcastError) {
-                                return Center(child: Text('Error: ${state.message}'));
-                              } else {
-                                return const SizedBox.shrink();
-                              }
-                            },
-                          ),
-                        ),
-                        SliverToBoxAdapter(
                           child: Builder(
                             builder: (context) {
                               remoteState = articleState;
@@ -493,12 +468,12 @@ class NewsDiscoveryPage extends StatelessWidget {
                               }
                               return Container(
                                 alignment: Alignment.topCenter,
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
                                 child: ArticleListWidget(
-                                  articles: articleList,
-                                  bands: bandState.bands ?? [],
-                                  drummerEntity: drummerState.drummerEntity
-                                ),
+                                    articles: articleList,
+                                    bands: bandState.bands ?? [],
+                                    drummerEntity: drummerState.drummerEntity),
                               );
                             },
                           ),
@@ -509,21 +484,22 @@ class NewsDiscoveryPage extends StatelessWidget {
                     // 1. Music is loaded (duration is available and non-zero)
                     // 2. The track has not finished playing (position is less than duration)
                     BlocBuilder<MusicPlayerBloc, MusicPlayerState>(
-                    builder: (context, state) {
-                    final loaded = state.duration != null &&
-                    state.duration!.inMilliseconds > 0;
-                    final finished = loaded &&
-                    state.position.inMilliseconds >= state.duration!.inMilliseconds;
-                    if (!loaded || finished) {
-                    return const SizedBox.shrink();
-                    }
-                    return const Positioned(
-                    left: 16,
-                    right: 16,
-                    bottom: 32,
-                    child: FloatingMusicPlayer(),
-                    );
-                    },
+                      builder: (context, state) {
+                        final loaded = state.duration != null &&
+                            state.duration!.inMilliseconds > 0;
+                        final finished = loaded &&
+                            state.position.inMilliseconds >=
+                                state.duration!.inMilliseconds;
+                        if (!loaded || finished) {
+                          return const SizedBox.shrink();
+                        }
+                        return const Positioned(
+                          left: 16,
+                          right: 16,
+                          bottom: 32,
+                          child: FloatingMusicPlayer(),
+                        );
+                      },
                     ),
                   ],
                 );

@@ -11,14 +11,20 @@ class PodcastService{
 
   @override
   Future<List<PodcastModel>> getPodcastsWhereStatusIs100() async {
-    final querySnapshot = await FirebaseFirestore.instance
-        .collection('podcastRequests')
-        .where('status', isEqualTo: 100)
-        .orderBy('updatedAt', descending: true)
-        .get();
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('podcastRequests')
+          .where('request_status', isEqualTo: 100)
+          .orderBy('updatedAt', descending: true)
+          .get();
 
-    return querySnapshot.docs
-        .map((doc) => PodcastModel.fromDocument(doc))
-        .toList();
+
+      return querySnapshot.docs
+          .map((doc) => PodcastModel.fromDocument(doc))
+          .toList();
+    }catch(e){
+      print("Error while fetching podcast: ${e.toString()}");
+      return [];
+    }
   }
 }
