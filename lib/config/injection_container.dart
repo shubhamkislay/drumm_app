@@ -57,6 +57,11 @@ import 'package:drumm_app/features/news%20feed/domain/usecases/get_similar_artic
 import 'package:drumm_app/features/news%20feed/domain/usecases/perform_vector_search.dart';
 import 'package:drumm_app/features/news%20feed/domain/usecases/vector_search_and_load_recommended_articles.dart';
 import 'package:drumm_app/features/news%20feed/presentation/bloc/article/remote/remote_articles_bloc.dart';
+import 'package:drumm_app/features/search%20article/data/data_sources/search_article_service.dart';
+import 'package:drumm_app/features/search%20article/data/respository/search_article_repository_impl.dart';
+import 'package:drumm_app/features/search%20article/domain/repository/search_article_repository.dart';
+import 'package:drumm_app/features/search%20article/domain/usecases/search_articles.dart';
+import 'package:drumm_app/features/search%20article/presentation/bloc/search_article_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 final s1 = GetIt.instance;
@@ -81,6 +86,8 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<DrummAudioService>(DrummAudioService());
   //drumm podcast player
   s1.registerSingleton<PodcastService>(PodcastService());
+  //search article
+  s1.registerSingleton<SearchArticleService>(SearchArticleService());
 
   /**
    * Repositories
@@ -97,7 +104,8 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<IDrummRepository>(DrummAudioRepositoryImpl(drummAudioService: s1()));
   //drumm podcast player
   s1.registerSingleton<PodcastRepository>(PodcastRepositoryImpl(s1()));
-
+  //search article
+  s1.registerSingleton<SearchArticleRepository>(SearchArticleRepositoryImpl(service: s1()));
   /**
    * UseCases
    */
@@ -129,6 +137,8 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<MuteDrummAudioUseCase>(MuteDrummAudioUseCase(s1()));
   //drumm podcast player
   s1.registerSingleton<FetchPodcastsUseCase>(FetchPodcastsUseCase(s1()));
+  //search article
+  s1.registerSingleton<SearchArticlesUseCase>(SearchArticlesUseCase(s1()));
 
   /**
    * Bloc
@@ -148,6 +158,6 @@ Future<void> initializeDependencies() async {
   //drumm podcast player
   s1.registerFactory<MusicPlayerBloc>(() => MusicPlayerBloc());
   s1.registerFactory<PodcastBloc>(() => PodcastBloc(s1()));
-
-
+  //search article
+  s1.registerFactory<SearchArticleBloc>(() => SearchArticleBloc(searchArticlesUseCase: s1()));
 }

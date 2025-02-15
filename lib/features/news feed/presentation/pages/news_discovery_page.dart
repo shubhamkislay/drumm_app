@@ -1,10 +1,12 @@
 import 'dart:math';
 
 import 'package:drumm_app/config/injection_container.dart';
+import 'package:drumm_app/config/routes/router_constants.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
 import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/remote_bands_bloc.dart';
 import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/remote_bands_state.dart';
+import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_bloc.dart';
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_state.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
@@ -29,6 +31,7 @@ import 'package:drumm_app/features/news%20feed/presentation/widgets/search_butto
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
@@ -184,7 +187,12 @@ class NewsDiscoveryPage extends StatelessWidget {
                             ),
                             Expanded(child: SizedBox()),
                             SearchButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                List<Object> parameters = [];
+                                parameters.add(drummerState.drummerEntity ?? DrummerEntity());
+                                parameters.add(bandState.bands ?? []);
+                                context.push(SCREEN_SEARCH_ARTICLE_PAGE,extra: parameters);
+                              },
                             ),
                             SizedBox(
                               width: 8,

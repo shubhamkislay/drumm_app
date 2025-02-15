@@ -4,6 +4,8 @@ import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_b
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/podcast_bloc.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/podcast_event.dart';
+import 'package:drumm_app/features/search%20article/presentation/bloc/search_article_bloc.dart';
+import 'package:drumm_app/features/search%20article/presentation/pages/search_article_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,6 +44,8 @@ class PageRoutes {
           builder: (BuildContext context, GoRouterState state, Widget child) {
             return MultiBlocProvider(
               providers: [
+                BlocProvider(
+                create: (context) =>s1<SearchArticleBloc>(),),
                 BlocProvider(
                   create: (_) => MusicPlayerBloc(),
                 ),
@@ -158,6 +162,20 @@ class PageRoutes {
               path: '/interestsPage',
               builder: (BuildContext context, GoRouterState state) {
                 return const InterestsPage();
+              },
+            ),
+            GoRoute(
+              path: SCREEN_SEARCH_ARTICLE_PAGE,
+              builder: (BuildContext context, GoRouterState state) {
+                List<Object> parameters = state.extra as List<Object>;
+                DrummerEntity drummerEntity =
+                parameters.elementAt(0) as DrummerEntity;
+                List<BandEntity> bands =
+                parameters.elementAt(1) as List<BandEntity>;
+                return SearchArticlePage(
+                  bands: bands,
+                  drummerEntity: drummerEntity,
+                );
               },
             ),
             GoRoute(

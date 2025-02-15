@@ -141,6 +141,7 @@ dependencies:
   shimmer_animation: ^2.2.2
   wheel_picker: ^0.2.1
   provider: ^6.1.2
+  typesense: ^0.3.1
 
 
 

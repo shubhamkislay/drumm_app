@@ -146,4 +146,35 @@ class ArticleModel extends ArticleEntity {
     uid = snapshot['uid'];
     aiVoiceUrl = snapshot['aiVoiceUrl'];
   }
+  factory ArticleModel.fromJson(Map<String, dynamic> json) {
+    return ArticleModel(
+      title: json['title'],
+      meta: json['meta'],
+      category: json['category'],
+      country: json['country'],
+      description: json['description'],
+      url: json['url'],
+      imageUrl: json['imageUrl'],
+      publishedAt: json['publishedAt'] != null ? Timestamp.fromMillisecondsSinceEpoch(json['publishedAt']) : null,
+      boostamp: json['boostamp'] != null ? Timestamp.fromMillisecondsSinceEpoch(json['boostamp']) : null,
+      question: json['question'],
+      summary: json['summary'],
+      content: json['content'],
+      articleId: json['articleId'],
+      clusterId: json['clusterId'],
+      similarId: json['similarId'],
+      jamId: json['jamId'],
+      source: json['source'],
+      dump: json['dump'],
+      liked: json['liked'],
+      likes: json['likes'],
+      reads: json['reads'],
+      boosts: json['boosts'],
+      uid: json['uid'],
+      aiVoiceUrl: json['aiVoiceUrl'],
+      // Assume a proper conversion for embedding and relatedImageUrls.
+      embedding: json['embedding._values'] != null ? VectorValue(json['embedding._values'] as List<double>) : null,
+      relatedImageUrls: json['relatedImageUrls'],
+    );
+  }
 }
