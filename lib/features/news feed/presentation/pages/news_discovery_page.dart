@@ -8,7 +8,11 @@ import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/rem
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_bloc.dart';
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_state.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_event.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_state.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/podcast_bloc.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/podcast_state.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/presentation/pages/music_player_bottom_sheet.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/get_articles_parameter.dart';
 import 'package:drumm_app/features/news%20feed/presentation/bloc/article/remote/remote_articles_bloc.dart';
@@ -396,6 +400,54 @@ class NewsDiscoveryPage extends StatelessWidget {
                               ),
                             ),
                           ),
+                        SliverToBoxAdapter(
+                          child: BlocBuilder<PodcastBloc, PodcastState>(
+                            builder: (context, state) {
+                              if (state is PodcastLoading) {
+                                return const Center(child: CircularProgressIndicator());
+                              } else if (state is PodcastLoaded) {
+                                final podcasts = state.podcasts;
+                                return SizedBox(
+                                  height: 200,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: podcasts.length,
+                                    itemBuilder: (context, index) {
+                                      final podcast = podcasts[index];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          // Show a bottom sheet with the selected audio
+                                          Vibrate.feedback(FeedbackType.medium);
+                                          context.read<MusicPlayerBloc>().add(LoadMusic(podcast.audioUrl));
+                                          showModalBottomSheet(
+                                            context: context,
+                                            isScrollControlled: true, // Enables full-screen bottom sheet behavior.
+                                            builder: (_) => MusicPlayerBottomSheet(),
+                                          );
+                                        },
+                                        child: Container(
+                                          width: 200,
+                                          margin: const EdgeInsets.all(8),
+                                          color: Colors.grey[200],
+                                          child: Center(
+                                            child: Text(
+                                              podcast.audioTitle,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              } else if (state is PodcastError) {
+                                return Center(child: Text('Error: ${state.message}'));
+                              } else {
+                                return const SizedBox.shrink();
+                              }
+                            },
+                          ),
+                        ),
                         SliverToBoxAdapter(
                           child: Builder(
                             builder: (context) {

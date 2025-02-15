@@ -2,6 +2,8 @@ import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/podcast_bloc.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/podcast_event.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,7 +32,6 @@ import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/config/injection_container.dart';
 import 'router_constants.dart'; // your constants file
 
-
 class PageRoutes {
   static GoRouter getGoRouter() {
     return GoRouter(
@@ -42,9 +43,12 @@ class PageRoutes {
             return MultiBlocProvider(
               providers: [
                 BlocProvider(
-                create: (_) => MusicPlayerBloc(),),
-            BlocProvider<RemoteDrummerBloc>(
-            create: (context) => s1()..add(GetDrummer())),
+                  create: (_) => MusicPlayerBloc(),
+                ),
+                BlocProvider<PodcastBloc>(
+                    create: (_) => s1()..add(GetPodcastsEvent())),
+                BlocProvider<RemoteDrummerBloc>(
+                    create: (context) => s1()..add(GetDrummer())),
                 BlocProvider<DrummAudioBloc>(
                   create: (_) => s1<DrummAudioBloc>(),
                 ),
@@ -107,14 +111,18 @@ class PageRoutes {
               path: SCREEN_BOTTOM_CONVERSATION,
               pageBuilder: (context, state) {
                 List<Object> parameters = state.extra as List<Object>;
-                ArticleEntity article =parameters.elementAt(0) as ArticleEntity;
-                DrummerEntity drummerEntity = parameters.elementAt(1) as DrummerEntity;
-                List<BandEntity> bands = parameters.elementAt(2) as List<BandEntity>;
+                ArticleEntity article =
+                    parameters.elementAt(0) as ArticleEntity;
+                DrummerEntity drummerEntity =
+                    parameters.elementAt(1) as DrummerEntity;
+                List<BandEntity> bands =
+                    parameters.elementAt(2) as List<BandEntity>;
                 return CustomTransitionPage(
                   key: state.pageKey,
                   child: BottomStartConversationWidget(
                     article: article,
-                    bands: bands, drummerEntity: drummerEntity,
+                    bands: bands,
+                    drummerEntity: drummerEntity,
                   ),
                   opaque: false,
                   transitionDuration: const Duration(milliseconds: 150),
@@ -135,11 +143,11 @@ class PageRoutes {
                   providers: [
                     BlocProvider<RemoteDrummerBloc>(
                       create: (BuildContext context) =>
-                      s1<RemoteDrummerBloc>()..add(GetDrummer()),
+                          s1<RemoteDrummerBloc>()..add(GetDrummer()),
                     ),
                     BlocProvider<RemoteBandsBloc>(
                       create: (providerContext) =>
-                      s1<RemoteBandsBloc>()..add(GetCurrentUserBands()),
+                          s1<RemoteBandsBloc>()..add(GetCurrentUserBands()),
                     ),
                   ],
                   child: const NewsDiscoveryPage(),

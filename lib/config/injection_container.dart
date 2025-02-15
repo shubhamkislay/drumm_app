@@ -38,7 +38,13 @@ import 'package:drumm_app/features/drumm%20audio/domain/usecases/leave_drumm_use
 import 'package:drumm_app/features/drumm%20audio/domain/usecases/listen_drumm_events_usecase.dart';
 import 'package:drumm_app/features/drumm%20audio/domain/usecases/mute_drumm_audio_usecase.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/data/data_sources/podcast_remote_data_source.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/data/data_sources/podcast_remote_data_source_impl.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/data/respository/podcast_repository_impl.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/domain/repository/podcast_repository.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/domain/usecases/fetch_podcast_usecase.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/podcast_bloc.dart';
 import 'package:drumm_app/features/news%20feed/data/data_sources/remote/article_service.dart';
 import 'package:drumm_app/features/news%20feed/data/respository/article_repository_impl.dart';
 import 'package:drumm_app/features/news%20feed/domain/repository/article_repository.dart';
@@ -73,6 +79,8 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<UserActivityService>(UserActivityService());
   //drumm audio
   s1.registerSingleton<DrummAudioService>(DrummAudioService());
+  //drumm podcast player
+  s1.registerSingleton<PodcastService>(PodcastService());
 
   /**
    * Repositories
@@ -87,6 +95,8 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<UserActivityRepository>(UserActivityRepositoryImpl(s1()));
   //drumm audio
   s1.registerSingleton<IDrummRepository>(DrummAudioRepositoryImpl(drummAudioService: s1()));
+  //drumm podcast player
+  s1.registerSingleton<PodcastRepository>(PodcastRepositoryImpl(s1()));
 
   /**
    * UseCases
@@ -117,6 +127,8 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<LeaveDrummUseCase>(LeaveDrummUseCase(s1()));
   s1.registerSingleton<ListenDrummEventsUseCase>(ListenDrummEventsUseCase(s1()));
   s1.registerSingleton<MuteDrummAudioUseCase>(MuteDrummAudioUseCase(s1()));
+  //drumm podcast player
+  s1.registerSingleton<FetchPodcastsUseCase>(FetchPodcastsUseCase(s1()));
 
   /**
    * Bloc
@@ -133,7 +145,9 @@ Future<void> initializeDependencies() async {
   s1.registerFactory<UserActivityBloc>(() => UserActivityBloc(s1())); //record useractivity
   //drumm audio
   s1.registerFactory<DrummAudioBloc>(() => DrummAudioBloc(joinUseCase: s1(),leaveUseCase: s1(),listenUseCase: s1(),muteUseCase: s1(),repository: s1()));
-  // drumm podcast player
+  //drumm podcast player
   s1.registerFactory<MusicPlayerBloc>(() => MusicPlayerBloc());
+  s1.registerFactory<PodcastBloc>(() => PodcastBloc(s1()));
+
 
 }

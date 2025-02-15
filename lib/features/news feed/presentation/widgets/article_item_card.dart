@@ -41,34 +41,26 @@ class ArticleItemCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Vibrate.feedback(FeedbackType.medium);
-        // context
-        //     .read<UserActivityBloc>()
-        //     .add(RecordUserActivity(UserActivityEntity(
-        //       type: INTERACTION_OPENED,
-        //       weight: WEIGHT_OPENED,
-        //       articleId: article.articleId!,
-        //       embedding: article.embedding!,
-        //     )));
-        // showModalBottomSheet(
-        //   context: context,
-        //   builder: (_) => BlocProvider.value(
-        //       value:
-        //           context.read<UserActivityBloc>(), // Provide the existing bloc
-        //       child: ReadArticlePage(
-        //         article: article,
-        //         bands: bands,
-        //         drummerEntity: drummerEntity,
-        //       )),
-        //   isScrollControlled: true, // For making the sheet extendable
-        //   backgroundColor: Colors.transparent,
-        // );
-
-        String audioUrl = "https://autocontentapi.blob.core.windows.net/audios/8cd1310d-c278-423d-b08f-4579c2af1387_20250214092532.wav";
-        context.read<MusicPlayerBloc>().add(LoadMusic(audioUrl));
+        context
+            .read<UserActivityBloc>()
+            .add(RecordUserActivity(UserActivityEntity(
+              type: INTERACTION_OPENED,
+              weight: WEIGHT_OPENED,
+              articleId: article.articleId!,
+              embedding: article.embedding!,
+            )));
         showModalBottomSheet(
           context: context,
-          isScrollControlled: true, // Enables full-screen bottom sheet behavior.
-          builder: (_) => MusicPlayerBottomSheet(),
+          builder: (_) => BlocProvider.value(
+              value:
+                  context.read<UserActivityBloc>(), // Provide the existing bloc
+              child: ReadArticlePage(
+                article: article,
+                bands: bands,
+                drummerEntity: drummerEntity,
+              )),
+          isScrollControlled: true, // For making the sheet extendable
+          backgroundColor: Colors.transparent,
         );
       },
       child: Container(
