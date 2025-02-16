@@ -262,7 +262,9 @@ class NewsDiscoveryPage extends StatelessWidget {
                           ),
                         ),
                         SliverToBoxAdapter(
-                          child: ConversationHorizontalList(),
+                          child: ConversationHorizontalList(
+                            drummerEntity: drummerState.drummerEntity??DrummerEntity(),
+                          ),
                         ),
                         if (articleState is GeneratingRecommendation)
                           SliverAppBar(

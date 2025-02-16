@@ -1,4 +1,4 @@
-import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
+import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_list_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_list_event.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_list_state.dart';
@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ConversationHorizontalList extends StatelessWidget {
-  const ConversationHorizontalList({Key? key}) : super(key: key);
+  final DrummerEntity drummerEntity;
+  const ConversationHorizontalList({Key? key, required this.drummerEntity}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class ConversationHorizontalList extends StatelessWidget {
               itemCount: conversations.length,
               itemBuilder: (context, index) {
                 final conversation = conversations[index];
-                return ConversationCard(conversation: conversation);
+                return ConversationCard(conversation: conversation,drummerEntity: drummerEntity,);
               },
             ),
           );
