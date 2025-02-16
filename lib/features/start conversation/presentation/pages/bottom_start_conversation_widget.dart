@@ -181,13 +181,13 @@ class BottomStartConversationWidget extends StatelessWidget {
     );
   }
 
-  void _startOrSwitchChannel(BuildContext context, int uid) {
+  void _startOrSwitchChannel(BuildContext context, int uid,String conversationId) {
     context.read<DrummAudioBloc>().add(
           StartOrSwitchChannelEvent(
             appId: DrummConstants.appId,
             token: DrummConstants.generateAgoraToken(
-                uid.toString(), article.jamId ?? ""),
-            channelName: article.jamId ?? "",
+                uid.toString(), conversationId),
+            channelName: conversationId,
             uid: uid,
             isMuted: false,
           ),
@@ -211,10 +211,12 @@ class BottomStartConversationWidget extends StatelessWidget {
     // Get current user id from Firebase Auth
     final String? currentUserId = drummerEntity.uid;
 
+    String conversationId = article.jamId! + currentUserId!;
+
     // Create a new conversation entity. You can set conversationId to a custom value or null.
 
     final conversation = ConversationEntity(
-        conversationId: article.jamId, // or generate one if needed
+        conversationId: conversationId, // or generate one if needed
         title: article.title,
         meta: article.meta,
         category: article.category,
@@ -252,13 +254,13 @@ class BottomStartConversationWidget extends StatelessWidget {
     if (pinned) {
       pinConversation(context, conversation);
     } else {
-      startConversation(context, conversation);
+      startConversation(context, conversation,conversationId);
     }
   }
 
   void startConversation(
-      BuildContext context, ConversationEntity conversation) {
-    _startOrSwitchChannel(context, (drummerEntity.rid) ?? 11);
+      BuildContext context, ConversationEntity conversation,String conversationId) {
+    _startOrSwitchChannel(context, (drummerEntity.rid) ?? 11,conversationId);
   }
 
   void pinConversation(BuildContext context, ConversationEntity conversation) {

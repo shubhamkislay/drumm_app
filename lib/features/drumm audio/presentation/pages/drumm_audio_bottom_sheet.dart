@@ -24,7 +24,7 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
 
   void _leaveChannel(BuildContext context) {
     context.read<DrummAudioBloc>().add(LeaveDrummChannelEvent());
-    context.read<LastActiveBloc>().add(StopUpdatingLastActive());
+    //context.read<LastActiveBloc>().add(StopUpdatingLastActive());
     Navigator.pop(context); // Close the bottom sheet
   }
 
@@ -130,11 +130,11 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
   @override
   void initState() {
     super.initState();
-    context.read<LastActiveBloc>().add(StartUpdatingLastActive(channelName));
+    //context.read<LastActiveBloc>().add(StartUpdatingLastActive(channelName));
   }
   @override
   void dispose() {
-    context.read<LastActiveBloc>().add(StopUpdatingLastActive());
+    //context.read<LastActiveBloc>().add(StopUpdatingLastActive());
     super.dispose();
   }
 }
