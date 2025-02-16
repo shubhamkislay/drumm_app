@@ -62,6 +62,15 @@ import 'package:drumm_app/features/search%20article/data/respository/search_arti
 import 'package:drumm_app/features/search%20article/domain/repository/search_article_repository.dart';
 import 'package:drumm_app/features/search%20article/domain/usecases/search_articles.dart';
 import 'package:drumm_app/features/search%20article/presentation/bloc/search_article_bloc.dart';
+import 'package:drumm_app/features/start%20conversation/data/data_sources/conversation_service.dart';
+import 'package:drumm_app/features/start%20conversation/data/respository/conversation_repository_impl.dart';
+import 'package:drumm_app/features/start%20conversation/domain/repository/conversation_repository.dart';
+import 'package:drumm_app/features/start%20conversation/domain/usecases/create_conversation.dart';
+import 'package:drumm_app/features/start%20conversation/domain/usecases/get_conversations.dart';
+import 'package:drumm_app/features/start%20conversation/domain/usecases/update_last_active.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_bloc.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_list_bloc.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/last_active_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 final s1 = GetIt.instance;
@@ -88,6 +97,8 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<PodcastService>(PodcastService());
   //search article
   s1.registerSingleton<SearchArticleService>(SearchArticleService());
+  //conversation
+  s1.registerSingleton<ConversationService>(ConversationService());
 
   /**
    * Repositories
@@ -106,6 +117,10 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<PodcastRepository>(PodcastRepositoryImpl(s1()));
   //search article
   s1.registerSingleton<SearchArticleRepository>(SearchArticleRepositoryImpl(service: s1()));
+  //conversation
+  s1.registerSingleton<ConversationRepository>(ConversationRepositoryImpl(conversationService: s1()));
+
+
   /**
    * UseCases
    */
@@ -139,6 +154,13 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<FetchPodcastsUseCase>(FetchPodcastsUseCase(s1()));
   //search article
   s1.registerSingleton<SearchArticlesUseCase>(SearchArticlesUseCase(s1()));
+  //conversation
+  s1.registerSingleton<CreateConversationUseCase>(CreateConversationUseCase(s1()));
+  s1.registerSingleton<GetConversationsUseCase>(GetConversationsUseCase(s1()));
+  s1.registerSingleton<UpdateLastActiveUseCase>(UpdateLastActiveUseCase(s1()));
+
+
+
 
   /**
    * Bloc
@@ -160,4 +182,11 @@ Future<void> initializeDependencies() async {
   s1.registerFactory<PodcastBloc>(() => PodcastBloc(s1()));
   //search article
   s1.registerFactory<SearchArticleBloc>(() => SearchArticleBloc(searchArticlesUseCase: s1()));
+  //conversation
+  s1.registerFactory<ConversationBloc>(() => ConversationBloc(createConversationUseCase: s1()));
+  s1.registerFactory<ConversationListBloc>(() => ConversationListBloc(getConversationsUseCase: s1()));
+  s1.registerFactory<LastActiveBloc>(() => LastActiveBloc(updateLastActiveUseCase: s1()));
+
+
+
 }

@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/config/constants.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
@@ -11,6 +12,9 @@ import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_b
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_event.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/start_drumm_button.dart';
+import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_bloc.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -130,6 +134,8 @@ class BottomStartConversationWidget extends StatelessWidget {
 
                           _startOrSwitchChannel(context,(drummerEntity.rid)??11);
 
+                          createConversation(article,drummerEntity,context);
+
                         },
                         background: Colors.black.withAlpha(25),
                       ),
@@ -164,6 +170,46 @@ class BottomStartConversationWidget extends StatelessWidget {
       },
       isScrollControlled: true, // optional for a full-screen bottom sheet
     );
+  }
+
+  void createConversation(ArticleEntity article, DrummerEntity drummerEntity,BuildContext context) {
+    // Get current user id from Firebase Auth
+    final String? currentUserId = drummerEntity.uid;
+
+    // Create a new conversation entity. You can set conversationId to a custom value or null.
+    final conversation = ConversationEntity(
+      conversationId: article.jamId, // or generate one if needed
+      title: article.title,
+      meta: article.meta,
+      category: article.category,
+      country: article.country,
+      description: article.description,
+      url: article.url,
+      imageUrl: article.imageUrl,
+      publishedAt: article.publishedAt,
+      boostamp: article.boostamp,
+      question: article.question,
+      summary: article.summary,
+      content: article.content,
+      clusterId: article.clusterId,
+      similarId: article.similarId,
+      jamId: article.jamId,
+      source: article.source,
+      dump: article.dump,
+      liked: article.liked,
+      likes: article.likes,
+      reads: article.reads,
+      boosts: article.boosts,
+      uid: article.uid,
+      aiVoiceUrl: article.aiVoiceUrl,
+      embedding: article.embedding,
+      relatedImageUrls: article.relatedImageUrls,
+      lastActive: Timestamp.now(),
+      startedBy: currentUserId,
+    );
+
+    // Dispatch the event to create a conversation.
+    context.read<ConversationBloc>().add(CreateConversationEvent(conversation: conversation));
   }
 
 

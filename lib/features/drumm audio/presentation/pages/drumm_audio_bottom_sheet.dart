@@ -3,6 +3,8 @@ import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_b
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_event.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_state.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/widgets/drummer_join_card.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/last_active_bloc.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/last_active_event.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,6 +24,7 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
 
   void _leaveChannel(BuildContext context) {
     context.read<DrummAudioBloc>().add(LeaveDrummChannelEvent());
+    context.read<LastActiveBloc>().add(StopUpdatingLastActive());
     Navigator.pop(context); // Close the bottom sheet
   }
 
@@ -123,5 +126,15 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
         }
       },
     );
+  }
+  @override
+  void initState() {
+    super.initState();
+    context.read<LastActiveBloc>().add(StartUpdatingLastActive(channelName));
+  }
+  @override
+  void dispose() {
+    context.read<LastActiveBloc>().add(StopUpdatingLastActive());
+    super.dispose();
   }
 }

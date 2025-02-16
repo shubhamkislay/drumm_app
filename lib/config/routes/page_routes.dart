@@ -6,6 +6,9 @@ import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/po
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/podcast_event.dart';
 import 'package:drumm_app/features/search%20article/presentation/bloc/search_article_bloc.dart';
 import 'package:drumm_app/features/search%20article/presentation/pages/search_article_page.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_bloc.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_list_bloc.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_list_event.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,6 +49,10 @@ class PageRoutes {
               providers: [
                 BlocProvider(
                 create: (context) =>s1<SearchArticleBloc>(),),
+                BlocProvider(
+                  create: (context) =>s1<ConversationListBloc>()..add(LoadConversationsEvent()),),
+                BlocProvider(
+                  create: (context) =>s1<ConversationBloc>(),),
                 BlocProvider(
                   create: (_) => MusicPlayerBloc(),
                 ),

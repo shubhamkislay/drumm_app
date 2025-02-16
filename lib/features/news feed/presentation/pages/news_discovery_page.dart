@@ -28,6 +28,7 @@ import 'package:drumm_app/features/drumm%20podcast%20player/presentation/widgets
 import 'package:drumm_app/features/news%20feed/presentation/widgets/profile_image_icon.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/safe_area_persistent_header_delegate.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/search_button.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/widgets/conversation_horizontal_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
@@ -259,6 +260,9 @@ class NewsDiscoveryPage extends StatelessWidget {
                               }
                             },
                           ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: ConversationHorizontalList(),
                         ),
                         if (articleState is GeneratingRecommendation)
                           SliverAppBar(
