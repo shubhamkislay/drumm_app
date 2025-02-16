@@ -22,7 +22,7 @@ class ConversationHorizontalList extends StatelessWidget {
         } else if (state is ConversationListLoaded) {
           final conversations = state.conversations;
           if (conversations.isEmpty) {
-            return const Center(child: Text('No conversations found.'));
+            return const SizedBox.shrink();
           }
           return SizedBox(
             height: 150, // Adjust based on your design

@@ -66,11 +66,15 @@ import 'package:drumm_app/features/start%20conversation/data/data_sources/conver
 import 'package:drumm_app/features/start%20conversation/data/respository/conversation_repository_impl.dart';
 import 'package:drumm_app/features/start%20conversation/domain/repository/conversation_repository.dart';
 import 'package:drumm_app/features/start%20conversation/domain/usecases/create_conversation.dart';
+import 'package:drumm_app/features/start%20conversation/domain/usecases/create_pinned_conversation.dart';
 import 'package:drumm_app/features/start%20conversation/domain/usecases/get_conversations.dart';
+import 'package:drumm_app/features/start%20conversation/domain/usecases/get_pinned_conversations_last24hours.dart';
 import 'package:drumm_app/features/start%20conversation/domain/usecases/update_last_active.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_list_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/last_active_bloc.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/pin_conversation_bloc.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/pinned_conversations_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 final s1 = GetIt.instance;
@@ -158,6 +162,8 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<CreateConversationUseCase>(CreateConversationUseCase(s1()));
   s1.registerSingleton<GetConversationsUseCase>(GetConversationsUseCase(s1()));
   s1.registerSingleton<UpdateLastActiveUseCase>(UpdateLastActiveUseCase(s1()));
+  s1.registerSingleton<GetPinnedConversationsLast24Hours>(GetPinnedConversationsLast24Hours(s1()));
+  s1.registerSingleton<CreatePinConversationUseCase>(CreatePinConversationUseCase(s1()));
 
 
 
@@ -186,6 +192,8 @@ Future<void> initializeDependencies() async {
   s1.registerFactory<ConversationBloc>(() => ConversationBloc(createConversationUseCase: s1()));
   s1.registerFactory<ConversationListBloc>(() => ConversationListBloc(getConversationsUseCase: s1()));
   s1.registerFactory<LastActiveBloc>(() => LastActiveBloc(updateLastActiveUseCase: s1()));
+  s1.registerFactory<PinConversationBloc>(() => PinConversationBloc(createPinConversation: s1()));
+  s1.registerFactory<PinnedConversationsBloc>(() => PinnedConversationsBloc(getPinnedConversationsLast24Hours: s1()));
 
 
 

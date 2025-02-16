@@ -9,6 +9,9 @@ import 'package:drumm_app/features/search%20article/presentation/pages/search_ar
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_list_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_list_event.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/last_active_bloc.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/pin_conversation_bloc.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/pinned_conversations_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,9 +51,15 @@ class PageRoutes {
             return MultiBlocProvider(
               providers: [
                 BlocProvider(
+                  create: (context) =>s1<PinConversationBloc>(),),
+                BlocProvider(
+                  create: (context) =>s1<PinnedConversationsBloc>(),),
+                BlocProvider(
+                  create: (context) =>s1<LastActiveBloc>(),),
+                BlocProvider(
                 create: (context) =>s1<SearchArticleBloc>(),),
                 BlocProvider(
-                  create: (context) =>s1<ConversationListBloc>()..add(LoadConversationsEvent()),),
+                  create: (context) =>s1<ConversationListBloc>(),),
                 BlocProvider(
                   create: (context) =>s1<ConversationBloc>(),),
                 BlocProvider(

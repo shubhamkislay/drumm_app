@@ -42,6 +42,8 @@ class ConversationService{
       'relatedImageUrls': conversation.relatedImageUrls,
       'lastActive': conversation.lastActive,
       'startedBy': conversation.startedBy,
+      'pinned': conversation.pinned,
+      'pinnedAt': conversation.pinnedAt,
     };
 
     await docRef.set(data);
@@ -90,6 +92,8 @@ class ConversationService{
         relatedImageUrls: data['relatedImageUrls'] as List<dynamic>?,
         lastActive: data['lastActive'] as Timestamp?,
         startedBy: data['startedBy'] as String?,
+        pinned: data['pinned'] as bool?,
+        pinnedAt: data['pinnedAt'] as Timestamp?,
       );
     }).toList();
   }
@@ -100,6 +104,62 @@ class ConversationService{
         .collection('conversations')
         .doc(conversationId)
         .update({'lastActive': lastActive});
+  }
+  @override
+  Future<List<ConversationEntity>> getPinnedConversations(Timestamp from) async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('conversations')
+          .where('pinned', isEqualTo: true)
+          .where('pinnedAt', isGreaterThanOrEqualTo: from)
+          .orderBy('pinnedAt', descending: true)
+          .get();
+
+      if(querySnapshot.docs.isEmpty){
+        print("Did not fetch any items");
+      }else{
+        print("Fetched total ${querySnapshot.docs.length}");
+      }
+
+      return querySnapshot.docs.map((doc) {
+        final data = doc.data();
+        return ConversationEntity(
+          conversationId: data['conversationId'] as String?,
+          title: data['title'] as String?,
+          meta: data['meta'] as String?,
+          category: data['category'] as String?,
+          country: data['country'] as String?,
+          description: data['description'] as String?,
+          url: data['url'] as String?,
+          imageUrl: data['imageUrl'] as String?,
+          publishedAt: data['publishedAt'] as Timestamp?,
+          boostamp: data['boostamp'] as Timestamp?,
+          question: data['question'] as String?,
+          summary: data['summary'] as String?,
+          content: data['content'] as String?,
+          clusterId: data['clusterId'] as String?,
+          similarId: data['similarId'] as String?,
+          jamId: data['jamId'] as String?,
+          source: data['source'] as String?,
+          dump: data['dump'] as String?,
+          liked: data['liked'] as bool?,
+          likes: data['likes'] as int?,
+          reads: data['reads'] as int?,
+          boosts: data['boosts'] as int?,
+          uid: data['uid'] as String?,
+          aiVoiceUrl: data['aiVoiceUrl'] as String?,
+          embedding: data['embedding'],
+          relatedImageUrls: data['relatedImageUrls'] as List<dynamic>?,
+          lastActive: data['lastActive'] as Timestamp?,
+          startedBy: data['startedBy'] as String?,
+          pinned: data['pinned'] as bool?,
+          pinnedAt: data['pinnedAt'] as Timestamp?,
+        );
+      }).toList();
+    }catch(e){
+      print("Error fetching coversation list: ${e.toString()}");
+      return [];
+    }
   }
 
 }

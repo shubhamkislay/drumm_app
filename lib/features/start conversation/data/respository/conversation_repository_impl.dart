@@ -22,4 +22,9 @@ class ConversationRepositoryImpl implements ConversationRepository {
   Future<void> updateLastActive(String conversationId, Timestamp lastActive) {
     return conversationService.updateLastActive(conversationId, lastActive);
   }
+
+  @override
+  Future<List<ConversationEntity>> getPinnedConversations(Timestamp from) {
+    return conversationService.getPinnedConversations(from);
+  }
 }

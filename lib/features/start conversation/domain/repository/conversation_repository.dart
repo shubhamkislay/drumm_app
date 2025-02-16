@@ -5,4 +5,8 @@ abstract class ConversationRepository {
   Future<void> createConversation(ConversationEntity conversation);
   Future<List<ConversationEntity>> getConversations();
   Future<void> updateLastActive(String conversationId, Timestamp lastActive);
+
+  /// New: Retrieve all conversations that are pinned and whose
+  /// pinnedAt timestamp is greater than or equal to [from].
+  Future<List<ConversationEntity>> getPinnedConversations(Timestamp from);
 }

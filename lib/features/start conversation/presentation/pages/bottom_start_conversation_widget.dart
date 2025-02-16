@@ -15,6 +15,8 @@ import 'package:drumm_app/features/read%20article/presentation/widgets/start_dru
 import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_event.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/pin_conversation_bloc.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/pin_conversation_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,7 +30,10 @@ class BottomStartConversationWidget extends StatelessWidget {
   final DrummerEntity drummerEntity;
 
   const BottomStartConversationWidget(
-      {super.key, required this.article, required this.bands, required this.drummerEntity});
+      {super.key,
+      required this.article,
+      required this.bands,
+      required this.drummerEntity});
   @override
   Widget build(BuildContext context) {
     const textStyle = TextStyle(
@@ -36,91 +41,114 @@ class BottomStartConversationWidget extends StatelessWidget {
       height: 1.5,
     );
     return Material(
-          color: Colors.transparent, // Transparent background
+      color: Colors.transparent, // Transparent background
+      child: Align(
+        alignment: Alignment.bottomCenter, // Bottom Sheet Position
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: DrummTheme.drummPrimaryColor,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
           child: Align(
-            alignment: Alignment.bottomCenter, // Bottom Sheet Position
-            child: Container(
-              height: MediaQuery.of(context).size.height,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: DrummTheme.drummPrimaryColor,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              child: Align(
-                alignment: Alignment.bottomCenter, // B
-                child: Column(
+            alignment: Alignment.bottomCenter, // B
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset(
-                          color: Colors.white,
-                          width: 32,
-                          "images/team_active.png",
-                          height: 32,
-                        ),
-                        SizedBox(
-                          height: 75,
-                          width: 150,
-                          child: CupertinoPicker(
-                            itemExtent: textStyle.fontSize!,
-                            diameterRatio: 5,
-                            magnification: 1.15,
-                            squeeze: 1,
-                            selectionOverlay: CupertinoPickerDefaultSelectionOverlay(
-                              background: Colors.black.withAlpha(25),
-                            ),
-                            onSelectedItemChanged: (index) {
-                              print("Band Name ${bands[index].name}");
-                            },
-                            children: List.generate(
-                              bands.length,
-                                  (index) {
-                                return Container(
-                                  alignment: Alignment.center,
-                                  margin: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    '${bands[index].name}',
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontFamily: DRUMM_FONT_FAMILY),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 32,),
-
-                      ],
+                    Image.asset(
+                      color: Colors.white,
+                      width: 32,
+                      "images/team_active.png",
+                      height: 32,
                     ),
-                    SizedBox(height: 32),
-                    Container(
-                      height: 135,
-                      padding: const EdgeInsets.all(16.0),
-                      child: AutoSizeText(
-                        "${article.question}",
-                        maxFontSize: 32,
-                        minFontSize: 12,
-                        style: TextStyle(
-                            fontSize: 32,
-                            color: Colors.white,
-                            fontFamily: DRUMM_FONT_FAMILY),
-                        textAlign: TextAlign.center,
+                    SizedBox(
+                      height: 75,
+                      width: 150,
+                      child: CupertinoPicker(
+                        itemExtent: textStyle.fontSize!,
+                        diameterRatio: 5,
+                        magnification: 1.15,
+                        squeeze: 1,
+                        selectionOverlay:
+                            CupertinoPickerDefaultSelectionOverlay(
+                          background: Colors.black.withAlpha(25),
+                        ),
+                        onSelectedItemChanged: (index) {
+                          print("Band Name ${bands[index].name}");
+                        },
+                        children: List.generate(
+                          bands.length,
+                          (index) {
+                            return Container(
+                              alignment: Alignment.center,
+                              margin: const EdgeInsets.all(8.0),
+                              child: Text(
+                                '${bands[index].name}',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontFamily: DRUMM_FONT_FAMILY),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
-
-                    Container(
-                      margin: EdgeInsets.only(bottom: 28),
-                      child: StartDrummButton(
+                    SizedBox(
+                      width: 32,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 32),
+                Container(
+                  height: 135,
+                  padding: const EdgeInsets.all(16.0),
+                  child: AutoSizeText(
+                    "${article.question}",
+                    maxFontSize: 32,
+                    minFontSize: 12,
+                    style: TextStyle(
+                        fontSize: 32,
+                        color: Colors.white,
+                        fontFamily: DRUMM_FONT_FAMILY),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 28),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(),
+                      StartDrummButton(
                         article: ArticleEntity(articleId: ""),
                         size: 92,
                         buttonText: "Tap to start a conversation",
                         onPressed: () {
+                          Navigator.pop(context);
+                          Vibrate.feedback(FeedbackType.impact);
+                          context
+                              .read<UserActivityBloc>()
+                              .add(RecordUserActivity(UserActivityEntity(
+                                type: INTERACTION_STARTED,
+                                weight: WEIGHT_STARTED,
+                                articleId: article.articleId!,
+                                embedding: article.embedding!,
+                              )));
+
+                          createConversation(article, drummerEntity, context,
+                              pinned: false);
+                        },
+                        background: Colors.black.withAlpha(25),
+                      ),
+                      GestureDetector(
+                        onTap: (){
                           Navigator.pop(context);
                           Vibrate.feedback(FeedbackType.impact);
                           context
@@ -132,33 +160,38 @@ class BottomStartConversationWidget extends StatelessWidget {
                             embedding: article.embedding!,
                           )));
 
-                          _startOrSwitchChannel(context,(drummerEntity.rid)??11);
-
-                          createConversation(article,drummerEntity,context);
-
+                          createConversation(article, drummerEntity, context,
+                              pinned: true);
                         },
-                        background: Colors.black.withAlpha(25),
+                        child: Image.asset(
+                          "images/pin.png",
+                          height: 42,
+                          width: 42,
+                          color: Colors.white,
+                        ),
                       ),
-                    )
-                  ],
-                ),
-              ),
+                    ],
+                  ),
+                )
+              ],
             ),
           ),
-        );
-
-  }
-
-  void _startOrSwitchChannel(BuildContext context,int uid) {
-    context.read<DrummAudioBloc>().add(
-      StartOrSwitchChannelEvent(
-        appId: DrummConstants.appId,
-        token: DrummConstants.generateAgoraToken(uid.toString(), article.jamId??""),
-        channelName: article.jamId??"",
-        uid: uid,
-        isMuted: false,
+        ),
       ),
     );
+  }
+
+  void _startOrSwitchChannel(BuildContext context, int uid) {
+    context.read<DrummAudioBloc>().add(
+          StartOrSwitchChannelEvent(
+            appId: DrummConstants.appId,
+            token: DrummConstants.generateAgoraToken(
+                uid.toString(), article.jamId ?? ""),
+            channelName: article.jamId ?? "",
+            uid: uid,
+            isMuted: false,
+          ),
+        );
     _showCallBottomSheet(context);
   }
 
@@ -166,51 +199,71 @@ class BottomStartConversationWidget extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       builder: (_) {
-        return DrummAudioBottomSheet(channelName:article.jamId??"");
+        return DrummAudioBottomSheet(channelName: article.jamId ?? "");
       },
       isScrollControlled: true, // optional for a full-screen bottom sheet
     );
   }
 
-  void createConversation(ArticleEntity article, DrummerEntity drummerEntity,BuildContext context) {
+  void createConversation(
+      ArticleEntity article, DrummerEntity drummerEntity, BuildContext context,
+      {bool pinned = false}) {
     // Get current user id from Firebase Auth
     final String? currentUserId = drummerEntity.uid;
 
     // Create a new conversation entity. You can set conversationId to a custom value or null.
+
     final conversation = ConversationEntity(
-      conversationId: article.jamId, // or generate one if needed
-      title: article.title,
-      meta: article.meta,
-      category: article.category,
-      country: article.country,
-      description: article.description,
-      url: article.url,
-      imageUrl: article.imageUrl,
-      publishedAt: article.publishedAt,
-      boostamp: article.boostamp,
-      question: article.question,
-      summary: article.summary,
-      content: article.content,
-      clusterId: article.clusterId,
-      similarId: article.similarId,
-      jamId: article.jamId,
-      source: article.source,
-      dump: article.dump,
-      liked: article.liked,
-      likes: article.likes,
-      reads: article.reads,
-      boosts: article.boosts,
-      uid: article.uid,
-      aiVoiceUrl: article.aiVoiceUrl,
-      embedding: article.embedding,
-      relatedImageUrls: article.relatedImageUrls,
-      lastActive: Timestamp.now(),
-      startedBy: currentUserId,
-    );
+        conversationId: article.jamId, // or generate one if needed
+        title: article.title,
+        meta: article.meta,
+        category: article.category,
+        country: article.country,
+        description: article.description,
+        url: article.url,
+        imageUrl: article.imageUrl,
+        publishedAt: article.publishedAt,
+        boostamp: article.boostamp,
+        question: article.question,
+        summary: article.summary,
+        content: article.content,
+        clusterId: article.clusterId,
+        similarId: article.similarId,
+        jamId: article.jamId,
+        source: article.source,
+        dump: article.dump,
+        liked: article.liked,
+        likes: article.likes,
+        reads: article.reads,
+        boosts: article.boosts,
+        uid: article.uid,
+        aiVoiceUrl: article.aiVoiceUrl,
+        embedding: article.embedding,
+        relatedImageUrls: article.relatedImageUrls,
+        lastActive: Timestamp.now(),
+        startedBy: currentUserId,
+        pinned: false,
+        pinnedAt: Timestamp.now());
 
     // Dispatch the event to create a conversation.
-    context.read<ConversationBloc>().add(CreateConversationEvent(conversation: conversation));
+    context
+        .read<ConversationBloc>()
+        .add(CreateConversationEvent(conversation: conversation));
+    if (pinned) {
+      pinConversation(context, conversation);
+    } else {
+      startConversation(context, conversation);
+    }
   }
 
+  void startConversation(
+      BuildContext context, ConversationEntity conversation) {
+    _startOrSwitchChannel(context, (drummerEntity.rid) ?? 11);
+  }
 
+  void pinConversation(BuildContext context, ConversationEntity conversation) {
+    context
+        .read<PinConversationBloc>()
+        .add(CreatePinConversationEvent(conversation: conversation));
+  }
 }

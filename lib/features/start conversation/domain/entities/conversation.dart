@@ -33,6 +33,10 @@ class ConversationEntity extends Equatable {
   final Timestamp? lastActive;
   final String? startedBy; // Firebase current user id
 
+  // New fields for pinning
+  final bool? pinned;
+  final Timestamp? pinnedAt;
+
   const ConversationEntity({
     this.conversationId,
     this.title,
@@ -62,6 +66,8 @@ class ConversationEntity extends Equatable {
     this.relatedImageUrls,
     this.lastActive,
     this.startedBy,
+    this.pinned,
+    this.pinnedAt,
   });
 
   @override
@@ -94,5 +100,7 @@ class ConversationEntity extends Equatable {
     relatedImageUrls,
     lastActive,
     startedBy,
+    pinned,
+    pinnedAt,
   ];
 }
