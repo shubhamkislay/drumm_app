@@ -30,6 +30,7 @@ import 'package:drumm_app/features/news%20feed/presentation/widgets/safe_area_pe
 import 'package:drumm_app/features/news%20feed/presentation/widgets/search_button.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/conversation_horizontal_list.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/pinned_conversations_horizontal_list.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
@@ -45,6 +46,8 @@ class NewsDiscoveryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FirebaseDBOperations.subscribeToTopic("broadcast");
+    requestPermissions();
+
     List<ArticleEntity> articleList = [];
     var lastDocument;
     String selectedBandId = "For You";
@@ -526,6 +529,16 @@ class NewsDiscoveryPage extends StatelessWidget {
           },
         );
       }),
+    );
+  }
+
+  void requestPermissions() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings notificationSettings =
+    await messaging.requestPermission(
+      announcement: true,
+      carPlay: true,
+      criticalAlert: true,
     );
   }
 }
