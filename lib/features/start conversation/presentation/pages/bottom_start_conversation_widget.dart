@@ -4,6 +4,8 @@ import 'package:drumm_app/config/constants.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
+import 'package:drumm_app/core/features/send%20notification/presentation/bloc/notification_bloc.dart';
+import 'package:drumm_app/core/features/send%20notification/presentation/bloc/notification_event.dart';
 import 'package:drumm_app/core/features/user%20activity/domain/entities/user_activity_entity.dart';
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_event.dart';
@@ -181,7 +183,7 @@ class BottomStartConversationWidget extends StatelessWidget {
     );
   }
 
-  void _startOrSwitchChannel(BuildContext context, int uid,String conversationId) {
+  void _startOrSwitchChannel(BuildContext context, int uid,String conversationId, ConversationEntity conversation) {
     context.read<DrummAudioBloc>().add(
           StartOrSwitchChannelEvent(
             appId: DrummConstants.appId,
@@ -192,6 +194,13 @@ class BottomStartConversationWidget extends StatelessWidget {
             isMuted: false,
           ),
         );
+    context.read<NotificationBloc>().add(
+      SendNotificationEvent(
+        conversation: conversation,
+        drummer: drummerEntity,
+      ),
+    );
+
     _showCallBottomSheet(context);
   }
 
@@ -260,7 +269,7 @@ class BottomStartConversationWidget extends StatelessWidget {
 
   void startConversation(
       BuildContext context, ConversationEntity conversation,String conversationId) {
-    _startOrSwitchChannel(context, (drummerEntity.rid) ?? 11,conversationId);
+    _startOrSwitchChannel(context, (drummerEntity.rid) ?? 11,conversationId,conversation);
   }
 
   void pinConversation(BuildContext context, ConversationEntity conversation) {

@@ -1,5 +1,6 @@
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
+import 'package:drumm_app/core/features/send%20notification/presentation/bloc/notification_bloc.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/podcast_bloc.dart';
@@ -50,6 +51,8 @@ class PageRoutes {
           builder: (BuildContext context, GoRouterState state, Widget child) {
             return MultiBlocProvider(
               providers: [
+                BlocProvider(
+                  create: (context) =>s1<NotificationBloc>(),),
                 BlocProvider(
                   create: (context) =>s1<PinConversationBloc>(),),
                 BlocProvider(
