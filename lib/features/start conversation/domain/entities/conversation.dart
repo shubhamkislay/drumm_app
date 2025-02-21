@@ -70,6 +70,57 @@ class ConversationEntity extends Equatable {
     this.pinnedAt,
   });
 
+  /// Converts a JSON map into a ConversationEntity.
+  factory ConversationEntity.fromJson(Map<String, dynamic> json) {
+    try {
+      return ConversationEntity(
+        conversationId: json['conversationId'] as String?,
+        title: json['title'] as String?,
+        meta: json['meta'] as String?,
+        category: json['category'] as String?,
+        country: json['country'] as String?,
+        description: json['description'] as String?,
+        url: json['url'] as String?,
+        imageUrl: json['imageUrl'] as String?,
+        publishedAt: json['publishedAt'] != null
+            ? Timestamp.fromMillisecondsSinceEpoch(json['publishedAt'])
+            : null,
+        // boostamp: json['boostamp'] != null
+        //     ? Timestamp.fromMillisecondsSinceEpoch(json['boostamp'])
+        //     : null,
+        question: json['question'] as String?,
+        summary: json['summary'] as String?,
+        content: json['content'] as String?,
+        clusterId: json['clusterId'] as String?,
+        similarId: json['similarId'] as String?,
+        jamId: json['jamId'] as String?,
+        source: json['source'] as String?,
+        dump: json['dump'] as String?,
+        liked: json['liked'] as bool?,
+        //likes: json['likes'] as int?,
+        // reads: json['reads'] as int?,
+        // boosts: json['boosts'] as int?,
+        uid: json['uid'] as String?,
+        // aiVoiceUrl: json['aiVoiceUrl'] as String?,
+        // embedding: json['embedding'] != null
+        //     ? VectorValue(json['embedding'])
+        //     : null,
+        relatedImageUrls: json['relatedImageUrls'] as List<dynamic>?,
+        // lastActive: json['lastActive'] != null
+        //     ? Timestamp.fromMillisecondsSinceEpoch(json['lastActive'])
+        //     : null,
+        startedBy: json['startedBy'] as String?,
+        pinned: json['pinned'] as bool?,
+        pinnedAt: json['pinnedAt'] != null
+            ? Timestamp.fromMillisecondsSinceEpoch(json['pinnedAt'])
+            : null,
+      );
+    }catch(e){
+      print("Error converting from JSON: ${e.toString()}");
+      return ConversationEntity();
+    }
+  }
+
   @override
   List<Object?> get props => [
     conversationId,

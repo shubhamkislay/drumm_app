@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:drumm_app/core/features/send%20notification/domain/usecases/send_notification_to_topic.dart';
-import 'package:drumm_app/core/features/send%20notification/presentation/bloc/notification_event.dart';
-import 'package:drumm_app/core/features/send%20notification/presentation/bloc/notification_state.dart';
+import 'package:drumm_app/core/features/notification/domain/usecases/send_notification_to_topic.dart';
+import 'package:drumm_app/core/features/notification/presentation/bloc/notification_event.dart';
+import 'package:drumm_app/core/features/notification/presentation/bloc/notification_state.dart';
 
 class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   final SendNotificationToTopicUseCase sendNotificationToTopicUseCase;
@@ -9,6 +9,10 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   NotificationBloc({required this.sendNotificationToTopicUseCase})
       : super(NotificationInitial()) {
     on<SendNotificationEvent>(_onSendNotification);
+    on<NotificationReceivedEvent>((event, emit) {
+      print("LOADING NOTIFICATION//////////////");
+      emit(NotificationLoaded(conversation: event.conversation));
+    });
   }
 
   Future<void> _onSendNotification(

@@ -130,7 +130,7 @@ class DrummAudioBloc extends Bloc<DrummAudioEvent, DrummAudioState> {
 
       // 2) Subscribe to remote events if not already subscribed.
       _drummEventSub ??= listenUseCase.call().listen((drummEvent) {
-        print("Listening to drumm Events");
+        //print("Listening to drumm Events");
         if (drummEvent is DrummRemoteUserJoined) {
           add(DrummRemoteUserJoinedEvent(drummEvent.uid, event.channelName));
         } else if (drummEvent is DrummRemoteUserMuted) {

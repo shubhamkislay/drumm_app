@@ -38,7 +38,7 @@ class ArticleItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double height = 350;
-    double curve = 16;
+    double curve = 20;
     return GestureDetector(
       onTap: () {
         Vibrate.feedback(FeedbackType.medium);

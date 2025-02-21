@@ -11,11 +11,11 @@ import 'package:drumm_app/core/features/get%20drummer/domain/repository/drummer_
 import 'package:drumm_app/core/features/get%20drummer/domain/usecase/get_drummer_by_rid.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/usecase/get_drummer_id.dart';
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_bloc.dart';
-import 'package:drumm_app/core/features/send%20notification/data/data_sources/notification_service.dart';
-import 'package:drumm_app/core/features/send%20notification/data/respository/notification_repository_impl.dart';
-import 'package:drumm_app/core/features/send%20notification/domain/repository/notification_repository.dart';
-import 'package:drumm_app/core/features/send%20notification/domain/usecases/send_notification_to_topic.dart';
-import 'package:drumm_app/core/features/send%20notification/presentation/bloc/notification_bloc.dart';
+import 'package:drumm_app/core/features/notification/data/data_sources/notification_service.dart';
+import 'package:drumm_app/core/features/notification/data/respository/notification_repository_impl.dart';
+import 'package:drumm_app/core/features/notification/domain/repository/notification_repository.dart';
+import 'package:drumm_app/core/features/notification/domain/usecases/send_notification_to_topic.dart';
+import 'package:drumm_app/core/features/notification/presentation/bloc/notification_bloc.dart';
 import 'package:drumm_app/core/features/user%20activity/data/data_sources/user_activity_service.dart';
 import 'package:drumm_app/core/features/user%20activity/data/respository/user_activity_repository_impl.dart';
 import 'package:drumm_app/core/features/user%20activity/domain/repository/user_activity_repository.dart';
@@ -203,7 +203,7 @@ Future<void> initializeDependencies() async {
   s1.registerFactory<LastActiveBloc>(() => LastActiveBloc(updateLastActiveUseCase: s1()));
   s1.registerFactory<PinConversationBloc>(() => PinConversationBloc(createPinConversation: s1()));
   s1.registerFactory<PinnedConversationsBloc>(() => PinnedConversationsBloc(getPinnedConversationsLast24Hours: s1()));
-  s1.registerFactory<NotificationBloc>(() => NotificationBloc(sendNotificationToTopicUseCase: s1()));
+  s1.registerSingleton<NotificationBloc>(NotificationBloc(sendNotificationToTopicUseCase: s1()));
 
 
 

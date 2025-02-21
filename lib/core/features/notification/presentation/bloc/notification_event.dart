@@ -21,3 +21,11 @@ class SendNotificationEvent extends NotificationEvent {
   @override
   List<Object?> get props => [conversation, drummer];
 }
+
+class NotificationReceivedEvent extends NotificationEvent {
+  final ConversationEntity conversation;
+  const NotificationReceivedEvent({required this.conversation});
+
+  @override
+  List<Object?> get props => [conversation];
+}

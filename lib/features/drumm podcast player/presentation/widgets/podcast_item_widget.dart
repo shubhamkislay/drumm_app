@@ -21,7 +21,7 @@ class PodcastItemWidget extends StatelessWidget {
       ),
       child: Center(
         child: Text(
-          "${CoreUtils.getWeekDay(podcast.updatedAt)}, ${CoreUtils.getFormattedDate(podcast.updatedAt)}\n${CoreUtils.getFormattedTime(podcast.updatedAt)}\n\n${podcast.podcastTitle}",
+          "${CoreUtils.getWeekDay(podcast.updatedAt)}, ${CoreUtils.getFormattedDate(podcast.updatedAt)}\n${CoreUtils.getFormattedTime(podcast.updatedAt)}\n\n${(podcast.podcastTitle.isNotEmpty)?podcast.podcastTitle:podcast.audioTitle}",
           textAlign: TextAlign.start,
           style: TextStyle(
             color:DrummTheme.primaryTextColor(context),

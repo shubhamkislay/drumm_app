@@ -6,9 +6,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/config/routes/page_routes.dart';
 import 'package:drumm_app/config/injection_container.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
+import 'package:drumm_app/core/features/notification/presentation/bloc/notification_bloc.dart';
+import 'package:drumm_app/core/features/notification/presentation/bloc/notification_event.dart';
+import 'package:drumm_app/core/features/notification/presentation/widgets/notification_item.dart';
 import 'package:drumm_app/core/util/debouncer_brightness.dart';
+import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
 import 'package:drumm_app/model/algolia_article.dart';
 import 'package:drumm_app/model/question.dart';
+import 'package:drumm_app/notification_item.dart';
 import 'package:drumm_app/professionDetailsPage.dart';
 import 'package:drumm_app/question_jam_room.dart';
 import 'package:drumm_app/register_user.dart';
@@ -83,9 +88,13 @@ Future<String> triggerCloudFunction() async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDependencies();
+  // Register the background handler.
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  firebaseForegroundNotification();
 
   runApp(
     ChangeNotifierProvider(
@@ -100,6 +109,48 @@ void main() async {
     ),
   );
 }
+
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+
+  if (message.data.isNotEmpty) {
+    // Assuming the payload JSON is stored under the key "conversation".
+    try {
+      final conversationJson = jsonDecode(message.data['conversation']);
+      final conversation = ConversationEntity.fromJson(conversationJson);
+     // var notificationBloc = s1<NotificationBloc>()..add(NotificationReceivedEvent(conversation: conversation));
+      // In background, you might want to save the data locally or perform other actions.
+      print("Background notification received: ${conversation.title}");
+
+
+    } catch (e) {
+      print("Error processing background message: $e");
+    }
+  }
+}
+
+Future<void> firebaseForegroundNotification() async{
+  await FirebaseMessaging.instance
+      .setForegroundNotificationPresentationOptions(
+    alert: false, // Required to display a heads up notification
+    badge: false,
+    sound: false,
+  );
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("/// // onMessageReceived Foreground // ///:  ${message.data['conversation']}");
+    try {
+      final conversationJson = jsonDecode(message.data['conversation']);
+      final conversation = ConversationEntity.fromJson(conversationJson);
+      s1<NotificationBloc>().add(NotificationReceivedEvent(conversation: conversation));
+
+    } catch (e) {
+      print("Error with foreground notification ${e.toString()}");
+    }
+  });
+}
+
+
+
 
 
 

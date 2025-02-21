@@ -34,7 +34,7 @@ class NotificationService {
       // Build the notification title and body.
       final subtitle = isBroadcast
           ? "Welcome ${drummer.username} to Drumm"
-          : "${drummer.username} is drumming...";
+          : "${drummer.username} started a conversation";
 
       final notificationBody = conversation.question != null
           ? "${conversation.question}\n\n${conversation.title}"
@@ -99,8 +99,8 @@ class NotificationService {
       'description': conversation.description,
       'url': conversation.url,
       'imageUrl': conversation.imageUrl,
-      'publishedAt': conversation.publishedAt?.toDate().toIso8601String(),
-      'boostamp': conversation.boostamp?.toDate().toIso8601String(),
+      'publishedAt': conversation.publishedAt?.millisecondsSinceEpoch,
+      'boostamp': conversation.boostamp?.millisecondsSinceEpoch,
       'question': conversation.question,
       'summary': conversation.summary,
       'content': conversation.content,
@@ -120,7 +120,7 @@ class NotificationService {
       // Exclude lastActive, but include the remaining fields:
       'startedBy': conversation.startedBy,
       'pinned': conversation.pinned,
-      'pinnedAt': conversation.pinnedAt?.toDate().toIso8601String(),
+      'pinnedAt': conversation.pinnedAt?.millisecondsSinceEpoch,
     };
   }
 }
