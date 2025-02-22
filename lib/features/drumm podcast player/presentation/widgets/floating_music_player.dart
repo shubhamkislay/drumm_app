@@ -28,7 +28,7 @@ class FloatingMusicPlayer extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
               color: Colors.blueGrey[800],
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(16),
               boxShadow: const [
                 BoxShadow(
                   color: Colors.black26,
@@ -37,39 +37,44 @@ class FloatingMusicPlayer extends StatelessWidget {
                 )
               ],
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.music_note, color: Colors.white),
-                const SizedBox(width: 8),
-                Text(
-                  podcast?.podcastTitle??"Playing Podcast",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.white),
-                ),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: Icon(
-                    state.isPlaying ? Icons.pause : Icons.play_arrow,
-                    color: Colors.white,
+            child: SafeArea(
+              top: false,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Icon(Icons.music_note, color: Colors.white),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      podcast?.podcastTitle??"Playing Podcast",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
-                  onPressed: () {
-                    if (state.isPlaying) {
-                      context.read<MusicPlayerBloc>().add(PauseMusic(podcast));
-                    } else {
-                      context.read<MusicPlayerBloc>().add(PlayMusic(podcast));
-                    }
-                  },
-                ),
-                // Close button to end the music.
-                IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white),
-                  onPressed: () {
-                    context.read<MusicPlayerBloc>().add(StopMusic(podcast));
-                  },
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: Icon(
+                      state.isPlaying ? Icons.pause : Icons.play_arrow,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      if (state.isPlaying) {
+                        context.read<MusicPlayerBloc>().add(PauseMusic(podcast));
+                      } else {
+                        context.read<MusicPlayerBloc>().add(PlayMusic(podcast));
+                      }
+                    },
+                  ),
+                  // Close button to end the music.
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white),
+                    onPressed: () {
+                      context.read<MusicPlayerBloc>().add(StopMusic(podcast));
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         );

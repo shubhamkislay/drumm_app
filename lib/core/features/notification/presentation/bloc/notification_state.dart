@@ -1,3 +1,4 @@
+import 'package:drumm_app/features/drumm%20podcast%20player/domain/entities/podcast.dart';
 import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
 import 'package:equatable/equatable.dart';
 
@@ -23,18 +24,35 @@ class NotificationFailure extends NotificationState {
   List<Object?> get props => [error];
 }
 
-class ForegroundNotificationLoaded extends NotificationState {
+class ForegroundConversationNotificationLoaded extends NotificationState {
   final ConversationEntity conversation;
-  const ForegroundNotificationLoaded({required this.conversation});
+  const ForegroundConversationNotificationLoaded({required this.conversation});
 
   @override
   List<Object?> get props => [conversation];
 }
 
-class BackgroundNotificationLoaded extends NotificationState {
+class BackgroundConversationNotificationLoaded extends NotificationState {
   final ConversationEntity conversation;
-  const BackgroundNotificationLoaded({required this.conversation});
+  const BackgroundConversationNotificationLoaded({required this.conversation});
 
   @override
   List<Object?> get props => [conversation];
+}
+
+
+class ForegroundPodcastNotificationLoaded extends NotificationState {
+  final PodcastEntity podcast;
+  const ForegroundPodcastNotificationLoaded({required this.podcast});
+
+  @override
+  List<Object?> get props => [podcast];
+}
+
+class BackgroundPodcastNotificationLoaded extends NotificationState {
+  final PodcastEntity podcast;
+  const BackgroundPodcastNotificationLoaded({required this.podcast});
+
+  @override
+  List<Object?> get props => [podcast];
 }

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/domain/entities/podcast.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
@@ -29,21 +30,24 @@ class _MusicPlayerBottomSheetState extends State<MusicPlayerBottomSheet> {
   Widget build(BuildContext context) {
     context.read<MusicPlayerBloc>().add(PlayMusic(widget.podcast));
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(24),
       height: MediaQuery.of(context).size.height * 0.5,
       decoration:  BoxDecoration(
         color: DrummTheme.primaryItemColor(context),
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Text(
+          AutoSizeText(
+            minFontSize: 16,
+            textAlign: TextAlign.center,
+            maxLines: 2,
             ((widget.podcast?.podcastTitle??"").isNotEmpty)?widget.podcast?.podcastTitle??"":widget.podcast?.audioTitle??"",
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 24),
           // Replace with album art or any other UI element.
-          const Icon(Icons.music_note, size: 100),
           const SizedBox(height: 24),
           // Play/Pause button.
           BlocBuilder<MusicPlayerBloc, MusicPlayerState>(
@@ -121,6 +125,7 @@ class _MusicPlayerBottomSheetState extends State<MusicPlayerBottomSheet> {
               );
             },
           ),
+          const SizedBox(height: 24),
         ],
       ),
     );

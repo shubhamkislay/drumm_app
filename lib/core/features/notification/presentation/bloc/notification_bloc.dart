@@ -9,13 +9,17 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   NotificationBloc({required this.sendNotificationToTopicUseCase})
       : super(NotificationInitial()) {
     on<SendNotificationEvent>(_onSendNotification);
-    on<ForegroundNotificationReceivedEvent>((event, emit) {
-      print("LOADING NOTIFICATION//////////////");
-      emit(ForegroundNotificationLoaded(conversation: event.conversation));
+    on<ForegroundConversationNotificationReceivedEvent>((event, emit) {
+      emit(ForegroundConversationNotificationLoaded(conversation: event.conversation));
     });
-    on<BackgroundNotificationReceivedEvent>((event, emit) {
-      print("LOADING NOTIFICATION//////////////");
-      emit(BackgroundNotificationLoaded(conversation: event.conversation));
+    on<BackgroundConversationNotificationReceivedEvent>((event, emit) {
+      emit(BackgroundConversationNotificationLoaded(conversation: event.conversation));
+    });
+    on<ForegroundPodcastNotificationReceivedEvent>((event, emit) {
+      emit(ForegroundPodcastNotificationLoaded(podcast: event.podcast));
+    });
+    on<BackgroundPodcastNotificationReceivedEvent>((event, emit) {
+      emit(BackgroundPodcastNotificationLoaded(podcast: event.podcast));
     });
   }
 

@@ -194,7 +194,7 @@ Future<void> initializeDependencies() async {
   s1.registerFactory<DrummAudioBloc>(() => DrummAudioBloc(joinUseCase: s1(),leaveUseCase: s1(),listenUseCase: s1(),muteUseCase: s1(),repository: s1()));
   //drumm podcast player
   s1.registerFactory<MusicPlayerBloc>(() => MusicPlayerBloc());
-  s1.registerFactory<PodcastBloc>(() => PodcastBloc(s1()));
+  s1.registerSingleton<PodcastBloc>(PodcastBloc(s1()));
   //search article
   s1.registerFactory<SearchArticleBloc>(() => SearchArticleBloc(searchArticlesUseCase: s1()));
   //conversation

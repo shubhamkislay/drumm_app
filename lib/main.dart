@@ -10,6 +10,8 @@ import 'package:drumm_app/core/features/notification/presentation/bloc/notificat
 import 'package:drumm_app/core/features/notification/presentation/bloc/notification_event.dart';
 import 'package:drumm_app/core/features/notification/presentation/widgets/notification_item.dart';
 import 'package:drumm_app/core/util/debouncer_brightness.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/data/models/podcast.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/domain/entities/podcast.dart';
 import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
 import 'package:drumm_app/model/algolia_article.dart';
 import 'package:drumm_app/model/question.dart';
@@ -134,7 +136,9 @@ Future<void> firebaseForegroundNotification() async {
 
   Future.delayed(const Duration(seconds: 2)).then((value) {
     FirebaseMessaging.instance.getInitialMessage().then((message) {
-      handleBackgroundMessage(message!);
+      if(message!=null) {
+        handleBackgroundMessage(message);
+      }
     });
   });
 }
@@ -144,20 +148,23 @@ void handleBackgroundMessage(RemoteMessage message){
   switch (type) {
     case 'conversation':
       try {
+        print("Background message is${message.data['conversation']}");
         final conversationJson = jsonDecode(message.data['conversation']);
         final conversation = ConversationEntity.fromJson(conversationJson);
         s1<NotificationBloc>().add(
-            BackgroundNotificationReceivedEvent(conversation: conversation));
+            BackgroundConversationNotificationReceivedEvent(conversation: conversation));
       } catch (e) {
         print("Error with Background notification ${e.toString()}");
       }
       break;
 
     case 'podcast':
-
-    /// open podcast
+      print("Background message is${message.data['podcast']}");
+      final podcastJson = jsonDecode(message.data['podcast']);
+      PodcastEntity podcastEntity = PodcastModel.fromJson(podcastJson);
+      s1<NotificationBloc>().add(
+          BackgroundPodcastNotificationReceivedEvent(podcast: podcastEntity));
       break;
-
     case 'article':
 
     ///read article
@@ -170,18 +177,23 @@ void handleForegroundMessage(RemoteMessage message){
   switch (type) {
     case 'conversation':
       try {
+        print("Foreground message is${message.data['conversation']}");
         final conversationJson = jsonDecode(message.data['conversation']);
         final conversation = ConversationEntity.fromJson(conversationJson);
         s1<NotificationBloc>().add(
-            ForegroundNotificationReceivedEvent(conversation: conversation));
+            ForegroundConversationNotificationReceivedEvent(conversation: conversation));
       } catch (e) {
         print("Error with Background notification ${e.toString()}");
       }
       break;
 
     case 'podcast':
+      print("Foreground message is${message.data['podcast']}");
+      final podcastJson = jsonDecode(message.data['podcast']);
+      PodcastEntity podcastEntity = PodcastModel.fromJson(podcastJson);
 
-    /// open podcast
+      s1<NotificationBloc>().add(
+          ForegroundPodcastNotificationReceivedEvent(podcast: podcastEntity));
       break;
 
     case 'article':

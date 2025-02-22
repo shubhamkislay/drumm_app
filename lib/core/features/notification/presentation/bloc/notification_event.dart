@@ -1,4 +1,5 @@
 import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/domain/entities/podcast.dart';
 import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
 import 'package:equatable/equatable.dart';
 
@@ -22,18 +23,34 @@ class SendNotificationEvent extends NotificationEvent {
   List<Object?> get props => [conversation, drummer];
 }
 
-class ForegroundNotificationReceivedEvent extends NotificationEvent {
+class ForegroundConversationNotificationReceivedEvent extends NotificationEvent {
   final ConversationEntity conversation;
-  const ForegroundNotificationReceivedEvent({required this.conversation});
+  const ForegroundConversationNotificationReceivedEvent({required this.conversation});
 
   @override
   List<Object?> get props => [conversation];
 }
 
-class BackgroundNotificationReceivedEvent extends NotificationEvent {
+class BackgroundConversationNotificationReceivedEvent extends NotificationEvent {
   final ConversationEntity conversation;
-  const BackgroundNotificationReceivedEvent({required this.conversation});
+  const BackgroundConversationNotificationReceivedEvent({required this.conversation});
 
   @override
   List<Object?> get props => [conversation];
+}
+
+class ForegroundPodcastNotificationReceivedEvent extends NotificationEvent {
+  final PodcastEntity podcast;
+  const ForegroundPodcastNotificationReceivedEvent({required this.podcast});
+
+  @override
+  List<Object?> get props => [podcast];
+}
+
+class BackgroundPodcastNotificationReceivedEvent extends NotificationEvent {
+  final PodcastEntity podcast;
+  const BackgroundPodcastNotificationReceivedEvent({required this.podcast});
+
+  @override
+  List<Object?> get props => [podcast];
 }

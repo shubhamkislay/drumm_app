@@ -18,6 +18,7 @@ import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/mu
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_event.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_state.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/podcast_bloc.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/podcast_event.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/podcast_state.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/pages/music_player_bottom_sheet.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
@@ -61,20 +62,18 @@ class NewsDiscoveryPage extends StatelessWidget {
       body: BlocBuilder<RemoteDrummerBloc, RemoteDrummerState>(
           builder: (context, drummerState) {
         if (drummerState is RemoteDrummerDone) {
-          print("State is RemoteDrummerDone NewsDiscoveryPage");
+          //print("State is RemoteDrummerDone NewsDiscoveryPage");
           context.read<RemoteArticlesBloc>().add(GetRecommendedArticles(
               GetArticlesParams(
                   category: ["For You"],
                   drummerEntity: drummerState.drummerEntity)));
         }
         if (drummerState is RemoteDrummerLoading) {
-          print("State is RemoteDrummerLoading NewsDiscoveryPage");
+          //print("State is RemoteDrummerLoading NewsDiscoveryPage");
         }
         return BlocListener<NotificationBloc,NotificationState>(
           listener: (context,  notificationState) {
-            print("NOTIFICATION STATE IS $notificationState");
-            if(notificationState is ForegroundNotificationLoaded){
-              print("NOTIFICATION RECEIVED: ${notificationState.conversation.meta}");
+            if(notificationState is ForegroundConversationNotificationLoaded){
               WidgetsBinding.instance.addPostFrameCallback((_){
                 AnimatedSnackBar(
                     builder: ((context) {
@@ -85,7 +84,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                     .show(context);
               });
             }
-            else if(notificationState is BackgroundNotificationLoaded){
+            else if(notificationState is BackgroundConversationNotificationLoaded){
 
               showModalBottomSheet(
                 context: context,
@@ -95,6 +94,17 @@ class NewsDiscoveryPage extends StatelessWidget {
                   return JoinConversationConfirmation(conversation: notificationState.conversation, drummerEntity: drummerState.drummerEntity??DrummerEntity(),);
                 },
               );
+            }
+            else if(notificationState is BackgroundPodcastNotificationLoaded){
+              context.read<MusicPlayerBloc>().add(LoadMusic(notificationState.podcast));
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true, // Enables full-screen bottom sheet behavior.
+                builder: (_) => MusicPlayerBottomSheet(podcast:notificationState.podcast),
+              );
+            }
+            else if(notificationState is ForegroundPodcastNotificationLoaded){
+              context.read<PodcastBloc>().add(GetPodcastsEvent());
             }
           },
           child: BlocBuilder<RemoteBandsBloc, RemoteBandsState>(
@@ -162,7 +172,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                 expandedHeight: 120,
               );
               if (bandState is RemoteBandsFetched) {
-                print("Band state is RemoteBandsFetched");
+                //print("Band state is RemoteBandsFetched");
                 bands = bandState.bands;
                 sliverAppBar = SliverAppBar(
                   pinned: true,
@@ -544,11 +554,11 @@ class NewsDiscoveryPage extends StatelessWidget {
                           if (!loaded || finished) {
                             return const SizedBox.shrink();
                           }
-                          print("MusicPlayerState is ${state}");
+                          //print("MusicPlayerState is ${state}");
                           return  Positioned(
-                            left: 16,
-                            right: 16,
-                            bottom: 32,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
                             child: FloatingMusicPlayer(podcast: state.podcast,),
                           );
                         },

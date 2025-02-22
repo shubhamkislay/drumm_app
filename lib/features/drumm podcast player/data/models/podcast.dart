@@ -26,4 +26,15 @@ class PodcastModel extends PodcastEntity {
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
+
+  factory PodcastModel.fromJson(Map<String, dynamic> json) {
+      return PodcastModel(
+          audioTitle: json['audio_title'] as String,
+          podcastTitle: json['podcast_title'] as String,
+          audioUrl: json['audio_url'] as String,
+          requestStatus: json['request_status'] as int,
+          updatedAt: Timestamp.fromMicrosecondsSinceEpoch(json['updatedAt']).toDate(),
+      );
+
+  }
 }
