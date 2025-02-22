@@ -70,7 +70,9 @@ import 'features/authentication/presentation/bloc/drummer/hybrid/hybrid_initial_
 import 'features/authentication/presentation/pages/login_page.dart';
 import 'firebase_options.dart';
 import 'model/article.dart';
-final ValueNotifier<ThemeMode> themeModeNotifier = ValueNotifier(ThemeMode.system);
+
+final ValueNotifier<ThemeMode> themeModeNotifier =
+    ValueNotifier(ThemeMode.system);
 ThemeMode currentAppTheme = ThemeMode.dark;
 Future<String> triggerCloudFunction() async {
   final triggerUrl =
@@ -110,49 +112,84 @@ void main() async {
   );
 }
 
+@pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-
-  if (message.data.isNotEmpty) {
-    // Assuming the payload JSON is stored under the key "conversation".
-    try {
-      final conversationJson = jsonDecode(message.data['conversation']);
-      final conversation = ConversationEntity.fromJson(conversationJson);
-     // var notificationBloc = s1<NotificationBloc>()..add(NotificationReceivedEvent(conversation: conversation));
-      // In background, you might want to save the data locally or perform other actions.
-      print("Background notification received: ${conversation.title}");
-
-
-    } catch (e) {
-      print("Error processing background message: $e");
-    }
-  }
+  handleBackgroundMessage(message);
 }
 
-Future<void> firebaseForegroundNotification() async{
-  await FirebaseMessaging.instance
-      .setForegroundNotificationPresentationOptions(
+Future<void> firebaseForegroundNotification() async {
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: false, // Required to display a heads up notification
     badge: false,
     sound: false,
   );
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print("/// // onMessageReceived Foreground // ///:  ${message.data['conversation']}");
-    try {
-      final conversationJson = jsonDecode(message.data['conversation']);
-      final conversation = ConversationEntity.fromJson(conversationJson);
-      s1<NotificationBloc>().add(NotificationReceivedEvent(conversation: conversation));
+    handleForegroundMessage(message);
+  });
 
-    } catch (e) {
-      print("Error with foreground notification ${e.toString()}");
-    }
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    handleBackgroundMessage(message);
+  });
+
+  Future.delayed(const Duration(seconds: 2)).then((value) {
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      handleBackgroundMessage(message!);
+    });
   });
 }
 
+void handleBackgroundMessage(RemoteMessage message){
+  String type = message.data['type'];
+  switch (type) {
+    case 'conversation':
+      try {
+        final conversationJson = jsonDecode(message.data['conversation']);
+        final conversation = ConversationEntity.fromJson(conversationJson);
+        s1<NotificationBloc>().add(
+            BackgroundNotificationReceivedEvent(conversation: conversation));
+      } catch (e) {
+        print("Error with Background notification ${e.toString()}");
+      }
+      break;
 
+    case 'podcast':
 
+    /// open podcast
+      break;
 
+    case 'article':
 
+    ///read article
+      break;
+  }
+}
+
+void handleForegroundMessage(RemoteMessage message){
+  String type = message.data['type'];
+  switch (type) {
+    case 'conversation':
+      try {
+        final conversationJson = jsonDecode(message.data['conversation']);
+        final conversation = ConversationEntity.fromJson(conversationJson);
+        s1<NotificationBloc>().add(
+            ForegroundNotificationReceivedEvent(conversation: conversation));
+      } catch (e) {
+        print("Error with Background notification ${e.toString()}");
+      }
+      break;
+
+    case 'podcast':
+
+    /// open podcast
+      break;
+
+    case 'article':
+
+    ///read article
+      break;
+  }
+}
 
 ThemeManager _themeManager = ThemeManager();
 

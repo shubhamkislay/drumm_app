@@ -17,12 +17,6 @@ class NotificationService {
         '/v1/projects/drummapp/messages:send',
       );
 
-      // Determine the notification topic.
-      // Here we assume that if jamId is null the conversation is a broadcast.
-      final bool isBroadcast = conversation.conversationId == null;
-      final topic = isBroadcast ? "creator" : conversation.conversationId!;
-
-      // Fetch the access token for FCM.
       final accessTokenGetter = AccessTokenFirebase();
       final String authToken = await accessTokenGetter.getAccessToken();
 
@@ -32,9 +26,7 @@ class NotificationService {
       };
 
       // Build the notification title and body.
-      final subtitle = isBroadcast
-          ? "Welcome ${drummer.username} to Drumm"
-          : "${drummer.username} started a conversation";
+      final subtitle = "${drummer.username} started a conversation";
 
       final notificationBody = conversation.question != null
           ? "${conversation.question}\n\n${conversation.title}"
@@ -46,13 +38,14 @@ class NotificationService {
 
       final body = jsonEncode({
         "message": {
-          "topic": "broadcast",
+          "topic": conversation.bandId,
           "notification": {
             "body": notificationBody,
             "title": subtitle,
             "image": conversation.imageUrl,
           },
           "data": {
+            "type": "conversation",
             "conversation": jsonEncode(conversationMap),
             "drummerID": drummer.uid,
           },
@@ -65,11 +58,12 @@ class NotificationService {
           "apns": {
             "payload": {
               "aps": {
+                "contentAvailable": true,
                 "sound": "conga_drumm.caf"
               }
             },
             "headers": {
-              "apns-priority": "10"
+              "apns-priority": "5"
             }
           }
         }
@@ -80,6 +74,8 @@ class NotificationService {
       if (response.statusCode != 200) {
         print("Notification Sending error: ${response.body}");
         throw Exception('Failed to send topic notification ${response.statusCode}');
+      }else{
+        print("Sent Notification successfully to ${conversation.bandId}");
       }
     } catch (e) {
       // You can log or further handle the error here.
@@ -92,6 +88,8 @@ class NotificationService {
   Map<String, dynamic> _conversationToJsonWithoutLastActive(ConversationEntity conversation) {
     return {
       'conversationId': conversation.conversationId,
+      'articleId': conversation.articleId,
+      'bandId': conversation.bandId,
       'title': conversation.title,
       'meta': conversation.meta,
       'category': conversation.category,

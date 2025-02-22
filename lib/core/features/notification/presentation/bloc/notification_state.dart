@@ -23,9 +23,17 @@ class NotificationFailure extends NotificationState {
   List<Object?> get props => [error];
 }
 
-class NotificationLoaded extends NotificationState {
+class ForegroundNotificationLoaded extends NotificationState {
   final ConversationEntity conversation;
-  const NotificationLoaded({required this.conversation});
+  const ForegroundNotificationLoaded({required this.conversation});
+
+  @override
+  List<Object?> get props => [conversation];
+}
+
+class BackgroundNotificationLoaded extends NotificationState {
+  final ConversationEntity conversation;
+  const BackgroundNotificationLoaded({required this.conversation});
 
   @override
   List<Object?> get props => [conversation];

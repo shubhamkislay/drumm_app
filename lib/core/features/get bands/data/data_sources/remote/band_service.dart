@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:drumm_app/core/features/get%20bands/data/model/band.dart';
 import 'package:drumm_app/core/resources/data_state.dart';
+import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class BandService{
@@ -13,8 +14,11 @@ class BandService{
           .doc(FirebaseAuth.instance.currentUser?.uid ?? "")
           .collection("mybands");
       var bandsData = await userBandsCollectionRef.get();
+      FirebaseDBOperations.subscribeToTopic("broadcast");
       List<String> list = List.from(bandsData.docs.map((e) {
-        return (e.data() as Map)["bandId"].toString();
+        String bandId = (e.data() as Map)["bandId"].toString();
+        FirebaseDBOperations.subscribeToTopic(bandId);
+        return bandId;
       }));
 
       var getBandsDataState = await getBands(bandIds: list);

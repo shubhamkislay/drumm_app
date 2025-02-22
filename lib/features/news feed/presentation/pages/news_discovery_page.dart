@@ -32,6 +32,7 @@ import 'package:drumm_app/features/drumm%20podcast%20player/presentation/widgets
 import 'package:drumm_app/features/news%20feed/presentation/widgets/profile_image_icon.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/safe_area_persistent_header_delegate.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/search_button.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/pages/join_conversation_confirmation.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/conversation_horizontal_list.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/pinned_conversations_horizontal_list.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -49,9 +50,7 @@ class NewsDiscoveryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FirebaseDBOperations.subscribeToTopic("broadcast");
     requestPermissions();
-
     List<ArticleEntity> articleList = [];
     var lastDocument;
     String selectedBandId = "For You";
@@ -74,7 +73,7 @@ class NewsDiscoveryPage extends StatelessWidget {
         return BlocListener<NotificationBloc,NotificationState>(
           listener: (context,  notificationState) {
             print("NOTIFICATION STATE IS $notificationState");
-            if(notificationState is NotificationLoaded){
+            if(notificationState is ForegroundNotificationLoaded){
               print("NOTIFICATION RECEIVED: ${notificationState.conversation.meta}");
               WidgetsBinding.instance.addPostFrameCallback((_){
                 AnimatedSnackBar(
@@ -85,6 +84,17 @@ class NewsDiscoveryPage extends StatelessWidget {
                     mobileSnackBarPosition: MobileSnackBarPosition.bottom)
                     .show(context);
               });
+            }
+            else if(notificationState is BackgroundNotificationLoaded){
+
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true, // enables custom height sizing
+                backgroundColor: Colors.transparent, // for rounded corners effect
+                builder: (BuildContext context) {
+                  return JoinConversationConfirmation(conversation: notificationState.conversation, drummerEntity: drummerState.drummerEntity??DrummerEntity(),);
+                },
+              );
             }
           },
           child: BlocBuilder<RemoteBandsBloc, RemoteBandsState>(

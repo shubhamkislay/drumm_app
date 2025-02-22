@@ -22,9 +22,17 @@ class SendNotificationEvent extends NotificationEvent {
   List<Object?> get props => [conversation, drummer];
 }
 
-class NotificationReceivedEvent extends NotificationEvent {
+class ForegroundNotificationReceivedEvent extends NotificationEvent {
   final ConversationEntity conversation;
-  const NotificationReceivedEvent({required this.conversation});
+  const ForegroundNotificationReceivedEvent({required this.conversation});
+
+  @override
+  List<Object?> get props => [conversation];
+}
+
+class BackgroundNotificationReceivedEvent extends NotificationEvent {
+  final ConversationEntity conversation;
+  const BackgroundNotificationReceivedEvent({required this.conversation});
 
   @override
   List<Object?> get props => [conversation];

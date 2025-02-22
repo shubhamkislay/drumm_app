@@ -30,14 +30,16 @@ class BottomStartConversationWidget extends StatelessWidget {
   final ArticleEntity article;
   final List<BandEntity> bands;
   final DrummerEntity drummerEntity;
+  String selectedBandId = "";
 
-  const BottomStartConversationWidget(
+  BottomStartConversationWidget(
       {super.key,
       required this.article,
       required this.bands,
       required this.drummerEntity});
   @override
   Widget build(BuildContext context) {
+    selectedBandId = bands.first.bandId??"broadcast";
     const textStyle = TextStyle(
       fontSize: 32.0,
       height: 1.5,
@@ -83,6 +85,7 @@ class BottomStartConversationWidget extends StatelessWidget {
                         ),
                         onSelectedItemChanged: (index) {
                           print("Band Name ${bands[index].name}");
+                          selectedBandId = bands[index].bandId??"broadcast";
                         },
                         children: List.generate(
                           bands.length,
@@ -228,6 +231,8 @@ class BottomStartConversationWidget extends StatelessWidget {
         conversationId: conversationId, // or generate one if needed
         title: article.title,
         meta: article.meta,
+        articleId: article.articleId,
+        bandId: selectedBandId,
         category: article.category,
         country: article.country,
         description: article.description,

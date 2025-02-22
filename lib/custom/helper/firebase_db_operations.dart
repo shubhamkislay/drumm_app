@@ -1801,7 +1801,7 @@ class FirebaseDBOperations {
   /// Notification functions start
   static void subscribeToTopic(String topic) async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
-   // await messaging.unsubscribeFromTopic(topic);
+    await messaging.unsubscribeFromTopic(topic);
     await messaging.subscribeToTopic(topic).onError((error,stackTrace){
       print("Error is subscribing to topic because ${error}");
     }).whenComplete((){

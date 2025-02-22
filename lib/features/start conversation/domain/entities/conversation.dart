@@ -3,6 +3,8 @@ import 'package:equatable/equatable.dart';
 
 class ConversationEntity extends Equatable {
   final String? conversationId;
+  final String? articleId;
+  final String? bandId;
   final String? title;
   final String? meta;
   final String? category;
@@ -39,6 +41,8 @@ class ConversationEntity extends Equatable {
 
   const ConversationEntity({
     this.conversationId,
+    this.articleId,
+    this.bandId,
     this.title,
     this.meta,
     this.category,
@@ -75,6 +79,8 @@ class ConversationEntity extends Equatable {
     try {
       return ConversationEntity(
         conversationId: json['conversationId'] as String?,
+        articleId: json['articleId'] as String?,
+        bandId: json['bandId'] as String?,
         title: json['title'] as String?,
         meta: json['meta'] as String?,
         category: json['category'] as String?,
@@ -124,6 +130,8 @@ class ConversationEntity extends Equatable {
   @override
   List<Object?> get props => [
     conversationId,
+    articleId,
+    bandId,
     title,
     meta,
     category,
