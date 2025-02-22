@@ -1,3 +1,4 @@
+import 'package:drumm_app/features/drumm%20podcast%20player/domain/entities/podcast.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_event.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_state.dart';
@@ -7,7 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 class FloatingMusicPlayer extends StatelessWidget {
-  const FloatingMusicPlayer({Key? key}) : super(key: key);
+  final PodcastEntity? podcast;
+  const FloatingMusicPlayer({Key? key, required this.podcast}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class FloatingMusicPlayer extends StatelessWidget {
             showModalBottomSheet(
               context: context,
               isScrollControlled: true,
-              builder: (_) => const MusicPlayerBottomSheet(),
+              builder: (_) => MusicPlayerBottomSheet(podcast: podcast,),
             );
           },
           child: Container(
@@ -40,8 +42,10 @@ class FloatingMusicPlayer extends StatelessWidget {
               children: [
                 const Icon(Icons.music_note, color: Colors.white),
                 const SizedBox(width: 8),
-                const Text(
-                  'Playing',
+                Text(
+                  podcast?.podcastTitle??"Playing Podcast",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: Colors.white),
                 ),
                 const SizedBox(width: 8),
@@ -52,9 +56,9 @@ class FloatingMusicPlayer extends StatelessWidget {
                   ),
                   onPressed: () {
                     if (state.isPlaying) {
-                      context.read<MusicPlayerBloc>().add(PauseMusic());
+                      context.read<MusicPlayerBloc>().add(PauseMusic(podcast));
                     } else {
-                      context.read<MusicPlayerBloc>().add(PlayMusic());
+                      context.read<MusicPlayerBloc>().add(PlayMusic(podcast));
                     }
                   },
                 ),
@@ -62,7 +66,7 @@ class FloatingMusicPlayer extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.close, color: Colors.white),
                   onPressed: () {
-                    context.read<MusicPlayerBloc>().add(StopMusic());
+                    context.read<MusicPlayerBloc>().add(StopMusic(podcast));
                   },
                 ),
               ],

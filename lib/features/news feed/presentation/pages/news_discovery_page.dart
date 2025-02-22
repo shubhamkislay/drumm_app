@@ -544,11 +544,12 @@ class NewsDiscoveryPage extends StatelessWidget {
                           if (!loaded || finished) {
                             return const SizedBox.shrink();
                           }
-                          return const Positioned(
+                          print("MusicPlayerState is ${state}");
+                          return  Positioned(
                             left: 16,
                             right: 16,
                             bottom: 32,
-                            child: FloatingMusicPlayer(),
+                            child: FloatingMusicPlayer(podcast: state.podcast,),
                           );
                         },
                       ),

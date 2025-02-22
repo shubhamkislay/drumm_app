@@ -1,4 +1,5 @@
 import 'package:drumm_app/config/theme/drumm_theme.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/domain/entities/podcast.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_event.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_state.dart';
@@ -6,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MusicPlayerBottomSheet extends StatefulWidget {
-  const MusicPlayerBottomSheet({Key? key}) : super(key: key);
+  final PodcastEntity? podcast;
+  const MusicPlayerBottomSheet({Key? key, required this.podcast}) : super(key: key);
 
   @override
   _MusicPlayerBottomSheetState createState() => _MusicPlayerBottomSheetState();
@@ -25,7 +27,7 @@ class _MusicPlayerBottomSheetState extends State<MusicPlayerBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    context.read<MusicPlayerBloc>().add(PlayMusic());
+    context.read<MusicPlayerBloc>().add(PlayMusic(widget.podcast));
     return Container(
       padding: const EdgeInsets.all(16),
       height: MediaQuery.of(context).size.height * 0.5,
@@ -35,8 +37,8 @@ class _MusicPlayerBottomSheetState extends State<MusicPlayerBottomSheet> {
       ),
       child: Column(
         children: [
-          const Text(
-            'Now Playing',
+          Text(
+            ((widget.podcast?.podcastTitle??"").isNotEmpty)?widget.podcast?.podcastTitle??"":widget.podcast?.audioTitle??"",
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 24),
@@ -56,9 +58,9 @@ class _MusicPlayerBottomSheetState extends State<MusicPlayerBottomSheet> {
                 ),
                 onPressed: () {
                   if (state.isPlaying) {
-                    context.read<MusicPlayerBloc>().add(PauseMusic());
+                    context.read<MusicPlayerBloc>().add(PauseMusic(widget.podcast));
                   } else {
-                    context.read<MusicPlayerBloc>().add(PlayMusic());
+                    context.read<MusicPlayerBloc>().add(PlayMusic(widget.podcast));
                   }
                 },
               );
@@ -97,7 +99,7 @@ class _MusicPlayerBottomSheetState extends State<MusicPlayerBottomSheet> {
                     onChangeEnd: (value) {
                       // Seek to the desired position.
                       context.read<MusicPlayerBloc>().add(
-                        SeekMusic(Duration(milliseconds: value.toInt())),
+                        SeekMusic(Duration(milliseconds: value.toInt()),widget.podcast),
                       );
                       setState(() {
                         _isDragging = false;

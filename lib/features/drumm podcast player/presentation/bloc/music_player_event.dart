@@ -1,19 +1,34 @@
-abstract class MusicPlayerEvent {}
+import 'package:drumm_app/features/drumm%20podcast%20player/domain/entities/podcast.dart';
 
-class LoadMusic extends MusicPlayerEvent {
-  final String url;
-  LoadMusic(this.url);
+abstract class MusicPlayerEvent {
+  PodcastEntity? podcast;
+
 }
 
-class PlayMusic extends MusicPlayerEvent {}
+class LoadMusic extends MusicPlayerEvent {
+  final PodcastEntity? podcast;
+  LoadMusic(this.podcast);
+}
 
-class PauseMusic extends MusicPlayerEvent {}
+class PlayMusic extends MusicPlayerEvent {
+  final PodcastEntity? podcast;
+  PlayMusic(this.podcast);
+}
 
-class StopMusic extends MusicPlayerEvent {}  // New event to stop/end the music
+class PauseMusic extends MusicPlayerEvent {
+  final PodcastEntity? podcast;
+  PauseMusic(this.podcast);
+}
+
+class StopMusic extends MusicPlayerEvent {
+  final PodcastEntity? podcast;
+  StopMusic(this.podcast);
+}  // New event to stop/end the music
 
 class SeekMusic extends MusicPlayerEvent {
   final Duration position;
-  SeekMusic(this.position);
+  final PodcastEntity? podcast;
+  SeekMusic(this.position,this.podcast);
 }
 
 class PositionChanged extends MusicPlayerEvent {

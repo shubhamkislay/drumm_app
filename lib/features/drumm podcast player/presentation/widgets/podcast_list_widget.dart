@@ -28,11 +28,11 @@ class PodcastListWidget extends StatelessWidget {
             onTap: () {
               // Show a bottom sheet with the selected audio
               Vibrate.feedback(FeedbackType.medium);
-              context.read<MusicPlayerBloc>().add(LoadMusic(podcast.audioUrl));
+              context.read<MusicPlayerBloc>().add(LoadMusic(podcast));
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true, // Enables full-screen bottom sheet behavior.
-                builder: (_) => MusicPlayerBottomSheet(),
+                builder: (_) => MusicPlayerBottomSheet(podcast:podcast),
               );
             },
             child: PodcastItemWidget(
