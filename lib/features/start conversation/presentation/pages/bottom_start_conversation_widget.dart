@@ -19,6 +19,7 @@ import 'package:drumm_app/features/start%20conversation/presentation/bloc/conver
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_event.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pin_conversation_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pin_conversation_event.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/widgets/conversation_share_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -128,9 +129,9 @@ class BottomStartConversationWidget extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.only(bottom: 28),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(),
+                      ConversationShareButton(conversation: createConversation(article, drummerEntity, context),),
                       StartDrummButton(
                         article: ArticleEntity(articleId: ""),
                         size: 92,
@@ -147,8 +148,7 @@ class BottomStartConversationWidget extends StatelessWidget {
                                 embedding: article.embedding!,
                               )));
 
-                          createConversation(article, drummerEntity, context,
-                              pinned: false);
+                          uploadConversation( context,false);
                         },
                         background: Colors.black.withAlpha(25),
                       ),
@@ -165,14 +165,17 @@ class BottomStartConversationWidget extends StatelessWidget {
                             embedding: article.embedding!,
                           )));
 
-                          createConversation(article, drummerEntity, context,
-                              pinned: true);
+                          uploadConversation( context,true);
                         },
-                        child: Image.asset(
-                          "images/pin.png",
+                        child: Container(
                           height: 42,
                           width: 42,
-                          color: Colors.white,
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              color: Colors.black.withAlpha(25),
+                              borderRadius: BorderRadius.circular(24)),
+                          child: Image.asset('images/pin.png',
+                              color: DrummTheme.primaryTextColorDark, fit: BoxFit.contain),
                         ),
                       ),
                     ],
@@ -217,7 +220,7 @@ class BottomStartConversationWidget extends StatelessWidget {
     );
   }
 
-  void createConversation(
+  ConversationEntity createConversation(
       ArticleEntity article, DrummerEntity drummerEntity, BuildContext context,
       {bool pinned = false}) {
     // Get current user id from Firebase Auth
@@ -261,14 +264,21 @@ class BottomStartConversationWidget extends StatelessWidget {
         pinned: false,
         pinnedAt: Timestamp.now());
 
+    return conversation;
+
+
+  }
+
+  uploadConversation(BuildContext context, bool pinned){
     // Dispatch the event to create a conversation.
+    ConversationEntity conversation = createConversation(article, drummerEntity, context);
     context
         .read<ConversationBloc>()
         .add(CreateConversationEvent(conversation: conversation));
     if (pinned) {
       pinConversation(context, conversation);
     } else {
-      startConversation(context, conversation,conversationId);
+      startConversation(context, conversation,conversation.conversationId!);
     }
   }
 

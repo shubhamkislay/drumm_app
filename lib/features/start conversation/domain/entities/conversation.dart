@@ -127,6 +127,43 @@ class ConversationEntity extends Equatable {
     }
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'conversationId': conversationId,
+      'articleId': articleId,
+      'bandId': bandId,
+      'title': title,
+      'meta': meta,
+      'category': category,
+      'country': country,
+      'description': description,
+      'url': url,
+      'imageUrl': imageUrl,
+      'publishedAt': publishedAt?.millisecondsSinceEpoch,
+      'boostamp': boostamp?.millisecondsSinceEpoch,
+      'question': question,
+      'summary': summary,
+      'content': content,
+      'clusterId': clusterId,
+      'similarId': similarId,
+      'jamId': jamId,
+      'source': source,
+      'dump': dump,
+      'liked': liked,
+      'likes': likes,
+      'reads': reads,
+      'boosts': boosts,
+      'uid': uid,
+      'aiVoiceUrl': aiVoiceUrl, // Adjust if necessary
+      'relatedImageUrls': relatedImageUrls,
+      'lastActive': lastActive?.millisecondsSinceEpoch,
+      'startedBy': startedBy,
+      'pinned': pinned,
+      'pinnedAt': pinnedAt?.millisecondsSinceEpoch,
+    };
+  }
+
+
   ConversationEntity.fromJsonObject(Map<Object?, Object?> json)
       : conversationId = json['conversationId']?.toString(),
         articleId = json['articleId']?.toString(),
