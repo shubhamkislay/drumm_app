@@ -3,6 +3,7 @@ import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_b
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_event.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_state.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/widgets/drummer_join_card.dart';
+import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/last_active_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/last_active_event.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
@@ -11,7 +12,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DrummAudioBottomSheet extends StatefulWidget {
   final String channelName;
-  const DrummAudioBottomSheet({Key? key, required this.channelName}) : super(key: key);
+  final ConversationEntity conversation;
+  const DrummAudioBottomSheet({Key? key, required this.channelName, required this.conversation}) : super(key: key);
 
   @override
   State<DrummAudioBottomSheet> createState() => _DrummAudioBottomSheetState();
@@ -19,7 +21,7 @@ class DrummAudioBottomSheet extends StatefulWidget {
 
 class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
   void _muteAudio(BuildContext context, bool mute) {
-    context.read<DrummAudioBloc>().add(MuteDrummAudioEvent(mute, widget.channelName));
+    context.read<DrummAudioBloc>().add(MuteDrummAudioEvent(mute, widget.channelName, widget.conversation));
   }
 
   void _leaveChannel(BuildContext context) {

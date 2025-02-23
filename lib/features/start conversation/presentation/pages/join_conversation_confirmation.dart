@@ -68,6 +68,7 @@ class JoinConversationConfirmation extends StatelessWidget {
                         try {
                           context.read<DrummAudioBloc>().add(
                             StartOrSwitchChannelEvent(
+                              conversation: conversation,
                               appId: DrummConstants.appId,
                               token: DrummConstants.generateAgoraToken(
                                   drummerEntity.rid.toString(),
@@ -83,7 +84,7 @@ class JoinConversationConfirmation extends StatelessWidget {
                         showModalBottomSheet(
                           context: context,
                           builder: (_) {
-                            return DrummAudioBottomSheet(channelName: conversation.conversationId ?? "");
+                            return DrummAudioBottomSheet(channelName: conversation.conversationId ?? "",conversation: conversation,);
                           },
                           isScrollControlled: true, // optional for a full-screen bottom sheet
                         );

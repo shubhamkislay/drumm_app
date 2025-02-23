@@ -46,6 +46,7 @@ class PinnedConversationsWidget extends StatelessWidget {
                         context.read<DrummAudioBloc>().add(
                           StartOrSwitchChannelEvent(
                             appId: DrummConstants.appId,
+                            conversation: conversation,
                             token: DrummConstants.generateAgoraToken(drummerState.drummerEntity!.rid.toString(), conversation.conversationId??""),
                             channelName: conversation.conversationId??"",
                             uid: drummerState.drummerEntity!.rid??1234,
@@ -100,7 +101,7 @@ class PinnedConversationsWidget extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       builder: (_) {
-        return DrummAudioBottomSheet(channelName:conversation.conversationId??"");
+        return DrummAudioBottomSheet(channelName:conversation.conversationId??"",conversation: conversation,);
       },
       isScrollControlled: true, // optional for a full-screen bottom sheet
     );

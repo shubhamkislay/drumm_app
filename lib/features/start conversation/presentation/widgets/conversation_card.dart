@@ -20,6 +20,7 @@ class ConversationCard extends StatelessWidget {
       onTap: (){
         context.read<DrummAudioBloc>().add(
           StartOrSwitchChannelEvent(
+            conversation: conversation,
             appId: DrummConstants.appId,
             token: DrummConstants.generateAgoraToken(drummerEntity.rid.toString(), conversation.conversationId??""),
             channelName: conversation.conversationId??"",
@@ -66,7 +67,7 @@ class ConversationCard extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       builder: (_) {
-        return DrummAudioBottomSheet(channelName:conversation.conversationId??"");
+        return DrummAudioBottomSheet(channelName:conversation.conversationId??"",conversation: conversation,);
       },
       isScrollControlled: true, // optional for a full-screen bottom sheet
     );

@@ -15,6 +15,9 @@ import 'package:drumm_app/core/features/notification/presentation/bloc/notificat
 import 'package:drumm_app/core/features/notification/presentation/widgets/notification_item.dart';
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
+import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
+import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_state.dart';
+import 'package:drumm_app/features/drumm%20audio/presentation/widgets/drumm_audio_floating.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_event.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_state.dart';
@@ -35,6 +38,7 @@ import 'package:drumm_app/features/news%20feed/presentation/widgets/profile_imag
 import 'package:drumm_app/features/news%20feed/presentation/widgets/safe_area_persistent_header_delegate.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/search_button.dart';
 import 'package:drumm_app/features/read%20article/presentation/pages/read_article_page.dart';
+import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/pages/join_conversation_confirmation.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/conversation_horizontal_list.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/pinned_conversations_horizontal_list.dart';
@@ -82,53 +86,65 @@ class NewsDiscoveryPage extends StatelessWidget {
         if (drummerState is RemoteDrummerLoading) {
           //print("State is RemoteDrummerLoading NewsDiscoveryPage");
         }
-        return BlocListener<NotificationBloc,NotificationState>(
-          listener: (context,  notificationState) {
-            if(notificationState is ForegroundConversationNotificationLoaded){
-              WidgetsBinding.instance.addPostFrameCallback((_){
+        return BlocListener<NotificationBloc, NotificationState>(
+          listener: (context, notificationState) {
+            if (notificationState is ForegroundConversationNotificationLoaded) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
                 AnimatedSnackBar(
-                    builder: ((context) {
-                      return ForegroundNotificationItem(conversation: notificationState.conversation,drummerEntity: drummerState.drummerEntity??DrummerEntity(),);
-                    }),
-                    duration: const Duration(seconds: 8),
-                    mobileSnackBarPosition: MobileSnackBarPosition.bottom)
+                        builder: ((context) {
+                          return ForegroundNotificationItem(
+                            conversation: notificationState.conversation,
+                            drummerEntity:
+                                drummerState.drummerEntity ?? DrummerEntity(),
+                          );
+                        }),
+                        duration: const Duration(seconds: 8),
+                        mobileSnackBarPosition: MobileSnackBarPosition.bottom)
                     .show(context);
               });
-            }
-            else if(notificationState is BackgroundConversationNotificationLoaded){
-
+            } else if (notificationState
+                is BackgroundConversationNotificationLoaded) {
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true, // enables custom height sizing
-                backgroundColor: Colors.transparent, // for rounded corners effect
+                backgroundColor:
+                    Colors.transparent, // for rounded corners effect
                 builder: (BuildContext context) {
-                  return JoinConversationConfirmation(conversation: notificationState.conversation, drummerEntity: drummerState.drummerEntity??DrummerEntity(),);
+                  return JoinConversationConfirmation(
+                    conversation: notificationState.conversation,
+                    drummerEntity:
+                        drummerState.drummerEntity ?? DrummerEntity(),
+                  );
                 },
               );
-            }
-            else if(notificationState is BackgroundPodcastNotificationLoaded){
+            } else if (notificationState
+                is BackgroundPodcastNotificationLoaded) {
               print("Trying to play ${notificationState.podcast}");
-              context.read<MusicPlayerBloc>().add(LoadMusic(notificationState.podcast));
+              context
+                  .read<MusicPlayerBloc>()
+                  .add(LoadMusic(notificationState.podcast));
               showModalBottomSheet(
                 context: context,
-                isScrollControlled: true, // Enables full-screen bottom sheet behavior.
-                builder: (_) => MusicPlayerBottomSheet(podcast:notificationState.podcast),
+                isScrollControlled:
+                    true, // Enables full-screen bottom sheet behavior.
+                builder: (_) =>
+                    MusicPlayerBottomSheet(podcast: notificationState.podcast),
               );
-            }
-            else if(notificationState is ForegroundPodcastNotificationLoaded){
+            } else if (notificationState
+                is ForegroundPodcastNotificationLoaded) {
               context.read<PodcastBloc>().add(GetPodcastsEvent());
-            }else if(notificationState is NavigateToArticleState){
-
+            } else if (notificationState is NavigateToArticleState) {
               print("Opening link");
               showModalBottomSheet(
                 context: context,
                 builder: (_) => BlocProvider.value(
-                    value:
-                    context.read<UserActivityBloc>(), // Provide the existing bloc
+                    value: context
+                        .read<UserActivityBloc>(), // Provide the existing bloc
                     child: ReadArticlePage(
                       article: notificationState.article,
-                      bands: bands??[],
-                      drummerEntity: drummerState.drummerEntity??DrummerEntity(),
+                      bands: bands ?? [],
+                      drummerEntity:
+                          drummerState.drummerEntity ?? DrummerEntity(),
                     )),
                 isScrollControlled: true, // For making the sheet extendable
                 backgroundColor: Colors.transparent,
@@ -137,7 +153,6 @@ class NewsDiscoveryPage extends StatelessWidget {
           },
           child: BlocBuilder<RemoteBandsBloc, RemoteBandsState>(
             builder: (BuildContext context, bandState) {
-
               SliverAppBar sliverAppBar = SliverAppBar(
                 pinned: true,
                 backgroundColor: Colors.transparent,
@@ -167,7 +182,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                       collapseMode: CollapseMode.none,
                       background: Container(
                         alignment: Alignment.bottomLeft,
-                        padding: EdgeInsets.only(left: 12, bottom: 64, right: 12),
+                        padding:
+                            EdgeInsets.only(left: 12, bottom: 64, right: 12),
                         width: double.maxFinite,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -217,7 +233,9 @@ class NewsDiscoveryPage extends StatelessWidget {
                             context.read<RemoteArticlesBloc>().add(
                                   GetArticlesFromDifferentCategory(
                                     GetArticlesParams(
-                                      category: [bandEntity.bandId ?? "For You"],
+                                      category: [
+                                        bandEntity.bandId ?? "For You"
+                                      ],
                                       lastDocument: null,
                                     ),
                                   ),
@@ -262,9 +280,11 @@ class NewsDiscoveryPage extends StatelessWidget {
                               SearchButton(
                                 onPressed: () {
                                   List<Object> parameters = [];
-                                  parameters.add(drummerState.drummerEntity ?? DrummerEntity());
+                                  parameters.add(drummerState.drummerEntity ??
+                                      DrummerEntity());
                                   parameters.add(bandState.bands ?? []);
-                                  context.push(SCREEN_SEARCH_ARTICLE_PAGE,extra: parameters);
+                                  context.push(SCREEN_SEARCH_ARTICLE_PAGE,
+                                      extra: parameters);
                                 },
                               ),
                               SizedBox(
@@ -333,14 +353,17 @@ class NewsDiscoveryPage extends StatelessWidget {
                               },
                             ),
                           ),
-                          if(bandState is RemoteBandsFetched) SliverToBoxAdapter(
-                            child: ConversationHorizontalList(
-                              drummerEntity: drummerState.drummerEntity??DrummerEntity(),
+                          if (bandState is RemoteBandsFetched)
+                            SliverToBoxAdapter(
+                              child: ConversationHorizontalList(
+                                drummerEntity: drummerState.drummerEntity ??
+                                    DrummerEntity(),
+                              ),
                             ),
-                          ),
-                          if(bandState is RemoteBandsFetched) const SliverToBoxAdapter(
-                            child: const PinnedConversationsWidget(),
-                          ),
+                          if (bandState is RemoteBandsFetched)
+                            const SliverToBoxAdapter(
+                              child: const PinnedConversationsWidget(),
+                            ),
                           if (articleState is GeneratingRecommendation)
                             SliverAppBar(
                               pinned: true,
@@ -355,7 +378,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                                     vertical: 0, horizontal: 12),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
-                                    color: DrummTheme.primaryItemColor(context)),
+                                    color:
+                                        DrummTheme.primaryItemColor(context)),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(15),
                                   child: Shimmer(
@@ -380,8 +404,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                                               "Fetching news that you might be interested in...",
                                               maxLines: 2,
                                               style: TextStyle(
-                                                  color:
-                                                      DrummTheme.primaryTextColor(
+                                                  color: DrummTheme
+                                                      .primaryTextColor(
                                                           context),
                                                   fontFamily: DRUMM_FONT_FAMILY,
                                                   fontSize: 12),
@@ -410,7 +434,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                                     vertical: 0, horizontal: 12),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
-                                    color: DrummTheme.primaryItemColor(context)),
+                                    color:
+                                        DrummTheme.primaryItemColor(context)),
                                 child: Row(
                                   children: [
                                     SizedBox(
@@ -453,7 +478,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                                     vertical: 0, horizontal: 12),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
-                                    color: DrummTheme.primaryItemColor(context)),
+                                    color:
+                                        DrummTheme.primaryItemColor(context)),
                                 child: Row(
                                   children: [
                                     Image.asset('images/puzzle-game.png',
@@ -518,17 +544,20 @@ class NewsDiscoveryPage extends StatelessWidget {
                                 remoteState = articleState;
                                 if (articleState is RemoteArticlesLoading) {
                                   articleList.clear();
-                                } else if (articleState is! RemoteArticlesError) {
+                                } else if (articleState
+                                    is! RemoteArticlesError) {
                                   List<ArticleEntity> fArticleList = [];
                                   if (articleState is RemoteArticlesFetched ||
                                       articleState
                                           is RemoteArticlesFetchedFromDifferentCategory ||
-                                      articleState is GeneratingRecommendation ||
+                                      articleState
+                                          is GeneratingRecommendation ||
                                       articleState
                                           is GeneratedRecommendationArticleApplied ||
                                       articleState
                                           is InteractToGenerateRecommendation) {
-                                    if (articleState.articleEntityList != null) {
+                                    if (articleState.articleEntityList !=
+                                        null) {
                                       fArticleList = articleState
                                               .articleEntityList?.articleList ??
                                           [];
@@ -557,12 +586,13 @@ class NewsDiscoveryPage extends StatelessWidget {
                                 }
                                 return Container(
                                   alignment: Alignment.topCenter,
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 16),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
                                   child: ArticleListWidget(
                                       articles: articleList,
                                       bands: bandState.bands ?? [],
-                                      drummerEntity: drummerState.drummerEntity),
+                                      drummerEntity:
+                                          drummerState.drummerEntity),
                                 );
                               },
                             ),
@@ -572,24 +602,48 @@ class NewsDiscoveryPage extends StatelessWidget {
                       // Conditionally show the floating mini-player only if:
                       // 1. Music is loaded (duration is available and non-zero)
                       // 2. The track has not finished playing (position is less than duration)
-                      BlocBuilder<MusicPlayerBloc, MusicPlayerState>(
-                        builder: (context, state) {
-                          final loaded = state.duration != null &&
-                              state.duration!.inMilliseconds > 0;
-                          final finished = loaded &&
-                              state.position.inMilliseconds >=
-                                  state.duration!.inMilliseconds;
-                          if (!loaded || finished) {
-                            return const SizedBox.shrink();
-                          }
-                          //print("MusicPlayerState is ${state}");
-                          return  Positioned(
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            child: FloatingMusicPlayer(podcast: state.podcast,),
-                          );
-                        },
+
+
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            BlocBuilder<DrummAudioBloc, DrummAudioState>(
+                                builder: (context, state) {
+                                  print("DrummAudioState State is $state");
+                                  if (state.conversation.conversationId != null &&
+                                      state is! DrummAudioLoading &&
+                                      state is! DrummAudioError &&
+                                      state is! DrummAudioInitial &&
+                                      state is! DrummAudioLeft) {
+                                    return DrummAudioFloatingWidget(
+                                        conversation: state.conversation);
+                                  } else {
+                                    return const SizedBox.shrink();
+                                  }
+                                }),
+                            BlocBuilder<MusicPlayerBloc, MusicPlayerState>(
+                              builder: (context, state) {
+                                final loaded = state.duration != null &&
+                                    state.duration!.inMilliseconds > 0;
+                                final finished = loaded &&
+                                    state.position.inMilliseconds >=
+                                        state.duration!.inMilliseconds;
+                                if (!loaded || finished) {
+                                  return const SizedBox(height: 36,);
+                                }
+                                //print("MusicPlayerState is ${state}");
+                                return FloatingMusicPlayer(
+                                  podcast: state.podcast,
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   );
@@ -605,7 +659,7 @@ class NewsDiscoveryPage extends StatelessWidget {
   void requestPermissions() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     NotificationSettings notificationSettings =
-    await messaging.requestPermission(
+        await messaging.requestPermission(
       announcement: true,
       carPlay: true,
       criticalAlert: true,
