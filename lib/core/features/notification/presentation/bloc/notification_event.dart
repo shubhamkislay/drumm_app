@@ -1,5 +1,6 @@
 import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/domain/entities/podcast.dart';
+import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
 import 'package:equatable/equatable.dart';
 
@@ -53,4 +54,12 @@ class BackgroundPodcastNotificationReceivedEvent extends NotificationEvent {
 
   @override
   List<Object?> get props => [podcast];
+}
+
+class NavigateToArticleEvent extends NotificationEvent {
+  final ArticleEntity article;
+  const NavigateToArticleEvent({required this.article});
+
+  @override
+  List<Object?> get props => [article];
 }

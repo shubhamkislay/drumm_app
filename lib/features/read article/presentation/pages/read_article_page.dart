@@ -18,7 +18,7 @@ import 'package:drumm_app/features/news%20feed/presentation/widgets/article_drum
 import 'package:drumm_app/features/read%20article/presentation/widgets/article_sources_widget.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/close_dialog_button.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/pages/bottom_start_conversation_widget.dart';
-import 'package:drumm_app/features/read%20article/presentation/widgets/share_button.dart';
+import 'package:drumm_app/features/read%20article/presentation/widgets/article_share_button.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/similar_articles_widget.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/start_drumm_button.dart';
 import 'package:flutter/foundation.dart';
@@ -202,6 +202,7 @@ class _ReadArticlePageState extends State<ReadArticlePage> {
                               SizedBox(
                                 height: 8,
                               ),
+                              if(widget.article.embedding!=null)
                               SimilarArticlesWidget(
                                 params: GetSimilarArticlesParams(
                                     article: widget.article,
@@ -260,15 +261,21 @@ class _ReadArticlePageState extends State<ReadArticlePage> {
   }
 
   void _startTimer() {
-    _timer = Timer(const Duration(seconds: 5), () {
-      _onPageOpenForFiveSeconds();
-    });
+    try {
+      _timer = Timer(const Duration(seconds: 5), () {
+        _onPageOpenForFiveSeconds();
+      });
+    }catch(e){
+    }
   }
 
   void _onPageOpenForFiveSeconds() {
-    if (mounted) {
-      _isTriggered = true;
-      _performAction();
+    try {
+      if (mounted) {
+        _isTriggered = true;
+        _performAction();
+      }
+    }catch(e){
     }
   }
 

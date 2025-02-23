@@ -59,6 +59,37 @@ class ArticleEntity extends Equatable {
         this.aiVoiceUrl,
         this.content});
 
+  Map<String, dynamic> toJson() => {
+    'summary': summary,
+    'liked': liked,
+    'likes': likes,
+    'boostamp': boostamp?.toDate().toIso8601String(), // Converted
+    'boosts': boosts,
+    'clusterId': clusterId,
+    'similarId': similarId,
+    'meta': meta,
+    'category': category,
+    'source': source,
+    'country': country,
+    'title': title,
+    'description': description,
+    'url': url,
+    'imageUrl': imageUrl,
+    'dump': dump,
+    'question': question,
+    'publishedAt': publishedAt?.toDate().toIso8601String(), // Converted
+    'articleId': articleId,
+    'jamId': jamId,
+    'reads': reads,
+    'relatedImageUrls': relatedImageUrls,
+    'uid': uid,
+    'embedding': embedding, // Verify this is serializable or convert it as needed.
+    'aiVoiceUrl': aiVoiceUrl,
+    'content': content,
+  };
+
+
+
   @override
   List<Object?> get props => [uid];
 }

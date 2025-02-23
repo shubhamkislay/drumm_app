@@ -12,6 +12,8 @@ import 'package:drumm_app/core/features/notification/presentation/widgets/notifi
 import 'package:drumm_app/core/util/debouncer_brightness.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/data/models/podcast.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/domain/entities/podcast.dart';
+import 'package:drumm_app/features/news%20feed/data/models/article.dart';
+import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
 import 'package:drumm_app/model/algolia_article.dart';
 import 'package:drumm_app/model/question.dart';
@@ -99,6 +101,7 @@ void main() async {
   );
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   firebaseForegroundNotification();
+  deeplinkHandle();
 
   runApp(
     ChangeNotifierProvider(
@@ -140,6 +143,32 @@ Future<void> firebaseForegroundNotification() async {
         handleBackgroundMessage(message);
       }
     });
+  });
+}
+
+Future<void> deeplinkHandle() async{
+  FlutterBranchSdk.initSession().listen((data) {
+
+    if(data.containsKey("conversation")){
+      final conversation = ConversationEntity.fromJsonObject(data['conversation']);
+      s1<NotificationBloc>().add(
+          BackgroundConversationNotificationReceivedEvent(conversation: conversation));
+      return;
+    }
+    else if(data.containsKey('podcast')){
+      PodcastEntity podcastEntity = PodcastModel.fromJsonObject(data['podcast']);
+      s1<NotificationBloc>().add(
+          BackgroundPodcastNotificationReceivedEvent(podcast: podcastEntity));
+      return;
+    }
+    else if (data.containsKey('article')) {
+      ArticleEntity articleEntity = ArticleModel.fromJsonObject(data['article']);
+      s1<NotificationBloc>().add(
+          NavigateToArticleEvent(article: articleEntity));
+      return;
+    }
+
+    //print('listenDynamicLinks - DeepLink Data: $data');
   });
 }
 

@@ -13,6 +13,7 @@ import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_d
 import 'package:drumm_app/core/features/notification/presentation/bloc/notification_bloc.dart';
 import 'package:drumm_app/core/features/notification/presentation/bloc/notification_state.dart';
 import 'package:drumm_app/core/features/notification/presentation/widgets/notification_item.dart';
+import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_event.dart';
@@ -33,6 +34,7 @@ import 'package:drumm_app/features/drumm%20podcast%20player/presentation/widgets
 import 'package:drumm_app/features/news%20feed/presentation/widgets/profile_image_icon.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/safe_area_persistent_header_delegate.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/search_button.dart';
+import 'package:drumm_app/features/read%20article/presentation/pages/read_article_page.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/pages/join_conversation_confirmation.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/conversation_horizontal_list.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/pinned_conversations_horizontal_list.dart';
@@ -53,6 +55,7 @@ class NewsDiscoveryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     requestPermissions();
     List<ArticleEntity> articleList = [];
+    List<BandEntity>? bands = [];
     var lastDocument;
     String selectedBandId = "For You";
     List<String>? category = ["For You"];
@@ -96,6 +99,7 @@ class NewsDiscoveryPage extends StatelessWidget {
               );
             }
             else if(notificationState is BackgroundPodcastNotificationLoaded){
+              print("Trying to play ${notificationState.podcast}");
               context.read<MusicPlayerBloc>().add(LoadMusic(notificationState.podcast));
               showModalBottomSheet(
                 context: context,
@@ -105,11 +109,27 @@ class NewsDiscoveryPage extends StatelessWidget {
             }
             else if(notificationState is ForegroundPodcastNotificationLoaded){
               context.read<PodcastBloc>().add(GetPodcastsEvent());
+            }else if(notificationState is NavigateToArticleState){
+
+              print("Opening link");
+              showModalBottomSheet(
+                context: context,
+                builder: (_) => BlocProvider.value(
+                    value:
+                    context.read<UserActivityBloc>(), // Provide the existing bloc
+                    child: ReadArticlePage(
+                      article: notificationState.article,
+                      bands: bands??[],
+                      drummerEntity: drummerState.drummerEntity??DrummerEntity(),
+                    )),
+                isScrollControlled: true, // For making the sheet extendable
+                backgroundColor: Colors.transparent,
+              );
             }
           },
           child: BlocBuilder<RemoteBandsBloc, RemoteBandsState>(
             builder: (BuildContext context, bandState) {
-              List<BandEntity>? bands = [];
+
               SliverAppBar sliverAppBar = SliverAppBar(
                 pinned: true,
                 backgroundColor: Colors.transparent,

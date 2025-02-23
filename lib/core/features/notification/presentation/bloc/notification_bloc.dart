@@ -10,16 +10,24 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       : super(NotificationInitial()) {
     on<SendNotificationEvent>(_onSendNotification);
     on<ForegroundConversationNotificationReceivedEvent>((event, emit) {
+      emit(NotificationLoading());
       emit(ForegroundConversationNotificationLoaded(conversation: event.conversation));
     });
     on<BackgroundConversationNotificationReceivedEvent>((event, emit) {
+      emit(NotificationLoading());
       emit(BackgroundConversationNotificationLoaded(conversation: event.conversation));
     });
     on<ForegroundPodcastNotificationReceivedEvent>((event, emit) {
+      emit(NotificationLoading());
       emit(ForegroundPodcastNotificationLoaded(podcast: event.podcast));
     });
     on<BackgroundPodcastNotificationReceivedEvent>((event, emit) {
+      emit(NotificationLoading());
       emit(BackgroundPodcastNotificationLoaded(podcast: event.podcast));
+    });
+    on<NavigateToArticleEvent>((event, emit) {
+      emit(NotificationLoading());
+      emit(NavigateToArticleState(article: event.article));
     });
   }
 

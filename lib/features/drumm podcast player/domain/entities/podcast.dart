@@ -12,4 +12,13 @@ class PodcastEntity {
     required this.requestStatus,
     required this.updatedAt,
   });
+
+  Map<String, dynamic> toJson() => {
+    'audioTitle': audioTitle,
+    'podcastTitle': podcastTitle,
+    'audioUrl': audioUrl,
+    'updatedAt': updatedAt.toIso8601String(), // Converted
+    'requestStatus': requestStatus,
+  };
+
 }

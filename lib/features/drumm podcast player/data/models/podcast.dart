@@ -27,6 +27,20 @@ class PodcastModel extends PodcastEntity {
     );
   }
 
+  PodcastModel.fromJsonObject(Map<Object?, Object?> json)
+      : super(
+    audioTitle: json['audioTitle']?.toString() ?? '',
+    podcastTitle: json['podcastTitle']?.toString() ?? '',
+    audioUrl: json['audioUrl']?.toString() ?? '',
+    requestStatus: int.tryParse(json['requestStatus']?.toString() ?? '0') ?? 0,
+    updatedAt: json['updatedAt'] != null
+        ? Timestamp.fromMicrosecondsSinceEpoch(
+      int.tryParse(json['updatedAt']?.toString() ?? '0') ?? 0,
+    ).toDate()
+        : DateTime.now(),
+  );
+
+
   factory PodcastModel.fromJson(Map<String, dynamic> json) {
       return PodcastModel(
           audioTitle: json['audio_title'] as String,

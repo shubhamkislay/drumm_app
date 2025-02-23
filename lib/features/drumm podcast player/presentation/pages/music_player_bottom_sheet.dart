@@ -4,6 +4,7 @@ import 'package:drumm_app/features/drumm%20podcast%20player/domain/entities/podc
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_event.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_state.dart';
+import 'package:drumm_app/features/drumm%20podcast%20player/presentation/widgets/podcast_share_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,6 +40,8 @@ class _MusicPlayerBottomSheetState extends State<MusicPlayerBottomSheet> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          PodcastShareButton(podcast: widget.podcast!),
+          const SizedBox(height: 24),
           AutoSizeText(
             minFontSize: 16,
             textAlign: TextAlign.center,

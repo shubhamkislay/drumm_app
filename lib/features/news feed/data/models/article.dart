@@ -177,4 +177,44 @@ class ArticleModel extends ArticleEntity {
       relatedImageUrls: json['relatedImageUrls'],
     );
   }
+
+  ArticleModel.fromJsonObject(Map<Object?, Object?> json)
+      : title = json['title']?.toString(),
+        meta = json['meta']?.toString(),
+        category = json['category']?.toString(),
+        country = json['country']?.toString(),
+        description = json['description']?.toString(),
+        url = json['url']?.toString(),
+        imageUrl = json['imageUrl']?.toString(),
+        publishedAt = json['publishedAt'] != null
+            ? Timestamp.fromMillisecondsSinceEpoch(
+            int.tryParse(json['publishedAt']?.toString() ?? '0') ?? 0)
+            : null,
+        boostamp = json['boostamp'] != null
+            ? Timestamp.fromMillisecondsSinceEpoch(
+            int.tryParse(json['boostamp']?.toString() ?? '0') ?? 0)
+            : null,
+        question = json['question']?.toString().trim(),
+        summary = json['summary']?.toString(),
+        content = json['content']?.toString(),
+        articleId = json['articleId']?.toString(),
+        clusterId = json['clusterId']?.toString(),
+        similarId = json['similarId']?.toString(),
+        jamId = json['jamId']?.toString(),
+        source = json['source']?.toString(),
+        dump = json['dump']?.toString(),
+        liked = json['liked']?.toString().toLowerCase() == 'true',
+        likes = int.tryParse(json['likes']?.toString() ?? '0'),
+        reads = int.tryParse(json['reads']?.toString() ?? '0'),
+        boosts = int.tryParse(json['boosts']?.toString() ?? '0'),
+        uid = json['uid']?.toString(),
+        aiVoiceUrl = json['aiVoiceUrl']?.toString(),
+        embedding = json['embedding'] is List<dynamic>
+            ? VectorValue(List<double>.from(json['embedding'] as List<dynamic>))
+            : null,
+        relatedImageUrls = json['relatedImageUrls'] is List<dynamic>
+            ? List<dynamic>.from(json['relatedImageUrls'] as List<dynamic>)
+            : null;
+
+
 }
