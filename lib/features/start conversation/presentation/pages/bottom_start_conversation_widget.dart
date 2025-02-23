@@ -20,6 +20,7 @@ import 'package:drumm_app/features/start%20conversation/presentation/bloc/conver
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pin_conversation_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pin_conversation_event.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/conversation_share_button.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,6 +33,7 @@ class BottomStartConversationWidget extends StatelessWidget {
   final List<BandEntity> bands;
   final DrummerEntity drummerEntity;
   String selectedBandId = "";
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   BottomStartConversationWidget(
       {super.key,
@@ -41,6 +43,14 @@ class BottomStartConversationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     selectedBandId = bands.first.bandId??"broadcast";
+    analytics.logEvent(
+      name: 'start_conversation_option',
+      parameters: <String, Object>{
+        'category': article.category??"",
+        'article_title': article.title??"",
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
     const textStyle = TextStyle(
       fontSize: 32.0,
       height: 1.5,
@@ -137,6 +147,16 @@ class BottomStartConversationWidget extends StatelessWidget {
                         size: 92,
                         buttonText: "Tap to start a conversation",
                         onPressed: () {
+
+                          analytics.logEvent(
+                            name: 'start_conversation',
+                            parameters: <String, Object>{
+                              'category': article.category??"",
+                              'article_title': article.title??"",
+                              'timestamp': DateTime.now().toIso8601String(),
+                            },
+                          );
+
                           Navigator.pop(context);
                           Vibrate.feedback(FeedbackType.impact);
                           context
@@ -166,6 +186,16 @@ class BottomStartConversationWidget extends StatelessWidget {
                           )));
 
                           uploadConversation( context,true);
+
+
+                          analytics.logEvent(
+                            name: 'pin_article',
+                            parameters: <String, Object>{
+                              'category': article.category??"",
+                              'article_title': article.title??"",
+                              'timestamp': DateTime.now().toIso8601String(),
+                            },
+                          );
                         },
                         child: Container(
                           height: 42,

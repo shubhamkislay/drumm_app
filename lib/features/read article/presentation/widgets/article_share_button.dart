@@ -5,6 +5,7 @@ import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_a
 import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/model/home_item.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,8 +19,17 @@ class ArticleShareButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
     return GestureDetector(
       onTap: (){
+        analytics.logEvent(
+          name: 'share_conversation',
+          parameters: <String, Object>{
+            'category': article.category??"",
+            'article_title': article.title??"",
+            'timestamp': DateTime.now().toIso8601String(),
+          },
+        );
         Vibrate.feedback(FeedbackType.selection);
         context
             .read<UserActivityBloc>()

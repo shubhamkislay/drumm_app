@@ -6,6 +6,7 @@ import 'package:drumm_app/features/news%20feed/presentation/widgets/article_item
 import 'package:drumm_app/features/search%20article/presentation/bloc/search_article_bloc.dart';
 import 'package:drumm_app/features/search%20article/presentation/bloc/search_article_event.dart';
 import 'package:drumm_app/features/search%20article/presentation/bloc/search_article_state.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 class SearchArticlePage extends StatelessWidget {
@@ -16,6 +17,7 @@ class SearchArticlePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
     return Scaffold(
       appBar: AppBar(title: const Text('Article Search')),
       body: Column(
@@ -24,6 +26,14 @@ class SearchArticlePage extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               onChanged: (query) {
+                analytics.logEvent(
+                  name: 'search_article',
+                  parameters: <String, Object>{
+                    'query': query,
+                    'timestamp': DateTime.now().toIso8601String(),
+                  },
+                );
+
                 context
                     .read<SearchArticleBloc>()
                     .add(SearchQueryChanged(query: query));

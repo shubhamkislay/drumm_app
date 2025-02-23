@@ -1,9 +1,6 @@
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_vibrate/flutter_vibrate.dart';
-import 'package:go_router/go_router.dart';
-import 'package:share_plus/share_plus.dart';
 
 class StartDrummButton extends StatelessWidget {
   ArticleEntity article;

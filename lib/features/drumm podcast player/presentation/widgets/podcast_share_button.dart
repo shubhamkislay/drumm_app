@@ -7,6 +7,7 @@ import 'package:drumm_app/features/drumm%20podcast%20player/domain/entities/podc
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
 import 'package:drumm_app/model/home_item.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,8 +21,17 @@ class PodcastShareButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
     return GestureDetector(
       onTap: (){
+        analytics.logEvent(
+          name: 'share_podcast',
+          parameters: <String, Object>{
+            'audio_url': podcast.audioUrl??"",
+            'podcast_title': podcast.podcastTitle??"",
+            'timestamp': DateTime.now().toIso8601String(),
+          },
+        );
         Vibrate.feedback(FeedbackType.selection);
         generateShareableLink();
       },

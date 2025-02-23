@@ -38,6 +38,7 @@ import 'package:drumm_app/features/read%20article/presentation/pages/read_articl
 import 'package:drumm_app/features/start%20conversation/presentation/pages/join_conversation_confirmation.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/conversation_horizontal_list.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/pinned_conversations_horizontal_list.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,6 +54,13 @@ class NewsDiscoveryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+    analytics.logEvent(
+      name: 'NewsDiscoveryPage',
+      parameters: <String, Object>{
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
     requestPermissions();
     List<ArticleEntity> articleList = [];
     List<BandEntity>? bands = [];

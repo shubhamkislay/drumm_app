@@ -21,6 +21,7 @@ import 'package:drumm_app/features/start%20conversation/presentation/pages/botto
 import 'package:drumm_app/features/read%20article/presentation/widgets/article_share_button.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/similar_articles_widget.dart';
 import 'package:drumm_app/features/read%20article/presentation/widgets/start_drumm_button.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,6 +46,14 @@ class _ReadArticlePageState extends State<ReadArticlePage> {
 
   @override
   Widget build(BuildContext context) {
+    final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+    analytics.logEvent(
+      name: 'ReadArticlePage',
+      parameters: <String, Object>{
+        'category': widget.article.category??"",
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
     return Container(
       height: MediaQuery.of(context).size.height * 0.92,
       color: Colors.transparent,

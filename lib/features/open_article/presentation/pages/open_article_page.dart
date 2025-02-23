@@ -1,6 +1,7 @@
 
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,10 @@ class _OpenArticlePageState extends State<OpenArticlePage> with RouteAware {
 
   bool joinedChannel = false;
   late ArticleEntity article;
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -72,11 +77,23 @@ class _OpenArticlePageState extends State<OpenArticlePage> with RouteAware {
     );
   }
 
+  void logOpenArticleEvent() {
+    final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+    analytics.logEvent(
+      name: 'OpenArticlePage',
+      parameters: <String, Object>{
+        'category': article.category??"",
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
   @override
   void initState() {
     initController();
     article = widget.article;
     super.initState();
+    logOpenArticleEvent();
     SystemChannels.lifecycle.setMessageHandler((message) async {
       if (message == AppLifecycleState.resumed.toString()) {
         // Enable default back navigation when the app is resumed
