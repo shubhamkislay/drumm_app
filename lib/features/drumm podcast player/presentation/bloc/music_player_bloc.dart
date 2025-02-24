@@ -16,12 +16,13 @@ class MusicPlayerBloc extends Bloc<MusicPlayerEvent, MusicPlayerState> {
   MusicPlayerBloc()
       : super(MusicPlayerState(
     isPlaying: false,
+    isProcessing: true,
     duration: Duration.zero,
     position: Duration.zero,
   )) {
     // Listen to the AudioPlayer's state stream.
     _playerStateSubscription = _audioPlayer.playerStateStream.listen((playerState) {
-      add(AudioPlayerStateChanged(isPlaying: playerState.playing));
+      add(AudioPlayerStateChanged(isPlaying: playerState.playing && playerState.processingState == ProcessingState.ready, isProcessing: playerState.processingState != ProcessingState.ready));
     });
 
     // Listen to the AudioPlayer's position stream.
@@ -60,6 +61,7 @@ class MusicPlayerBloc extends Bloc<MusicPlayerEvent, MusicPlayerState> {
       await _audioPlayer.stop();
       emit(MusicPlayerState(
         isPlaying: false,
+        isProcessing: false,
         duration: Duration.zero,
         position: Duration.zero,
         podcast: event.podcast
@@ -80,7 +82,7 @@ class MusicPlayerBloc extends Bloc<MusicPlayerEvent, MusicPlayerState> {
     });
 
     on<AudioPlayerStateChanged>((event, emit) {
-      emit(state.copyWith(isPlaying: event.isPlaying,podcast: podcast));
+      emit(state.copyWith(isPlaying: event.isPlaying,isProcessing: event.isProcessing,podcast: podcast));
     });
   }
 

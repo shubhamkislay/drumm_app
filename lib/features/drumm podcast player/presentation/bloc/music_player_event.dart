@@ -43,5 +43,6 @@ class DurationChanged extends MusicPlayerEvent {
 
 class AudioPlayerStateChanged extends MusicPlayerEvent {
   final bool isPlaying;
-  AudioPlayerStateChanged({required this.isPlaying});
+  final bool isProcessing;
+  AudioPlayerStateChanged({required this.isPlaying, required this.isProcessing});
 }
