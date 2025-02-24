@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
+import 'package:drumm_app/core/util/core_utils.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/domain/entities/podcast.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_event.dart';
@@ -39,22 +40,41 @@ class _MusicPlayerBottomSheetState extends State<MusicPlayerBottomSheet> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          PodcastShareButton(podcast: widget.podcast!),
-          const SizedBox(height: 24),
-          AutoSizeText(
-            minFontSize: 16,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            ((widget.podcast?.podcastTitle ?? "").isNotEmpty)
-                ? widget.podcast?.podcastTitle ?? ""
-                : widget.podcast?.audioTitle ?? "",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(),
+              PodcastShareButton(podcast: widget.podcast!),
+            ],
           ),
+          Image.asset("images/podcast.png",color: DrummTheme.primaryTextColor(context).withAlpha(150),height: 36,width: 36,),
           const SizedBox(height: 24),
-          // Replace with album art or any other UI element.
-          const SizedBox(height: 24),
+          Text(
+            "${CoreUtils.getWeekDay(widget.podcast!.updatedAt)} ${CoreUtils.getFormattedTime(widget.podcast!.updatedAt)}, ${CoreUtils.getFormattedDate(widget.podcast!.updatedAt)}",
+            textAlign: TextAlign.start,
+            style: TextStyle(
+                fontSize: 12,
+                color: DrummTheme.primaryTextColor(context).withAlpha(150),
+                fontFamily: DRUMM_FONT_FAMILY,
+                fontWeight: FontWeight.bold
+            ),
+          ),
+          Flexible(
+            child: AutoSizeText(
+              minFontSize: 16,
+              textAlign: TextAlign.center,
+              softWrap: true,
+              maxLines: 3,
+              ((widget.podcast?.podcastTitle ?? "").isNotEmpty)
+                  ? widget.podcast?.podcastTitle ?? ""
+                  : widget.podcast?.audioTitle ?? "",
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 8),
           // Play/Pause button.
           BlocBuilder<MusicPlayerBloc, MusicPlayerState>(
             builder: (context, state) {
@@ -76,7 +96,7 @@ class _MusicPlayerBottomSheetState extends State<MusicPlayerBottomSheet> {
                       state.isPlaying
                           ? Icons.pause_circle_filled
                           : Icons.play_circle_filled,
-                      color: DrummTheme.drummPrimaryColor,
+                      color: DrummTheme.primaryTextColor(context),
                     ),
                     onPressed: () {
                       if (state.isPlaying) {

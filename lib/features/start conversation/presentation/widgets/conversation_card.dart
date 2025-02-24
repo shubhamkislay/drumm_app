@@ -56,7 +56,7 @@ class ConversationCard extends StatelessWidget {
               children: [
                 //InstagramDateTimeWidget(publishedAt: conversation.pinnedAt.toString()),
                 Text("Live", style: TextStyle(color: Colors.white,fontSize: 12),),
-                  Image.asset("images/audio-waves.png",color: DrummTheme.primaryTextColor(context),height: 14,width: 14,),
+                  Image.asset("images/audio-waves.png",color: Colors.white,height: 14,width: 14,),
               ],
             ),
             Row(
@@ -71,7 +71,7 @@ class ConversationCard extends StatelessWidget {
                     maxFontSize: 24,
                     conversation.question ?? 'No Title',
                     softWrap: true,
-                    style: TextStyle(fontWeight: FontWeight.bold,color: DrummTheme.primaryTextColor(context)),
+                    style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
