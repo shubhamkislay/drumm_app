@@ -17,7 +17,9 @@ import 'package:share_plus/share_plus.dart';
 
 class PodcastShareButton extends StatelessWidget {
   PodcastEntity podcast;
-  PodcastShareButton({super.key, required this.podcast});
+  Color? color;
+  Color? backgroundColor;
+  PodcastShareButton({super.key, required this.podcast,this.color, this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +38,15 @@ class PodcastShareButton extends StatelessWidget {
         generateShareableLink();
       },
       child: Container(
-        height: 36,
-        width: 36,
-        padding: EdgeInsets.all(10),
+        height: 32,
+        width: 32,
+        padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: DrummTheme.primaryDarkItemColor.withAlpha(150),
+          color: backgroundColor??DrummTheme.primaryDarkItemColor.withAlpha(150),
           borderRadius: BorderRadius.circular(24)
         ),
         child: Image.asset('images/share-btn.png',
-            color: DrummTheme.primaryTextColorDark,
+            color: color??DrummTheme.primaryTextColorDark,
             fit: BoxFit.contain),
       ),
     );

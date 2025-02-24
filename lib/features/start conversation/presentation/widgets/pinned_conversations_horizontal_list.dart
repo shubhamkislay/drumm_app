@@ -11,11 +11,14 @@ import 'package:drumm_app/features/start%20conversation/domain/entities/conversa
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pinned_conversations_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pinned_conversations_event.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pinned_conversations_state.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/widgets/pinned_conversation_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PinnedConversationsWidget extends StatelessWidget {
-  const PinnedConversationsWidget({Key? key,}) : super(key: key);
+  const PinnedConversationsWidget({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +26,9 @@ class PinnedConversationsWidget extends StatelessWidget {
     context.read<PinnedConversationsBloc>().add(LoadPinnedConversationsEvent());
 
     return BlocBuilder<RemoteDrummerBloc, RemoteDrummerState>(
-      builder: (context,drummerState) {
-        if(drummerState is RemoteDrummerDone) {
-          return BlocBuilder<PinnedConversationsBloc, PinnedConversationsState>(
+        builder: (context, drummerState) {
+      if (drummerState is RemoteDrummerDone) {
+        return BlocBuilder<PinnedConversationsBloc, PinnedConversationsState>(
           builder: (context, state) {
             if (state is PinnedConversationsLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -39,47 +42,27 @@ class PinnedConversationsWidget extends StatelessWidget {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: conversations.length,
+                  padding: EdgeInsets.symmetric(horizontal: 6),
                   itemBuilder: (context, index) {
                     final conversation = conversations[index];
-                    return GestureDetector(
-                      onTap: (){
+                    return PinnedConversationItem(
+                      conversation: conversation,
+                      drummerEntity: drummerState.drummerEntity!,
+                      onTap: () {
                         context.read<DrummAudioBloc>().add(
-                          StartOrSwitchChannelEvent(
-                            appId: DrummConstants.appId,
-                            conversation: conversation,
-                            token: DrummConstants.generateAgoraToken(drummerState.drummerEntity!.rid.toString(), conversation.conversationId??""),
-                            channelName: conversation.conversationId??"",
-                            uid: drummerState.drummerEntity!.rid??1234,
-                            isMuted: false,
-                          ),
-                        );
-                        _showCallBottomSheet(context,conversation);
+                              StartOrSwitchChannelEvent(
+                                appId: DrummConstants.appId,
+                                conversation: conversation,
+                                token: DrummConstants.generateAgoraToken(
+                                    drummerState.drummerEntity!.rid.toString(),
+                                    conversation.conversationId ?? ""),
+                                channelName: conversation.conversationId ?? "",
+                                uid: drummerState.drummerEntity!.rid ?? 1234,
+                                isMuted: false,
+                              ),
+                            );
+                        _showCallBottomSheet(context, conversation);
                       },
-                      child: Container(
-                        width: 200,
-                        margin: const EdgeInsets.all(8.0),
-                        padding: const EdgeInsets.all(12.0),
-                        decoration: BoxDecoration(
-                          color: DrummTheme.primaryItemColor(context),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              conversation.title ?? 'No Title',
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              "${(drummerState.drummerEntity!.uid == conversation.startedBy)?"You Pinned at: ":"Pinned at:"} ${CoreUtils.getFormattedTime(conversation.pinnedAt!.toDate())}",
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
                     );
                   },
                 ),
@@ -90,18 +73,21 @@ class PinnedConversationsWidget extends StatelessWidget {
             return const SizedBox.shrink();
           },
         );
-        }
-
-        return SizedBox.shrink();
       }
-    );
+
+      return SizedBox.shrink();
+    });
   }
 
-  void _showCallBottomSheet(BuildContext context,ConversationEntity conversation) {
+  void _showCallBottomSheet(
+      BuildContext context, ConversationEntity conversation) {
     showModalBottomSheet(
       context: context,
       builder: (_) {
-        return DrummAudioBottomSheet(channelName:conversation.conversationId??"",conversation: conversation,);
+        return DrummAudioBottomSheet(
+          channelName: conversation.conversationId ?? "",
+          conversation: conversation,
+        );
       },
       isScrollControlled: true, // optional for a full-screen bottom sheet
     );

@@ -292,7 +292,7 @@ class BottomStartConversationWidget extends StatelessWidget {
         relatedImageUrls: article.relatedImageUrls,
         lastActive: Timestamp.now(),
         startedBy: currentUserId,
-        pinned: false,
+        pinned: pinned,
         pinnedAt: Timestamp.now());
 
     return conversation;
@@ -302,7 +302,7 @@ class BottomStartConversationWidget extends StatelessWidget {
 
   uploadConversation(BuildContext context, bool pinned){
     // Dispatch the event to create a conversation.
-    ConversationEntity conversation = createConversation(article, drummerEntity, context);
+    ConversationEntity conversation = createConversation(article, drummerEntity, context,pinned: pinned);
     context
         .read<ConversationBloc>()
         .add(CreateConversationEvent(conversation: conversation));

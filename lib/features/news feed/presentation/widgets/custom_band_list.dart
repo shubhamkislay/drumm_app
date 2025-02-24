@@ -40,7 +40,7 @@ class _CustomBandSelectContainerState extends State<CustomBandSelectContainer> {
 
     return Container(
       alignment: Alignment.centerLeft,
-      height: 38,
+      height: 32,
       child: ListView.separated(
         padding: const EdgeInsets.only(left: 12, right: 12),
         scrollDirection: Axis.horizontal,
@@ -64,7 +64,7 @@ class _CustomBandSelectContainerState extends State<CustomBandSelectContainer> {
               height: 32,
               decoration: BoxDecoration(
                 color: isSelected
-                    ? DrummTheme.drummPrimaryColor
+                    ? DrummTheme.primarySelectedItemColor(context)
                     : DrummTheme.primaryItemColor(context),
                 borderRadius: BorderRadius.circular(24),
               ),
@@ -73,7 +73,7 @@ class _CustomBandSelectContainerState extends State<CustomBandSelectContainer> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: isSelected
-                      ? Colors.white
+                      ? DrummTheme.primarySelectedTextColor(context)
                       : DrummTheme.primaryTextColor(context),
                   fontWeight: FontWeight.bold,
                   fontSize: 14,

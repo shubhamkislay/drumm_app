@@ -15,7 +15,6 @@ class InstagramDateTimeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     DateTime dateTime = _parseDateTime(publishedAt);
     String formattedDateTime = _formatDateTime(dateTime);
-
     return Text(
       formattedDateTime,
       textAlign: TextAlign.end,
@@ -23,7 +22,7 @@ class InstagramDateTimeWidget extends StatelessWidget {
         fontSize: textSize??12,
         fontWeight: FontWeight.bold,
         fontFamily: DRUMM_FONT_FAMILY,
-        color: DrummTheme.primaryTextColor(context).withOpacity(0.5),
+        color: fontColor??DrummTheme.primaryTextColor(context).withOpacity(0.5),
       ),
     );
   }
