@@ -64,7 +64,7 @@ class _CustomBandSelectContainerState extends State<CustomBandSelectContainer> {
               height: 32,
               decoration: BoxDecoration(
                 color: isSelected
-                    ? DrummTheme.primarySelectedItemColor(context)
+                    ? DrummTheme.drummPrimaryColor
                     : DrummTheme.primaryItemColor(context),
                 borderRadius: BorderRadius.circular(24),
               ),
@@ -73,7 +73,7 @@ class _CustomBandSelectContainerState extends State<CustomBandSelectContainer> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: isSelected
-                      ? DrummTheme.primarySelectedTextColor(context)
+                      ? Colors.white
                       : DrummTheme.primaryTextColor(context),
                   fontWeight: FontWeight.bold,
                   fontSize: 14,

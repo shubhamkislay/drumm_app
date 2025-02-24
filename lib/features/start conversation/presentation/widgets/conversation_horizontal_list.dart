@@ -25,7 +25,7 @@ class ConversationHorizontalList extends StatelessWidget {
             return const SizedBox.shrink();
           }
           return SizedBox(
-            height: 150, // Adjust based on your design
+            height: 100, // Adjust based on your design
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: conversations.length,

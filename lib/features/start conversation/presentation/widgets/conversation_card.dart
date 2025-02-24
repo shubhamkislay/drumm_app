@@ -47,66 +47,37 @@ class ConversationCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20.0),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              height: 30,
-              child: Row(
-                children: [
-                  Image.asset(
-                    "images/audio-waves.png",
-                    color: DrummTheme.primaryTextColor(context),
-                    height: 14,
-                    width: 14,
-                  ),
-                  SizedBox(
-                    width: 4,
-                  ),
-                  Text(
-                    'Live',
-                    style: TextStyle(
-                        color:
-                            Colors.white,
-                        fontFamily: DRUMM_FONT_FAMILY,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12),
-                  ),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                //InstagramDateTimeWidget(publishedAt: conversation.pinnedAt.toString()),
+                Text("Live", style: TextStyle(color: Colors.white,fontSize: 12),),
+                  Image.asset("images/audio-waves.png",color: DrummTheme.primaryTextColor(context),height: 14,width: 14,),
+              ],
             ),
             Row(
               children: [
-                CachedNetworkImage(
-                  imageUrl: conversation.imageUrl ?? DEFAULT_APP_IMAGE_URL,
-                  width: 36,
-                  height: 36,
-                  fit: BoxFit.cover,
-                ),
-                SizedBox(
-                  width: 12,
-                ),
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: CachedNetworkImage(imageUrl: conversation.imageUrl??DEFAULT_APP_IMAGE_URL,width: 36,height: 36,fit: BoxFit.cover,)),
+                SizedBox(width: 12,),
                 Flexible(
                   child: AutoSizeText(
+                    minFontSize: 12,
+                    maxFontSize: 24,
                     conversation.question ?? 'No Title',
                     softWrap: true,
-                    minFontSize: 14,
-                    maxFontSize: 24,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                        color: Colors.white,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold,color: DrummTheme.primaryTextColor(context)),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            InstagramDateTimeWidget(
-              fontColor: Colors.white.withAlpha(150),
-                publishedAt: conversation.lastActive.toString()),
           ],
         ),
       ),

@@ -277,6 +277,8 @@ flutter:
     - images/verify.png
     - images/grid.png
     - images/network.png
+    - images/pin_select.png
+    - images/pin_selected.png
     - images/audio-waves-large.png
     - images/trash.png
     - images/boost_large.png

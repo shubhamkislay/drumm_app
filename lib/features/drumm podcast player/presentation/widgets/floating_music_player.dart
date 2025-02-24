@@ -1,3 +1,4 @@
+import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/domain/entities/podcast.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_event.dart';
@@ -27,11 +28,11 @@ class FloatingMusicPlayer extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.blueGrey[800],
+              color: DrummTheme.primaryItemColor(context),
               borderRadius: BorderRadius.circular(16),
               boxShadow: const [
                 BoxShadow(
-                  color: Colors.black26,
+                  color: Colors.black38,
                   blurRadius: 4,
                   offset: Offset(0, 2),
                 )
@@ -42,21 +43,22 @@ class FloatingMusicPlayer extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Icon(Icons.music_note, color: Colors.white),
+                 // const Icon(Icons.music_note, color: Colors.white),
+                  Image.asset("images/podcast.png",color: DrummTheme.primaryTextColor(context),height: 18,width: 18,),
                   const SizedBox(width: 8),
                   Flexible(
                     child: Text(
                       podcast?.podcastTitle??"Playing Podcast",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: DrummTheme.primaryTextColor(context)),
                     ),
                   ),
                   const SizedBox(width: 8),
                   IconButton(
                     icon: Icon(
                       state.isPlaying ? Icons.pause : Icons.play_arrow,
-                      color: Colors.white,
+                      color: DrummTheme.primaryTextColor(context),
                     ),
                     onPressed: () {
                       if (state.isPlaying) {
@@ -68,7 +70,7 @@ class FloatingMusicPlayer extends StatelessWidget {
                   ),
                   // Close button to end the music.
                   IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon: Icon(Icons.close, color: DrummTheme.primaryTextColor(context)),
                     onPressed: () {
                       context.read<MusicPlayerBloc>().add(StopMusic(podcast));
                     },

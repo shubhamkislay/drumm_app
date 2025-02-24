@@ -154,8 +154,8 @@ class DrummTheme{
    static Color primaryLightItemColor = Color(0xffffffff);// Color(0xffffffff);
 
    static Color primaryTextColorDark = Colors.white;
-   static Color primaryDarkItemColor = Color(0xff1c1c1c);//Color(0xff111111);
-   static Color primaryDarkBackgroundColor = Color(0xff151515);//Color(0xff080808);
+   static Color primaryDarkItemColor = Color(0xff1e1e1e);//Color(0xff111111);
+   static Color primaryDarkBackgroundColor = Color(0xff000000);//Color(0xff080808);
 
    /*
    * themeModeNotifier.value = themeModeNotifier.value == ThemeMode.dark

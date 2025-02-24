@@ -38,7 +38,7 @@ class PinnedConversationsWidget extends StatelessWidget {
                 return const SizedBox.shrink();
               }
               return SizedBox(
-                height: 150,
+                height: 100,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: conversations.length,

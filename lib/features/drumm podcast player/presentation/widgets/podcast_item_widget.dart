@@ -18,9 +18,11 @@ class PodcastItemWidget extends StatelessWidget {
       width: 300,
       margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.all(16),
-      
       decoration: BoxDecoration(
-        color: Colors.yellow,//DrummTheme.drummPrimaryColor,
+        gradient: LinearGradient(colors: [
+          DrummTheme.drummPrimaryColor,
+          Colors.blue
+        ]),
         borderRadius: BorderRadius.circular(20)
       ),
       child: Column(
@@ -31,16 +33,16 @@ class PodcastItemWidget extends StatelessWidget {
             height: 30,
             child: Row(
               children: [
-                Image.asset("images/podcast.png",color: Colors.black.withAlpha(150),height: 18,width: 18,),
+                Image.asset("images/podcast.png",color: Colors.white.withAlpha(150),height: 18,width: 18,),
                 SizedBox(width: 4,),
                 Text("The Drumm Podcast",style: TextStyle(
-                    color: Colors.black.withAlpha(150),//DrummTheme.primaryTextColor(context),
+                    color: Colors.white.withAlpha(150),//DrummTheme.primaryTextColor(context),
                     fontFamily: DRUMM_FONT_FAMILY,
                     fontWeight: FontWeight.bold,
                   fontSize: 12
                 ),),
                 Expanded(child: SizedBox()),
-                PodcastShareButton(podcast: podcast, color: Colors.black,backgroundColor: Colors.black.withAlpha(20),),
+                PodcastShareButton(podcast: podcast, color: Colors.white,backgroundColor: Colors.white.withAlpha(20),),
               ],
             ),
           ),
@@ -53,7 +55,7 @@ class PodcastItemWidget extends StatelessWidget {
               maxFontSize: 28,
               maxLines: 3,
               style: TextStyle(
-                  color:Colors.black,//DrummTheme.primaryTextColor(context),
+                  color:Colors.white,//DrummTheme.primaryTextColor(context),
                   fontFamily: DRUMM_FONT_FAMILY,
                   fontWeight: FontWeight.bold,
                 fontSize: 28
@@ -66,7 +68,7 @@ class PodcastItemWidget extends StatelessWidget {
             textAlign: TextAlign.start,
             style: TextStyle(
               fontSize: 12,
-                color: Colors.black.withAlpha(150),//DrummTheme.primaryTextColor(context),
+                color: Colors.white.withAlpha(150),//DrummTheme.primaryTextColor(context),
                 fontFamily: DRUMM_FONT_FAMILY,
                 fontWeight: FontWeight.bold
             ),

@@ -204,7 +204,7 @@ class BottomStartConversationWidget extends StatelessWidget {
                           decoration: BoxDecoration(
                               color: Colors.black.withAlpha(25),
                               borderRadius: BorderRadius.circular(24)),
-                          child: Image.asset('images/pin.png',
+                          child: Image.asset('images/pin_select.png',
                               color: DrummTheme.primaryTextColorDark, fit: BoxFit.contain),
                         ),
                       ),

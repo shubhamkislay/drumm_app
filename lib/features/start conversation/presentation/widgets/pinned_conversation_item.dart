@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
@@ -27,34 +28,30 @@ class PinnedConversationItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(20.0),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              height: 30,
-              child: Row(
-                children: [
-                  Image.asset("images/pin.png",color: DrummTheme.primaryTextColor(context),height: 14,width: 14,),
-                  SizedBox(width: 4,),
-                  Text((drummerEntity!.uid == conversation.startedBy)?'You Pinned': 'Pinned',style: TextStyle(
-                      color: DrummTheme.primaryTextColor(context).withAlpha(150),
-                      fontFamily: DRUMM_FONT_FAMILY,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12
-                  ),),
-                  if(drummerEntity!.uid == conversation.startedBy)
-                    Expanded(child: SizedBox.shrink()),
-                  if(drummerEntity!.uid == conversation.startedBy)
-                    Image.asset("images/bin.png",color: DrummTheme.primaryTextColor(context).withAlpha(150),height: 18,width: 18,),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                InstagramDateTimeWidget(publishedAt: conversation.pinnedAt.toString()),
+                if(drummerEntity!.uid != conversation.startedBy)
+                  Image.asset("images/pin_selected.png",color: DrummTheme.primaryTextColor(context).withAlpha(150),height: 14,width: 14,),
+                if(drummerEntity!.uid == conversation.startedBy)
+                  Image.asset("images/pin_selected.png",color: DrummTheme.primaryTextColor(context),height: 14,width: 14,),
+              ],
             ),
             Row(
               children: [
-                CachedNetworkImage(imageUrl: conversation.imageUrl??DEFAULT_APP_IMAGE_URL,width: 36,height: 36,fit: BoxFit.cover,),
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: CachedNetworkImage(imageUrl: conversation.imageUrl??DEFAULT_APP_IMAGE_URL,width: 36,height: 36,fit: BoxFit.cover,)),
                 SizedBox(width: 12,),
                 Flexible(
-                  child: Text(
+                  child: AutoSizeText(
+                    minFontSize: 12,
+                    maxFontSize: 24,
                     conversation.meta ?? 'No Title',
                     softWrap: true,
                     style: TextStyle(fontWeight: FontWeight.bold,color: DrummTheme.primaryTextColor(context)),
@@ -64,8 +61,6 @@ class PinnedConversationItem extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            InstagramDateTimeWidget(publishedAt: conversation.pinnedAt.toString()),
           ],
         ),
       ),
