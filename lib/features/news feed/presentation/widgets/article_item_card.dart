@@ -37,7 +37,7 @@ class ArticleItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double height = 350;
+    double height = 250;
     double curve = 20;
     return GestureDetector(
       onTap: () {
@@ -48,7 +48,7 @@ class ArticleItemCard extends StatelessWidget {
               type: INTERACTION_OPENED,
               weight: WEIGHT_OPENED,
               articleId: article.articleId!,
-              embedding: article.embedding??VectorValue([]),
+              embedding: article.embedding ?? VectorValue([]),
             )));
         showModalBottomSheet(
           context: context,
@@ -124,9 +124,11 @@ class ArticleItemCard extends StatelessWidget {
             SizedBox(
               height: 12,
             ),
-            Stack(
-              children: [
-                CachedNetworkImage(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(curve-4),
+                child: CachedNetworkImage(
                   imageUrl: article.imageUrl ?? "",
                   height: height,
                   width: double.maxFinite,
@@ -147,38 +149,81 @@ class ArticleItemCard extends StatelessWidget {
                             .withAlpha(100));
                   },
                 ),
-                Container(
-                  height: height,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors: [
-                        Colors.black,
-                        Colors.transparent
-                      ])),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-                  height: height,
-                  alignment: Alignment.bottomCenter,
-                  child: AutoSizeText(
-                    (article.title ?? ""),
-                    minFontSize: 18,
-                    softWrap: true,
-                    maxLines: (article.title ?? "").length < 30 ? 1 : 2,
-                    style: TextStyle(
-                        fontSize: 28,
-                        color: Colors
-                            .white, //DrummTheme.primaryTextColor(context),
-                        fontWeight: FontWeight.w900,
-                        overflow: TextOverflow.clip),
-                  ),
-                ),
-              ],
+              ),
             ),
             SizedBox(
-              height: 16,
+              height: 12,
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 12,
+              ),
+              alignment: Alignment.bottomCenter,
+              child: AutoSizeText(
+                (article.title ?? ""),
+                minFontSize: 22,
+                softWrap: true,
+                maxLines: (article.title ?? "").length < 30 ? 2 : 3,
+                style: TextStyle(
+                    fontSize: 32,
+                    color: DrummTheme.primaryTextColor(context),
+                    //fontWeight: FontWeight.w900,
+                    overflow: TextOverflow.clip),
+              ),
+            ),
+            if (false)
+              Stack(
+                children: [
+                  CachedNetworkImage(
+                    imageUrl: article.imageUrl ?? "",
+                    height: height,
+                    width: double.maxFinite,
+                    fit: BoxFit.cover,
+                    errorWidget: (context, url, error) {
+                      return Image.asset(
+                        DrummConstants.DRUMM_LOGO_ICON,
+                        color:
+                            DrummTheme.primaryTextColor(context).withAlpha(150),
+                        width: 48,
+                        height: 48,
+                        fit: BoxFit.contain,
+                      );
+                    },
+                    placeholder: (context, url) {
+                      return Container(
+                          color: DrummTheme.primaryItemColor(context)
+                              .withAlpha(100));
+                    },
+                  ),
+                  Container(
+                    height: height,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [Colors.black, Colors.transparent])),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                    height: height,
+                    alignment: Alignment.bottomCenter,
+                    child: AutoSizeText(
+                      (article.title ?? ""),
+                      minFontSize: 18,
+                      softWrap: true,
+                      maxLines: (article.title ?? "").length < 30 ? 1 : 2,
+                      style: TextStyle(
+                          fontSize: 28,
+                          color: Colors
+                              .white, //DrummTheme.primaryTextColor(context),
+                          fontWeight: FontWeight.w900,
+                          overflow: TextOverflow.clip),
+                    ),
+                  ),
+                ],
+              ),
+            SizedBox(
+              height: 12,
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
@@ -191,9 +236,10 @@ class ArticleItemCard extends StatelessWidget {
                     maxLines: 1,
                     style: TextStyle(
                       fontSize: 12,
-                      fontWeight: FontWeight.bold,
+                      //fontWeight: FontWeight.bold,
                       fontFamily: DRUMM_FONT_FAMILY,
-                      color: DrummTheme.primaryTextColor(context),
+                      color:
+                          DrummTheme.primaryTextColor(context).withAlpha(100),
                     ),
                   ),
                   Text(
@@ -203,10 +249,11 @@ class ArticleItemCard extends StatelessWidget {
                       fontFamily: DRUMM_FONT_FAMILY,
                       fontWeight: FontWeight.bold,
                       color:
-                          DrummTheme.primaryTextColor(context).withOpacity(0.5),
+                          DrummTheme.primaryTextColor(context).withAlpha(100),
                     ),
                   ),
                   InstagramDateTimeWidget(
+                    fontColor: DrummTheme.primaryTextColor(context).withAlpha(100),
                       publishedAt: article.publishedAt.toString())
                 ],
               ),
@@ -256,7 +303,7 @@ class ArticleItemCard extends StatelessWidget {
                     Flexible(
                       child: AutoSizeText(
                         (article.question ?? "").trim(),
-                        minFontSize: 12,
+                        minFontSize: 14,
                         maxLines: 2,
                         softWrap: true,
                         style: TextStyle(

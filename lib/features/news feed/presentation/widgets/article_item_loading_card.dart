@@ -50,15 +50,47 @@ class ArticleItemLoadingCard extends StatelessWidget {
                 ),
 
                 Container(
-                  height: 350,
-                    color: DrummTheme.primaryItemBackground(context)),
+                  height: 250,
+                    margin: EdgeInsets.symmetric(horizontal: 12),
+
+                  decoration: BoxDecoration(
+                      color: DrummTheme.primaryItemBackground(context),
+                    borderRadius: BorderRadius.circular(curve)
+                  ),
+                ),
                 SizedBox(
                   height: 16,
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
-                    height: 12,
+                    height: 22,
+                    width: 300,
+                    decoration: BoxDecoration(
+                        color: DrummTheme.primaryItemBackground(context),
+                        borderRadius: BorderRadius.circular(curve)),
+                  ),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Container(
+                    height: 22,
+                    width: 300,
+                    decoration: BoxDecoration(
+                        color: DrummTheme.primaryItemBackground(context),
+                        borderRadius: BorderRadius.circular(curve)),
+                  ),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Container(
+                    height: 22,
                     width: 100,
                     decoration: BoxDecoration(
                         color: DrummTheme.primaryItemBackground(context),
@@ -71,8 +103,8 @@ class ArticleItemLoadingCard extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
-                    height: 22,
-                    width: 250,
+                    height: 42,
+                    width: double.maxFinite,
                     decoration: BoxDecoration(
                         color: DrummTheme.primaryItemBackground(context),
                         borderRadius: BorderRadius.circular(curve)),
