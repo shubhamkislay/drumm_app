@@ -634,7 +634,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                                     state.position.inMilliseconds >=
                                         state.duration!.inMilliseconds;
                                 if (!loaded || finished) {
-                                  return const SizedBox(height: 36,);
+                                  return const SafeArea(bottom:true,top:false,child: SizedBox.shrink(),);
                                 }
                                 //print("MusicPlayerState is ${state}");
                                 return FloatingMusicPlayer(

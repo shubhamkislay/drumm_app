@@ -1,4 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drumm_app/config/theme/drumm_theme.dart';
+import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
+import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_event.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/pages/drumm_audio_bottom_sheet.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/domain/entities/podcast.dart';
 import 'package:drumm_app/features/drumm%20podcast%20player/presentation/bloc/music_player_bloc.dart';
@@ -10,10 +13,10 @@ import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class DrummAudioFloatingWidget extends StatelessWidget {
   final ConversationEntity? conversation;
-  const DrummAudioFloatingWidget({Key? key, required this.conversation}) : super(key: key);
+  const DrummAudioFloatingWidget({Key? key, required this.conversation})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,19 +27,24 @@ class DrummAudioFloatingWidget extends StatelessWidget {
             showModalBottomSheet(
               context: context,
               builder: (_) {
-                return DrummAudioBottomSheet(channelName: conversation!.conversationId ?? "",conversation: conversation!,);
+                return DrummAudioBottomSheet(
+                  channelName: conversation!.conversationId ?? "",
+                  conversation: conversation!,
+                );
               },
-              isScrollControlled: true, // optional for a full-screen bottom sheet
+              isScrollControlled:
+                  true, // optional for a full-screen bottom sheet
             );
           },
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.blueGrey[800],
+              color: DrummTheme.primaryItemColor(context),
               borderRadius: BorderRadius.circular(16),
               boxShadow: const [
                 BoxShadow(
-                  color: Colors.black26,
+                  color: Colors.black38,
                   blurRadius: 4,
                   offset: Offset(0, 2),
                 )
@@ -44,39 +52,47 @@ class DrummAudioFloatingWidget extends StatelessWidget {
             ),
             child: SafeArea(
               top: false,
+              bottom: false,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Icon(Icons.music_note, color: Colors.white),
-                  //CachedNetworkImage(imageUrl: conversation?.imageUrl??DEFAULT_APP_IMAGE_URL),
+                  //const Icon(Icons.music_note, color: Colors.white),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: CachedNetworkImage(
+                      imageUrl: conversation?.imageUrl ?? DEFAULT_APP_IMAGE_URL,
+                      height: 42,
+                      width: 42,
+                      fit: BoxFit.cover,
+                      errorWidget: (context,url,a){
+                        return Image.asset(
+                          "images/audio-waves.png",
+                          color: DrummTheme.primaryTextColor(context),
+                          height: 14,
+                          width: 14,
+                        );
+                      },
+                    ),
+                  ),
                   const SizedBox(width: 8),
                   Flexible(
                     child: Text(
-                      conversation?.question??"Playing Podcast",
+                      conversation?.question ?? "Playing Podcast",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: DrummTheme.primaryTextColor(context)),
                     ),
                   ),
                   const SizedBox(width: 8),
-                  IconButton(
-                    icon: Icon(
-                      state.isPlaying ? Icons.pause : Icons.play_arrow,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      // if (state.isPlaying) {
-                      //   context.read<MusicPlayerBloc>().add(PauseMusic(podcast));
-                      // } else {
-                      //   context.read<MusicPlayerBloc>().add(PlayMusic(podcast));
-                      // }
-                    },
-                  ),
                   // Close button to end the music.
                   IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon:  Icon(Icons.exit_to_app_rounded,
+                        color: DrummTheme.primaryTextColor(context)),
                     onPressed: () {
-                     // context.read<MusicPlayerBloc>().add(StopMusic(podcast));
+                      // context.read<MusicPlayerBloc>().add(StopMusic(podcast));
+                      context
+                          .read<DrummAudioBloc>()
+                          .add(LeaveDrummChannelEvent());
                     },
                   ),
                 ],
