@@ -354,15 +354,15 @@ class NewsDiscoveryPage extends StatelessWidget {
                             ),
                           ),
                           if (bandState is RemoteBandsFetched)
+                            const SliverToBoxAdapter(
+                              child: const PinnedConversationsWidget(),
+                            ),
+                          if (bandState is RemoteBandsFetched)
                             SliverToBoxAdapter(
                               child: ConversationHorizontalList(
                                 drummerEntity: drummerState.drummerEntity ??
                                     DrummerEntity(),
                               ),
-                            ),
-                          if (bandState is RemoteBandsFetched)
-                            const SliverToBoxAdapter(
-                              child: const PinnedConversationsWidget(),
                             ),
                           if (articleState is GeneratingRecommendation)
                             SliverAppBar(

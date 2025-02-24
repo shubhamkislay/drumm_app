@@ -18,7 +18,7 @@ class ConversationHorizontalList extends StatelessWidget {
     return BlocBuilder<ConversationListBloc, ConversationListState>(
       builder: (context, state) {
         if (state is ConversationListLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const SizedBox.shrink();
         } else if (state is ConversationListLoaded) {
           final conversations = state.conversations;
           if (conversations.isEmpty) {
@@ -29,6 +29,7 @@ class ConversationHorizontalList extends StatelessWidget {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: conversations.length,
+              padding: EdgeInsets.symmetric(horizontal: 6),
               itemBuilder: (context, index) {
                 final conversation = conversations[index];
                 return ConversationCard(conversation: conversation,drummerEntity: drummerEntity,);

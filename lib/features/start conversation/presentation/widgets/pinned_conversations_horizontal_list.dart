@@ -31,7 +31,7 @@ class PinnedConversationsWidget extends StatelessWidget {
         return BlocBuilder<PinnedConversationsBloc, PinnedConversationsState>(
           builder: (context, state) {
             if (state is PinnedConversationsLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const SizedBox.shrink();
             } else if (state is PinnedConversationsLoaded) {
               final conversations = state.conversations;
               if (conversations.isEmpty) {

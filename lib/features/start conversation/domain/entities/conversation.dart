@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 class ConversationEntity extends Equatable {
   final String? conversationId;
+  final Timestamp? startTime;
   final String? articleId;
   final String? bandId;
   final String? title;
@@ -41,6 +42,7 @@ class ConversationEntity extends Equatable {
 
   const ConversationEntity({
     this.conversationId,
+    this.startTime,
     this.articleId,
     this.bandId,
     this.title,
@@ -88,6 +90,9 @@ class ConversationEntity extends Equatable {
         description: json['description'] as String?,
         url: json['url'] as String?,
         imageUrl: json['imageUrl'] as String?,
+        startTime: json['startTime'] != null
+            ? Timestamp.fromMillisecondsSinceEpoch(json['startTime'])
+            : null,
         publishedAt: json['publishedAt'] != null
             ? Timestamp.fromMillisecondsSinceEpoch(json['publishedAt'])
             : null,
@@ -130,6 +135,7 @@ class ConversationEntity extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       'conversationId': conversationId,
+      'startTime':startTime,
       'articleId': articleId,
       'bandId': bandId,
       'title': title,
@@ -167,6 +173,10 @@ class ConversationEntity extends Equatable {
   ConversationEntity.fromJsonObject(Map<Object?, Object?> json)
       : conversationId = json['conversationId']?.toString(),
         articleId = json['articleId']?.toString(),
+        startTime = json['publishedAt'] != null
+            ? Timestamp.fromMillisecondsSinceEpoch(
+            int.tryParse(json['startTime']?.toString() ?? '0') ?? 0)
+            : null,
         bandId = json['bandId']?.toString(),
         title = json['title']?.toString(),
         meta = json['meta']?.toString(),
@@ -218,6 +228,7 @@ class ConversationEntity extends Equatable {
   @override
   List<Object?> get props => [
     conversationId,
+    startTime,
     articleId,
     bandId,
     title,

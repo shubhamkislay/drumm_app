@@ -291,6 +291,7 @@ class BottomStartConversationWidget extends StatelessWidget {
         embedding: article.embedding,
         relatedImageUrls: article.relatedImageUrls,
         lastActive: Timestamp.now(),
+        startTime: Timestamp.now(),
         startedBy: currentUserId,
         pinned: pinned,
         pinnedAt: Timestamp.now());
