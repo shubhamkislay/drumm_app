@@ -1,4 +1,5 @@
 import 'package:drumm_app/config/theme/drumm_theme.dart';
+import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_event.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_state.dart';
@@ -13,7 +14,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class DrummAudioBottomSheet extends StatefulWidget {
   final String channelName;
   final ConversationEntity conversation;
-  const DrummAudioBottomSheet({Key? key, required this.channelName, required this.conversation}) : super(key: key);
+  final DrummerEntity drummerEntity;
+  const DrummAudioBottomSheet(
+      {Key? key,
+      required this.channelName,
+      required this.conversation,
+      required this.drummerEntity})
+      : super(key: key);
 
   @override
   State<DrummAudioBottomSheet> createState() => _DrummAudioBottomSheetState();
@@ -21,7 +28,8 @@ class DrummAudioBottomSheet extends StatefulWidget {
 
 class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
   void _muteAudio(BuildContext context, bool mute) {
-    context.read<DrummAudioBloc>().add(MuteDrummAudioEvent(mute, widget.channelName, widget.conversation));
+    context.read<DrummAudioBloc>().add(
+        MuteDrummAudioEvent(mute, widget.channelName, widget.conversation));
   }
 
   void _leaveChannel(BuildContext context) {
@@ -43,67 +51,131 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
         // as these values are maintained in the Bloc's state.
       },
       builder: (context, state) {
-        if (state is !DrummAudioLoading && state is !DrummAudioError && state is !DrummAudioInitial) {
+        if (state is! DrummAudioLoading &&
+            state is! DrummAudioError &&
+            state is! DrummAudioInitial) {
           return Container(
-            height: MediaQuery.sizeOf(context).height * 0.8, // Fixed height for bottom sheet
-            color: DrummTheme.primaryItemColor(context),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Grid view to show remote users.
-                Expanded(
-                  child: state.remoteUserIds.isNotEmpty
-                      ? GridView.builder(
-                    scrollDirection: Axis.vertical,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 0.9,
-                    ),
-                    itemCount: state.remoteUserIds.length,
-                    itemBuilder: (context, index) {
-                      final uid = state.remoteUserIds[index];
-                      // If the user is talking, show a green border; otherwise, gray.
-                      final isTalking = state.talkingStatus[uid] ?? false;
-                      final isMute = state.muteStatus[uid]??false;
-                      return DrummerJoinCard(drummerId: uid,talking: isTalking,muted: isMute,);
-                    },
-                  )
-                      : Center(child: Text("Total users: ${state.remoteUserIds.length}")),
-                ),
-                const SizedBox(height: 16),
-                // Other controls
-                const Text('Drumm Audio Bottom Sheet'),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () => _muteAudio(context, true),
-                  child: const Text('Mute'),
-                ),
-                const SizedBox(height: 8),
-                ElevatedButton(
-                  onPressed: () => _muteAudio(context, false),
-                  child: const Text('Unmute'),
-                ),
-                const SizedBox(height: 8),
-                ElevatedButton(
-                  onPressed: () => _leaveChannel(context),
-                  child: const Text('Leave Channel'),
-                ),
-              ],
+            height: MediaQuery.sizeOf(context).height *
+                0.8, // Fixed height for bottom sheet
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                color: DrummTheme.primaryItemColor(context),
+              borderRadius: BorderRadius.circular(12)
+            ),
+            child: DraggableScrollableSheet(
+              shouldCloseOnMinExtent: true,
+              snap: false,
+              snapAnimationDuration: Duration(milliseconds: 100),
+              initialChildSize: 1,
+              minChildSize: 0.9,
+              maxChildSize: 1,
+              builder: (BuildContext context, ScrollController scrollController) { return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Grid view to show remote users.
+                  Expanded(
+                    child: state.remoteUserIds.isNotEmpty
+                        ? GridView.builder(
+                      scrollDirection: Axis.vertical,
+                      controller: scrollController,
+                      gridDelegate:
+                      const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: 0.9,
+                      ),
+                      itemCount: state.remoteUserIds.length,
+                      itemBuilder: (context, index) {
+                        final uid = state.remoteUserIds[index];
+                        // If the user is talking, show a green border; otherwise, gray.
+                        final isTalking = state.talkingStatus[uid] ?? false;
+                        final isMute = state.muteStatus[uid] ?? false;
+                        return DrummerJoinCard(
+                          drummerId: uid,
+                          talking: isTalking,
+                          muted: isMute,
+                        );
+                      },
+                    )
+                        : Center(
+                        child: Text(
+                            "Total users: ${state.remoteUserIds.length}")),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          if (state.muteStatus[widget.drummerEntity.rid] ??
+                              false) {
+                            _muteAudio(context, false);
+                          } else {
+                            _muteAudio(context, true);
+                          }
+                        },
+                        child: Container(
+                            height: 64,
+                            width: 64,
+                            decoration: BoxDecoration(
+                                color: (state.muteStatus[widget.drummerEntity.rid] ??
+                                    false)?DrummTheme.primaryTextColor(context).withAlpha(100):DrummTheme.drummPrimaryColor,
+                                shape: BoxShape.circle
+                            ),
+                            child: (state.muteStatus[widget.drummerEntity.rid] ??
+                                false)
+                                ? Icon(
+                              size: 42,
+                              Icons.mic_off_rounded,
+                              color: Colors.white,
+                            )
+                                : Icon(
+                              size: 42,
+                              Icons.mic_rounded,
+                              color: Colors.white,
+                            )),
+                      ),
+                      SizedBox(
+                        width: 24,
+                      ),
+                      Container(
+                        height: 64,
+                        width: 64,
+                        decoration: BoxDecoration(
+                            color: DrummTheme.primaryTextColor(context).withAlpha(100),
+                            shape: BoxShape.circle
+                        ),
+                        child: IconButton(
+                          icon: Icon(Icons.exit_to_app_rounded,
+                              size: 36,
+
+                              color: Colors.white),
+                          onPressed: () {
+                            // context.read<MusicPlayerBloc>().add(StopMusic(podcast));
+                            _leaveChannel(context);
+                          },
+                        ),
+                      ),
+
+                    ],
+                  ),
+                  SafeArea(bottom:true,child: SizedBox.shrink()),
+                ],
+              ); },
             ),
           );
-        } else  {
+        } else {
           return Container(
-            height: MediaQuery.sizeOf(context).height * 0.8, // Fixed height for bottom sheet
+            height: MediaQuery.sizeOf(context).height *
+                0.8, // Fixed height for bottom sheet
             color: DrummTheme.primaryItemColor(context),
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Grid view to show remote users.
-                Expanded(
-                  child: Container()
-                ),
+                Expanded(child: Container()),
                 const SizedBox(height: 16),
                 // Other controls
                 const Text('Drumm Audio Bottom Sheet'),
@@ -129,11 +201,13 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
       },
     );
   }
+
   @override
   void initState() {
     super.initState();
     //context.read<LastActiveBloc>().add(StartUpdatingLastActive(channelName));
   }
+
   @override
   void dispose() {
     //context.read<LastActiveBloc>().add(StopUpdatingLastActive());

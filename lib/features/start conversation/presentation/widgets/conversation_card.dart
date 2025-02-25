@@ -89,6 +89,7 @@ class ConversationCard extends StatelessWidget {
       context: context,
       builder: (_) {
         return DrummAudioBottomSheet(
+          drummerEntity: drummerEntity,
           channelName: conversation.conversationId ?? "",
           conversation: conversation,
         );

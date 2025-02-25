@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/custom/helper/circular_reveal_clipper.dart';
 import 'package:drumm_app/custom/helper/image_uploader.dart';
 import 'package:flutter/material.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
@@ -69,7 +70,7 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
                     child:  Container(
                       padding: EdgeInsets.all(2),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(52),
+                          shape: BoxShape.circle,
                           gradient: LinearGradient(
                             begin: Alignment.bottomLeft,
                             end: Alignment.topRight,
@@ -88,13 +89,12 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
                       child: Stack(
                         children: [
                           Container(
-                            padding: EdgeInsets.all(3),
+                            padding: EdgeInsets.all(4),
                             decoration: BoxDecoration(
                               color: Colors.black,
-                              borderRadius: BorderRadius.circular(52),
+                              shape: BoxShape.circle,
                             ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(48),
+                            child: ClipOval(
                               child: CachedNetworkImage(
                                 width: double.maxFinite,
                                 height: double.maxFinite,
@@ -114,7 +114,7 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
                                    color: Colors.grey.shade900.withOpacity(0.75),
                                    borderRadius: BorderRadius.circular(56),
                                  ),
-                                 child: Icon(Icons.mic_off,size: 24,))),
+                                 child: Icon(Icons.mic_off,size: 24,color: Colors.white,))),
                         ],
                       ),
                     )

@@ -16,8 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PinnedConversationsWidget extends StatelessWidget {
+  final DrummerEntity drummerEntity;
   const PinnedConversationsWidget({
-    Key? key,
+    Key? key, required this.drummerEntity,
   }) : super(key: key);
 
   @override
@@ -87,6 +88,8 @@ class PinnedConversationsWidget extends StatelessWidget {
         return DrummAudioBottomSheet(
           channelName: conversation.conversationId ?? "",
           conversation: conversation,
+          drummerEntity: drummerEntity ??
+              DrummerEntity()
         );
       },
       isScrollControlled: true, // optional for a full-screen bottom sheet

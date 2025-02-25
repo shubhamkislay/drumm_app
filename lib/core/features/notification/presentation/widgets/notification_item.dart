@@ -44,7 +44,7 @@ class ForegroundNotificationItem extends StatelessWidget {
         showModalBottomSheet(
           context: context,
           builder: (_) {
-            return DrummAudioBottomSheet(channelName: conversation.conversationId ?? "",conversation: conversation,);
+            return DrummAudioBottomSheet(channelName: conversation.conversationId ?? "",conversation: conversation, drummerEntity: drummerEntity,);
           },
           isScrollControlled: true, // optional for a full-screen bottom sheet
         );

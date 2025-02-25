@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
+import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_event.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/pages/drumm_audio_bottom_sheet.dart';
@@ -15,7 +16,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DrummAudioFloatingWidget extends StatelessWidget {
   final ConversationEntity? conversation;
-  const DrummAudioFloatingWidget({Key? key, required this.conversation})
+  final DrummerEntity drummerEntity;
+  const DrummAudioFloatingWidget({Key? key, required this.conversation, required this.drummerEntity})
       : super(key: key);
 
   @override
@@ -28,6 +30,7 @@ class DrummAudioFloatingWidget extends StatelessWidget {
               context: context,
               builder: (_) {
                 return DrummAudioBottomSheet(
+                  drummerEntity: drummerEntity,
                   channelName: conversation!.conversationId ?? "",
                   conversation: conversation!,
                 );

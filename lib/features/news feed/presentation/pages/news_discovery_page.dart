@@ -354,8 +354,9 @@ class NewsDiscoveryPage extends StatelessWidget {
                             ),
                           ),
                           if (bandState is RemoteBandsFetched)
-                            const SliverToBoxAdapter(
-                              child: const PinnedConversationsWidget(),
+                            SliverToBoxAdapter(
+                              child:  PinnedConversationsWidget( drummerEntity: drummerState.drummerEntity ??
+                                  DrummerEntity(),),
                             ),
                           if (bandState is RemoteBandsFetched)
                             SliverToBoxAdapter(
@@ -614,13 +615,15 @@ class NewsDiscoveryPage extends StatelessWidget {
                           children: [
                             BlocBuilder<DrummAudioBloc, DrummAudioState>(
                                 builder: (context, state) {
-                                  print("DrummAudioState State is $state");
+                                  //print("DrummAudioState State is $state");
                                   if (state.conversation.conversationId != null &&
                                       state is! DrummAudioLoading &&
                                       state is! DrummAudioError &&
                                       state is! DrummAudioInitial &&
                                       state is! DrummAudioLeft) {
                                     return DrummAudioFloatingWidget(
+                                        drummerEntity:
+                                        drummerState.drummerEntity ?? DrummerEntity(),
                                         conversation: state.conversation);
                                   } else {
                                     return const SizedBox.shrink();
