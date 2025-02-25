@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:drumm_app/features/drumm%20audio/presentation/widgets/drummer_jo
 import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/last_active_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/last_active_event.dart';
+import 'package:drumm_app/theme/theme_constants.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -73,6 +75,41 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Grid view to show remote users.
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      //const Icon(Icons.music_note, color: Colors.white),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: CachedNetworkImage(
+                          imageUrl: widget.conversation?.imageUrl ?? DEFAULT_APP_IMAGE_URL,
+                          height: 64,
+                          width: 64,
+                          fit: BoxFit.cover,
+                          errorWidget: (context,url,a){
+                            return Image.asset(
+                              "images/audio-waves.png",
+                              color: DrummTheme.primaryTextColor(context),
+                              height: 64,
+                              width: 64,
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          widget.conversation?.question ?? "Playing Podcast",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: DrummTheme.primaryTextColor(context),fontSize: 18),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(Icons.open_in_full_rounded),
+                    ],
+                  ),
+                  SizedBox(height: 12,),
                   Expanded(
                     child: state.remoteUserIds.isNotEmpty
                         ? GridView.builder(
