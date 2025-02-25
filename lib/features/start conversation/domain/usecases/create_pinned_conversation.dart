@@ -12,6 +12,7 @@ class CreatePinConversationUseCase {
     // Create a new instance (or use copyWith if available) with the pin fields set.
     final pinnedConversation = ConversationEntity(
       conversationId: conversation.conversationId,
+      articleId: conversation.articleId,
       title: conversation.title,
       meta: conversation.meta,
       category: conversation.category,

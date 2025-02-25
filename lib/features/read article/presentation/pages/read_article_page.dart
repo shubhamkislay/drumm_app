@@ -237,7 +237,9 @@ class _ReadArticlePageState extends State<ReadArticlePage> {
                             List<Object> parameters = [];
                             parameters.add(widget.article);
                             parameters.add(widget.drummerEntity??DrummerEntity());
-                            parameters.add(widget.bands);
+                            if(widget.bands.isNotEmpty) {
+                              parameters.add(widget.bands);
+                            }
                             Vibrate.feedback(FeedbackType.impact);
                             context.push(SCREEN_BOTTOM_CONVERSATION,
                                 extra: parameters);

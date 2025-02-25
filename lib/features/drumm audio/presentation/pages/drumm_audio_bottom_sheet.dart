@@ -1,10 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
+import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_event.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_state.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/widgets/drummer_join_card.dart';
+import 'package:drumm_app/features/news%20feed/data/models/article.dart';
+import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
+import 'package:drumm_app/features/read%20article/presentation/pages/read_article_page.dart';
 import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/last_active_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/last_active_event.dart';
@@ -82,7 +86,7 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: CachedNetworkImage(
-                          imageUrl: widget.conversation?.imageUrl ?? DEFAULT_APP_IMAGE_URL,
+                          imageUrl: widget.conversation.imageUrl ?? DEFAULT_APP_IMAGE_URL,
                           height: 64,
                           width: 64,
                           fit: BoxFit.cover,
@@ -99,14 +103,30 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
                       const SizedBox(width: 8),
                       Flexible(
                         child: Text(
-                          widget.conversation?.question ?? "Playing Podcast",
+                          widget.conversation.question ?? "Playing Podcast",
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(color: DrummTheme.primaryTextColor(context),fontSize: 18),
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Icon(Icons.open_in_full_rounded),
+                      GestureDetector(
+                          onTap: (){
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (_) => BlocProvider.value(
+                                  value: context
+                                      .read<UserActivityBloc>(), // Provide the existing bloc
+                                  child: ReadArticlePage(
+                                    article: ArticleModel.fromConversation(widget.conversation),
+                                    bands: [],
+                                    drummerEntity: widget.drummerEntity,
+                                  )),
+                              isScrollControlled: true, // For making the sheet extendable
+                              backgroundColor: Colors.transparent,
+                            );
+                          },
+                          child: Icon(Icons.open_in_full_rounded)),
                     ],
                   ),
                   SizedBox(height: 12,),

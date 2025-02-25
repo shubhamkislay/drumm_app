@@ -16,6 +16,7 @@ class ArticleSourcesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("Article ID is ${article.articleId}");
     return BlocProvider<RemoteArticlesBloc>(
       create: (BuildContext context) =>
           s1()..add(GetClusteredArticles(article)),

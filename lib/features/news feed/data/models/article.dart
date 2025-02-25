@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/features/news%20feed/domain/entities/article.dart';
+import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
 
 class ArticleModel extends ArticleEntity {
   String? title;
@@ -175,6 +176,39 @@ class ArticleModel extends ArticleEntity {
       // Assume a proper conversion for embedding and relatedImageUrls.
       embedding: json['embedding._values'] != null ? VectorValue(json['embedding._values'] as List<double>) : null,
       relatedImageUrls: json['relatedImageUrls'],
+    );
+  }
+
+  factory ArticleModel.fromConversation(ConversationEntity conversation) {
+    return ArticleModel(
+
+      title: conversation.title,//json['title'],
+      meta: conversation.meta,
+      category: conversation.category,
+      country: conversation.country,
+      description: conversation.description,
+      url: conversation.url,
+      imageUrl: conversation.imageUrl,
+      publishedAt: conversation.publishedAt,
+      boostamp: conversation.boostamp,
+      question: conversation.question,
+      summary: conversation.summary,
+      content: conversation.content,
+      articleId: conversation.articleId,
+      clusterId: conversation.clusterId,
+      similarId: conversation.similarId,
+      jamId: conversation.jamId,
+      source: conversation.source,
+      dump: conversation.dump,
+      liked: conversation.liked,
+      likes: conversation.likes,
+      reads: conversation.reads,
+      boosts: conversation.boosts,
+      uid: conversation.uid,
+      aiVoiceUrl: conversation.aiVoiceUrl,
+      // Assume a proper conversion for embedding and relatedImageUrls.
+      embedding: conversation.embedding,
+      relatedImageUrls: conversation.relatedImageUrls,
     );
   }
 

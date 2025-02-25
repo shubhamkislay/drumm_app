@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/config/constants.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20bands/domain/entities/band.dart';
+import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/remote_bands_bloc.dart';
+import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/remote_bands_state.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/core/features/notification/presentation/bloc/notification_bloc.dart';
 import 'package:drumm_app/core/features/notification/presentation/bloc/notification_event.dart';
@@ -30,7 +32,7 @@ import '../../../drumm audio/presentation/pages/drumm_audio_bottom_sheet.dart';
 
 class BottomStartConversationWidget extends StatelessWidget {
   final ArticleEntity article;
-  final List<BandEntity> bands;
+  final List<BandEntity> ? bands;
   final DrummerEntity drummerEntity;
   String selectedBandId = "";
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
@@ -42,7 +44,7 @@ class BottomStartConversationWidget extends StatelessWidget {
       required this.drummerEntity});
   @override
   Widget build(BuildContext context) {
-    selectedBandId = bands.first.bandId??"broadcast";
+    selectedBandId = (((bands??[]).isNotEmpty)?bands?.first.bandId:"")!;//(bands?.first.bandId??"broadcast");
     analytics.logEvent(
       name: 'start_conversation_option',
       parameters: <String, Object>{
@@ -82,7 +84,7 @@ class BottomStartConversationWidget extends StatelessWidget {
                       "images/team_active.png",
                       height: 32,
                     ),
-                    SizedBox(
+                   if((bands??[]).isNotEmpty) SizedBox(
                       height: 75,
                       width: 150,
                       child: CupertinoPicker(
@@ -95,17 +97,17 @@ class BottomStartConversationWidget extends StatelessWidget {
                           background: Colors.black.withAlpha(25),
                         ),
                         onSelectedItemChanged: (index) {
-                          print("Band Name ${bands[index].name}");
-                          selectedBandId = bands[index].bandId??"broadcast";
+                          print("Band Name ${bands?[index].name}");
+                          selectedBandId = bands?[index].bandId??"broadcast";
                         },
                         children: List.generate(
-                          bands.length,
+                          (bands??[]).length,
                           (index) {
                             return Container(
                               alignment: Alignment.center,
                               margin: const EdgeInsets.all(8.0),
                               child: Text(
-                                '${bands[index].name}',
+                                '${(bands??[])[index].name}',
                                 style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 12,
@@ -116,6 +118,48 @@ class BottomStartConversationWidget extends StatelessWidget {
                         ),
                       ),
                     ),
+                    if((bands??[]).isEmpty)BlocBuilder<RemoteBandsBloc,RemoteBandsState>(builder: (context,state){
+                      if(state is RemoteBandsFetched) {
+                        selectedBandId = (((state.bands??[]).isNotEmpty)?state.bands?.first.bandId:"")!;
+                        print("SelectedBandId is $selectedBandId");
+                        return SizedBox(
+                          height: 75,
+                          width: 150,
+                          child: CupertinoPicker(
+                            itemExtent: textStyle.fontSize!,
+                            diameterRatio: 5,
+                            magnification: 1.15,
+                            squeeze: 1,
+                            selectionOverlay:
+                            CupertinoPickerDefaultSelectionOverlay(
+                              background: Colors.black.withAlpha(25),
+                            ),
+                            onSelectedItemChanged: (index) {
+                              print("Band Name ${state.bands![index].name}");
+                              selectedBandId = state.bands![index].bandId??"broadcast";
+                            },
+                            children: List.generate(
+                              state.bands!.length,
+                                  (index) {
+                                return Container(
+                                  alignment: Alignment.center,
+                                  margin: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    '${state.bands![index].name}',
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontFamily: DRUMM_FONT_FAMILY),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      }else{
+                        return SizedBox.shrink();
+                      }
+                    }),
                     SizedBox(
                       width: 32,
                     ),

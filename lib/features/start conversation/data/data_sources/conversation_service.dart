@@ -14,6 +14,7 @@ class ConversationService{
         .doc(conversation.conversationId ?? FirebaseFirestore.instance.collection('conversations').doc().id);
 
     final data = {
+      'articleId': conversation.articleId,
       'conversationId': conversation.conversationId,
       'title': conversation.title,
       'meta': conversation.meta,
@@ -65,6 +66,7 @@ class ConversationService{
       final data = doc.data() as Map<String, dynamic>;
       return ConversationEntity(
         conversationId: data['conversationId'] as String?,
+        articleId: data['articleId'] as String?,
         title: data['title'] as String?,
         meta: data['meta'] as String?,
         category: data['category'] as String?,
@@ -125,6 +127,7 @@ class ConversationService{
         final data = doc.data();
         return ConversationEntity(
           conversationId: data['conversationId'] as String?,
+          articleId: data['articleId'] as String?,
           title: data['title'] as String?,
           meta: data['meta'] as String?,
           category: data['category'] as String?,

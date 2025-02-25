@@ -68,6 +68,8 @@ class PageRoutes {
                 BlocProvider(
                   create: (_) => MusicPlayerBloc(),
                 ),
+                BlocProvider<RemoteBandsBloc>(
+                    create: (_) => s1()..add(GetCurrentUserBands())),
                 BlocProvider<PodcastBloc>(
                     create: (_) => s1()..add(GetPodcastsEvent())),
                 BlocProvider<RemoteDrummerBloc>(
@@ -138,8 +140,16 @@ class PageRoutes {
                     parameters.elementAt(0) as ArticleEntity;
                 DrummerEntity drummerEntity =
                     parameters.elementAt(1) as DrummerEntity;
-                List<BandEntity> bands =
-                    parameters.elementAt(2) as List<BandEntity>;
+                List<BandEntity> bands = [];
+                try{
+                  bands = parameters.elementAt(2) as List<BandEntity>;
+                }catch(e){
+                  print(e);
+                }
+                if(bands.isEmpty) {
+                  print("Bands is empty from");
+                }
+
                 return CustomTransitionPage(
                   key: state.pageKey,
                   child: BottomStartConversationWidget(
@@ -167,10 +177,6 @@ class PageRoutes {
                     BlocProvider<RemoteDrummerBloc>(
                       create: (BuildContext context) =>
                           s1<RemoteDrummerBloc>()..add(GetDrummer()),
-                    ),
-                    BlocProvider<RemoteBandsBloc>(
-                      create: (providerContext) =>
-                          s1<RemoteBandsBloc>()..add(GetCurrentUserBands()),
                     ),
                   ],
                   child: const NewsDiscoveryPage(),
