@@ -8,6 +8,7 @@ import 'package:drumm_app/features/news%20feed/domain/usecases/get_clustered_art
 import 'package:drumm_app/features/news%20feed/domain/usecases/get_interaction_counts.dart';
 import 'package:drumm_app/features/news%20feed/domain/usecases/get_latest_articles.dart';
 import 'package:drumm_app/features/news%20feed/domain/usecases/get_similar_articles.dart';
+import 'package:drumm_app/features/news%20feed/domain/usecases/mark_articles_as_seen.dart';
 import 'package:drumm_app/features/news%20feed/domain/usecases/perform_vector_search.dart';
 import 'package:drumm_app/features/news%20feed/domain/usecases/vector_search_and_load_recommended_articles.dart';
 import 'package:drumm_app/features/news%20feed/presentation/bloc/article/remote/remote_articles_event.dart';
@@ -22,9 +23,11 @@ class RemoteArticlesBloc
   final PerformVectorSearchUseCase performVectorSearchUseCase;
   final GetLatestArticlesUseCase getLatestArticlesUseCase;
   final GetInteractionCountsUseCase getInteractionCountsUseCase;
-  final VectorSearchAndLoadRecommendedArticlesUseCase vectorSearchAndLoadRecommendedArticlesUseCase;
+  final VectorSearchAndLoadRecommendedArticlesUseCase
+      vectorSearchAndLoadRecommendedArticlesUseCase;
   final GenerateAndLoadRecommendedArticlesUseCase
       generateAndLoadRecommendedArticlesUseCase;
+  final MarkArticlesAsSeenUseCase markArticlesAsSeenUseCase;
 
   RemoteArticlesBloc(
       this.getArticlesUseCase,
@@ -34,13 +37,15 @@ class RemoteArticlesBloc
       this.getLatestArticlesUseCase,
       this.getInteractionCountsUseCase,
       this.vectorSearchAndLoadRecommendedArticlesUseCase,
-      this.generateAndLoadRecommendedArticlesUseCase)
+      this.generateAndLoadRecommendedArticlesUseCase,
+      this.markArticlesAsSeenUseCase)
       : super(const RemoteArticlesLoading()) {
     on<GetArticles>(onGetArticles);
     on<GetRecommendedArticles>(onGetRecommendedArticles);
     on<GetArticlesFromDifferentCategory>(onGetArticlesFromDifferentCategory);
     on<GetSimilarArticles>(onGetSimilarArticles);
     on<GetClusteredArticles>(onGetClusteredArticles);
+    on<MarkArticleAsSeen>(onMarkArticleAsSeen);
   }
 
   void onGetArticles(
@@ -90,12 +95,13 @@ class RemoteArticlesBloc
             emit(NoNewRecommendations());
           }
         } else {
-
           final latestdataState =
               await getLatestArticlesUseCase(params: event.getArticlesParams);
 
-          if (latestdataState is DataSuccess && latestdataState.data?.articleList != null) {
-            emit(GeneratingRecommendation(latestdataState.data ?? ArticleListEntity(),
+          if (latestdataState is DataSuccess &&
+              latestdataState.data?.articleList != null) {
+            emit(GeneratingRecommendation(
+                latestdataState.data ?? ArticleListEntity(),
                 event.getArticlesParams.category ?? []));
             final vectorDataState =
                 await vectorSearchAndLoadRecommendedArticlesUseCase(
@@ -107,7 +113,7 @@ class RemoteArticlesBloc
             if (vectorDataState is DataFailed) {
               emit(NoNewRecommendations());
             }
-          }else{
+          } else {
             emit(RemoteArticlesError(dataState.error!));
           }
         }
@@ -125,7 +131,35 @@ class RemoteArticlesBloc
           }
         }
         if (dataState is DataFailed) {
-          emit(RemoteArticlesError(dataState.error!));
+          final dataState =
+              await getLatestArticlesUseCase(params: event.getArticlesParams);
+
+          if (dataState is DataSuccess) {
+            if (dataState.data?.articleList != null) {
+              emit(RemoteArticlesFetched(
+                  dataState.data ?? ArticleListEntity(), category));
+              // int interactions = await getInteractionCountsUseCase();
+              // if (interactions < 10) {
+              //   emit(InteractToGenerateRecommendation(10 - interactions, category));
+              // } else {
+              emit(GeneratingRecommendation(
+                  dataState.data ?? ArticleListEntity(), category));
+              final vectorDataState =
+                  await generateAndLoadRecommendedArticlesUseCase(
+                      params: event.getArticlesParams);
+
+              if (vectorDataState is DataSuccess) {
+                emit(GeneratedRecommendationArticle());
+              }
+              if (vectorDataState is DataFailed) {
+                emit(NoNewRecommendations());
+              }
+              //}
+            }
+          }
+          if (dataState is DataFailed) {
+            emit(RemoteArticlesError(dataState.error!));
+          }
         }
       }
     } else {
@@ -136,23 +170,23 @@ class RemoteArticlesBloc
         if (dataState.data?.articleList != null) {
           emit(RemoteArticlesFetched(
               dataState.data ?? ArticleListEntity(), category));
-          int interactions = await getInteractionCountsUseCase();
-          if (interactions < 10) {
-            emit(InteractToGenerateRecommendation(10 - interactions, category));
-          } else {
-            emit(GeneratingRecommendation(
-                dataState.data ?? ArticleListEntity(), category));
-            final vectorDataState =
-                await generateAndLoadRecommendedArticlesUseCase(
-                    params: event.getArticlesParams);
+          // int interactions = await getInteractionCountsUseCase();
+          // if (interactions < 10) {
+          //   emit(InteractToGenerateRecommendation(10 - interactions, category));
+          // } else {
+          emit(GeneratingRecommendation(
+              dataState.data ?? ArticleListEntity(), category));
+          final vectorDataState =
+              await generateAndLoadRecommendedArticlesUseCase(
+                  params: event.getArticlesParams);
 
-            if (vectorDataState is DataSuccess) {
-              emit(GeneratedRecommendationArticle());
-            }
-            if (vectorDataState is DataFailed) {
-              emit(NoNewRecommendations());
-            }
+          if (vectorDataState is DataSuccess) {
+            emit(GeneratedRecommendationArticle());
           }
+          if (vectorDataState is DataFailed) {
+            emit(NoNewRecommendations());
+          }
+          // }
         }
       }
       if (dataState is DataFailed) {
@@ -234,5 +268,10 @@ class RemoteArticlesBloc
     if (dataState is DataFailed) {
       emit(RemoteArticlesError(dataState.error!));
     }
+  }
+
+  void onMarkArticleAsSeen(
+      MarkArticleAsSeen event, Emitter<RemoteArticlesState> emit) async {
+    await markArticlesAsSeenUseCase.call(params: event.articleId);
   }
 }

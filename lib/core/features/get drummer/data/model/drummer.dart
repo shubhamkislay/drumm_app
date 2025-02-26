@@ -42,26 +42,33 @@ class DrummerModel extends DrummerEntity {
     this.rid,
   });
 
-  Map<String, dynamic> toJson() => {
-        'token': token,
-        'name': name,
-        'rid': rid,
-        'email': email,
-        'username': username,
-        'bio': bio,
-        'badges': badges,
-        'uid': uid,
-        'occupation': occupation,
-        'speaking': speaking,
-        'muted': muted,
-        'imageUrl': imageUrl,
-        'lastRecommendationTimestamp': lastRecommendationTimestamp,
-        'preference': preference?.toArray(),
-        'jobTitle': jobTitle,
-        'organisation': organisation,
-        'followerCount': followerCount,
-        'followingCount': followingCount,
-      };
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+
+    if (token != null) data['token'] = token;
+    if (name != null) data['name'] = name;
+    if (rid != null) data['rid'] = rid;
+    if (email != null) data['email'] = email;
+    if (username != null) data['username'] = username;
+    if (bio != null) data['bio'] = bio;
+    if (badges != null) data['badges'] = badges;
+    if (uid != null) data['uid'] = uid;
+    if (occupation != null) data['occupation'] = occupation;
+    if (speaking != null) data['speaking'] = speaking;
+    if (muted != null) data['muted'] = muted;
+    if (imageUrl != null) data['imageUrl'] = imageUrl;
+    if (lastRecommendationTimestamp != null) {
+      data['lastRecommendationTimestamp'] = lastRecommendationTimestamp;
+    }
+    if (preference != null) data['preference'] = preference;
+    if (jobTitle != null) data['jobTitle'] = jobTitle;
+    if (organisation != null) data['organisation'] = organisation;
+    if (followerCount != null) data['followerCount'] = followerCount;
+    if (followingCount != null) data['followingCount'] = followingCount;
+
+    return data;
+  }
+
 
   factory DrummerModel.fromDocumentSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot){
     return DrummerModel(

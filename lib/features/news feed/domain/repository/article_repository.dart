@@ -27,4 +27,6 @@ abstract class ArticleRepository {
 
   Future<int> getInteractionsCount();
 
+  Future<void> markArticleAsSeen(String articleId);
+
 }

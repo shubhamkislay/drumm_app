@@ -31,3 +31,8 @@ class GetSimilarArticles extends RemoteArticlesEvent{
   final GetSimilarArticlesParams params;
   const GetSimilarArticles(this.params);
 }
+
+class MarkArticleAsSeen extends RemoteArticlesEvent{
+  final String articleId;
+  const MarkArticleAsSeen(this.articleId);
+}

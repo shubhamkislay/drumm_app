@@ -59,6 +59,7 @@ import 'package:drumm_app/features/news%20feed/domain/usecases/get_clustered_art
 import 'package:drumm_app/features/news%20feed/domain/usecases/get_interaction_counts.dart';
 import 'package:drumm_app/features/news%20feed/domain/usecases/get_latest_articles.dart';
 import 'package:drumm_app/features/news%20feed/domain/usecases/get_similar_articles.dart';
+import 'package:drumm_app/features/news%20feed/domain/usecases/mark_articles_as_seen.dart';
 import 'package:drumm_app/features/news%20feed/domain/usecases/perform_vector_search.dart';
 import 'package:drumm_app/features/news%20feed/domain/usecases/vector_search_and_load_recommended_articles.dart';
 import 'package:drumm_app/features/news%20feed/presentation/bloc/article/remote/remote_articles_bloc.dart';
@@ -151,6 +152,7 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<GetClusteredArticlesUseCase>(GetClusteredArticlesUseCase(s1()));
   s1.registerSingleton<GenerateAndLoadRecommendedArticlesUseCase>(GenerateAndLoadRecommendedArticlesUseCase(s1()));
   s1.registerSingleton<VectorSearchAndLoadRecommendedArticlesUseCase>(VectorSearchAndLoadRecommendedArticlesUseCase(s1()));
+  s1.registerSingleton<MarkArticlesAsSeenUseCase>(MarkArticlesAsSeenUseCase(s1()));
   //core
   s1.registerSingleton<GetBandsUseCase>(GetBandsUseCase(s1()));
   s1.registerSingleton<GetCurrentUserBandsUseCase>(GetCurrentUserBandsUseCase(s1()));
@@ -185,7 +187,7 @@ Future<void> initializeDependencies() async {
   s1.registerFactory<HybridInitialScreenBloc>(() => HybridInitialScreenBloc(s1()));
   s1.registerFactory<SignInBloc>(() => SignInBloc(s1(),s1()));
   //news feed
-  s1.registerFactory<RemoteArticlesBloc>(() => RemoteArticlesBloc(s1(),s1(),s1(),s1(),s1(),s1(),s1(),s1()));
+  s1.registerFactory<RemoteArticlesBloc>(() => RemoteArticlesBloc(s1(),s1(),s1(),s1(),s1(),s1(),s1(),s1(),s1()));
   //core
   s1.registerFactory<RemoteDrummerBloc>(() => RemoteDrummerBloc(s1(),s1())); //get drummer
   s1.registerFactory<RemoteBandsBloc>(() => RemoteBandsBloc(s1(),s1())); //get band

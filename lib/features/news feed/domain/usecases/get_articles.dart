@@ -15,6 +15,22 @@ class GetArticlesUseCase
   @override
   Future<DataState<ArticleListEntity>> call({GetArticlesParams? params}) async {
     try {
+
+      if(params==null)
+        print("params!=null not satisfying");
+
+      if(params?.category==null)
+        print("params.category!=null not satisfying");
+
+      if((params?.category!??[]).isEmpty)
+        print("params.category!.isNotEmpty not satisfying");
+
+      if(params?.category==null)
+        print("params.category!=null not satisfying");
+
+      if((params?.category!??[]).elementAt(0) != "For You")
+        print("params.category!.elementAt(0) not satisfying");
+
       if (params!=null && params.category!=null && params.category!.isNotEmpty && params.category!.elementAt(0) == "For You") {
         var bandDataset = await articleRepository.getBandsCategoryList();
         if (bandDataset is DataSuccess) {

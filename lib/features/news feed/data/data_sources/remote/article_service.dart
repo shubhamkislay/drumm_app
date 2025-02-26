@@ -13,6 +13,8 @@ import 'package:flutter/foundation.dart';
 class ArticleService {
   Future<DataState<ArticleListModel>> getArticles(
       GetArticlesParams getArticlesParams) async {
+
+    print("getArticles being called here for category ${getArticlesParams.category}");
     try {
       Query<Map<String, dynamic>> query = FirebaseFirestore.instance
           .collection("recommendations")
@@ -20,6 +22,7 @@ class ArticleService {
           .collection("articles")
           .where('category', whereIn: getArticlesParams.category)
           .where('isRepresentative', isEqualTo: true)
+          .orderBy("seen", descending: false)
           .orderBy("recommendedTimestamp", descending: true)
           .limit(15);
 
@@ -45,12 +48,14 @@ class ArticleService {
             message: "There aren't any articles for this band."));
       }
     } on DioException catch (e) {
+      print(e);
       return DataFailed(e);
     }
   }
 
   Future<DataState<ArticleListModel>> getLatestArticles(
       GetArticlesParams getArticlesParams) async {
+    print("Band Category whicle calling getLatestArticles is ${getArticlesParams.category}");
     try {
       Query<Map<String, dynamic>> query = FirebaseFirestore.instance
           .collection("stories")
@@ -289,6 +294,20 @@ class ArticleService {
     } catch (e) {
       print('Error fetching interactions count: $e');
       return 0; // Returns 0 in case of an error
+    }
+  }
+
+  Future<void> markArticleAsSeen(String articleId) async {
+    String? userId = FirebaseAuth.instance.currentUser?.uid;
+    try {
+      await FirebaseFirestore.instance
+          .collection('recommendations')
+          .doc(userId)
+          .collection('articles')
+          .doc(articleId)
+          .update({'seen': true});
+    } catch (e) {
+      print('Error updating seen flag: $e');
     }
   }
 }

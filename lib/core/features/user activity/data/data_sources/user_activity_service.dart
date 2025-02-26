@@ -28,6 +28,7 @@ class UserActivityService {
           'articleId': userActivity.articleId,
           'type': userActivity.type,
           'userId': currentUserID,
+          'seen': true,
           'interactionId': newInteractionId,
           'weight': userActivity.weight,
           'embedding': userActivity.embedding,
