@@ -53,7 +53,7 @@ class _PinnedConversationsWidgetState extends State<PinnedConversationsWidget> {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: conversations.length,
-                  padding: EdgeInsets.symmetric(horizontal: 6),
+                  padding: EdgeInsets.symmetric(horizontal: 0),
                   itemBuilder: (context, index) {
                     final conversation = conversations[index];
                     return PinnedConversationItem(

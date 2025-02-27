@@ -235,7 +235,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                         background: Container(
                           alignment: Alignment.bottomLeft,
                           padding:
-                              EdgeInsets.only(left: 16, bottom: 64, right: 16),
+                              EdgeInsets.only(left: 10, bottom: 64, right: 10),
                           width: double.maxFinite,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -324,7 +324,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                                     background: Container(
                                       alignment: Alignment.bottomLeft,
                                       padding: EdgeInsets.only(
-                                          left: 16, bottom: 0, right: 16),
+                                          left: 10, bottom: 0, right: 10),
                                       width: double.maxFinite,
                                       child: Row(
                                         mainAxisAlignment:

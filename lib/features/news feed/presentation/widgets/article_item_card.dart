@@ -115,10 +115,10 @@ class ArticleItemCardState extends State<ArticleItemCard> {
                     children: [
                       AutoSizeText(
                         (widget.article.meta ?? ""),
-                        minFontSize: 12,
+                        minFontSize: 16,
                         maxLines: 1,
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                           fontFamily: DRUMM_FONT_FAMILY,
                           color: DrummTheme.primaryTextColor(context),

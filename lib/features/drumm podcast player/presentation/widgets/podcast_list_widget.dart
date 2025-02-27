@@ -29,7 +29,7 @@ class PodcastListWidget extends StatelessWidget {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: podcasts.length,
-            padding: EdgeInsets.symmetric(horizontal:6),
+            padding: EdgeInsets.symmetric(horizontal:0),
             itemBuilder: (context, index) {
               final podcast = podcasts[index];
               return GestureDetector(
