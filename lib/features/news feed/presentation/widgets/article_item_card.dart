@@ -63,7 +63,7 @@ class ArticleItemCardState extends State<ArticleItemCard> {
     return VisibilityDetector(
       key: Key(widget.article.clusterId??widget.article.articleId ?? ""),
       onVisibilityChanged: (VisibilityInfo info) {
-        if (info.visibleFraction > 0.75) {
+        if (info.visibleFraction > 0.5) {
           print("Visible enough");
           markAsSeen();
         }else{

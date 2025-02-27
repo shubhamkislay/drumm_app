@@ -9,6 +9,7 @@ import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/rem
 import 'package:drumm_app/core/features/get%20bands/presentation/bloc/remote/remote_bands_state.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_bloc.dart';
+import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_event.dart';
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_state.dart';
 import 'package:drumm_app/core/features/notification/presentation/bloc/notification_bloc.dart';
 import 'package:drumm_app/core/features/notification/presentation/bloc/notification_state.dart';
@@ -81,8 +82,9 @@ class NewsDiscoveryPage extends StatelessWidget {
           //print("State is RemoteDrummerDone NewsDiscoveryPage");
           context.read<RemoteArticlesBloc>().add(GetRecommendedArticles(
               GetArticlesParams(
-                  category: ["For You"],
+                  category: [selectedBandId],
                   drummerEntity: drummerState.drummerEntity)));
+          articleList.clear();
         }
         if (drummerState is RemoteDrummerLoading) {
           //print("State is RemoteDrummerLoading NewsDiscoveryPage");
@@ -331,18 +333,24 @@ class NewsDiscoveryPage extends StatelessWidget {
                     children: [
                       RefreshIndicator(
                         onRefresh: () async{
-                          final bloc = context.read<RemoteArticlesBloc>();
-                          // Trigger the event to fetch articles.
-                          bloc.add(
-                            GetRecommendedArticles(GetArticlesParams(
-                              category: [selectedBandId], drummerEntity: drummerState.drummerEntity
-                            )),
-                          );
-                          // Wait until the bloc emits either a loaded or error state.
+                          // final bloc = context.read<RemoteArticlesBloc>();
+                          // // Trigger the event to fetch articles.
+                          // bloc.add(
+                          //   GetRecommendedArticles(GetArticlesParams(
+                          //     category: [selectedBandId], drummerEntity: drummerState.drummerEntity
+                          //   )),
+                          // );
+                          // // Wait until the bloc emits either a loaded or error state.
+                          // await bloc.stream.firstWhere(
+                          //       (state) => state is RemoteArticlesFetched || state is RemoteArticlesError,
+                          // );
+                          // articleList.clear();
+                          final bloc =  context.read<RemoteDrummerBloc>();
+                          bloc.add(GetDrummer());
                           await bloc.stream.firstWhere(
-                                (state) => state is RemoteArticlesFetched || state is RemoteArticlesError,
+                                (state) => state is RemoteDrummerDone || state is RemoteDrummerError,
                           );
-                          articleList.clear();
+
                         },
                         color: DrummTheme.drummPrimaryColor,
                         child: CustomScrollView(

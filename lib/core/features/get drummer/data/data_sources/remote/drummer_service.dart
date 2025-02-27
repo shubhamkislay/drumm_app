@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class DrummerService{
   Future<DataState<DrummerModel>> getDrummer({String ? uid}) async {
+    print("getDrummer called from DrummerService////");
+
     late String userId;
     if(uid==null||uid.isEmpty){
       userId = FirebaseAuth.instance.currentUser!.uid;
@@ -19,19 +21,28 @@ class DrummerService{
           .doc(userId)
           .get()
           .onError((error, stackTrace) {
+
+        print("Error occured while fetching ${error.toString()}");
+
         throw DioException(
             requestOptions: RequestOptions(data: stackTrace),
             message: error.toString());
       });
       if (data.exists) {
         drummerModel = DrummerModel.fromDocumentSnapshot(data);
+        print("Drummer fetched ${drummerModel.toJson().toString()}");
+
         return DataSuccess(drummerModel);
       } else {
+
+        print("Drummer does not exist");
+
         return DataFailed(DioException(
             message: "This drummer does not Exist!",
             requestOptions: RequestOptions(data: data)));
       }
     } on DioException catch (e) {
+      print("Error fetching drummer $e");
       return DataFailed(e);
     }
   }

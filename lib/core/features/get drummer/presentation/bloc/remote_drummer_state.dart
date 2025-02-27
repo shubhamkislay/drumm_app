@@ -9,7 +9,7 @@ abstract class RemoteDrummerState extends Equatable{
   const RemoteDrummerState({this.drummerEntity, this.error});
 
   @override
-  List<Object> get props => [drummerEntity!, error!];
+  List<Object> get props => [drummerEntity??DrummerEntity(), error??DioException(requestOptions: RequestOptions())];
 }
 
 class RemoteDrummerLoading extends RemoteDrummerState{

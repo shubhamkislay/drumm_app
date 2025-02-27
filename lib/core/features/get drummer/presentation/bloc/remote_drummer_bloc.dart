@@ -1,3 +1,4 @@
+import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/usecase/get_drummer_by_rid.dart';
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_event.dart';
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_state.dart';
@@ -20,9 +21,17 @@ class RemoteDrummerBloc extends Bloc<RemoteDrummerEvent,RemoteDrummerState>{
     final dataState = await getDrummerUseCase(params: event.uid);
 
     if(dataState is DataSuccess){
-      emit(
-        RemoteDrummerDone(dataState.data!)
-      );
+      if(dataState.data!=null) {
+        DrummerEntity drummerEntity = dataState.data??DrummerEntity();
+        print("Drummer fetched in bloc ${drummerEntity.username}");
+        emit(
+            RemoteDrummerDone(drummerEntity)
+        );
+      }else{
+        emit(
+            RemoteDrummerError(dataState.error!)
+        );
+      }
     }
 
     if(dataState is DataFailed){
