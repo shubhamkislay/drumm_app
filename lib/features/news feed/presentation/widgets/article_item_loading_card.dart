@@ -20,15 +20,15 @@ class ArticleItemLoadingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     double curve = 16;
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8),
+      margin: EdgeInsets.symmetric(vertical: 1),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(curve),
+        borderRadius: BorderRadius.circular(0),
         child: Shimmer(
           color: DrummTheme.drummPrimaryColor,
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 16,),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(curve),
+                borderRadius: BorderRadius.circular(0),
                 color: DrummTheme.primaryItemColor(context)),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -51,11 +51,11 @@ class ArticleItemLoadingCard extends StatelessWidget {
 
                 Container(
                   height: 250,
-                    margin: EdgeInsets.symmetric(horizontal: 12),
+                    margin: EdgeInsets.symmetric(horizontal: 0),
 
                   decoration: BoxDecoration(
-                      color: DrummTheme.primaryItemBackground(context),
-                    borderRadius: BorderRadius.circular(curve)
+                      color: DrummTheme.primaryItemColor(context).withAlpha(100),
+                    borderRadius: BorderRadius.circular(0)
                   ),
                 ),
                 SizedBox(

@@ -28,6 +28,8 @@ class ArticleListWidget extends StatelessWidget {
         builder: (context, state) {
       return Container(
         alignment: Alignment.topCenter,
+        padding: const EdgeInsets.symmetric(
+            horizontal: 0),
         child: ListView.builder(
           itemCount: (state is RemoteArticlesLoadingMoreArticles ||
                   state is RemoteArticlesLoading)

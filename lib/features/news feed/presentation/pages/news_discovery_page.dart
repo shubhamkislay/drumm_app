@@ -565,16 +565,11 @@ class NewsDiscoveryPage extends StatelessWidget {
                                                   "${articleState.error?.message}")));
                                     }
                                   }
-                                  return Container(
-                                    alignment: Alignment.topCenter,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16),
-                                    child: ArticleListWidget(
-                                        articles: articleList,
-                                        bands: bandState.bands ?? [],
-                                        drummerEntity:
-                                            drummerState.drummerEntity),
-                                  );
+                                  return ArticleListWidget(
+                                      articles: articleList,
+                                      bands: bandState.bands ?? [],
+                                      drummerEntity:
+                                          drummerState.drummerEntity);
                                 },
                               ),
                             ),
