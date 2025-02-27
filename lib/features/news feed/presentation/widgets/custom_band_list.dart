@@ -40,9 +40,10 @@ class _CustomBandSelectContainerState extends State<CustomBandSelectContainer> {
 
     return Container(
       alignment: Alignment.centerLeft,
+      //margin: EdgeInsets.only(top: 12),
       height: 32,
       child: ListView.separated(
-        padding: const EdgeInsets.only(left: 12, right: 12),
+        padding: const EdgeInsets.only(left: 16, right: 16),
         scrollDirection: Axis.horizontal,
         itemCount: bands.length,
         separatorBuilder: (_, __) => const SizedBox(width: 8),

@@ -23,7 +23,6 @@ class RemoteDrummerBloc extends Bloc<RemoteDrummerEvent,RemoteDrummerState>{
     if(dataState is DataSuccess){
       if(dataState.data!=null) {
         DrummerEntity drummerEntity = dataState.data??DrummerEntity();
-        print("Drummer fetched in bloc ${drummerEntity.username}");
         emit(
             RemoteDrummerDone(drummerEntity)
         );

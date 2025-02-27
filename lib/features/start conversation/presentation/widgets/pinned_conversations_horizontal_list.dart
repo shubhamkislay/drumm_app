@@ -15,20 +15,30 @@ import 'package:drumm_app/features/start%20conversation/presentation/widgets/pin
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PinnedConversationsWidget extends StatelessWidget {
-  final DrummerEntity drummerEntity;
+class PinnedConversationsWidget extends StatefulWidget {
+
   const PinnedConversationsWidget({
-    Key? key, required this.drummerEntity,
+    Key? key,
   }) : super(key: key);
 
   @override
+  State<PinnedConversationsWidget> createState() => _PinnedConversationsWidgetState();
+}
+
+class _PinnedConversationsWidgetState extends State<PinnedConversationsWidget> {
+  @override
   Widget build(BuildContext context) {
     // Dispatch the event to load pinned conversations when the widget is built.
-    context.read<PinnedConversationsBloc>().add(LoadPinnedConversationsEvent());
+
+
+
 
     return BlocBuilder<RemoteDrummerBloc, RemoteDrummerState>(
         builder: (context, drummerState) {
+
       if (drummerState is RemoteDrummerDone) {
+        context.read<PinnedConversationsBloc>().add(LoadPinnedConversationsEvent());
+        print("Calling Pinned Conversation");
         return BlocBuilder<PinnedConversationsBloc, PinnedConversationsState>(
           builder: (context, state) {
             if (state is PinnedConversationsLoading) {
@@ -62,7 +72,7 @@ class PinnedConversationsWidget extends StatelessWidget {
                                 isMuted: false,
                               ),
                             );
-                        _showCallBottomSheet(context, conversation);
+                        _showCallBottomSheet(context, conversation,drummerState.drummerEntity);
                       },
                     );
                   },
@@ -81,7 +91,7 @@ class PinnedConversationsWidget extends StatelessWidget {
   }
 
   void _showCallBottomSheet(
-      BuildContext context, ConversationEntity conversation) {
+      BuildContext context, ConversationEntity conversation,DrummerEntity? drummerEntity) {
     showModalBottomSheet(
       context: context,
       builder: (_) {

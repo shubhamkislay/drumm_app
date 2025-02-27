@@ -57,7 +57,6 @@ import '../../../drumm podcast player/presentation/widgets/floating_music_player
 class NewsDiscoveryPage extends StatelessWidget {
   const NewsDiscoveryPage({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
@@ -181,42 +180,11 @@ class NewsDiscoveryPage extends StatelessWidget {
                             .withOpacity(0.0),
                       ],
                     )),
-                    child: FlexibleSpaceBar(
-                      collapseMode: CollapseMode.none,
-                      background: Container(
-                        alignment: Alignment.bottomLeft,
-                        padding:
-                            EdgeInsets.only(left: 12, bottom: 64, right: 12),
-                        width: double.maxFinite,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Discover",
-                              style: TextStyle(
-                                fontSize: 28,
-                                fontFamily: DRUMM_FONT_FAMILY,
-                                color: DrummTheme.primaryTextColor(context),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Expanded(child: SizedBox()),
-                            SearchButton(
-                              onPressed: () {},
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            ProfileImageIcon(state: drummerState)
-                          ],
-                        ),
-                      ),
-                    ),
                   );
                 }),
                 toolbarHeight: 0,
                 collapsedHeight: 0,
-                expandedHeight: 120,
+                expandedHeight: 24,
               );
               if (bandState is RemoteBandsFetched) {
                 //print("Band state is RemoteBandsFetched");
@@ -234,7 +202,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                           bandEntities: bands ?? [],
                           onSelect: (BandEntity bandEntity) {
                             print("Selected Band Id : ${bandEntity.bandId}");
-                            selectedBandId = bandEntity.bandId?? "For You";
+                            selectedBandId = bandEntity.bandId ?? "For You";
                             context.read<RemoteArticlesBloc>().add(
                                   GetArticlesFromDifferentCategory(
                                     GetArticlesParams(
@@ -273,7 +241,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Discover",
+                                "Stories",
                                 style: TextStyle(
                                   fontSize: 28,
                                   fontFamily: DRUMM_FONT_FAMILY,
@@ -282,20 +250,6 @@ class NewsDiscoveryPage extends StatelessWidget {
                                 ),
                               ),
                               Expanded(child: SizedBox()),
-                              SearchButton(
-                                onPressed: () {
-                                  List<Object> parameters = [];
-                                  parameters.add(drummerState.drummerEntity ??
-                                      DrummerEntity());
-                                  parameters.add(bandState.bands ?? []);
-                                  context.push(SCREEN_SEARCH_ARTICLE_PAGE,
-                                      extra: parameters);
-                                },
-                              ),
-                              SizedBox(
-                                width: 8,
-                              ),
-                              ProfileImageIcon(state: drummerState)
                             ],
                           ),
                         ),
@@ -304,7 +258,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                   }),
                   toolbarHeight: 0,
                   collapsedHeight: 0,
-                  expandedHeight: 120,
+                  expandedHeight: 64,
                 );
               }
 
@@ -332,66 +286,99 @@ class NewsDiscoveryPage extends StatelessWidget {
                   return Stack(
                     children: [
                       RefreshIndicator(
-                        onRefresh: () async{
-                          // final bloc = context.read<RemoteArticlesBloc>();
-                          // // Trigger the event to fetch articles.
-                          // bloc.add(
-                          //   GetRecommendedArticles(GetArticlesParams(
-                          //     category: [selectedBandId], drummerEntity: drummerState.drummerEntity
-                          //   )),
-                          // );
-                          // // Wait until the bloc emits either a loaded or error state.
-                          // await bloc.stream.firstWhere(
-                          //       (state) => state is RemoteArticlesFetched || state is RemoteArticlesError,
-                          // );
-                          // articleList.clear();
-                          final bloc =  context.read<RemoteDrummerBloc>();
+                        onRefresh: () async {
+                          final bloc = context.read<RemoteDrummerBloc>();
                           bloc.add(GetDrummer());
+                          articleList.clear();
                           await bloc.stream.firstWhere(
-                                (state) => state is RemoteDrummerDone || state is RemoteDrummerError,
+                            (state) =>
+                                state is RemoteDrummerDone ||
+                                state is RemoteDrummerError,
                           );
-
                         },
                         color: DrummTheme.drummPrimaryColor,
                         child: CustomScrollView(
                           shrinkWrap: true,
                           slivers: [
-                            sliverAppBar,
-                            SliverToBoxAdapter(
-                              child: BlocBuilder<PodcastBloc, PodcastState>(
-                                builder: (context, state) {
-                                  if (state is PodcastLoading) {
-                                    return PodcastListLoadingWidget();
-                                  } else if (state is PodcastLoaded) {
-                                    final podcasts = state.podcasts;
-                                    if (podcasts.isNotEmpty) {
-                                      return PodcastListWidget(
-                                        podcasts: podcasts,
-                                      );
-                                    } else {
-                                      return const SizedBox.shrink();
-                                    }
-                                  } else if (state is PodcastError) {
-                                    return Center(
-                                        child: Text('Error: ${state.message}'));
-                                  } else {
-                                    return const SizedBox.shrink();
-                                  }
-                                },
-                              ),
+                            SliverAppBar(
+                              pinned: false,
+                              backgroundColor: Colors.transparent,
+                              surfaceTintColor: Colors.transparent,
+                              flexibleSpace: LayoutBuilder(
+                                  builder: (context, constraints) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      DrummTheme.primaryItemBackground(context),
+                                      DrummTheme.primaryItemBackground(context)
+                                          .withOpacity(0.75),
+                                      DrummTheme.primaryItemBackground(context)
+                                          .withOpacity(0.0),
+                                    ],
+                                  )),
+                                  child: FlexibleSpaceBar(
+                                    collapseMode: CollapseMode.none,
+                                    background: Container(
+                                      alignment: Alignment.bottomLeft,
+                                      padding: EdgeInsets.only(
+                                          left: 16, bottom: 0, right: 16),
+                                      width: double.maxFinite,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "Discover",
+                                            style: TextStyle(
+                                              fontSize: 32,
+                                              fontFamily: DRUMM_FONT_FAMILY,
+                                              color:
+                                                  DrummTheme.primaryTextColor(
+                                                      context),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Expanded(child: SizedBox()),
+                                          SearchButton(
+                                            onPressed: () {
+                                              List<Object> parameters = [];
+                                              parameters.add(
+                                                  drummerState.drummerEntity ??
+                                                      DrummerEntity());
+                                              parameters
+                                                  .add(bandState.bands ?? []);
+                                              context.push(
+                                                  SCREEN_SEARCH_ARTICLE_PAGE,
+                                                  extra: parameters);
+                                            },
+                                          ),
+                                          SizedBox(
+                                            width: 8,
+                                          ),
+                                          ProfileImageIcon(state: drummerState)
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }),
+                              toolbarHeight: 0,
+                              collapsedHeight: 0,
+                              expandedHeight: 56,
                             ),
-                            if (bandState is RemoteBandsFetched)
-                              SliverToBoxAdapter(
-                                child:  PinnedConversationsWidget( drummerEntity: drummerState.drummerEntity ??
-                                    DrummerEntity(),),
-                              ),
-                            if (bandState is RemoteBandsFetched)
-                              SliverToBoxAdapter(
-                                child: ConversationHorizontalList(
-                                  drummerEntity: drummerState.drummerEntity ??
-                                      DrummerEntity(),
-                                ),
-                              ),
+                            const SliverToBoxAdapter(
+                              child: PodcastListWidget(),
+                            ),
+                            const SliverToBoxAdapter(
+                              child: PinnedConversationsWidget(),
+                            ),
+                            const SliverToBoxAdapter(
+                              child: ConversationHorizontalList(),
+                            ),
+                            sliverAppBar,
                             if (articleState is GeneratingRecommendation)
                               SliverAppBar(
                                 pinned: true,
@@ -411,7 +398,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(15),
                                     child: Shimmer(
-                                      color: DrummTheme.primaryTextColor(context),
+                                      color:
+                                          DrummTheme.primaryTextColor(context),
                                       duration: Duration(milliseconds: 2000),
                                       interval: Duration(milliseconds: 0),
                                       child: Padding(
@@ -421,7 +409,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                                           scrollDirection: Axis.horizontal,
                                           child: Row(
                                             children: [
-                                              Lottie.asset('images/sparkle.json',
+                                              Lottie.asset(
+                                                  'images/sparkle.json',
                                                   fit: BoxFit.contain,
                                                   height: 32,
                                                   width: 32),
@@ -435,7 +424,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                                                     color: DrummTheme
                                                         .primaryTextColor(
                                                             context),
-                                                    fontFamily: DRUMM_FONT_FAMILY,
+                                                    fontFamily:
+                                                        DRUMM_FONT_FAMILY,
                                                     fontSize: 12),
                                               )
                                             ],
@@ -490,45 +480,6 @@ class NewsDiscoveryPage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            if (articleState is InteractToGenerateRecommendation)
-                              SliverAppBar(
-                                pinned: true,
-                                toolbarHeight: 0,
-                                collapsedHeight: 0,
-                                backgroundColor: Colors.transparent,
-                                surfaceTintColor: Colors.transparent,
-                                flexibleSpace: Container(
-                                  height: 44,
-                                  width: double.maxFinite,
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 12),
-                                  margin: EdgeInsets.symmetric(
-                                      vertical: 0, horizontal: 12),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color:
-                                          DrummTheme.primaryItemColor(context)),
-                                  child: Row(
-                                    children: [
-                                      Image.asset('images/puzzle-game.png',
-                                          color: DrummTheme.drummPrimaryColor,
-                                          fit: BoxFit.contain),
-                                      SizedBox(
-                                        width: 12,
-                                      ),
-                                      Text(
-                                        "Check ${articleState.interactions} more articles to personalise feed",
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                            color: DrummTheme.primaryTextColor(
-                                                context),
-                                            fontFamily: DRUMM_FONT_FAMILY,
-                                            fontSize: 12),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
                             if (articleState is GeneratedRecommendationArticle)
                               SliverAppBar(
                                 pinned: true,
@@ -556,7 +507,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(15),
                                         color: DrummTheme.drummPrimaryColor),
-                                    child: Text(
+                                    child: const Text(
                                       "New Updates",
                                       style: TextStyle(
                                           color: Colors.white,
@@ -587,7 +538,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                                       if (articleState.articleEntityList !=
                                           null) {
                                         fArticleList = articleState
-                                                .articleEntityList?.articleList ??
+                                                .articleEntityList
+                                                ?.articleList ??
                                             [];
                                       }
 
@@ -600,7 +552,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                                       articleList.addAll(fArticleList);
 
                                       lastDocument = articleState
-                                              .articleEntityList?.lastDocument ??
+                                              .articleEntityList
+                                              ?.lastDocument ??
                                           null;
                                     }
                                   } else {
@@ -632,7 +585,6 @@ class NewsDiscoveryPage extends StatelessWidget {
                       // 1. Music is loaded (duration is available and non-zero)
                       // 2. The track has not finished playing (position is less than duration)
 
-
                       Positioned(
                         left: 0,
                         right: 0,
@@ -643,20 +595,20 @@ class NewsDiscoveryPage extends StatelessWidget {
                           children: [
                             BlocBuilder<DrummAudioBloc, DrummAudioState>(
                                 builder: (context, state) {
-                                  //print("DrummAudioState State is $state");
-                                  if (state.conversation.conversationId != null &&
-                                      state is! DrummAudioLoading &&
-                                      state is! DrummAudioError &&
-                                      state is! DrummAudioInitial &&
-                                      state is! DrummAudioLeft) {
-                                    return DrummAudioFloatingWidget(
-                                        drummerEntity:
-                                        drummerState.drummerEntity ?? DrummerEntity(),
-                                        conversation: state.conversation);
-                                  } else {
-                                    return const SizedBox.shrink();
-                                  }
-                                }),
+                              //print("DrummAudioState State is $state");
+                              if (state.conversation.conversationId != null &&
+                                  state is! DrummAudioLoading &&
+                                  state is! DrummAudioError &&
+                                  state is! DrummAudioInitial &&
+                                  state is! DrummAudioLeft) {
+                                return DrummAudioFloatingWidget(
+                                    drummerEntity: drummerState.drummerEntity ??
+                                        DrummerEntity(),
+                                    conversation: state.conversation);
+                              } else {
+                                return const SizedBox.shrink();
+                              }
+                            }),
                             BlocBuilder<MusicPlayerBloc, MusicPlayerState>(
                               builder: (context, state) {
                                 final loaded = state.duration != null &&
@@ -665,7 +617,11 @@ class NewsDiscoveryPage extends StatelessWidget {
                                     state.position.inMilliseconds >=
                                         state.duration!.inMilliseconds;
                                 if (!loaded || finished) {
-                                  return const SafeArea(bottom:true,top:false,child: SizedBox.shrink(),);
+                                  return const SafeArea(
+                                    bottom: true,
+                                    top: false,
+                                    child: SizedBox.shrink(),
+                                  );
                                 }
                                 //print("MusicPlayerState is ${state}");
                                 return FloatingMusicPlayer(
