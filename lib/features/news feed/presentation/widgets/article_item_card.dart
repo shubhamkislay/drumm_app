@@ -65,10 +65,8 @@ class ArticleItemCardState extends State<ArticleItemCard> {
       key: Key(widget.article.clusterId??widget.article.articleId ?? ""),
       onVisibilityChanged: (VisibilityInfo info) {
         if (info.visibleFraction > 0.5) {
-          print("Visible enough");
           markAsSeen();
         }else{
-          print("Not visible enough");
         }
       },
       child: GestureDetector(

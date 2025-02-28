@@ -18,7 +18,7 @@ class ConversationHorizontalList extends StatelessWidget {
 
     return BlocBuilder<RemoteDrummerBloc, RemoteDrummerState>(
         builder: (context, drummerState) {
-          if(drummerState is RemoteDrummerDone) {
+          if(drummerState is RemoteDrummerDone || drummerState is RemoteDrummerDone) {
             context.read<ConversationListBloc>().add(LoadConversationsEvent());
           }
         return BlocBuilder<ConversationListBloc, ConversationListState>(

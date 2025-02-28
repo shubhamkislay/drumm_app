@@ -57,6 +57,7 @@ class RemoteArticlesBloc
 
     if (dataState is DataSuccess) {
       if (dataState.data?.articleList != null) {
+        //print("RemoteArticlesFetched 1");
         emit(RemoteArticlesFetched(
             dataState.data ?? ArticleListEntity(), category));
       }
@@ -70,18 +71,19 @@ class RemoteArticlesBloc
       GetRecommendedArticles event, Emitter<RemoteArticlesState> emit) async {
     final List<String> category =
         List<String>.from(event.getArticlesParams.category ?? ["For You"]);
-    print("Emitting category ${category}");
+    //print("Emitting category ${category}");
     emit(RemoteArticlesLoadingMoreArticles());
 
     if (event.getArticlesParams.drummerEntity?.preference != null) {
       if (!CoreUtils.isTimestampWithinThreeHours(
           event.getArticlesParams.drummerEntity?.lastRecommendationTimestamp ??
-              Timestamp.fromDate(DateTime(2000)))) {
-        print("Before calling getArticlesUseCase category ${category}");
+              Timestamp.fromDate(DateTime(2000))))
+      {
+        //print("Before calling getArticlesUseCase category ${category}");
         final dataState =
             await getArticlesUseCase(params: event.getArticlesParams);
         if (dataState is DataSuccess && dataState.data?.articleList != null) {
-          print("After calling getArticlesUseCase category ${category}");
+          //print("After calling getArticlesUseCase category ${category}");
           emit(GeneratingRecommendation(dataState.data ?? ArticleListEntity(),
               event.getArticlesParams.category ?? []));
           final vectorDataState =
@@ -118,16 +120,18 @@ class RemoteArticlesBloc
           }
         }
       } else {
-        print("Before calling getArticlesUseCase 2 category ${category}");
+        //print("Before calling getArticlesUseCase 2 category ${category}");
         final dataState =
             await getArticlesUseCase(params: event.getArticlesParams);
 
         if (dataState is DataSuccess) {
           if (dataState.data?.articleList != null) {
-            print("After calling getArticlesUseCase 2 category ${category}");
+            //print("After calling getArticlesUseCase 2 category ${category}");
+
+            //print("RemoteArticlesFetched 2");
             emit(RemoteArticlesFetched(
                 dataState.data ?? ArticleListEntity(), category));
-            //print("Emitting category ${event.getArticlesParams.category}");
+            ////print("Emitting category ${event.getArticlesParams.category}");
           }
         }
         if (dataState is DataFailed) {
@@ -136,6 +140,7 @@ class RemoteArticlesBloc
 
           if (dataState is DataSuccess) {
             if (dataState.data?.articleList != null) {
+              //print("RemoteArticlesFetched 3");
               emit(RemoteArticlesFetched(
                   dataState.data ?? ArticleListEntity(), category));
               // int interactions = await getInteractionCountsUseCase();
@@ -168,6 +173,7 @@ class RemoteArticlesBloc
 
       if (dataState is DataSuccess) {
         if (dataState.data?.articleList != null) {
+          //print("RemoteArticlesFetched 4");
           emit(RemoteArticlesFetched(
               dataState.data ?? ArticleListEntity(), category));
           // int interactions = await getInteractionCountsUseCase();
@@ -212,6 +218,7 @@ class RemoteArticlesBloc
             await getLatestArticlesUseCase(params: event.getArticlesParams);
         if (dataState is DataSuccess) {
           if (dataState.data?.articleList != null) {
+            //print("RemoteArticlesFetched 5");
             emit(RemoteArticlesFetched(
                 dataState.data ?? ArticleListEntity(), category));
           }
@@ -226,6 +233,7 @@ class RemoteArticlesBloc
           await getLatestArticlesUseCase(params: event.getArticlesParams);
       if (dataState is DataSuccess) {
         if (dataState.data?.articleList != null) {
+          //print("RemoteArticlesFetched 6");
           emit(RemoteArticlesFetched(
               dataState.data ?? ArticleListEntity(), category));
         }

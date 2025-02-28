@@ -20,6 +20,10 @@ class RemoteDrummerDone extends RemoteDrummerState{
   const RemoteDrummerDone(DrummerEntity drummerEntity) : super(drummerEntity: drummerEntity);
 }
 
+class RefreshedDrummer extends RemoteDrummerState{
+  const RefreshedDrummer(DrummerEntity drummerEntity) : super(drummerEntity: drummerEntity);
+}
+
 class RemoteDrummerError extends RemoteDrummerState{
   const RemoteDrummerError(DioException error) : super(error: error);
 }

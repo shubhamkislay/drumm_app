@@ -36,7 +36,7 @@ class DrummerProfile extends StatelessWidget {
               if(state is RemoteDrummerError){
                 return const Center(child: Icon(Icons.refresh),);
               }
-              if(state is RemoteDrummerDone){
+              if(state is RemoteDrummerDone || state is RefreshedDrummer){
                 return  Center(child: Text("User: ${state.drummerEntity?.name} loaded" ),);
               }
 

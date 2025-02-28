@@ -7,6 +7,10 @@ class GetDrummer extends RemoteDrummerEvent{
   const GetDrummer({this.uid});
 }
 
+class RefreshDrummer extends RemoteDrummerEvent{
+  const RefreshDrummer();
+}
+
 class GetDrummerByRid extends RemoteDrummerEvent{
   final int ? rid;
   const GetDrummerByRid({this.rid});

@@ -71,23 +71,23 @@ class NewsDiscoveryPage extends StatelessWidget {
     List<BandEntity>? bands = [];
     var lastDocument;
     String selectedBandId = "For You";
-    List<String>? category = ["For You"];
     RemoteArticlesState remoteState = RemoteArticlesLoading();
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: BlocBuilder<RemoteDrummerBloc, RemoteDrummerState>(
           builder: (context, drummerState) {
-        if (drummerState is RemoteDrummerDone) {
-          //print("State is RemoteDrummerDone NewsDiscoveryPage");
-          articleList.clear();
+        if (drummerState is RemoteDrummerDone ||
+            drummerState is RefreshedDrummer) {
+          if (drummerState is RefreshedDrummer) {
+            articleList.clear();
+          }
+
           context.read<RemoteArticlesBloc>().add(GetRecommendedArticles(
               GetArticlesParams(
                   category: [selectedBandId],
                   drummerEntity: drummerState.drummerEntity)));
-
         }
         if (drummerState is RemoteDrummerLoading) {
-          //print("State is RemoteDrummerLoading NewsDiscoveryPage");
           articleList.clear();
         }
         return BlocListener<NotificationBloc, NotificationState>(
@@ -123,7 +123,7 @@ class NewsDiscoveryPage extends StatelessWidget {
               );
             } else if (notificationState
                 is BackgroundPodcastNotificationLoaded) {
-              print("Trying to play ${notificationState.podcast}");
+              //print("Trying to play ${notificationState.podcast}");
               context
                   .read<MusicPlayerBloc>()
                   .add(LoadMusic(notificationState.podcast));
@@ -138,7 +138,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                 is ForegroundPodcastNotificationLoaded) {
               context.read<PodcastBloc>().add(GetPodcastsEvent());
             } else if (notificationState is NavigateToArticleState) {
-              print("Opening link");
+              //print("Opening link");
               showModalBottomSheet(
                 context: context,
                 builder: (_) => BlocProvider.value(
@@ -202,7 +202,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                         child: CustomBandSelectContainer(
                           bandEntities: bands ?? [],
                           onSelect: (BandEntity bandEntity) {
-                            print("Selected Band Id : ${bandEntity.bandId}");
+                            //print("Selected Band Id : ${bandEntity.bandId}");
                             selectedBandId = bandEntity.bandId ?? "For You";
                             context.read<RemoteArticlesBloc>().add(
                                   GetArticlesFromDifferentCategory(
@@ -263,36 +263,40 @@ class NewsDiscoveryPage extends StatelessWidget {
                 );
               }
 
-              return NotificationListener<ScrollNotification>(
-                onNotification: (scrollNotification) {
-                  if (scrollNotification.metrics.axisDirection ==
-                          AxisDirection.down &&
-                      scrollNotification is ScrollUpdateNotification &&
-                      scrollNotification.metrics.extentAfter < 500 &&
-                      remoteState is! RemoteArticlesLoadingMoreArticles &&
-                      remoteState is! GeneratingRecommendation &&
-                      remoteState is! RemoteArticlesLoading &&
-                      remoteState is! RemoteArticlesError) {
-                    context.read<RemoteArticlesBloc>().add(
-                          GetArticles(GetArticlesParams(
-                            category: [selectedBandId],
-                            lastDocument: lastDocument,
-                          )),
-                        );
-                  }
-                  return false;
+              return BlocListener<RemoteArticlesBloc, RemoteArticlesState>(
+                listener: (context, articleState) {
+                  lastDocument = articleState.articleEntityList?.lastDocument;
+                  remoteState = articleState;
                 },
-                child: BlocBuilder<RemoteArticlesBloc, RemoteArticlesState>(
-                    builder: (context, articleState) {
-                  return Stack(
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (scrollNotification) {
+                    if (scrollNotification.metrics.axisDirection ==
+                            AxisDirection.down &&
+                        scrollNotification is ScrollUpdateNotification &&
+                        scrollNotification.metrics.extentAfter < 500 &&
+                        remoteState is! RemoteArticlesLoadingMoreArticles &&
+                        remoteState is! GeneratingRecommendation &&
+                        remoteState is! RemoteArticlesLoading &&
+                        remoteState is! RemoteArticlesError) {
+                      context.read<RemoteArticlesBloc>().add(
+                            GetArticles(GetArticlesParams(
+                              category: [selectedBandId],
+                              lastDocument: lastDocument,
+                            )),
+                          );
+                    }
+                    return false;
+                  },
+                  child: Stack(
                     children: [
                       RefreshIndicator(
                         onRefresh: () async {
+                          articleList.clear();
                           final bloc = context.read<RemoteDrummerBloc>();
-                          bloc.add(GetDrummer());
+                          bloc.add(RefreshDrummer());
                           await bloc.stream.firstWhere(
                             (state) =>
-                                state is RemoteDrummerDone ||
+                                state is RefreshedDrummer ||
                                 state is RemoteDrummerError,
                           );
                         },
@@ -330,10 +334,17 @@ class NewsDiscoveryPage extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
+                                          // GestureDetector(
+                                          //     onTap:(){
+                                          //       final bloc = context.read<RemoteDrummerBloc>();
+                                          //       bloc.add(GetDrummer());
+                                          //     },
+                                          //     child: Image.asset("images/logo_icon.png",height: 28,width: 28,color: DrummTheme.primaryTextColor(context),)),
+                                          // SizedBox(width: 4,),
                                           Text(
                                             "Discover",
                                             style: TextStyle(
-                                              fontSize: 32,
+                                              fontSize: 28,
                                               fontFamily: DRUMM_FONT_HEADINGS,
                                               color:
                                                   DrummTheme.primaryTextColor(
@@ -379,7 +390,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                               child: ConversationHorizontalList(),
                             ),
                             sliverAppBar,
-                            if (articleState is GeneratingRecommendation)
+                            if (remoteState is GeneratingRecommendation)
                               SliverAppBar(
                                 pinned: true,
                                 toolbarHeight: 0,
@@ -436,7 +447,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            if (articleState is RemoteArticlesLoading)
+                            if (remoteState is RemoteArticlesLoading)
                               SliverAppBar(
                                 pinned: true,
                                 toolbarHeight: 0,
@@ -480,7 +491,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            if (articleState is GeneratedRecommendationArticle)
+                            if (remoteState is GeneratedRecommendationArticle)
                               SliverAppBar(
                                 pinned: true,
                                 toolbarHeight: 0,
@@ -517,64 +528,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            SliverToBoxAdapter(
-                              child: Builder(
-                                builder: (context) {
-                                  remoteState = articleState;
-                                  //print(remoteState);
-                                  if (articleState is RemoteArticlesLoading) {
-                                    articleList.clear();
-                                  } else if (articleState
-                                      is! RemoteArticlesError) {
-                                    List<ArticleEntity> fArticleList = [];
-                                    if (articleState is RemoteArticlesFetched ||
-                                        articleState
-                                            is RemoteArticlesFetchedFromDifferentCategory ||
-                                        articleState
-                                            is GeneratingRecommendation ||
-                                        articleState
-                                            is GeneratedRecommendationArticleApplied ||
-                                        articleState
-                                            is InteractToGenerateRecommendation) {
-                                      if (articleState.articleEntityList !=
-                                          null) {
-                                        fArticleList = articleState
-                                                .articleEntityList
-                                                ?.articleList ??
-                                            [];
-                                      }
-
-                                      if (articleState
-                                              is RemoteArticlesFetchedFromDifferentCategory ||
-                                          articleState
-                                              is GeneratedRecommendationArticleApplied) {
-                                        articleList.clear();
-                                      }
-                                      articleList.addAll(fArticleList);
-
-                                      lastDocument = articleState
-                                              .articleEntityList
-                                              ?.lastDocument ??
-                                          null;
-                                    }
-                                  } else {
-                                    if (articleList.isEmpty) {
-                                      return SizedBox(
-                                          height: 500,
-                                          child: Center(
-                                              child: Text(
-                                                  "${articleState.error?.message}")));
-                                    }
-                                  }
-
-                                  //print(articleState);
-                                  return ArticleListWidget(
-                                      articles: articleList,
-                                      bands: bandState.bands ?? [],
-                                      drummerEntity:
-                                          drummerState.drummerEntity);
-                                },
-                              ),
+                            const SliverToBoxAdapter(
+                              child: ArticleListWidget(),
                             ),
                           ],
                         ),
@@ -593,7 +548,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                           children: [
                             BlocBuilder<DrummAudioBloc, DrummAudioState>(
                                 builder: (context, state) {
-                              //print("DrummAudioState State is $state");
+                              ////print("DrummAudioState State is $state");
                               if (state.conversation.conversationId != null &&
                                   state is! DrummAudioLoading &&
                                   state is! DrummAudioError &&
@@ -621,7 +576,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                                     child: SizedBox.shrink(),
                                   );
                                 }
-                                //print("MusicPlayerState is ${state}");
+                                ////print("MusicPlayerState is ${state}");
                                 return FloatingMusicPlayer(
                                   podcast: state.podcast,
                                 );
@@ -631,8 +586,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                         ),
                       ),
                     ],
-                  );
-                }),
+                  ),
+                ),
               );
             },
           ),

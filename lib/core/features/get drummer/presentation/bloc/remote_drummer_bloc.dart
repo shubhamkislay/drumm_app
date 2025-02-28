@@ -15,6 +15,7 @@ class RemoteDrummerBloc extends Bloc<RemoteDrummerEvent,RemoteDrummerState>{
   RemoteDrummerBloc(this.getDrummerUseCase, this.getDrummerByRidUseCase) : super(const RemoteDrummerLoading()){
     on <GetDrummer> (onGetDrummer);
     on <GetDrummerByRid>(onGetDrummerByRid);
+    on <RefreshDrummer>(onRefreshDrummer);
   }
 
   void onGetDrummer(GetDrummer event, Emitter<RemoteDrummerState> emit)async{
@@ -47,6 +48,29 @@ class RemoteDrummerBloc extends Bloc<RemoteDrummerEvent,RemoteDrummerState>{
       emit(
           RemoteDrummerDone(dataState.data!)
       );
+    }
+
+    if(dataState is DataFailed){
+      emit(
+          RemoteDrummerError(dataState.error!)
+      );
+    }
+  }
+
+  void onRefreshDrummer(RefreshDrummer event, Emitter<RemoteDrummerState> emit)async{
+    final dataState = await getDrummerUseCase();
+
+    if(dataState is DataSuccess){
+      if(dataState.data!=null) {
+        DrummerEntity drummerEntity = dataState.data??DrummerEntity();
+        emit(
+            RefreshedDrummer(drummerEntity)
+        );
+      }else{
+        emit(
+            RemoteDrummerError(dataState.error!)
+        );
+      }
     }
 
     if(dataState is DataFailed){

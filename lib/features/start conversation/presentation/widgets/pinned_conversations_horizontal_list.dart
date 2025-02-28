@@ -36,7 +36,7 @@ class _PinnedConversationsWidgetState extends State<PinnedConversationsWidget> {
     return BlocBuilder<RemoteDrummerBloc, RemoteDrummerState>(
         builder: (context, drummerState) {
 
-      if (drummerState is RemoteDrummerDone) {
+      if (drummerState is RemoteDrummerDone ||drummerState is  RefreshedDrummer) {
         context.read<PinnedConversationsBloc>().add(LoadPinnedConversationsEvent());
         print("Calling Pinned Conversation");
         return BlocBuilder<PinnedConversationsBloc, PinnedConversationsState>(
