@@ -14,10 +14,13 @@ class ConversationHorizontalList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Dispatch the event to load conversations when the widget builds.
-    context.read<ConversationListBloc>().add(LoadConversationsEvent());
+
 
     return BlocBuilder<RemoteDrummerBloc, RemoteDrummerState>(
         builder: (context, drummerState) {
+          if(drummerState is RemoteDrummerDone) {
+            context.read<ConversationListBloc>().add(LoadConversationsEvent());
+          }
         return BlocBuilder<ConversationListBloc, ConversationListState>(
           builder: (context, state) {
             if (state is ConversationListLoading) {
@@ -32,7 +35,7 @@ class ConversationHorizontalList extends StatelessWidget {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: conversations.length,
-                  padding: EdgeInsets.symmetric(horizontal: 6),
+                  padding: EdgeInsets.symmetric(horizontal: 0),
                   itemBuilder: (context, index) {
                     final conversation = conversations[index];
                     return ConversationCard(conversation: conversation,drummerEntity: drummerState.drummerEntity!,);

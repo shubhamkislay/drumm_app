@@ -22,6 +22,7 @@ import 'package:drumm_app/features/news%20feed/presentation/bloc/article/remote/
 import 'package:drumm_app/features/news%20feed/presentation/bloc/article/remote/remote_articles_event.dart';
 import 'package:drumm_app/features/news%20feed/presentation/widgets/article_drumm_button.dart';
 import 'package:drumm_app/features/read%20article/presentation/pages/read_article_page.dart';
+import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
@@ -175,7 +176,7 @@ class ArticleItemCardState extends State<ArticleItemCard> {
               SizedBox(
                 height: 12,
               ),
-              Container(
+             if(false) Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: 12,
                 ),
@@ -191,6 +192,28 @@ class ArticleItemCardState extends State<ArticleItemCard> {
                       color: DrummTheme.primaryTextColor(context),
                       //fontWeight: FontWeight.w900,
                       overflow: TextOverflow.clip),
+                ),
+              ),
+
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                ),
+                child: ExpandableText(
+                    (widget.article.title ?? ""),
+                  textAlign: TextAlign.left,
+                  maxLines: 2,
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: DRUMM_FONT_FAMILY,
+                      color: DrummTheme.primaryTextColor(context),),
+                  expandText: 'See more',
+                  linkColor: DrummTheme.primaryTextColor(context),
+                  linkStyle: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontFamily: DRUMM_FONT_FAMILY,
+                  ),
+                  collapseText: 'Hide',
                 ),
               ),
               if (false)

@@ -79,14 +79,16 @@ class NewsDiscoveryPage extends StatelessWidget {
           builder: (context, drummerState) {
         if (drummerState is RemoteDrummerDone) {
           //print("State is RemoteDrummerDone NewsDiscoveryPage");
+          articleList.clear();
           context.read<RemoteArticlesBloc>().add(GetRecommendedArticles(
               GetArticlesParams(
                   category: [selectedBandId],
                   drummerEntity: drummerState.drummerEntity)));
-          articleList.clear();
+
         }
         if (drummerState is RemoteDrummerLoading) {
           //print("State is RemoteDrummerLoading NewsDiscoveryPage");
+          articleList.clear();
         }
         return BlocListener<NotificationBloc, NotificationState>(
           listener: (context, notificationState) {
@@ -187,7 +189,6 @@ class NewsDiscoveryPage extends StatelessWidget {
                 expandedHeight: 24,
               );
               if (bandState is RemoteBandsFetched) {
-                //print("Band state is RemoteBandsFetched");
                 bands = bandState.bands;
                 sliverAppBar = SliverAppBar(
                   pinned: true,
@@ -244,7 +245,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                                 "Stories",
                                 style: TextStyle(
                                   fontSize: 28,
-                                  fontFamily: DRUMM_FONT_FAMILY,
+                                  fontFamily: DRUMM_FONT_HEADINGS,
                                   color: DrummTheme.primaryTextColor(context),
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -289,7 +290,6 @@ class NewsDiscoveryPage extends StatelessWidget {
                         onRefresh: () async {
                           final bloc = context.read<RemoteDrummerBloc>();
                           bloc.add(GetDrummer());
-                          articleList.clear();
                           await bloc.stream.firstWhere(
                             (state) =>
                                 state is RemoteDrummerDone ||
@@ -334,7 +334,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                                             "Discover",
                                             style: TextStyle(
                                               fontSize: 32,
-                                              fontFamily: DRUMM_FONT_FAMILY,
+                                              fontFamily: DRUMM_FONT_HEADINGS,
                                               color:
                                                   DrummTheme.primaryTextColor(
                                                       context),
@@ -521,6 +521,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                               child: Builder(
                                 builder: (context) {
                                   remoteState = articleState;
+                                  //print(remoteState);
                                   if (articleState is RemoteArticlesLoading) {
                                     articleList.clear();
                                   } else if (articleState
@@ -565,6 +566,8 @@ class NewsDiscoveryPage extends StatelessWidget {
                                                   "${articleState.error?.message}")));
                                     }
                                   }
+
+                                  //print(articleState);
                                   return ArticleListWidget(
                                       articles: articleList,
                                       bands: bandState.bands ?? [],
