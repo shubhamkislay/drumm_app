@@ -30,9 +30,6 @@ class _PinnedConversationsWidgetState extends State<PinnedConversationsWidget> {
   Widget build(BuildContext context) {
     // Dispatch the event to load pinned conversations when the widget is built.
 
-
-
-
     return BlocBuilder<RemoteDrummerBloc, RemoteDrummerState>(
         builder: (context, drummerState) {
 
