@@ -5,7 +5,6 @@ import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dashed_circular_progress_bar/dashed_circular_progress_bar.dart';
 import 'package:dismissible_page/dismissible_page.dart';
-import 'package:drumm_app/SettingsPage.dart';
 import 'package:drumm_app/StatsDescriptionBox.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
@@ -36,6 +35,8 @@ import 'package:mrx_charts/mrx_charts.dart';
 import 'package:multiavatar/multiavatar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
+
+import '../../../settings/presentation/pages/settings_page.dart';
 
 
 class UserProfilePage extends StatefulWidget {
