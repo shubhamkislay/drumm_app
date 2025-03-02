@@ -383,10 +383,10 @@ class NewsDiscoveryPage extends StatelessWidget {
                                 child: PodcastListWidget(),
                               ),
                               const SliverToBoxAdapter(
-                                child: PinnedConversationsWidget(),
+                                child: ConversationHorizontalList(),
                               ),
                               const SliverToBoxAdapter(
-                                child: ConversationHorizontalList(),
+                                child: PinnedConversationsWidget(),
                               ),
                               sliverAppBar,
                               if (remoteState is GeneratingRecommendation)
