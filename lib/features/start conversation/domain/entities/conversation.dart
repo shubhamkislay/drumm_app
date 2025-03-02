@@ -132,6 +132,49 @@ class ConversationEntity extends Equatable {
     }
   }
 
+  factory ConversationEntity.copy(ConversationEntity conversation) {
+    try {
+      return ConversationEntity(
+        conversationId: conversation.conversationId,
+        articleId: conversation.articleId,
+        bandId: conversation.bandId,
+        title: conversation.title,
+        meta: conversation.meta,
+        category: conversation.category,
+        country: conversation.country,
+        description: conversation.description,
+        url: conversation.url,
+        imageUrl: conversation.imageUrl,
+        startTime: conversation.startTime,
+        publishedAt: conversation.publishedAt,
+        boostamp: conversation.boostamp,
+        question: conversation.question,
+        summary: conversation.summary,
+        content: conversation.content,
+        clusterId: conversation.clusterId,
+        similarId: conversation.similarId,
+        jamId: conversation.jamId,
+        source: conversation.source,
+        dump: conversation.dump,
+        liked: conversation.liked,
+        likes: conversation.likes,
+        reads: conversation.reads,
+        boosts: conversation.boosts,
+        uid: conversation.uid,
+        aiVoiceUrl: conversation.aiVoiceUrl,
+        embedding: conversation.embedding,
+        relatedImageUrls: conversation.relatedImageUrls,
+        lastActive: conversation.lastActive,
+        startedBy: conversation.startedBy,
+        pinned: conversation.pinned,
+        pinnedAt: conversation.pinnedAt,
+      );
+    }catch(e){
+      print("Error copying: ${e.toString()}");
+      return ConversationEntity();
+    }
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'conversationId': conversationId,

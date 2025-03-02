@@ -101,28 +101,36 @@ class DrummAudioBloc extends Bloc<DrummAudioEvent, DrummAudioState> {
       StartOrSwitchChannelEvent event,
       Emitter<DrummAudioState> emit,
       ) async {
+    final eventConversation = ConversationEntity.copy(event.conversation);
+
     try {
       // If already in a channel (and not in initial, left, or error state)
       if (state is! DrummAudioInitial &&
           state is! DrummAudioLeft &&
           state is! DrummAudioError) {
-        final currentChannel = state.channelName;
-        print("Current Channel: $currentChannel");
-        print("Event Channel: ${event.channelName}");
-        if (currentChannel == event.channelName) {
+        final currentChannel = state.conversation.conversationId;
+        final newChannel = eventConversation.conversationId;
+        print("currentChannelMeta///////////////////////////////////: ${state.conversation.meta}");
+        // Use the preserved meta value for logging.
+        print("newChannelMeta///////////////////////////////////: ${eventConversation.meta}");
+        if (currentChannel == newChannel) {
           // If it's the same channel, re-emit the joined state with the persisted list.
           emit(DrummAudioJoined(
-              event.channelName,
-              List.from(_remoteUserIds),
-              Map.from(_talkingStatus),
-              Map.from(_muteStatus),
-              event.conversation
+            newChannel ?? event.channelName,
+            List.from(_remoteUserIds),
+            Map.from(_talkingStatus),
+            Map.from(_muteStatus),
+            eventConversation,
           ));
           return;
         } else {
           // If switching channels, leave the current channel and clear the persistent lists.
           print("Switching channel");
           await leaveUseCase.call();
+          if (_drummEventSub != null) {
+            await _drummEventSub!.cancel();
+            _drummEventSub = null;
+          }
           _remoteUserIds.clear();
           _talkingStatus.clear();
           _muteStatus.clear();
@@ -135,42 +143,49 @@ class DrummAudioBloc extends Bloc<DrummAudioEvent, DrummAudioState> {
       await repository.initializeEngine(event.appId);
 
       // 2) Subscribe to remote events if not already subscribed.
+
+      if (_drummEventSub != null) {
+        await _drummEventSub!.cancel();
+        _drummEventSub = null;
+      }
       _drummEventSub ??= listenUseCase.call().listen((drummEvent) {
-        //print("Listening to drumm Events");
         if (drummEvent is DrummRemoteUserJoined) {
-          add(DrummRemoteUserJoinedEvent(drummEvent.uid, event.channelName,event.conversation));
+          add(DrummRemoteUserJoinedEvent(drummEvent.uid, eventConversation.conversationId??event.channelName, eventConversation));
         } else if (drummEvent is DrummRemoteUserMuted) {
-          add(DrummRemoteUserMutedEvent(drummEvent.uid, drummEvent.isMuted, event.channelName,event.conversation));
+          add(DrummRemoteUserMutedEvent(drummEvent.uid, drummEvent.isMuted, eventConversation.conversationId??event.channelName, eventConversation));
         } else if (drummEvent is DrummRemoteUserTalking) {
-          add(DrummRemoteUserTalkingEvent(drummEvent.uid, drummEvent.isTalking, event.channelName,event.conversation));
+          add(DrummRemoteUserTalkingEvent(drummEvent.uid, drummEvent.isTalking, eventConversation.conversationId??event.channelName, eventConversation));
         } else if (drummEvent is DrummLocalUserJoined) {
-          print("drummEvent is DrummLocalUserJoined");
-          add(DrummChannelJoined(event.channelName,drummEvent.uid,event.conversation));
+          // Use the preserved meta value in logs.
+          //print("Sending conversation meta//////////////${eventConversation.meta}");
+          //print("drummEvent is DrummLocalUserJoined");
+          add(DrummChannelJoined(eventConversation.conversationId??event.channelName, drummEvent.uid, eventConversation));
         } else if (drummEvent is DrummRemoteUserLeft) {
-          add(DrummRemoteUserLeftEvent(drummEvent.uid, event.channelName,event.conversation));
+          add(DrummRemoteUserLeftEvent(drummEvent.uid, eventConversation.conversationId??event.channelName, eventConversation));
         }
       });
 
       // 3) Join the new channel.
       await joinUseCase.call(
         token: event.token,
-        channelName: event.channelName,
+        channelName: eventConversation.conversationId??event.channelName,
         uid: event.uid,
         isMuted: event.isMuted,
       );
 
-      // 4) Emit the joined state (the persistent lists will be updated as events arrive).
+      // 4) Emit the joined state using the preserved conversation.
       emit(DrummAudioJoined(
-          event.channelName,
-          List.from(_remoteUserIds),
-          Map.from(_talkingStatus),
-          Map.from(_muteStatus),
-          event.conversation
+        eventConversation.conversationId??event.channelName,
+        List.from(_remoteUserIds),
+        Map.from(_talkingStatus),
+        Map.from(_muteStatus),
+        eventConversation,
       ));
     } catch (e) {
-      emit(DrummAudioError('Failed to start or switch channel: $e',[],{},{},event.conversation));
+      emit(DrummAudioError('Failed to start or switch channel: $e', [], {}, {}, eventConversation));
     }
   }
+
 
   Future<void> _onLeaveChannel(
       LeaveDrummChannelEvent event,
@@ -179,6 +194,10 @@ class DrummAudioBloc extends Bloc<DrummAudioEvent, DrummAudioState> {
     emit(DrummAudioLoading('',[],{},{},ConversationEntity()));
     try {
       await leaveUseCase.call();
+      if (_drummEventSub != null) {
+        await _drummEventSub!.cancel();
+        _drummEventSub = null;
+      }
       // Clear persistent lists upon leaving.
       _remoteUserIds.clear();
       _talkingStatus.clear();

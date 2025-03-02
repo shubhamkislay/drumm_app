@@ -547,12 +547,15 @@ class NewsDiscoveryPage extends StatelessWidget {
                             children: [
                               BlocBuilder<DrummAudioBloc, DrummAudioState>(
                                   builder: (context, state) {
-                                ////print("DrummAudioState State is $state");
+                                //print("DrummAudioState State is $state");
                                 if (state.conversation.conversationId != null &&
                                     state is! DrummAudioLoading &&
                                     state is! DrummAudioError &&
                                     state is! DrummAudioInitial &&
                                     state is! DrummAudioLeft) {
+
+                                  //print("Conversation meta is ${state.conversation.meta}");
+
                                   return DrummAudioFloatingWidget(
                                       drummerEntity: drummerState.drummerEntity ??
                                           DrummerEntity(),
