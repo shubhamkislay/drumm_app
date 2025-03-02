@@ -25,7 +25,7 @@ class PodcastListWidget extends StatelessWidget {
           final podcasts = state.podcasts;
           if (podcasts.isNotEmpty) {
             return SizedBox(
-          height: 200,
+          height: 185,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: podcasts.length,

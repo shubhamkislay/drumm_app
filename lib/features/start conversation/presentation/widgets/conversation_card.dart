@@ -39,44 +39,79 @@ class ConversationCard extends StatelessWidget {
         _showCallBottomSheet(context);
       },
       child: Container(
-        width: 300,
+        width: MediaQuery.sizeOf(context).width * 0.9,
         margin: const EdgeInsets.all(8.0),
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(2.5),
         decoration: BoxDecoration(
-          color: DrummTheme.drummPrimaryColor,
+          color: DrummTheme.primaryItemColor(context),
           borderRadius: BorderRadius.circular(20.0),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                //InstagramDateTimeWidget(publishedAt: conversation.pinnedAt.toString()),
-                Text("Live", style: TextStyle(color: Colors.white,fontSize: 12),),
-                  Image.asset("images/audio-waves.png",color: Colors.white,height: 14,width: 14,),
-              ],
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: CachedNetworkImage(
+                imageUrl: conversation.imageUrl ?? DEFAULT_APP_IMAGE_URL,
+                height: double.maxFinite,
+                width: double.maxFinite,
+                fit: BoxFit.cover,
+              ),
             ),
-            Row(
-              children: [
-                ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: CachedNetworkImage(imageUrl: conversation.imageUrl??DEFAULT_APP_IMAGE_URL,width: 36,height: 36,fit: BoxFit.cover,)),
-                SizedBox(width: 12,),
-                Flexible(
-                  child: AutoSizeText(
-                    minFontSize: 12,
-                    maxFontSize: 24,
-                    conversation.question ?? 'No Title',
-                    softWrap: true,
-                    style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+            Container(
+                decoration: BoxDecoration(
+                  color: DrummTheme.primaryItemColor(context).withAlpha(220),//DrummTheme.drummPrimaryColor.withAlpha(200),//
+                  borderRadius: BorderRadius.circular(20.0),
+                )
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                //mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      //InstagramDateTimeWidget(publishedAt: conversation.pinnedAt.toString()),
+                      Flexible(
+                        child: Text(
+                          "Live",
+                          softWrap: true,
+                          style: TextStyle(color: DrummTheme.primaryTextColor(context), fontSize: 12),
+                        ),
+                      ),
+                      Image.asset(
+                        "images/audio-waves.png",
+                        color: DrummTheme.primaryTextColor(context),
+                        height: 14,
+                        width: 14,
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                  Flexible(
+                    child: AutoSizeText(
+                      minFontSize: 18,
+                      maxFontSize: 24,
+                      conversation.question ?? 'No Title',
+                      softWrap: true,
+                      style: TextStyle(
+                        fontSize: 24,
+                          fontWeight: FontWeight.bold, color: DrummTheme.primaryTextColor(context)),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Flexible(
+                    child: Text(
+                      "${conversation.meta}",
+                      maxLines: 1,
+                      softWrap: true,
+                      style: TextStyle(color: DrummTheme.primaryTextColor(context), fontSize: 12,fontFamily: DRUMM_FONT_FAMILY,fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

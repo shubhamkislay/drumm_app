@@ -51,7 +51,7 @@ class PodcastItemWidget extends StatelessWidget {
             child: AutoSizeText(
               "${(podcast.podcastTitle.isNotEmpty)?podcast.podcastTitle:podcast.audioTitle}",
               textAlign: TextAlign.start,
-              minFontSize: 16,
+              minFontSize: 18,
               maxFontSize: 28,
               maxLines: 3,
               style: TextStyle(
