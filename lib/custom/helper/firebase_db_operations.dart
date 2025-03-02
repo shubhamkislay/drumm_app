@@ -1425,6 +1425,25 @@ class FirebaseDBOperations {
     }
   }
 
+  static Future<void> updateConversationLastActive(String channelName) async {
+    try {
+      final CollectionReference conversationCollection =
+      FirebaseFirestore.instance.collection('conversations');
+
+      // Get the current timestamp
+      final Timestamp currentTime = Timestamp.now();
+
+      // Update the document with the new "lastActive" timestamp
+      await conversationCollection.doc(channelName).update({
+        'lastActive': currentTime,
+      });
+
+      //print('Document updated successfully');
+    } catch (error) {
+      //print('Error updating document: $error');
+    }
+  }
+
   static Future<List<Jam>> getJamsFromArticle(String articleId) async {
     //print("getJamsFromArticle triggered");
     final uid = FirebaseAuth.instance.currentUser?.uid;

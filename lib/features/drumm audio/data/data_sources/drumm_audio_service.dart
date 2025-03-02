@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/features/drumm%20audio/data/data_sources/drumm_remote_event.dart';
 
 class DrummAudioService {
@@ -14,6 +15,8 @@ class DrummAudioService {
   /// Expose the stream of remote events.
   Stream<DrummRemoteEvent> get remoteEventsStream =>
       _remoteEventsController.stream;
+  static Timer? _updateLastActiveTimer;
+  String channelId ="";
 
   /// Initialize the Agora engine and register the event handler if not already done.
   Future<void> initialize(String appId) async {
@@ -49,6 +52,12 @@ class DrummAudioService {
         onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
           print("onJoinChannelSuccess called");
           _remoteEventsController.add(DrummLocalUserJoined(localUid));
+          _updateLastActiveTimer = Timer.periodic(Duration(seconds: 10), (timer) {
+              print("Updating lastUpdatedTime/////////// for channel $channelId");
+              FirebaseDBOperations.updateConversationLastActive(
+                  channelId); // Call the updateLastActive function
+
+          });
         },
         onUserOffline: (RtcConnection connection, int remoteUid,
             UserOfflineReasonType reason) {
@@ -84,7 +93,11 @@ class DrummAudioService {
     required int uid,
     required bool isMuted,
   }) async {
+    try {
+      _updateLastActiveTimer!.cancel();
+    }catch(e){}
     localUid = uid;
+    channelId = channelName;
     await _engine.joinChannel(
       token: token,
       channelId: channelName,
@@ -100,6 +113,9 @@ class DrummAudioService {
   /// Leave the current channel.
   Future<void> leaveChannel() async {
     await _engine.leaveChannel();
+    try {
+      _updateLastActiveTimer!.cancel();
+    }catch(e){}
   }
 
   /// Mute or unmute the local audio.
