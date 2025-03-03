@@ -6,4 +6,8 @@ abstract class NotificationRepository {
     required ConversationEntity conversation,
     required DrummerEntity drummer,
   });
+  Future<void> sendNotificationToUser({
+    required ConversationEntity conversation,
+    required DrummerEntity drummer,
+  });
 }

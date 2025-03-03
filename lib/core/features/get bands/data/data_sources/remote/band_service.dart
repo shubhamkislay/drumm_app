@@ -15,6 +15,7 @@ class BandService{
           .collection("mybands");
       var bandsData = await userBandsCollectionRef.get();
       FirebaseDBOperations.subscribeToTopic("broadcast");
+      FirebaseDBOperations.subscribeToTopic(FirebaseAuth.instance.currentUser?.uid ?? "");
       List<String> list = List.from(bandsData.docs.map((e) {
         String bandId = (e.data() as Map)["bandId"].toString();
         FirebaseDBOperations.subscribeToTopic(bandId);

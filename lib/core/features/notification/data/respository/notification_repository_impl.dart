@@ -16,4 +16,10 @@ class NotificationRepositoryImpl implements NotificationRepository {
     notificationService.sendNotificationToTopic(
         conversation: conversation, drummer: drummer);
   }
+
+  @override
+  Future<void> sendNotificationToUser({required ConversationEntity conversation, required DrummerEntity drummer})  async {
+    notificationService.sendNotificationToUser(
+        conversation: conversation, drummer: drummer);
+  }
 }

@@ -84,6 +84,85 @@ class NotificationService {
 
 
   }
+
+  Future<void> sendNotificationToUser({
+    required ConversationEntity conversation,
+    required DrummerEntity drummer,
+  }) async {
+
+    try {
+      final url = Uri.https(
+        'fcm.googleapis.com',
+        '/v1/projects/drummapp/messages:send',
+      );
+
+      final accessTokenGetter = AccessTokenFirebase();
+      final String authToken = await accessTokenGetter.getAccessToken();
+
+      final headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $authToken',
+      };
+
+      // Build the notification title and body.
+      final subtitle = "${drummer.username} joined your pinned conversation";
+
+      final notificationBody = conversation.question != null
+          ? "${conversation.question}\n\n${conversation.title}"
+          : conversation.title;
+
+      // Prepare conversation data by removing lastActive (workaround).
+      final conversationMap =
+      _conversationToJsonWithoutLastActive(conversation);
+
+      final body = jsonEncode({
+        "message": {
+          "topic": conversation.startedBy,
+          "notification": {
+            "body": notificationBody,
+            "title": subtitle,
+            "image": conversation.imageUrl,
+          },
+          "data": {
+            "type": "conversation",
+            "conversation": jsonEncode(conversationMap),
+            "drummerID": drummer.uid,
+          },
+          "android": {
+            "priority": "high",
+            "notification": {
+              "sound": "conga_drumm.caf"
+            }
+          },
+          "apns": {
+            "payload": {
+              "aps": {
+                "contentAvailable": true,
+                "sound": "conga_drumm.caf"
+              }
+            },
+            "headers": {
+              "apns-priority": "5"
+            }
+          }
+        }
+      });
+
+      final response = await http.post(url, headers: headers, body: body);
+
+      if (response.statusCode != 200) {
+        print("Notification Sending error: ${response.body}");
+        throw Exception('Failed to send topic notification ${response.statusCode}');
+      }else{
+        print("Sent Notification successfully to ${conversation.bandId}");
+      }
+    } catch (e) {
+      // You can log or further handle the error here.
+      throw Exception("Error sending notification: $e");
+    }
+
+
+  }
   /// Helper method to convert a ConversationEntity into a JSON map while excluding the [lastActive] field.
   Map<String, dynamic> _conversationToJsonWithoutLastActive(ConversationEntity conversation) {
     return {

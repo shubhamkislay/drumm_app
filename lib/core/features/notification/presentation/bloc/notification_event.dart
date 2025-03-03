@@ -24,6 +24,20 @@ class SendNotificationEvent extends NotificationEvent {
   List<Object?> get props => [conversation, drummer];
 }
 
+class SendNotificationToUserEvent extends NotificationEvent {
+  final ConversationEntity conversation;
+  final DrummerEntity drummer;
+
+  const SendNotificationToUserEvent({
+    required this.conversation,
+    required this.drummer,
+  });
+
+  @override
+  List<Object?> get props => [conversation, drummer];
+}
+
+
 class ForegroundConversationNotificationReceivedEvent extends NotificationEvent {
   final ConversationEntity conversation;
   const ForegroundConversationNotificationReceivedEvent({required this.conversation});

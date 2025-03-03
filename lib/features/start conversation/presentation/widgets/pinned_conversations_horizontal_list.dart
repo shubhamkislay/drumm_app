@@ -3,6 +3,8 @@ import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_bloc.dart';
 import 'package:drumm_app/core/features/get%20drummer/presentation/bloc/remote_drummer_state.dart';
+import 'package:drumm_app/core/features/notification/presentation/bloc/notification_bloc.dart';
+import 'package:drumm_app/core/features/notification/presentation/bloc/notification_event.dart';
 import 'package:drumm_app/core/util/core_utils.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_event.dart';
@@ -69,6 +71,12 @@ class _PinnedConversationsWidgetState extends State<PinnedConversationsWidget> {
                                 isMuted: false,
                               ),
                             );
+                        context.read<NotificationBloc>().add(
+                          SendNotificationToUserEvent(
+                            conversation: conversation,
+                            drummer: drummerState.drummerEntity!,
+                          ),
+                        );
                         _showCallBottomSheet(context, conversation,drummerState.drummerEntity);
                       },
                     );
