@@ -96,9 +96,10 @@ class ArticleItemCardState extends State<ArticleItemCard> {
         },
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 16),
-          margin: EdgeInsets.symmetric(vertical: 1),
+          margin: EdgeInsets.symmetric(vertical: 0),
           decoration: BoxDecoration(
              // borderRadius: BorderRadius.circular(curve),
+            border: Border(top: BorderSide(color: DrummTheme.primaryTextColor(context).withAlpha(10))),
               color: DrummTheme.primaryItemColor(context)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -152,7 +153,7 @@ class ArticleItemCardState extends State<ArticleItemCard> {
                 ),
               ),
               SizedBox(
-                height: 12,
+                height: 16,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 0),
@@ -202,7 +203,7 @@ class ArticleItemCardState extends State<ArticleItemCard> {
                   textAlign: TextAlign.left,
                   maxLines: 2,
                   style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 16,
                       fontFamily: DRUMM_FONT_FAMILY,
                       color: DrummTheme.primaryTextColor(context),),
                   expandText: 'See more',
@@ -296,6 +297,7 @@ class ArticleItemCardState extends State<ArticleItemCard> {
                       ),
                     ),
                     InstagramDateTimeWidget(
+                        fontWeight: FontWeight.normal,
                       fontColor: DrummTheme.primaryTextColor(context).withAlpha(100),
                         publishedAt: widget.article.publishedAt.toString())
                   ],

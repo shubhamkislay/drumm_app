@@ -46,14 +46,14 @@ class PodcastItemWidget extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 4,),
+          //SizedBox(height: 4,),
           Flexible(
             child: AutoSizeText(
               "${(podcast.podcastTitle.isNotEmpty)?podcast.podcastTitle:podcast.audioTitle}",
               textAlign: TextAlign.start,
-              minFontSize: 18,
+              minFontSize: 12,
               maxFontSize: 28,
-              maxLines: 3,
+              maxLines: 2,
               style: TextStyle(
                   color:Colors.white,//DrummTheme.primaryTextColor(context),
                   fontFamily: DRUMM_FONT_FAMILY,
@@ -62,7 +62,7 @@ class PodcastItemWidget extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 4,),
+          //SizedBox(height: 4,),
           Text(
             "${CoreUtils.getWeekDay(podcast.updatedAt)} ${CoreUtils.getFormattedTime(podcast.updatedAt)}, ${CoreUtils.getFormattedDate(podcast.updatedAt)}",
             textAlign: TextAlign.start,
