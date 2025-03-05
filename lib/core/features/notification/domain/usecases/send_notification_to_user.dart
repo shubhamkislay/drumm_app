@@ -11,7 +11,7 @@ class SendNotificationToUserUseCase {
     required ConversationEntity conversation,
     required DrummerEntity drummer,
   }) async {
-    return repository.sendNotificationToTopic(
+    return repository.sendNotificationToUser(
       conversation: conversation,
       drummer: drummer,
     );
