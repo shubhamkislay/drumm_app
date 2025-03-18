@@ -26,12 +26,23 @@ class ArticleListWidget extends StatelessWidget {
     return BlocBuilder<RemoteDrummerBloc, RemoteDrummerState>(
       builder: (BuildContext context, drummerState) {
         if(drummerState is RefreshedDrummer||drummerState is RemoteDrummerLoading){
+          print("Clearing articleList");
           articleList.clear();
+
         }
         return BlocBuilder<RemoteBandsBloc, RemoteBandsState>(
           builder: (BuildContext context, bandState) {
             return BlocBuilder<RemoteArticlesBloc, RemoteArticlesState>(
               builder: (context, articleState) {
+
+                print("The article state is loading ${articleList.length}");
+
+                if (articleState
+                is RemoteArticlesFetchedFromDifferentCategory ||
+                    articleState
+                    is GeneratedRecommendationArticleApplied) {
+                  articleList.clear();
+                }
 
                 if (articleState is RemoteArticlesLoading) {
                   //print("The article state is loading ${articleList.length}");
@@ -43,6 +54,8 @@ class ArticleListWidget extends StatelessWidget {
                       articleState
                       is RemoteArticlesFetchedFromDifferentCategory ||
                       articleState
+                      is RemoteLoadMoreArticles ||
+                      articleState
                       is GeneratingRecommendation ||
                       articleState
                       is GeneratedRecommendationArticleApplied ||
@@ -50,20 +63,22 @@ class ArticleListWidget extends StatelessWidget {
                       is InteractToGenerateRecommendation) {
                     if (articleState.articleEntityList !=
                         null) {
+                      //print("fArticleList is ${fArticleList.length} where state is ${articleState!}");
                       fArticleList = articleState
                           .articleEntityList
                           ?.articleList ??
                           [];
+                      if(articleState is !RemoteLoadMoreArticles)
+                        articleList.clear();
+                      articleList.addAll(fArticleList);
+                      print("articleList is ${articleList.length} where state is ${articleState!}");
+
                     }
 
                     //print("The article state is ${articleState}");
-                    if (articleState
-                    is RemoteArticlesFetchedFromDifferentCategory ||
-                        articleState
-                        is GeneratedRecommendationArticleApplied) {
-                      articleList.clear();
-                    }
-                    articleList.addAll(fArticleList);
+
+
+
 
                     if(articleState is RemoteArticlesFetched){
                       //print("This is being called with article list size ${articleList.length}");
@@ -78,6 +93,9 @@ class ArticleListWidget extends StatelessWidget {
                                 "${articleState.error?.message}")));
                   }
                 }
+
+
+
 
                 return Container(
                   alignment: Alignment.topCenter,

@@ -58,7 +58,7 @@ class RemoteArticlesBloc
     if (dataState is DataSuccess) {
       if (dataState.data?.articleList != null) {
         //print("RemoteArticlesFetched 1");
-        emit(RemoteArticlesFetched(
+        emit(RemoteLoadMoreArticles(
             dataState.data ?? ArticleListEntity(), category));
       }
     }

@@ -23,6 +23,10 @@ class RemoteArticlesFetched extends RemoteArticlesState{
   const RemoteArticlesFetched(ArticleListEntity articleEntityList, List<String> category) : super(articleEntityList: articleEntityList,category: category);
 }
 
+class RemoteLoadMoreArticles extends RemoteArticlesState{
+  const RemoteLoadMoreArticles(ArticleListEntity articleEntityList, List<String> category) : super(articleEntityList: articleEntityList,category: category);
+}
+
 class RemoteArticlesFetchedFromDifferentCategory extends RemoteArticlesState{
   const RemoteArticlesFetchedFromDifferentCategory(ArticleListEntity articleEntityList, List<String> category) : super(articleEntityList: articleEntityList,category: category);
 }
