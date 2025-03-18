@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drumm_app/config/constants.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
+import 'package:drumm_app/core/features/notification/presentation/bloc/notification_bloc.dart';
+import 'package:drumm_app/core/features/notification/presentation/bloc/notification_event.dart';
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_event.dart';
@@ -15,9 +17,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class JoinConversationConfirmation extends StatelessWidget {
   final DrummerEntity drummerEntity;
   final ConversationEntity conversation;
+  final bool sendNotification;
 
   const JoinConversationConfirmation(
-      {Key? key, required this.drummerEntity, required this.conversation});
+      {Key? key, required this.drummerEntity, required this.conversation, required this.sendNotification});
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +115,15 @@ class JoinConversationConfirmation extends StatelessWidget {
                       isScrollControlled:
                       true, // optional for a full-screen bottom sheet
                     );
+
+                    if(sendNotification){
+                      context.read<NotificationBloc>().add(
+                        SendNotificationToUserEvent(
+                          conversation: conversation,
+                          drummer: drummerEntity,
+                        ),
+                      );
+                    }
                   },
                   child: Container(
                     height: 48,

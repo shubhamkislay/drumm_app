@@ -13,6 +13,7 @@ import 'package:drumm_app/features/start%20conversation/domain/entities/conversa
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pinned_conversations_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pinned_conversations_event.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pinned_conversations_state.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/pages/join_conversation_confirmation.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/pinned_conversation_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,25 +60,21 @@ class _PinnedConversationsWidgetState extends State<PinnedConversationsWidget> {
                       conversation: conversation,
                       drummerEntity: drummerState.drummerEntity!,
                       onTap: () {
-                        context.read<DrummAudioBloc>().add(
-                              StartOrSwitchChannelEvent(
-                                appId: DrummConstants.appId,
-                                conversation: conversation,
-                                token: DrummConstants.generateAgoraToken(
-                                    drummerState.drummerEntity!.rid.toString(),
-                                    conversation.conversationId ?? ""),
-                                channelName: conversation.conversationId ?? "",
-                                uid: drummerState.drummerEntity!.rid ?? 1234,
-                                isMuted: false,
-                              ),
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true, // enables custom height sizing
+                          backgroundColor:
+                          Colors.transparent, // for rounded corners effect
+                          builder: (BuildContext context) {
+                            return JoinConversationConfirmation(
+                              sendNotification:true,
+                              conversation: conversation,
+                              drummerEntity:
+                              drummerState.drummerEntity ?? DrummerEntity(),
                             );
-                        context.read<NotificationBloc>().add(
-                          SendNotificationToUserEvent(
-                            conversation: conversation,
-                            drummer: drummerState.drummerEntity!,
-                          ),
+                          },
                         );
-                        _showCallBottomSheet(context, conversation,drummerState.drummerEntity);
+
                       },
                     );
                   },
@@ -93,21 +90,5 @@ class _PinnedConversationsWidgetState extends State<PinnedConversationsWidget> {
 
       return SizedBox.shrink();
     });
-  }
-
-  void _showCallBottomSheet(
-      BuildContext context, ConversationEntity conversation,DrummerEntity? drummerEntity) {
-    showModalBottomSheet(
-      context: context,
-      builder: (_) {
-        return DrummAudioBottomSheet(
-          channelName: conversation.conversationId ?? "",
-          conversation: conversation,
-          drummerEntity: drummerEntity ??
-              DrummerEntity()
-        );
-      },
-      isScrollControlled: true, // optional for a full-screen bottom sheet
-    );
   }
 }

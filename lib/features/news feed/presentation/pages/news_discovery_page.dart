@@ -115,6 +115,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                     Colors.transparent, // for rounded corners effect
                 builder: (BuildContext context) {
                   return JoinConversationConfirmation(
+                    sendNotification: false,
                     conversation: notificationState.conversation,
                     drummerEntity:
                         drummerState.drummerEntity ?? DrummerEntity(),
