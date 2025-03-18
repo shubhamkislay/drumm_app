@@ -15,7 +15,7 @@ class CoreUtils{
         firebaseTimestamp.millisecondsSinceEpoch;
 
     // Compare against a 3-hour Duration
-    final threeHoursInMs = const Duration(hours: 1).inMilliseconds;
+    final threeHoursInMs = const Duration(minutes: 2).inMilliseconds;
 
     return differenceMilliseconds < threeHoursInMs;
   }

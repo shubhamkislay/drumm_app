@@ -499,13 +499,15 @@ class NewsDiscoveryPage extends StatelessWidget {
                                   backgroundColor: Colors.transparent,
                                   surfaceTintColor: Colors.transparent,
                                   flexibleSpace: GestureDetector(
-                                    onTap: () {
+                                    onTap: () async{
                                       articleList.clear();
-                                      context.read<RemoteArticlesBloc>().add(
-                                            GetArticles(GetArticlesParams(
-                                              category: [selectedBandId],
-                                            )),
-                                          );
+                                      final bloc = context.read<RemoteDrummerBloc>();
+                                      bloc.add(RefreshDrummer());
+                                      await bloc.stream.firstWhere(
+                                            (state) =>
+                                        state is RefreshedDrummer ||
+                                            state is RemoteDrummerError,
+                                      );
                                     },
                                     child: Container(
                                       height: 44,
