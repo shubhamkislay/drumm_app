@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:drumm_app/ShareWidget.dart';
 import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/custom/helper/connect_channel.dart';
+import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/custom/helper/image_uploader.dart';
 import 'package:drumm_app/main.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
@@ -20,6 +22,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -33,6 +36,8 @@ class _SettingsPageState extends State<SettingsPage> {
   late BranchUniversalObject buo;
   late BranchEvent eventStandard;
   late BranchEvent eventCustom;
+  late SharedPreferences notiPref;
+  bool notify = true;
 
   StreamSubscription<Map>? streamSubscription;
   StreamController<String> controllerData = StreamController<String>();
@@ -167,6 +172,46 @@ class _SettingsPageState extends State<SettingsPage> {
                     generateLink();
                   },
                 ),
+                ListTile(
+                  title: Expanded(
+                    child: AutoSizeText(
+                      "Band Notifications",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontFamily: APP_FONT_MEDIUM,
+                        //fontFamily: 'alata',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  trailing: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: ToggleSwitch(
+                      minWidth: 60.0,
+                      cornerRadius: 20.0,
+                      activeBgColors: [
+                        [Colors.redAccent],
+                        [Colors.white!]
+                      ],
+                      activeFgColor: Colors.black,
+                      inactiveBgColor: Colors.grey.shade900,
+                      inactiveFgColor: Colors.white,
+                      initialLabelIndex: notify ? 1 : 0,
+                      totalSwitches: 2,
+                      labels: ['Off', 'On'],
+                      radiusStyle: true,
+                      customTextStyles: [
+                        const TextStyle(fontWeight: FontWeight.bold,fontFamily: APP_FONT_BOLD,)
+                      ],
+                      onToggle: (index) {
+                        Vibrate.feedback(FeedbackType.impact);
+                        print('switched to: $index');
+                        setNotify(index);
+                      },
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -295,6 +340,7 @@ class _SettingsPageState extends State<SettingsPage> {
           SizedBox(
             height: 36,
           ),
+
         ],
       ),
     );
@@ -509,8 +555,34 @@ class _SettingsPageState extends State<SettingsPage> {
     // return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
+  void setNotify(int? index) {
+    if (index == 1) {
+      notiPref.setBool("notify", true);
+      notify = true;
+      FirebaseDBOperations.subscribeToUserBands();
+    } else {
+      notiPref.setBool("notify", false);
+      notify = false;
+      try {
+        FirebaseMessaging.instance.deleteToken();
+        FirebaseMessaging.instance.getToken().then((token) => FirebaseDBOperations.updateDrummerToken(token??""));
+      }catch(e){
+      }
+      //FirebaseDBOperations.unSubscribeToUserBands();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    initialize();
+  }
+
+  void initialize() async{
+    notiPref = await SharedPreferences.getInstance();
+
+    setState(() {
+      notify = notiPref.getBool("notify") ?? true;
+    });
   }
 }

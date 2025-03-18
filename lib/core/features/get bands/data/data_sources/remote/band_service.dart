@@ -4,8 +4,11 @@ import 'package:drumm_app/core/features/get%20bands/data/model/band.dart';
 import 'package:drumm_app/core/resources/data_state.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BandService{
+  late SharedPreferences notiPref;
+  bool notify = true;
 
   Future<DataState<List<BandModel>>> getCurrentUserBands() async{
     try {
@@ -14,11 +17,17 @@ class BandService{
           .doc(FirebaseAuth.instance.currentUser?.uid ?? "")
           .collection("mybands");
       var bandsData = await userBandsCollectionRef.get();
+      notiPref = await SharedPreferences.getInstance();
+      notify = notiPref.getBool("notify") ?? true;
+
+
       FirebaseDBOperations.subscribeToTopic("broadcast");
       FirebaseDBOperations.subscribeToTopic(FirebaseAuth.instance.currentUser?.uid ?? "");
       List<String> list = List.from(bandsData.docs.map((e) {
         String bandId = (e.data() as Map)["bandId"].toString();
-        FirebaseDBOperations.subscribeToTopic(bandId);
+        if(notify) {
+          FirebaseDBOperations.subscribeToTopic(bandId);
+        }
         return bandId;
       }));
 

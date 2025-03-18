@@ -2544,7 +2544,12 @@ class FirebaseDBOperations {
           .collection('users')
           .doc(getCurrentUserID());
 
-      drummerSpeaking.update({"token": token});
+      drummerSpeaking.update({"token": token}).whenComplete((){
+        FirebaseDBOperations.subscribeToTopic("broadcast");
+        FirebaseDBOperations.subscribeToTopic(FirebaseAuth.instance.currentUser?.uid ?? "");
+      });
+
+
     } catch (e) {
       //print("Unable to update device token${e}");
     }

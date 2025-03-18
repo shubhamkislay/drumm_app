@@ -153,9 +153,11 @@ class DrummTheme{
        static Color primaryTextColorLight = Colors.black;
    static Color primaryLightBackgroundColor = Color(0xffe7e7e7);//Color(0xffF1F1F1);
    static Color primaryLightItemColor = Color(0xffffffff);// Color(0xffffffff);
+   static Color primaryLightArticleItemColor = Color(0xffffffff);
 
    static Color primaryTextColorDark = Colors.white;
    static Color primaryDarkItemColor = Color(0xff1e1e1e);//Color(0xff111111);
+   static Color primaryDarkArticleItemColor = Color(0xff000000);
    static Color primaryDarkBackgroundColor = Color(0xff000000);//Color(0xff080808);
 
    /*
@@ -187,6 +189,10 @@ class DrummTheme{
 
    static Color primaryItemColor(BuildContext context){
      return isDarkMode(context) ? primaryDarkItemColor:primaryLightItemColor;
+   }
+
+   static Color primaryArticleItemColor(BuildContext context){
+     return isDarkMode(context) ? primaryDarkArticleItemColor:primaryLightArticleItemColor;
    }
 
    static Color primarySelectedItemColor(BuildContext context){
