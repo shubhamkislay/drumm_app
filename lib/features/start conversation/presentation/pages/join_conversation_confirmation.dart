@@ -5,6 +5,7 @@ import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.da
 import 'package:drumm_app/core/features/notification/presentation/bloc/notification_bloc.dart';
 import 'package:drumm_app/core/features/notification/presentation/bloc/notification_event.dart';
 import 'package:drumm_app/core/features/user%20activity/presentation/bloc/user_activity_bloc.dart';
+import 'package:drumm_app/custom/instagram_date_time_widget.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_bloc.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/bloc/drumm_audio_event.dart';
 import 'package:drumm_app/features/drumm%20audio/presentation/pages/drumm_audio_bottom_sheet.dart';
@@ -26,7 +27,9 @@ class JoinConversationConfirmation extends StatelessWidget {
   Widget build(BuildContext context) {
     return FractionallySizedBox(
       heightFactor: 0.5, // 50% of the screen height
+      widthFactor: 1.0,
       child: Container(
+        width: double.maxFinite,
         decoration: BoxDecoration(
           color: DrummTheme.primaryItemColor(context),
           borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
@@ -54,8 +57,73 @@ class JoinConversationConfirmation extends StatelessWidget {
                   },
                   child: Icon(Icons.open_in_full_rounded)),
             ),
+            Positioned(
+              bottom: 20,
+              left: 0,
+              right: 0,
+              child: GestureDetector(
+                onTap: (){
+                  Navigator.of(context).pop(true);
+                  try {
+                    context.read<DrummAudioBloc>().add(
+                      StartOrSwitchChannelEvent(
+                        conversation: conversation,
+                        appId: DrummConstants.appId,
+                        token: DrummConstants.generateAgoraToken(
+                            drummerEntity.rid.toString(),
+                            conversation.conversationId ?? ""),
+                        channelName: conversation.conversationId ?? "",
+                        uid: drummerEntity.rid!,
+                        isMuted: false,
+                      ),
+                    );
+                  } catch (e) {
+                    return;
+                  }
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (_) {
+                      return DrummAudioBottomSheet(
+                        channelName: conversation.conversationId ?? "",
+                        conversation: conversation,
+                        drummerEntity: drummerEntity,
+                      );
+                    },
+                    isScrollControlled:
+                    true, // optional for a full-screen bottom sheet
+                  );
+
+                  if(sendNotification){
+                    context.read<NotificationBloc>().add(
+                      SendNotificationToUserEvent(
+                        conversation: conversation,
+                        drummer: drummerEntity,
+                      ),
+                    );
+                  }
+                },
+                child: Container(
+                  height: 48,
+                  alignment: Alignment.center,
+                  width: double.maxFinite,
+                  margin: EdgeInsets.all(16),
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: DrummTheme.drummPrimaryColor,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text("Join conversation", style: TextStyle(color: Colors.white,fontFamily: DRUMM_FONT_FAMILY,fontSize: 14),),
+                ),
+              ),
+            ),
+            Positioned(
+                left: 24,
+                top: 20,
+                child: InstagramDateTimeWidget(publishedAt: conversation.pinnedAt.toString(),textSize: 16, fontColor: DrummTheme.primaryTextColor(context),)),
             Column(
               mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Optional drag handle indicator
                 Container(
@@ -71,11 +139,23 @@ class JoinConversationConfirmation extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   child: CachedNetworkImage(imageUrl: conversation.imageUrl??"",height: 150,width: 150,fit: BoxFit.cover,),
                 ),
-                SizedBox(height: 24,),
+                SizedBox(height: 16,),
+                Text(
+                  '${conversation.meta}',
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 8,),
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Text(
-                    '${conversation.meta}',
+                    '${conversation.question}',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -84,60 +164,7 @@ class JoinConversationConfirmation extends StatelessWidget {
                   ),
                 ),
                 Spacer(),
-                GestureDetector(
-                  onTap: (){
-                    Navigator.of(context).pop(true);
-                    try {
-                      context.read<DrummAudioBloc>().add(
-                        StartOrSwitchChannelEvent(
-                          conversation: conversation,
-                          appId: DrummConstants.appId,
-                          token: DrummConstants.generateAgoraToken(
-                              drummerEntity.rid.toString(),
-                              conversation.conversationId ?? ""),
-                          channelName: conversation.conversationId ?? "",
-                          uid: drummerEntity.rid!,
-                          isMuted: false,
-                        ),
-                      );
-                    } catch (e) {
-                      return;
-                    }
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (_) {
-                        return DrummAudioBottomSheet(
-                          channelName: conversation.conversationId ?? "",
-                          conversation: conversation,
-                          drummerEntity: drummerEntity,
-                        );
-                      },
-                      isScrollControlled:
-                      true, // optional for a full-screen bottom sheet
-                    );
 
-                    if(sendNotification){
-                      context.read<NotificationBloc>().add(
-                        SendNotificationToUserEvent(
-                          conversation: conversation,
-                          drummer: drummerEntity,
-                        ),
-                      );
-                    }
-                  },
-                  child: Container(
-                    height: 48,
-                    alignment: Alignment.center,
-                    width: double.maxFinite,
-                    margin: EdgeInsets.all(16),
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: DrummTheme.drummPrimaryColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text("Join conversation", style: TextStyle(color: Colors.white,fontFamily: DRUMM_FONT_FAMILY,fontSize: 14),),
-                  ),
-                ),
                 SizedBox(height: 20),
               ],
             ),
