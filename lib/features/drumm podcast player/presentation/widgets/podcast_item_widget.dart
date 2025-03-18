@@ -51,8 +51,9 @@ class PodcastItemWidget extends StatelessWidget {
             child: AutoSizeText(
               "${(podcast.podcastTitle.isNotEmpty)?podcast.podcastTitle:podcast.audioTitle}",
               textAlign: TextAlign.start,
-              minFontSize: 12,
+              minFontSize: 16,
               maxFontSize: 28,
+              overflow: TextOverflow.ellipsis,
               maxLines: 2,
               style: TextStyle(
                   color:Colors.white,//DrummTheme.primaryTextColor(context),
