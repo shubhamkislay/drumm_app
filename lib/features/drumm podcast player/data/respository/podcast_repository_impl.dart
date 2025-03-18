@@ -12,7 +12,7 @@ class PodcastRepositoryImpl implements PodcastRepository {
   Future<List<PodcastEntity>> fetchPodcasts() async {
     // You could add caching or local DB here if needed
     List<PodcastEntity> podcasts= await podcastService.getPodcastsWhereStatusIs100();
-    print("Fetched item count ${podcasts.length}");
+    print("Podcasts Fetched item count ${podcasts.length}");
     return podcasts;
   }
 }

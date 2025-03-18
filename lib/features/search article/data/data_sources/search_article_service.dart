@@ -8,11 +8,11 @@ class SearchArticleService {
   // Constructor that sets up the Typesense client with your configuration.
   SearchArticleService() {
     final config = Configuration(
-      'kifdsI1wUYqfWiSChRNLKQUxMmyGQNfK', // Search Only API Key.
+      'HldoHB9AEWN1JT2eFpIb4Z3cdT47F7XQ', // Search Only API Key.
       nodes: {
         Node(
           Protocol.https, // Use HTTPS for secure connection.
-          '5p7wfikze8r62l3bp-1.a1.typesense.net',
+          'o0c465k9px3rnszup-1.a1.typesense.net',
           port: 443,
         ),
       },
