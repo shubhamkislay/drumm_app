@@ -99,21 +99,13 @@ class ArticleItemCardState extends State<ArticleItemCard> {
           margin: EdgeInsets.symmetric(vertical: 0),
           decoration: BoxDecoration(
              // borderRadius: BorderRadius.circular(curve),
-            //border: Border(top: BorderSide(color: DrummTheme.primaryTextColor(context).withAlpha(30))),
-              color: DrummTheme.primaryItemBackground(context)),
+            border: Border(top: BorderSide(color: DrummTheme.primaryTextColor(context).withAlpha(25))),
+              color: DrummTheme.primaryArticleItemColor(context)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 0),
-                decoration: BoxDecoration(
-                    border: Border(top: BorderSide(color: DrummTheme.primaryTextColor(context).withAlpha(25))),),
-              ),
-              SizedBox(
-                height: 20,
-              ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 child: SingleChildScrollView(
