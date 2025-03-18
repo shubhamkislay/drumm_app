@@ -41,6 +41,7 @@ class RemoteArticlesBloc
       this.markArticlesAsSeenUseCase)
       : super(const RemoteArticlesLoading()) {
     on<GetArticles>(onGetArticles);
+    on<LoadRecommendedArticles>(onLoadRecommendedArticles);
     on<GetRecommendedArticles>(onGetRecommendedArticles);
     on<GetArticlesFromDifferentCategory>(onGetArticlesFromDifferentCategory);
     on<GetSimilarArticles>(onGetSimilarArticles);
@@ -59,6 +60,25 @@ class RemoteArticlesBloc
       if (dataState.data?.articleList != null) {
         //print("RemoteArticlesFetched 1");
         emit(RemoteLoadMoreArticles(
+            dataState.data ?? ArticleListEntity(), category));
+      }
+    }
+    if (dataState is DataFailed) {
+      emit(RemoteArticlesError(dataState.error!));
+    }
+  }
+
+  void onLoadRecommendedArticles(
+      LoadRecommendedArticles event, Emitter<RemoteArticlesState> emit) async {
+    List<String>? category =
+    List<String>.from(event.getArticlesParams.category ?? ["For You"]);
+    emit(RemoteArticlesLoadingMoreArticles());
+    final dataState = await getArticlesUseCase(params: event.getArticlesParams);
+
+    if (dataState is DataSuccess) {
+      if (dataState.data?.articleList != null) {
+        //print("RemoteArticlesFetched 1");
+        emit(RemoteLoadRecommendedArticles(
             dataState.data ?? ArticleListEntity(), category));
       }
     }

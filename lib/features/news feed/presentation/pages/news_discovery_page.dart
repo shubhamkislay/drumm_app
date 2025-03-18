@@ -67,7 +67,6 @@ class NewsDiscoveryPage extends StatelessWidget {
       },
     );
     requestPermissions();
-    List<ArticleEntity> articleList = [];
     List<BandEntity>? bands = [];
     var lastDocument;
     String selectedBandId = "For You";
@@ -78,17 +77,11 @@ class NewsDiscoveryPage extends StatelessWidget {
           builder: (context, drummerState) {
         if (drummerState is RemoteDrummerDone ||
             drummerState is RefreshedDrummer) {
-          if (drummerState is RefreshedDrummer) {
-            articleList.clear();
-          }
 
           context.read<RemoteArticlesBloc>().add(GetRecommendedArticles(
               GetArticlesParams(
                   category: [selectedBandId],
                   drummerEntity: drummerState.drummerEntity)));
-        }
-        if (drummerState is RemoteDrummerLoading) {
-          articleList.clear();
         }
         return BlocListener<NotificationBloc, NotificationState>(
           listener: (context, notificationState) {
@@ -291,7 +284,6 @@ class NewsDiscoveryPage extends StatelessWidget {
                       children: [
                         RefreshIndicator(
                           onRefresh: () async {
-                            articleList.clear();
                             final bloc = context.read<RemoteDrummerBloc>();
                             bloc.add(RefreshDrummer());
                             await bloc.stream.firstWhere(
@@ -499,15 +491,12 @@ class NewsDiscoveryPage extends StatelessWidget {
                                   backgroundColor: Colors.transparent,
                                   surfaceTintColor: Colors.transparent,
                                   flexibleSpace: GestureDetector(
-                                    onTap: () async{
-                                      articleList.clear();
-                                      final bloc = context.read<RemoteDrummerBloc>();
-                                      bloc.add(RefreshDrummer());
-                                      await bloc.stream.firstWhere(
-                                            (state) =>
-                                        state is RefreshedDrummer ||
-                                            state is RemoteDrummerError,
-                                      );
+                                    onTap: () {
+                                      context.read<RemoteArticlesBloc>().add(
+                                            LoadRecommendedArticles(GetArticlesParams(
+                                              category: [selectedBandId],
+                                            )),
+                                          );
                                     },
                                     child: Container(
                                       height: 44,

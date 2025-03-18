@@ -51,6 +51,7 @@ class ArticleListWidget extends StatelessWidget {
                 is! RemoteArticlesError) {
                   List<ArticleEntity> fArticleList = [];
                   if (articleState is RemoteArticlesFetched ||
+                      articleState is RemoteLoadRecommendedArticles ||
                       articleState
                       is RemoteArticlesFetchedFromDifferentCategory ||
                       articleState

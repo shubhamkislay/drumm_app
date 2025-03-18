@@ -35,6 +35,10 @@ class RemoteArticlesLoadingMoreArticles extends RemoteArticlesState{
   const RemoteArticlesLoadingMoreArticles();
 }
 
+class RemoteLoadRecommendedArticles extends RemoteArticlesState{
+  const RemoteLoadRecommendedArticles(ArticleListEntity articleEntityList, List<String> category) : super(articleEntityList: articleEntityList,category: category);
+}
+
 class RemoteArticlesError extends RemoteArticlesState{
   const RemoteArticlesError(DioException error) : super(error: error);
 }

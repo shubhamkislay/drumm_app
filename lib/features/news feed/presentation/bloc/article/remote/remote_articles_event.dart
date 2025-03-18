@@ -12,6 +12,11 @@ class GetArticles extends RemoteArticlesEvent{
   const GetArticles(this.getArticlesParams);
 }
 
+class LoadRecommendedArticles extends RemoteArticlesEvent{
+  final GetArticlesParams getArticlesParams;
+  const LoadRecommendedArticles(this.getArticlesParams);
+}
+
 class GetRecommendedArticles extends RemoteArticlesEvent{
   final GetArticlesParams getArticlesParams;
   const GetRecommendedArticles(this.getArticlesParams);
