@@ -10,6 +10,7 @@ import 'package:drumm_app/config/theme/drumm_theme.dart';
 import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/custom/helper/image_uploader.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/widgets/pinned_conversations_horizontal_list.dart';
 import 'package:drumm_app/features/user%20page/presentation/pages/edit_profile.dart';
 import 'package:drumm_app/model/StateItem.dart';
 import 'package:expandable_text/expandable_text.dart';
@@ -213,6 +214,17 @@ class _UserProfilePageState extends State<UserProfilePage>
                       ],
                     ),
                   ),
+                  if(widget.currentUser)
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    alignment: Alignment.centerLeft,
+                      child: Text("Pinned By You",style: TextStyle(
+                        fontFamily: DRUMM_FONT_FAMILY,
+                        fontSize: 16,
+                        color: DrummTheme.primaryTextColor(context),
+                      ),)),
+                  if(widget.currentUser)
+                  PinnedConversationsWidget(onlyCurrentUser: true,),
                 ],
               ),
             ),

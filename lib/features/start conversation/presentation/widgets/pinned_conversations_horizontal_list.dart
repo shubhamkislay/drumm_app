@@ -20,8 +20,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PinnedConversationsWidget extends StatefulWidget {
 
+  final bool onlyCurrentUser;
+
   const PinnedConversationsWidget({
     Key? key,
+    required this.onlyCurrentUser
   }) : super(key: key);
 
   @override
@@ -37,8 +40,7 @@ class _PinnedConversationsWidgetState extends State<PinnedConversationsWidget> {
         builder: (context, drummerState) {
 
       if (drummerState is RemoteDrummerDone ||drummerState is  RefreshedDrummer) {
-        context.read<PinnedConversationsBloc>().add(LoadPinnedConversationsEvent());
-        print("Calling Pinned Conversation");
+        context.read<PinnedConversationsBloc>().add(LoadPinnedConversationsEvent(onlyCurrentUser: widget.onlyCurrentUser));
         return BlocBuilder<PinnedConversationsBloc, PinnedConversationsState>(
           builder: (context, state) {
             if (state is PinnedConversationsLoading) {

@@ -42,6 +42,26 @@ class DrummerEntity extends Equatable {
     this.rid,
   });
 
+  DrummerEntity.fromSnapshot(snapshot)
+      : badges = snapshot.data()['badges'],
+        token = snapshot.data()['token'],
+        uid = snapshot.data()['uid'],
+        rid = snapshot.data()['rid'],
+        name = snapshot.data()['name'],
+        email = snapshot.data()['email'],
+        speaking = snapshot.data()['speaking'],
+        muted = snapshot.data()['muted'],
+        username = snapshot.data()['username'],
+        occupation = snapshot.data()['occupation'],
+        bio = snapshot.data()['bio'],
+        preference = snapshot.data()['preference'],
+        lastRecommendationTimestamp = snapshot.data()['lastRecommendationTimestamp'],
+        imageUrl = snapshot.data()['imageUrl'],
+        organisation = snapshot.data()['organisation'],
+        followerCount = snapshot.data()['followerCount'],
+        followingCount = snapshot.data()['followingCount'],
+        jobTitle = snapshot.data()['jobTitle'];
+
   @override
   List<Object?> get props => [uid];
 }

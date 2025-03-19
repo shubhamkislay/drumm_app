@@ -7,4 +7,7 @@ abstract class PinnedConversationsEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class LoadPinnedConversationsEvent extends PinnedConversationsEvent {}
+class LoadPinnedConversationsEvent extends PinnedConversationsEvent {
+  final bool onlyCurrentUser;
+  const LoadPinnedConversationsEvent({required this.onlyCurrentUser});
+}

@@ -24,7 +24,7 @@ class ConversationRepositoryImpl implements ConversationRepository {
   }
 
   @override
-  Future<List<ConversationEntity>> getPinnedConversations(Timestamp from) {
-    return conversationService.getPinnedConversations(from);
+  Future<List<ConversationEntity>> getPinnedConversations(Timestamp from,bool onlyCurrentUser) {
+    return conversationService.getPinnedConversations(from,onlyCurrentUser);
   }
 }

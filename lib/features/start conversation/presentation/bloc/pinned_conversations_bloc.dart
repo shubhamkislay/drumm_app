@@ -17,7 +17,7 @@ class PinnedConversationsBloc extends Bloc<PinnedConversationsEvent, PinnedConve
       ) async {
     emit(PinnedConversationsLoading());
     try {
-      final conversations = await getPinnedConversationsLast24Hours();
+      final conversations = await getPinnedConversationsLast24Hours(onlyCurrentUser: event.onlyCurrentUser);
       emit(PinnedConversationsLoaded(conversations: conversations));
     } catch (e) {
       emit(PinnedConversationsError(error: e.toString()));

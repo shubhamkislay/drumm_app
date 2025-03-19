@@ -1,17 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-
-class ConversationService{
-
+class ConversationService {
   ConversationService();
 
   @override
   Future<void> createConversation(ConversationEntity conversation) async {
     // You can use conversationId as the document id or let Firestore auto-generate one.
-    final docRef = FirebaseFirestore.instance
-        .collection('conversations')
-        .doc(conversation.conversationId ?? FirebaseFirestore.instance.collection('conversations').doc().id);
+    final docRef = FirebaseFirestore.instance.collection('conversations').doc(
+        conversation.conversationId ??
+            FirebaseFirestore.instance.collection('conversations').doc().id);
 
     final data = {
       'articleId': conversation.articleId,
@@ -52,9 +51,8 @@ class ConversationService{
 
   @override
   Future<List<ConversationEntity>> getConversations() async {
-
-    final threshold = Timestamp.fromDate(DateTime.now().subtract(const Duration(seconds: 30)));
-
+    final threshold = Timestamp.fromDate(
+        DateTime.now().subtract(const Duration(seconds: 30)));
 
     final querySnapshot = await FirebaseFirestore.instance
         .collection('conversations')
@@ -101,25 +99,39 @@ class ConversationService{
   }
 
   @override
-  Future<void> updateLastActive(String conversationId, Timestamp lastActive) async {
+  Future<void> updateLastActive(
+      String conversationId, Timestamp lastActive) async {
     await FirebaseFirestore.instance
         .collection('conversations')
         .doc(conversationId)
         .update({'lastActive': lastActive});
   }
-  @override
-  Future<List<ConversationEntity>> getPinnedConversations(Timestamp from) async {
-    try {
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('conversations')
-          .where('pinned', isEqualTo: true)
-          .where('pinnedAt', isGreaterThanOrEqualTo: from)
-          .orderBy('pinnedAt', descending: true)
-          .get();
 
-      if(querySnapshot.docs.isEmpty){
+  @override
+  Future<List<ConversationEntity>> getPinnedConversations(
+      Timestamp from, bool onlyCurrentUser) async {
+    late QuerySnapshot<Map<String, dynamic>> querySnapshot;
+    try {
+      if (onlyCurrentUser) {
+        querySnapshot = await FirebaseFirestore.instance
+            .collection('conversations')
+            .where('pinned', isEqualTo: true)
+            .where('startedBy', isEqualTo: FirebaseAuth.instance.currentUser?.uid)
+            .where('pinnedAt', isGreaterThanOrEqualTo: from)
+            .orderBy('pinnedAt', descending: true)
+            .get();
+      } else {
+        querySnapshot = await FirebaseFirestore.instance
+            .collection('conversations')
+            .where('pinned', isEqualTo: true)
+            .where('pinnedAt', isGreaterThanOrEqualTo: from)
+            .orderBy('pinnedAt', descending: true)
+            .get();
+      }
+
+      if (querySnapshot.docs.isEmpty) {
         print("Did not fetch any items");
-      }else{
+      } else {
         print("Fetched total ${querySnapshot.docs.length}");
       }
 
@@ -159,10 +171,9 @@ class ConversationService{
           pinnedAt: data['pinnedAt'] as Timestamp?,
         );
       }).toList();
-    }catch(e){
+    } catch (e) {
       print("Error fetching coversation list: ${e.toString()}");
       return [];
     }
   }
-
 }

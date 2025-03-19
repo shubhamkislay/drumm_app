@@ -8,5 +8,5 @@ abstract class ConversationRepository {
 
   /// New: Retrieve all conversations that are pinned and whose
   /// pinnedAt timestamp is greater than or equal to [from].
-  Future<List<ConversationEntity>> getPinnedConversations(Timestamp from);
+  Future<List<ConversationEntity>> getPinnedConversations(Timestamp from, bool onlyCurrentUser);
 }

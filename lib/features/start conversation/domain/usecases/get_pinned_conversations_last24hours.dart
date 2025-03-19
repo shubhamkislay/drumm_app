@@ -7,9 +7,9 @@ class GetPinnedConversationsLast24Hours {
 
   GetPinnedConversationsLast24Hours(this.repository);
 
-  Future<List<ConversationEntity>> call() async {
+  Future<List<ConversationEntity>> call({required bool onlyCurrentUser}) async {
     final now = Timestamp.now();
     final threshold = Timestamp.fromDate(now.toDate().subtract(const Duration(hours: 24)));
-    return repository.getPinnedConversations(threshold);
+    return repository.getPinnedConversations(threshold,onlyCurrentUser);
   }
 }

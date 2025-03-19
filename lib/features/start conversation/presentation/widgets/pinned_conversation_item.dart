@@ -37,7 +37,7 @@ class PinnedConversationItem extends StatelessWidget {
               children: [
                 InstagramDateTimeWidget(publishedAt: conversation.pinnedAt.toString()),
                 if(drummerEntity!.uid != conversation.startedBy)
-                  Image.asset("images/pin_selected.png",color: DrummTheme.primaryTextColor(context).withAlpha(150),height: 14,width: 14,),
+                  Image.asset("images/pin_selected.png",color: DrummTheme.primaryTextColor(context).withAlpha(100),height: 14,width: 14,),
                 if(drummerEntity!.uid == conversation.startedBy)
                   Image.asset("images/pin_selected.png",color: DrummTheme.primaryTextColor(context),height: 14,width: 14,),
               ],

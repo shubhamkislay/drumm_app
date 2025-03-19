@@ -3,8 +3,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drumm_app/core/features/get%20drummer/domain/entities/drummer.dart';
 import 'package:drumm_app/custom/helper/circular_reveal_clipper.dart';
 import 'package:drumm_app/custom/helper/image_uploader.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/custom/helper/remove_duplicate.dart';
@@ -15,7 +17,8 @@ import 'package:drumm_app/model/question.dart';
 import 'package:drumm_app/open_article_page.dart';
 import 'package:drumm_app/profile_page.dart';
 import 'package:drumm_app/theme/theme_constants.dart';
-import 'package:drumm_app/user_profile_page.dart';
+
+import '../../../user page/presentation/pages/user_profile_page.dart';
 
 class DrummerJoinCard extends StatefulWidget {
   final int drummerId;
@@ -32,7 +35,6 @@ class DrummerJoinCard extends StatefulWidget {
 }
 
 class _DrummerJoinCardState extends State<DrummerJoinCard> {
-  Drummer drummUser = Drummer();
   @override
   Widget build(BuildContext context) {
 
@@ -49,9 +51,9 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
           }
 
           //setState(() {
-          List<Drummer> drumm =
-          snapshot.data?.docs.map((doc) => Drummer.fromSnapshot(doc)).toList()??[];
-          Drummer  drummer = drumm.elementAt(0);
+          List<DrummerEntity> drumm =
+          snapshot.data?.docs.map((doc) => DrummerEntity.fromSnapshot(doc)).toList()??[];
+          DrummerEntity  drummer = drumm.elementAt(0);
         //  });
           return Column(
             children: [
@@ -62,8 +64,7 @@ class _DrummerJoinCardState extends State<DrummerJoinCard> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => UserProfilePage(
-                              fromSearch: true,
-                              drummer: drummer,
+                              drummer: drummer, currentUser: drummer.uid==FirebaseAuth.instance.currentUser?.uid?true:false,
                             ),
                           ));
                     },
