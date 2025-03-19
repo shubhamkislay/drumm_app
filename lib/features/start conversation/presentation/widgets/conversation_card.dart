@@ -91,7 +91,7 @@ class ConversationCard extends StatelessWidget {
                   ),
                   Flexible(
                     child: AutoSizeText(
-                      minFontSize: 18,
+                      minFontSize: 16,
                       maxFontSize: 24,
                       conversation.question ?? 'No Title',
                       softWrap: true,

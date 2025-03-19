@@ -217,6 +217,7 @@ class _ReadArticlePageState extends State<ReadArticlePage> {
                                     article: widget.article,
                                     embedding: widget.article.embedding),
                                 bands: widget.bands,
+                                  drummerEntity:widget.drummerEntity!,
                               ),
                             ],
                           ),

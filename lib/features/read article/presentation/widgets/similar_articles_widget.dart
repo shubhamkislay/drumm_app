@@ -18,7 +18,8 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 class SimilarArticlesWidget extends StatelessWidget {
   GetSimilarArticlesParams params;
   final List<BandEntity> bands;
-  SimilarArticlesWidget({super.key, required this.params, required this.bands});
+  final DrummerEntity drummerEntity;
+  SimilarArticlesWidget({super.key, required this.params, required this.bands, required this.drummerEntity});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,7 @@ class SimilarArticlesWidget extends StatelessWidget {
                           Vibrate.feedback(FeedbackType.medium);
                           showModalBottomSheet(
                             context: context,
-                            builder: (_) => ReadArticlePage(article: article, bands: bands,drummerEntity: DrummerEntity(),),
+                            builder: (_) => ReadArticlePage(article: article, bands: bands,drummerEntity: drummerEntity,),
                             isScrollControlled: true, // For making the sheet extendable
                             backgroundColor: Colors.transparent,
                           );
