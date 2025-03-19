@@ -395,10 +395,22 @@ flutter:
     - family: opensansmedium
       fonts:
         - asset: fonts/OpenSans-Medium.ttf
+    - family: helvetica
+      fonts:
+        - asset: fonts/Helvetica.ttf
 
     - family: centurygothic
       fonts:
         - asset: fonts/CenturyGothic.ttf
+    - family: inter
+      fonts:
+        - asset: fonts/inter.ttf
+    - family: Nunito
+      fonts:
+        - asset: fonts/Nunito.ttf
+    - family: SF-Pro-Rounded-Regular
+      fonts:
+        - asset: fonts/SF-Pro-Rounded-Regular.otf
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

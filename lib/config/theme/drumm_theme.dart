@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 const Color DARK_BACKGROUND = Color(0xff080808);
-const String DRUMM_FONT_FAMILY = "robotomedium";//robotomedium  opensansmedium
-const String DRUMM_FONT_HEADINGS= "opensansmedium";
+const String DRUMM_FONT_FAMILY = "robotomedium";//"robotomedium";//robotomedium  opensansmedium SF-Pro-Rounded-Regular
+const String DRUMM_FONT_HEADINGS= "opensansmedium";//opensansmedium
 
 class DrummTheme{
    static ThemeData drummDarkTheme = ThemeData(

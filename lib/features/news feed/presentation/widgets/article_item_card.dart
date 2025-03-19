@@ -203,8 +203,9 @@ class ArticleItemCardState extends State<ArticleItemCard> {
                   textAlign: TextAlign.left,
                   maxLines: 2,
                   style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 15,
                       fontFamily: DRUMM_FONT_FAMILY,
+                      //fontWeight: FontWeight.w300,
                       color: DrummTheme.primaryTextColor(context),),
                   expandText: 'See more',
                   linkColor: DrummTheme.primaryTextColor(context),
@@ -333,7 +334,7 @@ class ArticleItemCardState extends State<ArticleItemCard> {
                   margin: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                   decoration: BoxDecoration(
                     color: DrummTheme.primarySelectedItemColor(context)
-                        .withAlpha(15),
+                        .withAlpha(25),
                     borderRadius: BorderRadius.circular(curve),
                   ),
                   child: Row(
