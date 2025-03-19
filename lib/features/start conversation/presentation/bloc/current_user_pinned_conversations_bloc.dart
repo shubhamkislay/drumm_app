@@ -3,39 +3,25 @@ import 'package:dio/dio.dart';
 import 'package:drumm_app/core/resources/data_state.dart';
 import 'package:drumm_app/features/start%20conversation/domain/usecases/get_pinned_conversations_last24hours.dart';
 import 'package:drumm_app/features/start%20conversation/domain/usecases/upin_conversation.dart';
-import 'pinned_conversations_event.dart';
-import 'pinned_conversations_state.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/current_user_pinned_conversations_event.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/current_user_pinned_conversations_state.dart';
 
-class PinnedConversationsBloc
-    extends Bloc<PinnedConversationsEvent, PinnedConversationsState> {
+class CurrentUserPinnedConversationsBloc
+    extends Bloc<CurrentUserPinnedConversationsEvent, CurrentUserPinnedConversationsState> {
   final GetPinnedConversationsLast24Hours getPinnedConversationsLast24Hours;
   final UnpinConversationUseCase unpinConversationUseCase;
 
-  PinnedConversationsBloc(
+  CurrentUserPinnedConversationsBloc(
       {required this.getPinnedConversationsLast24Hours,
       required this.unpinConversationUseCase})
       : super(PinnedConversationsInitial()) {
-    on<LoadPinnedConversationsEvent>(_onLoadPinnedConversations);
     on<CurrentUserLoadPinnedConversationsEvent>(_onCurrentUserLoadPinnedConversations);
-    on<UnpinConversationEvent>(_onUnpinConversation);
+    on<UnpinConversationCurrentUserEvent>(_onUnpinConversation);
   }
 
-  Future<void> _onLoadPinnedConversations(
-    LoadPinnedConversationsEvent event,
-    Emitter<PinnedConversationsState> emit,
-  ) async {
-    emit(PinnedConversationsLoading());
-    try {
-      final conversations = await getPinnedConversationsLast24Hours(
-          onlyCurrentUser: false);
-        emit(PinnedConversationsLoaded(conversations: conversations));
-    } catch (e) {
-      emit(PinnedConversationsError(error: e.toString()));
-    }
-  }
   Future<void> _onCurrentUserLoadPinnedConversations(
       CurrentUserLoadPinnedConversationsEvent event,
-      Emitter<PinnedConversationsState> emit,
+      Emitter<CurrentUserPinnedConversationsState> emit,
       ) async {
     emit(PinnedConversationsLoading());
     try {
@@ -49,8 +35,8 @@ class PinnedConversationsBloc
   }
 
   Future<void> _onUnpinConversation(
-    UnpinConversationEvent event,
-    Emitter<PinnedConversationsState> emit,
+      UnpinConversationCurrentUserEvent event,
+    Emitter<CurrentUserPinnedConversationsState> emit,
   ) async {
     emit(UnpinningConversation());
     try {

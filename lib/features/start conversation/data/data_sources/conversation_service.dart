@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
+import 'package:drumm_app/core/resources/data_state.dart';
 import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -116,7 +118,8 @@ class ConversationService {
         querySnapshot = await FirebaseFirestore.instance
             .collection('conversations')
             .where('pinned', isEqualTo: true)
-            .where('startedBy', isEqualTo: FirebaseAuth.instance.currentUser?.uid)
+            .where('startedBy',
+                isEqualTo: FirebaseAuth.instance.currentUser?.uid)
             .where('pinnedAt', isGreaterThanOrEqualTo: from)
             .orderBy('pinnedAt', descending: true)
             .get();
@@ -174,6 +177,22 @@ class ConversationService {
     } catch (e) {
       print("Error fetching coversation list: ${e.toString()}");
       return [];
+    }
+  }
+
+  @override
+  Future<DataState<bool>> unpinConversation(String conversationId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('conversations')
+          .doc(conversationId)
+          .delete()
+          .onError((e, trace) {
+        throw DioException(requestOptions: RequestOptions(data: e),message: "Unable to unpin the conversation",);
+      });
+      return DataSuccess(true);
+    }on DioException catch (e) {
+      return DataFailed(e);
     }
   }
 }

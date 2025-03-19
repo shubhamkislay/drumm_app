@@ -12,6 +12,7 @@ import 'package:drumm_app/custom/constants/Constants.dart';
 import 'package:drumm_app/custom/helper/image_uploader.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/pinned_conversations_horizontal_list.dart';
 import 'package:drumm_app/features/user%20page/presentation/pages/edit_profile.dart';
+import 'package:drumm_app/features/user%20page/presentation/widgets/pinned_conversation_current_user_list.dart';
 import 'package:drumm_app/model/StateItem.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -224,7 +225,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                         color: DrummTheme.primaryTextColor(context),
                       ),)),
                   if(widget.currentUser)
-                  PinnedConversationsWidget(onlyCurrentUser: true,),
+                    PinnedConversationsCurrentUserList(onlyCurrentUser: true,),
                 ],
               ),
             ),

@@ -15,20 +15,19 @@ import 'package:drumm_app/features/start%20conversation/presentation/bloc/pinned
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pinned_conversations_state.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/pages/join_conversation_confirmation.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/pinned_conversation_item.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PinnedConversationsWidget extends StatefulWidget {
-
   final bool onlyCurrentUser;
 
-  const PinnedConversationsWidget({
-    Key? key,
-    required this.onlyCurrentUser
-  }) : super(key: key);
+  const PinnedConversationsWidget({Key? key, required this.onlyCurrentUser})
+      : super(key: key);
 
   @override
-  State<PinnedConversationsWidget> createState() => _PinnedConversationsWidgetState();
+  State<PinnedConversationsWidget> createState() =>
+      _PinnedConversationsWidgetState();
 }
 
 class _PinnedConversationsWidgetState extends State<PinnedConversationsWidget> {
@@ -36,11 +35,17 @@ class _PinnedConversationsWidgetState extends State<PinnedConversationsWidget> {
   Widget build(BuildContext context) {
     // Dispatch the event to load pinned conversations when the widget is built.
 
+
+
+
     return BlocBuilder<RemoteDrummerBloc, RemoteDrummerState>(
         builder: (context, drummerState) {
+      if (drummerState is RemoteDrummerDone ||
+          drummerState is RefreshedDrummer) {
 
-      if (drummerState is RemoteDrummerDone ||drummerState is  RefreshedDrummer) {
-        context.read<PinnedConversationsBloc>().add(LoadPinnedConversationsEvent(onlyCurrentUser: widget.onlyCurrentUser));
+        context.read<PinnedConversationsBloc>().add(
+            LoadPinnedConversationsEvent(
+                onlyCurrentUser: false));
         return BlocBuilder<PinnedConversationsBloc, PinnedConversationsState>(
           builder: (context, state) {
             if (state is PinnedConversationsLoading) {
@@ -64,19 +69,22 @@ class _PinnedConversationsWidgetState extends State<PinnedConversationsWidget> {
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
-                          isScrollControlled: true, // enables custom height sizing
+                          isScrollControlled:
+                              true, // enables custom height sizing
                           backgroundColor:
-                          Colors.transparent, // for rounded corners effect
+                              Colors.transparent, // for rounded corners effect
                           builder: (BuildContext context) {
                             return JoinConversationConfirmation(
-                              sendNotification:true,
+                              sendNotification: true,
                               conversation: conversation,
                               drummerEntity:
-                              drummerState.drummerEntity ?? DrummerEntity(),
+                                  drummerState.drummerEntity ?? DrummerEntity(),
+                              pinConversation: conversation.startedBy ==
+                                  FirebaseAuth.instance.currentUser?.uid,
+                              onlyCurrentUser: widget.onlyCurrentUser,
                             );
                           },
                         );
-
                       },
                     );
                   },

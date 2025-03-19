@@ -1,22 +1,22 @@
 import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class PinnedConversationsState extends Equatable {
-  const PinnedConversationsState();
+abstract class CurrentUserPinnedConversationsState extends Equatable {
+  const CurrentUserPinnedConversationsState();
 
   @override
   List<Object?> get props => [];
 }
 
-class PinnedConversationsInitial extends PinnedConversationsState {}
+class PinnedConversationsInitial extends CurrentUserPinnedConversationsState {}
 
-class PinnedConversationsLoading extends PinnedConversationsState {}
+class PinnedConversationsLoading extends CurrentUserPinnedConversationsState {}
 
-class UnpinningConversation extends PinnedConversationsState {}
+class UnpinningConversation extends CurrentUserPinnedConversationsState {}
 
-class ConversationUnpinned extends PinnedConversationsState {}
+class ConversationUnpinned extends CurrentUserPinnedConversationsState {}
 
-class UnableToUnpinConversation extends PinnedConversationsState {
+class UnableToUnpinConversation extends CurrentUserPinnedConversationsState {
   final String error;
 
   const UnableToUnpinConversation({required this.error});
@@ -25,7 +25,7 @@ class UnableToUnpinConversation extends PinnedConversationsState {
   List<Object?> get props => [error];
 }
 
-class PinnedConversationsLoaded extends PinnedConversationsState {
+class PinnedConversationsLoaded extends CurrentUserPinnedConversationsState {
   final List<ConversationEntity> conversations;
 
   const PinnedConversationsLoaded({required this.conversations});
@@ -34,7 +34,7 @@ class PinnedConversationsLoaded extends PinnedConversationsState {
   List<Object?> get props => [conversations];
 }
 
-class CurrentUserPinnedConversationsLoaded extends PinnedConversationsState {
+class CurrentUserPinnedConversationsLoaded extends CurrentUserPinnedConversationsState {
   final List<ConversationEntity> conversations;
 
   const CurrentUserPinnedConversationsLoaded({required this.conversations});
@@ -43,7 +43,7 @@ class CurrentUserPinnedConversationsLoaded extends PinnedConversationsState {
   List<Object?> get props => [conversations];
 }
 
-class PinnedConversationsError extends PinnedConversationsState {
+class PinnedConversationsError extends CurrentUserPinnedConversationsState {
   final String error;
 
   const PinnedConversationsError({required this.error});

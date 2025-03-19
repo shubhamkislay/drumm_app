@@ -77,8 +77,10 @@ import 'package:drumm_app/features/start%20conversation/domain/usecases/create_p
 import 'package:drumm_app/features/start%20conversation/domain/usecases/get_conversations.dart';
 import 'package:drumm_app/features/start%20conversation/domain/usecases/get_pinned_conversations_last24hours.dart';
 import 'package:drumm_app/features/start%20conversation/domain/usecases/update_last_active.dart';
+import 'package:drumm_app/features/start%20conversation/domain/usecases/upin_conversation.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_list_bloc.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/current_user_pinned_conversations_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/last_active_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pin_conversation_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pinned_conversations_bloc.dart';
@@ -175,6 +177,7 @@ Future<void> initializeDependencies() async {
   s1.registerSingleton<GetConversationsUseCase>(GetConversationsUseCase(s1()));
   s1.registerSingleton<UpdateLastActiveUseCase>(UpdateLastActiveUseCase(s1()));
   s1.registerSingleton<GetPinnedConversationsLast24Hours>(GetPinnedConversationsLast24Hours(s1()));
+  s1.registerSingleton<UnpinConversationUseCase>(UnpinConversationUseCase(s1()));
   s1.registerSingleton<CreatePinConversationUseCase>(CreatePinConversationUseCase(s1()));
   //notification
   s1.registerSingleton<SendNotificationToTopicUseCase>(SendNotificationToTopicUseCase(s1()));
@@ -206,7 +209,8 @@ Future<void> initializeDependencies() async {
   s1.registerFactory<ConversationListBloc>(() => ConversationListBloc(getConversationsUseCase: s1()));
   s1.registerFactory<LastActiveBloc>(() => LastActiveBloc(updateLastActiveUseCase: s1()));
   s1.registerFactory<PinConversationBloc>(() => PinConversationBloc(createPinConversation: s1()));
-  s1.registerFactory<PinnedConversationsBloc>(() => PinnedConversationsBloc(getPinnedConversationsLast24Hours: s1()));
+  s1.registerFactory<PinnedConversationsBloc>(() => PinnedConversationsBloc(getPinnedConversationsLast24Hours: s1(),unpinConversationUseCase: s1()));
+  s1.registerFactory<CurrentUserPinnedConversationsBloc>(() => CurrentUserPinnedConversationsBloc(getPinnedConversationsLast24Hours: s1(),unpinConversationUseCase: s1()));
   s1.registerSingleton<NotificationBloc>(NotificationBloc(sendNotificationToTopicUseCase: s1(),sendNotificationToUserUseCase: s1()));
 
 

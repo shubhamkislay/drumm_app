@@ -21,6 +21,8 @@ import 'package:drumm_app/features/start%20conversation/presentation/bloc/conver
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_event.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pin_conversation_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pin_conversation_event.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/pinned_conversations_bloc.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/pinned_conversations_event.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/widgets/conversation_share_button.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
@@ -230,6 +232,9 @@ class BottomStartConversationWidget extends StatelessWidget {
                           )));
 
                           uploadConversation( context,true);
+                          context.read<PinnedConversationsBloc>().add(
+                              LoadPinnedConversationsEvent(
+                                  onlyCurrentUser: false));
 
 
                           analytics.logEvent(

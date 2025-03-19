@@ -109,9 +109,10 @@ class NewsDiscoveryPage extends StatelessWidget {
                 builder: (BuildContext context) {
                   return JoinConversationConfirmation(
                     sendNotification: false,
+                    onlyCurrentUser: false,
                     conversation: notificationState.conversation,
                     drummerEntity:
-                        drummerState.drummerEntity ?? DrummerEntity(),
+                        drummerState.drummerEntity ?? DrummerEntity(), pinConversation: false,
                   );
                 },
               );

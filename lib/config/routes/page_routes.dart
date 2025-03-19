@@ -10,6 +10,7 @@ import 'package:drumm_app/features/search%20article/presentation/pages/search_ar
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_list_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/conversation_list_event.dart';
+import 'package:drumm_app/features/start%20conversation/presentation/bloc/current_user_pinned_conversations_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/last_active_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pin_conversation_bloc.dart';
 import 'package:drumm_app/features/start%20conversation/presentation/bloc/pinned_conversations_bloc.dart';
@@ -57,6 +58,8 @@ class PageRoutes {
                   create: (context) =>s1<PinConversationBloc>(),),
                 BlocProvider(
                   create: (context) =>s1<PinnedConversationsBloc>(),),
+                BlocProvider(
+                  create: (context) =>s1<CurrentUserPinnedConversationsBloc>(),),
                 BlocProvider(
                   create: (context) =>s1<LastActiveBloc>(),),
                 BlocProvider(
