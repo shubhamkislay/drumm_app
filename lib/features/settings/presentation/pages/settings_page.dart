@@ -173,16 +173,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                 ),
                 ListTile(
-                  title: Expanded(
-                    child: AutoSizeText(
-                      "Band Notifications",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontSize: 24.0,
-                        fontFamily: APP_FONT_MEDIUM,
-                        //fontFamily: 'alata',
-                        fontWeight: FontWeight.bold,
-                      ),
+                  title: AutoSizeText(
+                    "Band Notifications",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      fontFamily: APP_FONT_MEDIUM,
+                      //fontFamily: 'alata',
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   trailing: Padding(
