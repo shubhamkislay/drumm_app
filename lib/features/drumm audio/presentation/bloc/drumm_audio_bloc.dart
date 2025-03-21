@@ -7,6 +7,7 @@ import 'package:drumm_app/features/drumm audio/domain/usecases/leave_drumm_useca
 import 'package:drumm_app/features/drumm audio/domain/usecases/listen_drumm_events_usecase.dart';
 import 'package:drumm_app/features/drumm audio/domain/usecases/mute_drumm_audio_usecase.dart';
 import 'package:drumm_app/features/start%20conversation/domain/entities/conversation.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'drumm_audio_event.dart';
 import 'drumm_audio_state.dart';
 
@@ -102,6 +103,18 @@ class DrummAudioBloc extends Bloc<DrummAudioEvent, DrummAudioState> {
       Emitter<DrummAudioState> emit,
       ) async {
     final eventConversation = ConversationEntity.copy(event.conversation);
+
+    final Map<Permission, PermissionStatus> statuses =
+    await [Permission.microphone].request();
+    final status = statuses[Permission.microphone];
+    bool isMicGranted = status?.isGranted ?? false;
+
+    if (!isMicGranted) {
+
+      // Proceed with microphone related functionality.
+      emit(DrummAudioError('You\'ve not granted mic permission. Please add microphone permission to join the conversation.', [], {}, {}, eventConversation));
+      return;
+    }
 
     try {
       // If already in a channel (and not in initial, left, or error state)

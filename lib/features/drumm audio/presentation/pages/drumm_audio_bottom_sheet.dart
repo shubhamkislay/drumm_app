@@ -50,6 +50,7 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
       listener: (context, state) {
         if (state is DrummAudioError) {
           print("DrummAudioError: ${state.message}");
+
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(state.message)));
         }
@@ -66,8 +67,7 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
                 color: DrummTheme.primaryItemColor(context),
-              borderRadius: BorderRadius.circular(12)
-            ),
+                borderRadius: BorderRadius.circular(12)),
             child: DraggableScrollableSheet(
               shouldCloseOnMinExtent: true,
               snap: false,
@@ -75,150 +75,256 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
               initialChildSize: 1,
               minChildSize: 0.9,
               maxChildSize: 1,
-              builder: (BuildContext context, ScrollController scrollController) { return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Grid view to show remote users.
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      //const Icon(Icons.music_note, color: Colors.white),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: CachedNetworkImage(
-                          imageUrl: widget.conversation.imageUrl ?? DEFAULT_APP_IMAGE_URL,
-                          height: 64,
-                          width: 64,
-                          fit: BoxFit.cover,
-                          errorWidget: (context,url,a){
-                            return Image.asset(
-                              "images/audio-waves.png",
-                              color: DrummTheme.primaryTextColor(context),
-                              height: 64,
-                              width: 64,
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Text(
-                          widget.conversation.question ?? "Playing Podcast",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: DrummTheme.primaryTextColor(context),fontSize: 18),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      GestureDetector(
-                          onTap: (){
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (_) => BlocProvider.value(
-                                  value: context
-                                      .read<UserActivityBloc>(), // Provide the existing bloc
-                                  child: ReadArticlePage(
-                                    article: ArticleModel.fromConversation(widget.conversation),
-                                    bands: [],
-                                    drummerEntity: widget.drummerEntity,
-                                  )),
-                              isScrollControlled: true, // For making the sheet extendable
-                              backgroundColor: Colors.transparent,
-                            );
-                          },
-                          child: Icon(Icons.open_in_full_rounded)),
-                    ],
-                  ),
-                  SizedBox(height: 12,),
-                  Expanded(
-                    child: state.remoteUserIds.isNotEmpty
-                        ? GridView.builder(
-                      scrollDirection: Axis.vertical,
-                      controller: scrollController,
-                      gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        childAspectRatio: 0.9,
-                      ),
-                      itemCount: state.remoteUserIds.length,
-                      itemBuilder: (context, index) {
-                        final uid = state.remoteUserIds[index];
-                        // If the user is talking, show a green border; otherwise, gray.
-                        final isTalking = state.talkingStatus[uid] ?? false;
-                        final isMute = state.muteStatus[uid] ?? false;
-                        return DrummerJoinCard(
-                          drummerId: uid,
-                          talking: isTalking,
-                          muted: isMute,
-                        );
-                      },
-                    )
-                        : Center(
-                        child: Image.asset("images/drumm_logo.png",color:DrummTheme.primaryTextColor(context).withAlpha(10),height: 100,width: 100,)),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          if (state.muteStatus[widget.drummerEntity.rid] ??
-                              false) {
-                            _muteAudio(context, false);
-                          } else {
-                            _muteAudio(context, true);
-                          }
-                        },
-                        child: Container(
+              builder:
+                  (BuildContext context, ScrollController scrollController) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Grid view to show remote users.
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        //const Icon(Icons.music_note, color: Colors.white),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: CachedNetworkImage(
+                            imageUrl: widget.conversation.imageUrl ??
+                                DEFAULT_APP_IMAGE_URL,
                             height: 64,
                             width: 64,
-                            decoration: BoxDecoration(
-                                color: (state.muteStatus[widget.drummerEntity.rid] ??
-                                    false)?DrummTheme.primaryTextColor(context).withAlpha(100):DrummTheme.drummPrimaryColor,
-                                shape: BoxShape.circle
-                            ),
-                            child: (state.muteStatus[widget.drummerEntity.rid] ??
-                                false)
-                                ? Icon(
-                              size: 42,
-                              Icons.mic_off_rounded,
-                              color: Colors.white,
+                            fit: BoxFit.cover,
+                            errorWidget: (context, url, a) {
+                              return Image.asset(
+                                "images/audio-waves.png",
+                                color: DrummTheme.primaryTextColor(context),
+                                height: 64,
+                                width: 64,
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            widget.conversation.question ?? "Playing Podcast",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: DrummTheme.primaryTextColor(context),
+                                fontSize: 18),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (_) => BlocProvider.value(
+                                    value: context.read<
+                                        UserActivityBloc>(), // Provide the existing bloc
+                                    child: ReadArticlePage(
+                                      article: ArticleModel.fromConversation(
+                                          widget.conversation),
+                                      bands: [],
+                                      drummerEntity: widget.drummerEntity,
+                                    )),
+                                isScrollControlled:
+                                    true, // For making the sheet extendable
+                                backgroundColor: Colors.transparent,
+                              );
+                            },
+                            child: Icon(Icons.open_in_full_rounded)),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Expanded(
+                      child: state.remoteUserIds.isNotEmpty
+                          ? GridView.builder(
+                              scrollDirection: Axis.vertical,
+                              controller: scrollController,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                childAspectRatio: 0.9,
+                              ),
+                              itemCount: state.remoteUserIds.length,
+                              itemBuilder: (context, index) {
+                                final uid = state.remoteUserIds[index];
+                                // If the user is talking, show a green border; otherwise, gray.
+                                final isTalking =
+                                    state.talkingStatus[uid] ?? false;
+                                final isMute = state.muteStatus[uid] ?? false;
+                                return DrummerJoinCard(
+                                  drummerId: uid,
+                                  talking: isTalking,
+                                  muted: isMute,
+                                );
+                              },
                             )
-                                : Icon(
-                              size: 42,
-                              Icons.mic_rounded,
-                              color: Colors.white,
+                          : Center(
+                              child: Image.asset(
+                              "images/drumm_logo.png",
+                              color: DrummTheme.primaryTextColor(context)
+                                  .withAlpha(10),
+                              height: 100,
+                              width: 100,
                             )),
-                      ),
-                      SizedBox(
-                        width: 24,
-                      ),
-                      Container(
-                        height: 64,
-                        width: 64,
-                        decoration: BoxDecoration(
-                            color: DrummTheme.primaryTextColor(context).withAlpha(100),
-                            shape: BoxShape.circle
-                        ),
-                        child: IconButton(
-                          icon: Icon(Icons.exit_to_app_rounded,
-                              size: 36,
-
-                              color: Colors.white),
-                          onPressed: () {
-                            // context.read<MusicPlayerBloc>().add(StopMusic(podcast));
-                            _leaveChannel(context);
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            if (state.muteStatus[widget.drummerEntity.rid] ??
+                                false) {
+                              _muteAudio(context, false);
+                            } else {
+                              _muteAudio(context, true);
+                            }
                           },
+                          child: Container(
+                              height: 64,
+                              width: 64,
+                              decoration: BoxDecoration(
+                                  color: (state.muteStatus[
+                                              widget.drummerEntity.rid] ??
+                                          false)
+                                      ? DrummTheme.primaryTextColor(context)
+                                          .withAlpha(100)
+                                      : DrummTheme.drummPrimaryColor,
+                                  shape: BoxShape.circle),
+                              child:
+                                  (state.muteStatus[widget.drummerEntity.rid] ??
+                                          false)
+                                      ? Icon(
+                                          size: 42,
+                                          Icons.mic_off_rounded,
+                                          color: Colors.white,
+                                        )
+                                      : Icon(
+                                          size: 42,
+                                          Icons.mic_rounded,
+                                          color: Colors.white,
+                                        )),
                         ),
-                      ),
-
-                    ],
-                  ),
-                  SafeArea(bottom:true,child: SizedBox.shrink()),
-                ],
-              ); },
+                        SizedBox(
+                          width: 24,
+                        ),
+                        Container(
+                          height: 64,
+                          width: 64,
+                          decoration: BoxDecoration(
+                              color: DrummTheme.primaryTextColor(context)
+                                  .withAlpha(100),
+                              shape: BoxShape.circle),
+                          child: IconButton(
+                            icon: Icon(Icons.exit_to_app_rounded,
+                                size: 36, color: Colors.white),
+                            onPressed: () {
+                              // context.read<MusicPlayerBloc>().add(StopMusic(podcast));
+                              _leaveChannel(context);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    SafeArea(bottom: true, child: SizedBox.shrink()),
+                  ],
+                );
+              },
+            ),
+          );
+        } else if (state is DrummAudioError) {
+          return Container(
+            height: MediaQuery.sizeOf(context).height *
+                0.8, // Fixed height for bottom sheet
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                color: DrummTheme.primaryItemColor(context),
+                borderRadius: BorderRadius.circular(12)),
+            child: DraggableScrollableSheet(
+              shouldCloseOnMinExtent: true,
+              snap: false,
+              snapAnimationDuration: Duration(milliseconds: 100),
+              initialChildSize: 1,
+              minChildSize: 0.9,
+              maxChildSize: 1,
+              builder:
+                  (BuildContext context, ScrollController scrollController) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Grid view to show remote users.
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        //const Icon(Icons.music_note, color: Colors.white),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: CachedNetworkImage(
+                            imageUrl: widget.conversation.imageUrl ??
+                                DEFAULT_APP_IMAGE_URL,
+                            height: 64,
+                            width: 64,
+                            fit: BoxFit.cover,
+                            errorWidget: (context, url, a) {
+                              return Image.asset(
+                                "images/audio-waves.png",
+                                color: DrummTheme.primaryTextColor(context),
+                                height: 64,
+                                width: 64,
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            widget.conversation.question ?? "Playing Podcast",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: DrummTheme.primaryTextColor(context),
+                                fontSize: 18),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (_) => BlocProvider.value(
+                                    value: context.read<
+                                        UserActivityBloc>(), // Provide the existing bloc
+                                    child: ReadArticlePage(
+                                      article: ArticleModel.fromConversation(
+                                          widget.conversation),
+                                      bands: [],
+                                      drummerEntity: widget.drummerEntity,
+                                    )),
+                                isScrollControlled:
+                                    true, // For making the sheet extendable
+                                backgroundColor: Colors.transparent,
+                              );
+                            },
+                            child: Icon(Icons.open_in_full_rounded)),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Expanded(
+                      child: Center(
+                          child: Text(state.message)),
+                    ),
+                  ],
+                );
+              },
             ),
           );
         } else {
@@ -228,8 +334,7 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
                 color: DrummTheme.primaryItemColor(context),
-                borderRadius: BorderRadius.circular(12)
-            ),
+                borderRadius: BorderRadius.circular(12)),
             child: DraggableScrollableSheet(
               shouldCloseOnMinExtent: true,
               snap: false,
@@ -237,67 +342,83 @@ class _DrummAudioBottomSheetState extends State<DrummAudioBottomSheet> {
               initialChildSize: 1,
               minChildSize: 0.9,
               maxChildSize: 1,
-              builder: (BuildContext context, ScrollController scrollController) { return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Grid view to show remote users.
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      //const Icon(Icons.music_note, color: Colors.white),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: CachedNetworkImage(
-                          imageUrl: widget.conversation.imageUrl ?? DEFAULT_APP_IMAGE_URL,
-                          height: 64,
-                          width: 64,
-                          fit: BoxFit.cover,
-                          errorWidget: (context,url,a){
-                            return Image.asset(
-                              "images/audio-waves.png",
-                              color: DrummTheme.primaryTextColor(context),
-                              height: 64,
-                              width: 64,
-                            );
-                          },
+              builder:
+                  (BuildContext context, ScrollController scrollController) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Grid view to show remote users.
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        //const Icon(Icons.music_note, color: Colors.white),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: CachedNetworkImage(
+                            imageUrl: widget.conversation.imageUrl ??
+                                DEFAULT_APP_IMAGE_URL,
+                            height: 64,
+                            width: 64,
+                            fit: BoxFit.cover,
+                            errorWidget: (context, url, a) {
+                              return Image.asset(
+                                "images/audio-waves.png",
+                                color: DrummTheme.primaryTextColor(context),
+                                height: 64,
+                                width: 64,
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Text(
-                          widget.conversation.question ?? "Playing Podcast",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: DrummTheme.primaryTextColor(context),fontSize: 18),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            widget.conversation.question ?? "Playing Podcast",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: DrummTheme.primaryTextColor(context),
+                                fontSize: 18),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      GestureDetector(
-                          onTap: (){
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (_) => BlocProvider.value(
-                                  value: context
-                                      .read<UserActivityBloc>(), // Provide the existing bloc
-                                  child: ReadArticlePage(
-                                    article: ArticleModel.fromConversation(widget.conversation),
-                                    bands: [],
-                                    drummerEntity: widget.drummerEntity,
-                                  )),
-                              isScrollControlled: true, // For making the sheet extendable
-                              backgroundColor: Colors.transparent,
-                            );
-                          },
-                          child: Icon(Icons.open_in_full_rounded)),
-                    ],
-                  ),
-                  SizedBox(height: 12,),
-                  Expanded(
-                    child: Center(
-                        child: Image.asset("images/drumm_logo.png",color:DrummTheme.primaryTextColor(context).withAlpha(10),height: 100,width: 100,)),
-                  ),
-                ],
-              ); },
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (_) => BlocProvider.value(
+                                    value: context.read<
+                                        UserActivityBloc>(), // Provide the existing bloc
+                                    child: ReadArticlePage(
+                                      article: ArticleModel.fromConversation(
+                                          widget.conversation),
+                                      bands: [],
+                                      drummerEntity: widget.drummerEntity,
+                                    )),
+                                isScrollControlled:
+                                    true, // For making the sheet extendable
+                                backgroundColor: Colors.transparent,
+                              );
+                            },
+                            child: Icon(Icons.open_in_full_rounded)),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Expanded(
+                      child: Center(
+                          child: Image.asset(
+                        "images/drumm_logo.png",
+                        color:
+                            DrummTheme.primaryTextColor(context).withAlpha(10),
+                        height: 100,
+                        width: 100,
+                      )),
+                    ),
+                  ],
+                );
+              },
             ),
           );
         }

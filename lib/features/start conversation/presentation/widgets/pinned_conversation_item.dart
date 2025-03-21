@@ -22,7 +22,7 @@ class PinnedConversationItem extends StatelessWidget {
       child: Container(
         width: 250,
         margin: const EdgeInsets.all(8.0),
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: DrummTheme.primaryItemColor(context),
           borderRadius: BorderRadius.circular(20.0),

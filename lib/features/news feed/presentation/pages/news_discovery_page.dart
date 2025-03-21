@@ -239,7 +239,7 @@ class NewsDiscoveryPage extends StatelessWidget {
                               Text(
                                 "Stories",
                                 style: TextStyle(
-                                  fontSize: 28,
+                                  fontSize: 24,
                                   fontFamily: DRUMM_FONT_HEADINGS,
                                   color: DrummTheme.primaryTextColor(context),
                                   fontWeight: FontWeight.bold,

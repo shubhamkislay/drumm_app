@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:drumm_app/custom/helper/firebase_db_operations.dart';
 import 'package:drumm_app/features/drumm%20audio/data/data_sources/drumm_remote_event.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class DrummAudioService {
   final RtcEngine _engine = createAgoraRtcEngine();
@@ -20,6 +21,7 @@ class DrummAudioService {
 
   /// Initialize the Agora engine and register the event handler if not already done.
   Future<void> initialize(String appId) async {
+    await [Permission.microphone].request();
     if (!_isInitialized) {
       await _engine.initialize(RtcEngineContext(appId: appId));
       print("Agora Engine is initialized");
